@@ -17,16 +17,27 @@ export default class Board extends Sprite {
 //   [props],
 //   [...children]
 // )
-    var tileStyles = StyleSheet.create({
+    var borderWidth = 5;
+    var width = CONSTANTS.BOARDWIDTH * CONSTANTS.SNEKSIZE + 2 * borderWidth + 2;
+    var height = CONSTANTS.BOARDHEIGHT * CONSTANTS.SNEKSIZE + 2 * borderWidth + 2;
+    this.styles = StyleSheet.create({
+      field: {
+        width: width,
+        backgroundColor: '#2c1',
+        height: height,
+        position: "absolute",
+        top: (CONSTANTS.GAMEHEIGHT/2) - (0.5 * height),
+        left: (CONSTANTS.DEVICEWIDTH/2) - (0.5 * width),
+        borderWidth: borderWidth,
+        // backgroundColor: '#BBBBBB',
+        borderColor: CONSTANTS.BOARDCOLOR,
+      },
       tile: {
         position: 'absolute',
         width: CONSTANTS.SNEKSIZE,
         height: CONSTANTS.SNEKSIZE,
         backgroundColor: "#fff",
       },
-      row: {
-
-      }
     });
     // this.tileRows = [];
     // for (var rowIndex = 0; rowIndex < this.props.boardState.length; rowIndex ++) {
@@ -69,12 +80,7 @@ export default class Board extends Sprite {
     //   position: "absolute",
     // }}, this.tileRows);
     return (
-      <View style={{
-        width: CONSTANTS.DEVICEWIDTH,
-        backgroundColor: '#0f0',
-        height: CONSTANTS.GAMEHEIGHT,
-        position: "absolute",
-      }}>
+      <View style={this.styles.field}>
       </View>
     );
   }

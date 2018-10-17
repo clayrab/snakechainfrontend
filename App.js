@@ -22,7 +22,7 @@ export default class App extends React.Component {
     //    board.push(row);
     // }
     this.state = {
-      running: true,
+      running: false,
       pressedButton: CONSTANTS.DPADSTATES.UP,
       board: board
     };
@@ -37,7 +37,7 @@ export default class App extends React.Component {
   }
 
   onBoardTile(boardX, boardY) { //fires when snake enters a new tile
-    console.log(boardX, boardY);
+    //console.log(boardX, boardY);
   }
 
   onDied(){
@@ -55,7 +55,7 @@ export default class App extends React.Component {
         <Snek
           pressedButton={this.state.pressedButton}
           onBoardTile={this.onBoardTile.bind(this)}
-          snekSpeed={1}
+          snekSpeed={3}
           running={this.state.running}
           onDied={this.onDied.bind(this)}>
         </Snek>
