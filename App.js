@@ -55,7 +55,7 @@ export default class App extends React.Component {
         <Snek
           pressedButton={this.state.pressedButton}
           onBoardTile={this.onBoardTile.bind(this)}
-          snekSpeed={3}
+          snekSpeed={2}
           running={this.state.running}
           onDied={this.onDied.bind(this)}>
         </Snek>

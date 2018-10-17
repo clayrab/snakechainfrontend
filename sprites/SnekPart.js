@@ -9,17 +9,19 @@ export default class SnekPart extends Sprite {
   static contextTypes = {
     loop: PropTypes.object,
     pressedButton: PropTypes.number,
+    running: PropTypes.bool,
+    posX: PropTypes.number,
+    posY: PropTypes.number,
   };
   constructor(props) {
     super(props);
-    this.defaultState = {
+    this.state = {
       posX: this.props.posX,
       posY: this.props.posY,
       boardX: this.props.boardX,
       boardY: this.props.boardY,
       direction: CONSTANTS.DPADSTATES.UP,
     };
-    this.state = this.defaultState;
     this.styles = StyleSheet.create({
       snek: {
         position: "absolute",
@@ -30,14 +32,28 @@ export default class SnekPart extends Sprite {
     });
   }
 
-  componentDidMount() {
-    this.context.loop.subscribe(this.update.bind(this));
-  }
-
-  componentWillUnmount() {
-    this.context.loop.unsubscribe(this.update.bind(this));
-  }
-
+  // componentDidMount() {
+  //   this.context.loop.subscribe(this.update.bind(this));
+  // }
+  //
+  // componentWillUnmount() {
+  //   this.context.loop.unsubscribe(this.update.bind(this));
+  // }
+  // update(){
+  //   // console.log("update");
+  //   // console.log(this.props.running);
+  //   if (this.props.running || true) {
+  //     if (this.state.direction == CONSTANTS.DPADSTATES.UP) {
+  //       this.posY = this.state.posY- this.props.snekSpeed;
+  //     } else if (this.state.direction == CONSTANTS.DPADSTATES.DOWN) {
+  //       this.posY = this.state.posY + this.props.snekSpeed;
+  //     } else if (this.state.direction == CONSTANTS.DPADSTATES.RIGHT) {
+  //       this.posX = this.state.posX + this.props.snekSpeed;
+  //     } else if (this.state.direction == CONSTANTS.DPADSTATES.LEFT) {
+  //       this.posX = this.state.posX - this.props.snekSpeed;
+  //     }
+  //   }
+  // }
   boardXtoPosX(boardX) {
     return CONSTANTS.BOARDCENTERX + (CONSTANTS.SNEKSIZE*(boardX - CONSTANTS.BOARDSIZEX - 0.5));
   }
@@ -46,28 +62,7 @@ export default class SnekPart extends Sprite {
   }
 
   render() {
-    let deadStyle = {};
-    if (!this.state.alive) {
-      deadStyle.backgroundColor = "#000";
-    }
-    var snekParts = [
-      (<View key={-1} style={[this.styles.snek, {left: this.state.posX, top: this.state.posY,}, deadStyle]}></View>)
-    ];
-    for (var index = 0; index < this.state.tail.length; index++) {
-      var part = (<View key={index} style={[this.styles.snek, {left: this.state.tail[index].posX, top: this.state.tail[index].posY,}, deadStyle]}></View>)
-      snekParts.push(part);
-    }
-    var rootView = React.createElement(
-      View,
-      {style: {position: "absolute", top: 0, left: 0}},
-      snekParts
-    );
-    //   width: CONSTANTS.DEVICEWIDTH,
-    //   backgroundColor: '#0f0',
-    //   height: CONSTANTS.GAMEHEIGHT,
-    //   position: "absolute",
-    // }}, this.tileRows);
-    return rootView;
+    return (<View style={[this.styles.snek, {left: this.props.posX, top: this.props.posY,}]}></View>);
     // return (
     //   <View style={{position: "absolute", top: 0, left: 0}}>
     //     <View style={[this.styles.snek, {left: this.state.posX, top: this.state.posY,}, deadStyle]}></View>
