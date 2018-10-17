@@ -20,9 +20,10 @@ export default class Snek extends Sprite {
       boardY: CONSTANTS.BOARDSIZEY - 1,
       direction: CONSTANTS.DPADSTATES.UP,
       alive: true,
+      tailIndex: 4,
       tail: [
         (<SnekPart
-          key={'zero'}
+          key={0}
           running={this.props.running}
           posX={this.boardXtoPosX(CONSTANTS.BOARDSIZEX)}
           posY={this.boardYtoPosY(CONSTANTS.BOARDSIZEY)}
@@ -30,12 +31,36 @@ export default class Snek extends Sprite {
           boardY={CONSTANTS.BOARDSIZEY}
           direction={CONSTANTS.DPADSTATES.UP}></SnekPart>),
         (<SnekPart
-          key={'onebob'}
+          key={1}
           running={this.props.running}
           posX={this.boardXtoPosX(CONSTANTS.BOARDSIZEX)}
           posY={this.boardYtoPosY(CONSTANTS.BOARDSIZEY + 1)}
           boardX={CONSTANTS.BOARDSIZEX}
           boardY={CONSTANTS.BOARDSIZEY + 1}
+          direction={CONSTANTS.DPADSTATES.UP}></SnekPart>),
+        (<SnekPart
+          key={2}
+          running={this.props.running}
+          posX={this.boardXtoPosX(CONSTANTS.BOARDSIZEX)}
+          posY={this.boardYtoPosY(CONSTANTS.BOARDSIZEY + 2)}
+          boardX={CONSTANTS.BOARDSIZEX}
+          boardY={CONSTANTS.BOARDSIZEY + 2}
+          direction={CONSTANTS.DPADSTATES.UP}></SnekPart>),
+        (<SnekPart
+          key={3}
+          running={this.props.running}
+          posX={this.boardXtoPosX(CONSTANTS.BOARDSIZEX)}
+          posY={this.boardYtoPosY(CONSTANTS.BOARDSIZEY + 3)}
+          boardX={CONSTANTS.BOARDSIZEX}
+          boardY={CONSTANTS.BOARDSIZEY + 3}
+          direction={CONSTANTS.DPADSTATES.UP}></SnekPart>),
+        (<SnekPart
+          key={4}
+          running={this.props.running}
+          posX={this.boardXtoPosX(CONSTANTS.BOARDSIZEX)}
+          posY={this.boardYtoPosY(CONSTANTS.BOARDSIZEY + 4)}
+          boardX={CONSTANTS.BOARDSIZEX}
+          boardY={CONSTANTS.BOARDSIZEY + 4}
           direction={CONSTANTS.DPADSTATES.UP}></SnekPart>),
       ]
     };
@@ -43,6 +68,7 @@ export default class Snek extends Sprite {
     // head gets pushed onto tail
     // end of tail gets shift() off
     this.state = this.defaultState;
+    this.lastFrameTime;
     this.styles = StyleSheet.create({
       snek: {
         position: "absolute",
@@ -77,85 +103,30 @@ export default class Snek extends Sprite {
     this.setState(this.defaultState);
   }
   growTail(){
-    var lastPart = this.state.tail[this.state.tail.length-1];
-    var newTail = this.state.tail.slice(0);
-    if (lastPart.props.direction == CONSTANTS.DPADSTATES.UP) {
-      newTail.push(
-        <SnekPart
-          key={this.state.tail.length}
-          running={this.props.running}
-          posX={this.boardXtoPosX(lastPart.props.boardX)}
-          posY={this.boardYtoPosY(lastPart.props.boardY + 1)}
-          boardX={lastPart.props.boardX}
-          boardY={lastPart.props.boardY + 1}
-          direction={lastPart.props.direction}></SnekPart>
-      );
-    } else if (lastPart.props.direction == CONSTANTS.DPADSTATES.DOWN) {
-      newTail.push(
-        <SnekPart
-          key={this.state.tail.length}
-          running={this.props.running}
-          posX={this.boardXtoPosX(lastPart.props.boardX)}
-          posY={this.boardYtoPosY(lastPart.props.boardY - 1)}
-          boardX={lastPart.props.boardX}
-          boardY={lastPart.props.boardY - 1}
-          direction={lastPart.props.direction}></SnekPart>
-      );
-    } else if (lastPart.props.direction == CONSTANTS.DPADSTATES.RIGHT) {
-      newTail.push(
-        <SnekPart
-          key={this.state.tail.length}
-          running={this.props.running}
-          posX={this.boardXtoPosX(lastPart.props.boardX - 1)}
-          posY={this.boardYtoPosY(lastPart.props.boardY)}
-          boardX={lastPart.props.boardX - 1}
-          boardY={lastPart.props.boardY}
-          direction={lastPart.props.direction}></SnekPart>
-      );
-    } else if (lastPart.props.direction == CONSTANTS.DPADSTATES.LEFT) {
-      newTail.push(
-        <SnekPart
-          key={this.state.tail.length}
-          running={this.props.running}
-          posX={this.boardXtoPosX(lastPart.props.boardX + 1)}
-          posY={this.boardYtoPosY(lastPart.props.boardY)}
-          boardX={lastPart.props.boardX + 1}
-          boardY={lastPart.props.boardY}
-          direction={lastPart.props.direction}></SnekPart>
-      );
-    }
-    this.setState({tail: newTail})
+    var lastPart = this.state.tail[this.state.tailIndex];
+    var newTailStart = this.state.tail.slice(0, this.state.tailIndex);
+    var newTailEnd = this.state.tail.slice(this.state.tailIndex, this.state.tail.length);
+    newTailStart.push(
+      <SnekPart
+        key={this.state.tail.length}
+        running={this.props.running}
+        posX={this.boardXtoPosX(lastPart.props.boardX)}
+        posY={this.boardYtoPosY(lastPart.props.boardY)}
+        boardX={lastPart.props.boardX}
+        boardY={lastPart.props.boardY}
+        direction={lastPart.props.direction}></SnekPart>
+    );
+    newTailStart = newTailStart.concat(newTailEnd);
+    var newTailIndex = this.state.tailIndex+1;;
+    //var newTailIndex = this.state.tailIndex;
+    this.setState({tail: newTailStart, tailIndex: newTailIndex});
 
-
-    // var newTail = this.state.tail;
-    // var newPiece = this.state.tail[0];
-    // if (newPiece.direction == CONSTANTS.DPADSTATES.UP) {
-    //   newPiece.boardY = newPiece.boardY + 1;
-    // } else if (newPiece.direction == CONSTANTS.DPADSTATES.DOWN) {
-    //   newPiece.boardY = newPiece.boardY - 1;
-    // } else if (newPiece.direction == CONSTANTS.DPADSTATES.RIGHT) {
-    //   newPiece.boardX = newPiece.boardX - 1;
-    // } else if (newPiece.direction == CONSTANTS.DPADSTATES.LEFT) {
-    //   newPiece.boardX = newPiece.boardX + 1;
-    // }
-    // newTail.push(newPiece);
-    // newTail.push(this.state.tail)
-    // this.setState({tail: newTail})
   }
   moveTail(direction) {
-    for (var index = this.state.tail.length - 1; index > 0; index--) {
-      this.state.tail[index] = React.cloneElement(
-          this.state.tail[index],
-          {
-            direction: this.state.tail[index - 1].props.direction,
-            boardX: this.state.tail[index - 1].props.boardX,
-            boardY: this.state.tail[index - 1].props.boardY,
-            posX: this.boardXtoPosX(this.state.tail[index - 1].props.boardX),
-            posY: this.boardYtoPosY(this.state.tail[index - 1].props.boardY),
-          });
-    }
-    this.state.tail[0] = React.cloneElement(
-        this.state.tail[0],
+    var newTail = this.state.tail.slice(0);
+    //var oldTip = this.state.tail[this.state.tailIndex];
+    newTail[this.state.tailIndex] = React.cloneElement(
+        newTail[this.state.tailIndex],
         {
           direction: this.state.direction,
           boardX: this.state.boardX,
@@ -163,49 +134,16 @@ export default class Snek extends Sprite {
           posX: this.boardXtoPosX(this.state.boardX),
           posY: this.boardYtoPosY(this.state.boardY),
         });
-
-
-    // this.state.posX = this.boardXtoPosX(this.state.boardX);
-    // this.state.posY = this.boardYtoPosY(this.state.boardY);
-    // var newTail =[];
-    // //var oldTail = this.state.tail;
-    // //this.setState({tail: newTail});
-    // for (var index = 0; index < this.state.tail.length; index++) {
-    //   var newPiece = this.state.tail[index];
-    //   if (index == this.state.tail.length - 1) {
-    //     newPiece.direction = direction;
-    //     if(direction == CONSTANTS.DPADSTATES.UP) {
-    //       newPiece.boardX = this.state.boardX;
-    //       newPiece.boardY = this.state.boardY;
-    //     } else if(direction == CONSTANTS.DPADSTATES.DOWN) {
-    //       newPiece.boardX = this.state.boardX;
-    //       newPiece.boardY = this.state.boardY;
-    //     } else if(direction == CONSTANTS.DPADSTATES.RIGHT) {
-    //       newPiece.boardX = this.state.boardX;
-    //       newPiece.boardY = this.state.boardY;
-    //     } else if(direction == CONSTANTS.DPADSTATES.LEFT) {
-    //       newPiece.boardX = this.state.boardX;
-    //       newPiece.boardY = this.state.boardY;
-    //     }
-    //   } else {
-    //     newPiece.direction = this.state.tail[index + 1].direction;
-    //     newPiece.boardX = this.state.tail[index + 1].boardX;
-    //     newPiece.boardY = this.state.tail[index + 1].boardY;
-    //   }
-    //   newPiece.posX = this.boardXtoPosX(newPiece.boardX);
-    //   newPiece.posY = this.boardYtoPosY(newPiece.boardY);
-    //   //console.log(newPiece.boardX + ":" + newPiece.posX + ":" + this.boardXtoPosX(newPiece.boardX));
-    //   newTail.push(newPiece);
-    // }
-    // this.setState({tail: newTail});
+    var newTailIndex = this.state.tailIndex==0 ? this.state.tail.length-1 : this.state.tailIndex-1;
+    this.setState({tailIndex: newTailIndex, tail: newTail});
   }
   goUp() {
     this.moveTail(CONSTANTS.DPADSTATES.UP);
+    this.growTail();
     if (this.state.posY < this.boardYtoPosY(1)) {
       this.die();
     }
     this.props.onBoardTile(this.state.boardX, this.state.boardY - 1);
-    this.growTail();
     this.setState({direction: CONSTANTS.DPADSTATES.UP, boardY: this.state.boardY - 1});
   }
   goDown() {
@@ -283,6 +221,8 @@ export default class Snek extends Sprite {
       if (this.state.alive) {
         var newPosX = this.state.posX;
         var newPosY = this.state.posY;
+        var now = new Date().getMilliseconds();
+        //console.log(now);
         if (this.state.direction == CONSTANTS.DPADSTATES.UP) {
           newPosY = this.state.posY - this.props.snekSpeed;
         } else if (this.state.direction == CONSTANTS.DPADSTATES.DOWN) {
@@ -293,42 +233,6 @@ export default class Snek extends Sprite {
           newPosX = this.state.posX - this.props.snekSpeed;
         }
         this.setState({posX: newPosX, posY: newPosY});
-        // for (var index = 0; index < this.state.tail.length; index++) {
-        //   if (this.state.tail[index].props.direction == CONSTANTS.DPADSTATES.UP) {
-        //     this.state.tail[index] =
-        //         React.cloneElement(this.state.tail[index],{posY: this.state.tail[index].props.posY - this.props.snekSpeed});
-        //   } else if (this.state.tail[index].props.direction == CONSTANTS.DPADSTATES.DOWN) {
-        //     this.state.tail[index] =
-        //         React.cloneElement(this.state.tail[index],{posY: this.state.tail[index].props.posY + this.props.snekSpeed});
-        //   } else if (this.state.tail[index].props.direction == CONSTANTS.DPADSTATES.RIGHT) {
-        //     this.state.tail[index] =
-        //         React.cloneElement(this.state.tail[index],{posX: this.state.tail[index].props.posX + this.props.snekSpeed});
-        //   } else if (this.state.tail[index].props.direction == CONSTANTS.DPADSTATES.LEFT) {
-        //     this.state.tail[index] =
-        //         React.cloneElement(this.state.tail[index],{posX: this.state.tail[index].props.posX - this.props.snekSpeed});
-        //   }
-        // }
-
-        // for (var index = 0; index < this.state.tail.length; index++) {
-        //   var tailPiece = {
-        //     posX: this.state.tail[index].posX,
-        //     posY: this.state.tail[index].posY,
-        //     direction: this.state.tail[index].direction,
-        //     boardX: this.state.tail[index].boardX,
-        //     boardY: this.state.tail[index].boardY,
-        //   };
-        //   if (this.state.tail[index].direction == CONSTANTS.DPADSTATES.UP) {
-        //     tailPiece.posY = this.state.tail[index].posY- this.props.snekSpeed;
-        //   } else if (this.state.tail[index].direction == CONSTANTS.DPADSTATES.DOWN) {
-        //     tailPiece.posY = this.state.tail[index].posY + this.props.snekSpeed;
-        //   } else if (this.state.tail[index].direction == CONSTANTS.DPADSTATES.RIGHT) {
-        //     tailPiece.posX = this.state.tail[index].posX + this.props.snekSpeed;
-        //   } else if (this.state.tail[index].direction == CONSTANTS.DPADSTATES.LEFT) {
-        //     tailPiece.posX = this.state.tail[index].posX - this.props.snekSpeed;
-        //   }
-        //   newTail.push(tailPiece);
-        // }
-
       }
     }
   }

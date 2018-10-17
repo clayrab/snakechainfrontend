@@ -12,14 +12,12 @@ export default class SnekPart extends Sprite {
     running: PropTypes.bool,
     posX: PropTypes.number,
     posY: PropTypes.number,
+    boardX: PropTypes.number,
+    boardY: PropTypes.number,
   };
   constructor(props) {
     super(props);
     this.state = {
-      posX: this.props.posX,
-      posY: this.props.posY,
-      boardX: this.props.boardX,
-      boardY: this.props.boardY,
       direction: CONSTANTS.DPADSTATES.UP,
     };
     this.styles = StyleSheet.create({
