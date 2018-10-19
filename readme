@@ -1,3 +1,10 @@
+performance gains:
+- Render entire board instead of just snekParts and don't use position absolute.
+- Xcode build configuration should be prod, not dev
+  https://facebook.github.io/react-native/docs/running-on-device#building-your-app-for-production
+- Animated API + Native Driver 
+  https://engineering.salesforce.com/experiments-with-high-performance-animation-in-react-native-80a0cb7052b0
+
 "display",
   "width",
   "height",

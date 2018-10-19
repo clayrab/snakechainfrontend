@@ -12,14 +12,10 @@ export default class Board extends Sprite {
 
   constructor(props) {
     super(props);
-//     React.createElement(
-//   type,
-//   [props],
-//   [...children]
-// )
     var borderWidth = 5;
     var width = CONSTANTS.BOARDWIDTH * CONSTANTS.SNEKSIZE + 2 * borderWidth + 2;
     var height = CONSTANTS.BOARDHEIGHT * CONSTANTS.SNEKSIZE + 2 * borderWidth + 2;
+    this.shouldUpdate = true;
     this.styles = StyleSheet.create({
       field: {
         width: width,
@@ -39,53 +35,19 @@ export default class Board extends Sprite {
         backgroundColor: "#fff",
       },
     });
-    // this.tileRows = [];
-    // for (var rowIndex = 0; rowIndex < this.props.boardState.length; rowIndex ++) {
-    //   var row = [];
-    //    for (var rowIndex = 0; rowIndex < this.props.boardState.length; rowIndex ++) {
-    //      row.push(React.createElement(View, {style: tileStyles.tile}));
-    //    }
-    //    this.tileRows.push(React.createElement(View, {style: tileStyles.tile}, row));
-    // }
-    //
   }
 
-  componentDidMount() {
-    this.context.loop.subscribe(this.update);
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.shouldUpdate) {
+      this.shouldUpdate = false;
+      return true;
+    }
+    return false;
   }
-
-  componentWillUnmount() {
-    this.context.loop.unsubscribe(this.update);
-  }
-  update() {
-
-  };
-  // DEVICEWIDTH
-  // GAMEHEIGHT
-  // SNEKSIZE
   render() {
-
-    // var rootElem = React.createElement("View", {style: {
-    //   width: CONSTANTS.DEVICEWIDTH,
-    //   backgroundColor: '#0f0',
-    //   height: CONSTANTS.GAMEHEIGHT,
-    //   position: "absolute",
-    // }}, this.tileRows);
-    //console.log(this.tileRows)
-
-    // return React.createElement(View, {style: {
-    //   width: CONSTANTS.DEVICEWIDTH,
-    //   backgroundColor: '#0f0',
-    //   height: CONSTANTS.GAMEHEIGHT,
-    //   position: "absolute",
-    // }}, this.tileRows);
     return (
       <View style={this.styles.field}>
       </View>
     );
   }
-
-  update() {
-
-  };
 }

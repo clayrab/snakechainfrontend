@@ -14,12 +14,15 @@ export default class SnekPart extends Sprite {
     posY: PropTypes.number,
     boardX: PropTypes.number,
     boardY: PropTypes.number,
+    toggleUpdate: PropTypes.bool,
   };
+
   constructor(props) {
     super(props);
     this.state = {
       direction: CONSTANTS.DPADSTATES.UP,
     };
+    this.toggleUpdateInternal = false;
     this.styles = StyleSheet.create({
       snek: {
         position: "absolute",
@@ -30,28 +33,14 @@ export default class SnekPart extends Sprite {
     });
   }
 
-  // componentDidMount() {
-  //   this.context.loop.subscribe(this.update.bind(this));
-  // }
-  //
-  // componentWillUnmount() {
-  //   this.context.loop.unsubscribe(this.update.bind(this));
-  // }
-  // update(){
-  //   // console.log("update");
-  //   // console.log(this.props.running);
-  //   if (this.props.running || true) {
-  //     if (this.state.direction == CONSTANTS.DPADSTATES.UP) {
-  //       this.posY = this.state.posY- this.props.snekSpeed;
-  //     } else if (this.state.direction == CONSTANTS.DPADSTATES.DOWN) {
-  //       this.posY = this.state.posY + this.props.snekSpeed;
-  //     } else if (this.state.direction == CONSTANTS.DPADSTATES.RIGHT) {
-  //       this.posX = this.state.posX + this.props.snekSpeed;
-  //     } else if (this.state.direction == CONSTANTS.DPADSTATES.LEFT) {
-  //       this.posX = this.state.posX - this.props.snekSpeed;
-  //     }
-  //   }
-  // }
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.toggleUpdate == this.toggleUpdateInternal) {
+      this.toggleUpdateInternal = !this.toggleUpdateInternal;
+      return true;
+    }
+    return false;
+  }
+
   boardXtoPosX(boardX) {
     return CONSTANTS.BOARDCENTERX + (CONSTANTS.SNEKSIZE*(boardX - CONSTANTS.BOARDSIZEX - 0.5));
   }
@@ -61,11 +50,5 @@ export default class SnekPart extends Sprite {
 
   render() {
     return (<View style={[this.styles.snek, {left: this.props.posX, top: this.props.posY,}]}></View>);
-    // return (
-    //   <View style={{position: "absolute", top: 0, left: 0}}>
-    //     <View style={[this.styles.snek, {left: this.state.posX, top: this.state.posY,}, deadStyle]}></View>
-    //   </View>
-    // );
   }
-
 }

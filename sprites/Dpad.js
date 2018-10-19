@@ -25,6 +25,7 @@ export default class Dpad extends Sprite {
     this.touchableSizeHalf = this.buttonSize * 1.207;
     this.padding = 0;
     this.dpadPosition = 210 - this.touchableSizeHalf;
+    this.shouldUpdate = true;
     this.styles = StyleSheet.create({
       dpad: {
         position: 'absolute',
@@ -76,13 +77,6 @@ export default class Dpad extends Sprite {
     });
   }
 
-  // onPress = () => {
-  //   this.setState({
-  //     keyup :
-  //
-  //   })
-  // }
-
   onStartShouldSetResponder = function(e) {
     return true;
   };
@@ -131,7 +125,13 @@ export default class Dpad extends Sprite {
   // onResponderTerminate = function(event) {
   //
   // };
-
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.shouldUpdate) {
+      this.shouldUpdate = false;
+      return true;
+    }
+    return false;
+  }
   render() {
     return (
       <View

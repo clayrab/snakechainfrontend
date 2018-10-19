@@ -4,6 +4,7 @@ import { Loop, Stage, World, Body, Sprite } from 'react-game-kit/native';
 import PropTypes from 'prop-types';
 import Dpad from './sprites/Dpad.js';
 import StartButton from './sprites/StartButton.js';
+import ResetButton from './sprites/ResetButton.js';
 import Snek from './sprites/Snek.js';
 import Board from './sprites/Board.js';
 import CONSTANTS from './Constants.js';
@@ -24,20 +25,14 @@ export default class App extends React.Component {
     this.state = {
       running: false,
       pressedButton: CONSTANTS.DPADSTATES.UP,
-      board: board
+      toggleReset: true,
     };
   }
 
   onDpadChange(direction) {
-    // TODO: not sure about "direction != CONSTANTS.DPADSTATES.NONE".
-    // See how it feels.
     if( direction != CONSTANTS.DPADSTATES.NONE && direction != this.state.pressedButton ) {
       this.setState({pressedButton: direction});
     }
-  }
-
-  onBoardTile(boardX, boardY) { //fires when snake enters a new tile
-    //console.log(boardX, boardY);
   }
 
   onDied(){
@@ -47,19 +42,24 @@ export default class App extends React.Component {
   start() {
     this.setState({running: true});
   }
-
+  restart() {
+    this.setState({toggleReset: !this.state.toggleReset});
+  }
   render() {
+    console.log("render app");
     return (
       <Loop>
-        <Board></Board>
+        <Board>
+        </Board>
         <Snek
           pressedButton={this.state.pressedButton}
-          onBoardTile={this.onBoardTile.bind(this)}
-          snekSpeed={2}
+          snekSpeed={0.10}
           running={this.state.running}
+          toggleReset={this.state.toggleReset}
           onDied={this.onDied.bind(this)}>
         </Snek>
-        <StartButton start={this.start.bind(this)}></StartButton>
+        <StartButton running={this.state.running} start={this.start.bind(this)}></StartButton>
+        <ResetButton running={this.state.running} start={this.restart.bind(this)}></ResetButton>
         <Dpad onDpadChange={this.onDpadChange.bind(this)}></Dpad>
       </Loop>
       //
