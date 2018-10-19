@@ -18,20 +18,24 @@ export default class Snek extends Sprite {
   constructor(props) {
     super(props);
     this.defaultState = {
-      posX: this.boardXtoPosX(CONSTANTS.BOARDSIZEX),
-      posY: this.boardYtoPosY(CONSTANTS.BOARDSIZEY - 1),
-      boardX: CONSTANTS.BOARDSIZEX,
-      boardY: CONSTANTS.BOARDSIZEY - 1,
+      posX: this.boardXtoPosX(CONSTANTS.BOARDSIZEX - 1),
+      posY: this.boardYtoPosY(CONSTANTS.BOARDHEIGHT - 6),
+      boardX: CONSTANTS.BOARDSIZEX - 1,
+      boardY: CONSTANTS.BOARDHEIGHT - 6,
       direction: CONSTANTS.DPADSTATES.UP,
       tailIndex: -1,
-      tail: []
+      tail: [],
+      pelletLocation: null
     };
     //this.state = this.defaultState;
     this.state = this.copyDefaultState();
-    this.resetBoard();
     this.state.toggleReset = this.props.toggleReset,
     this.state.alive = true;
+    this.state.tail = this.makeTail(3);
+    this.state.tailIndex = 2;
+    this.resetBoard();
 
+    //console.log(this.state.tail.length);
     this.lastFrameTime;
     this.previousTime = null;
     this.styles = StyleSheet.create({
@@ -41,112 +45,46 @@ export default class Snek extends Sprite {
         height: CONSTANTS.SNEKSIZE,
         backgroundColor: CONSTANTS.SNEKCOLOR,
       },
+      snekPart: {
+        position: "absolute",
+        width: CONSTANTS.SNEKSIZE,
+        height: CONSTANTS.SNEKSIZE,
+        backgroundColor: CONSTANTS.SNEKPARTCOLOR,
+      },
+      pellet: {
+        position: "absolute",
+        width: CONSTANTS.SNEKSIZE,
+        height: CONSTANTS.SNEKSIZE,
+        backgroundColor: CONSTANTS.PELLETCOLOR,
+      }
     });
   }
 
-  createTail(){
-    // [
-    //   (<SnekPart
-    //     key={0}
-    //     running={this.props.running}
-    //     posX={this.boardXtoPosX(CONSTANTS.BOARDSIZEX)}
-    //     posY={this.boardYtoPosY(CONSTANTS.BOARDSIZEY)}
-    //     boardX={CONSTANTS.BOARDSIZEX}
-    //     boardY={CONSTANTS.BOARDSIZEY}
-    //     toggleUpdate={true}>
-    //     direction={CONSTANTS.DPADSTATES.UP}></SnekPart>),
-    //   (<SnekPart
-    //     key={1}
-    //     running={this.props.running}
-    //     posX={this.boardXtoPosX(CONSTANTS.BOARDSIZEX)}
-    //     posY={this.boardYtoPosY(CONSTANTS.BOARDSIZEY + 1)}
-    //     boardX={CONSTANTS.BOARDSIZEX}
-    //     boardY={CONSTANTS.BOARDSIZEY + 1}
-    //     toggleUpdate={true}>
-    //     direction={CONSTANTS.DPADSTATES.UP}></SnekPart>),
-    //   (<SnekPart
-    //     key={2}
-    //     running={this.props.running}
-    //     posX={this.boardXtoPosX(CONSTANTS.BOARDSIZEX)}
-    //     posY={this.boardYtoPosY(CONSTANTS.BOARDSIZEY + 2)}
-    //     boardX={CONSTANTS.BOARDSIZEX}
-    //     boardY={CONSTANTS.BOARDSIZEY + 2}
-    //     toggleUpdate={true}>
-    //     direction={CONSTANTS.DPADSTATES.UP}></SnekPart>),
-    //   (<SnekPart
-    //     key={3}
-    //     running={this.props.running}
-    //     posX={this.boardXtoPosX(CONSTANTS.BOARDSIZEX)}
-    //     posY={this.boardYtoPosY(CONSTANTS.BOARDSIZEY + 3)}
-    //     boardX={CONSTANTS.BOARDSIZEX}
-    //     boardY={CONSTANTS.BOARDSIZEY + 3}
-    //     toggleUpdate={true}>
-    //     direction={CONSTANTS.DPADSTATES.UP}></SnekPart>),
-    //   (<SnekPart
-    //     key={4}
-    //     running={this.props.running}
-    //     posX={this.boardXtoPosX(CONSTANTS.BOARDSIZEX)}
-    //     posY={this.boardYtoPosY(CONSTANTS.BOARDSIZEY + 4)}
-    //     boardX={CONSTANTS.BOARDSIZEX}
-    //     boardY={CONSTANTS.BOARDSIZEY + 4}
-    //     toggleUpdate={true}>
-    //     direction={CONSTANTS.DPADSTATES.UP}></SnekPart>),
-    //   (<SnekPart
-    //     key={5}
-    //     running={this.props.running}
-    //     posX={this.boardXtoPosX(CONSTANTS.BOARDSIZEX)}
-    //     posY={this.boardYtoPosY(CONSTANTS.BOARDSIZEY + 5)}
-    //     boardX={CONSTANTS.BOARDSIZEX}
-    //     boardY={CONSTANTS.BOARDSIZEY + 5}
-    //     toggleUpdate={true}>
-    //     direction={CONSTANTS.DPADSTATES.UP}></SnekPart>),
-    //   (<SnekPart
-    //     key={6}
-    //     running={this.props.running}
-    //     posX={this.boardXtoPosX(CONSTANTS.BOARDSIZEX)}
-    //     posY={this.boardYtoPosY(CONSTANTS.BOARDSIZEY + 6)}
-    //     boardX={CONSTANTS.BOARDSIZEX}
-    //     boardY={CONSTANTS.BOARDSIZEY + 6}
-    //     toggleUpdate={true}>
-    //     direction={CONSTANTS.DPADSTATES.UP}></SnekPart>),
-    //   (<SnekPart
-    //     key={7}
-    //     running={this.props.running}
-    //     posX={this.boardXtoPosX(CONSTANTS.BOARDSIZEX)}
-    //     posY={this.boardYtoPosY(CONSTANTS.BOARDSIZEY + 7)}
-    //     boardX={CONSTANTS.BOARDSIZEX}
-    //     boardY={CONSTANTS.BOARDSIZEY + 7}
-    //     toggleUpdate={true}>
-    //     direction={CONSTANTS.DPADSTATES.UP}></SnekPart>),
-    //   (<SnekPart
-    //     key={8}
-    //     running={this.props.running}
-    //     posX={this.boardXtoPosX(CONSTANTS.BOARDSIZEX)}
-    //     posY={this.boardYtoPosY(CONSTANTS.BOARDSIZEY + 8)}
-    //     boardX={CONSTANTS.BOARDSIZEX}
-    //     boardY={CONSTANTS.BOARDSIZEY + 8}
-    //     toggleUpdate={true}>
-    //     direction={CONSTANTS.DPADSTATES.UP}></SnekPart>),
-    // ]
+  makeTail(length) {
+    var newTail = [];
+    for (var index = 0; index < length; index++) {
+      newTail.push(<SnekPart
+          key={index}
+          running={this.props.running}
+          posX={this.boardXtoPosX(this.state.boardX)}
+          posY={this.boardYtoPosY(this.state.boardY + 1 + index)}
+          boardX={this.state.boardX}
+          boardY={this.state.boardY + 1 + index}
+          toggleUpdate={true}>
+          direction={CONSTANTS.DPADSTATES.UP}></SnekPart>);
+    }
+    return newTail;
   }
-
   copyDefaultState(){
-    console.log("copyDefaultState : " + this.defaultState.tail.length);
     var startState = {};
     startState.posX = this.defaultState.posX;
     startState.posY = this.defaultState.posY;
     startState.boardX = this.defaultState.boardX;
     startState.boardY = this.defaultState.boardY;
     startState.direction = this.defaultState.direction;
-    startState.tailIndex = -1;
-    startState.tail = [];
-    // var defaultTail = [];
-    // for(var index = 0; index < this.defaultState.tail.length; index++) {
-    //   defaultTail.push(this.defaultState.tail[index]);
-    // }
-    //startState.tail = this.defaultState.tail.slice(0);
-    //startState.tail = defaultTail;
-    console.log(startState.tail.length);
+    startState.pelletLocation = this.defaultState.pelletLocation;
+    startState.tail = this.makeTail(2);
+    startState.tailIndex = 2;
     return startState;
   }
   resetBoard(){
@@ -164,10 +102,10 @@ export default class Snek extends Sprite {
     this.board = board.slice(0);
   }
   boardXtoPosX(boardX) {
-    return CONSTANTS.BOARDCENTERX + (CONSTANTS.SNEKSIZE*(boardX - CONSTANTS.BOARDSIZEX - 0.5));
+    return CONSTANTS.BOARDCENTERX + (CONSTANTS.SNEKSIZE*(boardX - CONSTANTS.BOARDSIZEX + 0.5));
   }
   boardYtoPosY(boardY) {
-    return CONSTANTS.BOARDCENTERY + (CONSTANTS.SNEKSIZE*(boardY - CONSTANTS.BOARDSIZEY - 0.5));
+    return CONSTANTS.BOARDCENTERY + (CONSTANTS.SNEKSIZE*(boardY - CONSTANTS.BOARDSIZEY + 0.5));
   }
   die() {
     this.setState({alive: false});
@@ -175,20 +113,43 @@ export default class Snek extends Sprite {
   }
   reset() {
     var startState = this.copyDefaultState();
+    this.setState(startState);
+    startState.tail = this.makeTail(3);
+    startState.tailIndex = 2;
     startState.alive = true;
     startState.toggleReset = this.props.toggleReset;
     this.setState(startState);
     this.resetBoard();
   }
   onBoardTile(boardX, boardY){
+    if (this.state.pelletLocation.x == boardX && this.state.pelletLocation.y == boardY) {
+      this.eatPellet();
+    }
     this.board[boardY][boardX] = true;
   }
   onLeaveBoardTile(boardX, boardY){
     this.board[boardY][boardX] = false;
   }
+
+  getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  placePellet(){
+    var isTail = true;
+    while (isTail) {
+      var x = this.getRandomInt(0, CONSTANTS.BOARDWIDTH - 1);
+      var y = this.getRandomInt(0, CONSTANTS.BOARDHEIGHT - 1);
+      isTail = this.board[y][x];
+    }
+    this.setState({pelletLocation: {x: x, y: y}});
+  }
+  eatPellet(){
+    this.growTail();
+    this.placePellet();
+  }
   growTail(){
     if (this.state.tail.length > 0) {
-      console.log("grow tail: " + this.state.tailIndex + " : " + this.state.tail.length);
       var newTailStart = this.state.tail.slice(0, this.state.tailIndex);
       var newTailEnd = this.state.tail.slice(this.state.tailIndex, this.state.tail.length);
       var lastPart = this.state.tail[this.state.tailIndex];
@@ -208,7 +169,6 @@ export default class Snek extends Sprite {
       var newTailIndex = this.state.tailIndex+1;;
       this.setState({tail: newTailStart, tailIndex: newTailIndex});
     } else {
-      console.log("grow tail from zero: " + this.state.tailIndex + " : " + this.state.tail.length);
       var newTail = [];
       newTail.push(
         <SnekPart
@@ -244,7 +204,6 @@ export default class Snek extends Sprite {
   moveTail(direction) {
     //var newTail = this.state.tail.slice(0);
     //var oldTip = this.state.tail[this.state.tailIndex];
-    console.log("movetail: " + this.state.tailIndex + " : " + this.state.tail.length);
     if(this.state.tailIndex >= 0){
       this.onLeaveBoardTile(this.state.tail[this.state.tailIndex].props.boardX,this.state.tail[this.state.tailIndex].props.boardY);
       this.state.tail[this.state.tailIndex] = React.cloneElement(
@@ -266,7 +225,6 @@ export default class Snek extends Sprite {
     } else if (newTailIndex == -2) { //no tail
       newTailIndex = -1;
     }
-    console.log("newTailIndex: " + newTailIndex);
     // var newTailIndex = this.state.tailIndex==0 ? this.state.tail.length-1 : this.state.tailIndex-1;
     var newPosX = this.boardXtoPosX(this.state.boardX);
     var newPosY = this.boardYtoPosY(this.state.boardY);
@@ -275,9 +233,9 @@ export default class Snek extends Sprite {
   }
   goUp() {
     this.moveTail(CONSTANTS.DPADSTATES.UP);
-    if (this.state.posY < this.boardYtoPosY(1)) {
+    if (this.state.boardY - 1 < 0) {
       this.die();
-    } else if (this.state.boardY > 0 && this.board[this.state.boardY - 1][this.state.boardX]){
+    } else if (this.board[this.state.boardY - 1][this.state.boardX]){
       this.die();
     } else {
       this.onBoardTile(this.state.boardX, this.state.boardY - 1);
@@ -286,8 +244,7 @@ export default class Snek extends Sprite {
   }
   goDown() {
     this.moveTail(CONSTANTS.DPADSTATES.DOWN);
-    //this.growTail();
-    if (this.state.posY > this.boardYtoPosY(CONSTANTS.BOARDHEIGHT)) {
+    if (this.state.boardY + 1 > CONSTANTS.BOARDHEIGHT - 1) {
       this.die();
     } else if (this.board[this.state.boardY + 1][this.state.boardX]){
       this.die();
@@ -298,8 +255,7 @@ export default class Snek extends Sprite {
   }
   goLeft() {
     this.moveTail(CONSTANTS.DPADSTATES.LEFT);
-    //this.growTail();
-    if (this.state.posX < this.boardXtoPosX(1)) {
+    if (this.state.boardX - 1 < 0) {
       this.die();
     } else if (this.board[this.state.boardY][this.state.boardX - 1]){
       this.die();
@@ -310,8 +266,7 @@ export default class Snek extends Sprite {
   }
   goRight() {
     this.moveTail(CONSTANTS.DPADSTATES.RIGHT);
-    //this.growTail();
-    if (this.state.posX > this.boardXtoPosX(CONSTANTS.BOARDWIDTH)) {
+    if (this.state.boardX + 1 > CONSTANTS.BOARDWIDTH - 1) {
       this.die();
     } else if (this.board[this.state.boardY][this.state.boardX + 1]){
       this.die();
@@ -337,6 +292,9 @@ export default class Snek extends Sprite {
     if (this.props.running) {
       if (!this.state.alive) { //player tried to start the game without reset
         this.die();
+      }
+      if (this.state.pelletLocation == null) {
+        this.placePellet();
       }
       if (this.state.direction == CONSTANTS.DPADSTATES.UP && (this.state.posY < this.boardYtoPosY(this.state.boardY))) {
         if (this.props.pressedButton == CONSTANTS.DPADSTATES.UP) {
@@ -401,25 +359,33 @@ export default class Snek extends Sprite {
     }
   }
   render() {
-    console.log("this.state.tail.length: " + this.state.tail.length);
-    if(this.state.alive) {
-      return (
-        <View style={{position: "absolute", top: 0, left: 0}}>
-          {this.state.tail.map((elem) => {
-            return (elem);
-          })}
-          <View style={[this.styles.snek, {left: this.state.posX, top: this.state.posY,}]}></View>
-        </View>
-      );
-    } else {
-      return (
-        <View style={{position: "absolute", top: 0, left: 0}}>
-          {this.state.tail.map((elem) => {
-            return (elem);
-          })}
-          <View style={[this.styles.snek,{left: this.state.posX, top: this.state.posY, backgroundColor: "#000"}]}></View>
-        </View>
-      );
+    var pellet = null;
+    var snek = (<View style={[this.styles.snek, {
+      left: this.state.posX,
+      top: this.state.posY,
+    }]}></View>);
+    if(this.state.pelletLocation != null) {
+      var pellet = (<View style={[this.styles.pellet, {
+        left: this.boardXtoPosX(this.state.pelletLocation.x),
+        top: this.boardYtoPosY(this.state.pelletLocation.y),
+      }]}></View>);
+      //(<View style={[this.styles.pellet, {left: this.state.posX, top: this.state.posY,}]}></View>);
     }
+    if(!this.state.alive) {
+      snek = (<View style={[this.styles.snek,{
+        left: this.state.posX,
+        top: this.state.posY,
+        backgroundColor: "#000",
+      }]}></View>);
+    }
+    return (
+      <View style={{position: "absolute", top: 0, left: 0}}>
+        {this.state.tail.map((elem) => {
+          return (elem);
+        })}
+        {snek}
+        {pellet}
+      </View>
+    );
   }
 }

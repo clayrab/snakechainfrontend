@@ -7,11 +7,13 @@ export default CONSTANTS = {
   GAMEHEIGHT: Dimensions.get('window').height - 200,
   BOARDCENTERX: Dimensions.get('window').width/2,
   BOARDCENTERY: (Dimensions.get('window').height - 200)/2,
-  SNEKSIZE: 12,
-  BOARDSIZEX: 15,
-  BOARDWIDTH: 29, // 2*BOARDSIZEX - 1
-  BOARDSIZEY: 21,
-  BOARDHEIGHT: 41, // 2*BOARDSIZEY - 1
+  SNEKSIZE: 16,
+  BOARDSIZEX: 11,
+  BOARDWIDTH: 21, // 2*BOARDSIZEX - 1
+  BOARDSIZEY: 15,
+  BOARDHEIGHT: 31, // 2*BOARDSIZEY - 1
   SNEKCOLOR: "#e42",
+  SNEKPARTCOLOR: "#a42",
   BOARDCOLOR: "#474",
+  PELLETCOLOR: "#34d",
 };

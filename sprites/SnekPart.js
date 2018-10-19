@@ -28,7 +28,7 @@ export default class SnekPart extends Sprite {
         position: "absolute",
         width: CONSTANTS.SNEKSIZE,
         height: CONSTANTS.SNEKSIZE,
-        backgroundColor: CONSTANTS.SNEKCOLOR,
+        backgroundColor: CONSTANTS.SNEKPARTCOLOR,
       },
     });
   }
