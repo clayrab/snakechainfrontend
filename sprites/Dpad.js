@@ -8,16 +8,16 @@ export default class Dpad extends Sprite {
   // https://facebook.github.io/react-native/docs/gesture-responder-system
   constructor(props) {
     super(props);
-    // These numbers found by imaging a circle around the 4 buttons and
+    // Numbers below found by imaging a circle around the 4 buttons and
     // calculating distance between midpoint of buttons with enclosing cirle.
     // Assume tangent(touching) edges,
-    //         * *
-    //      *   O   *
-    //     *  O   O  *
-    //      *   O   *
-    //         * *
-    // Assuming O height = 1 => Large circle height = 1+0.5^0.5 ~= 2.414
-
+    //        *
+    //     *  O  *
+    //    *  O O  *
+    //     *  O  *
+    //        *
+    // Assuming O height = 1 implies large circle height = 1+0.5^0.5 ~= 2.414
+    this.state.direction = CONSTANTS.DPADSTATES.NONE;
     this.dpadButtonSize = 60;
     this.dpadButtonSizeHalf = this.dpadButtonSize/2;
     this.dpadSize = this.dpadButtonSize * 2.414;
@@ -30,22 +30,14 @@ export default class Dpad extends Sprite {
         position: 'absolute',
         width: this.dpadSize,
         height: this.dpadSize,
-        // borderRadius: this.dpadSize,
-        // borderWidth: 2,
-        // backgroundColor: '#BBBBBB',
-        // borderColor:'rgba(0,0,0,0.2)',
-        //top: CONSTANTS.GAMEHEIGHT + 20 + CONSTANTS.STATUSBARHEIGHT,
         top: CONSTANTS.DEVICEHEIGHT - CONSTANTS.DPADSIZE - CONSTANTS.STATUSBARHEIGHT - 10,
         left: this.dpadPosition,
       },
       inputCapture: {
-        opacity: 0.5,
         position: 'absolute',
         width: this.dpadSize,
         height: this.dpadSize,
         borderRadius: this.dpadSize,
-        // backgroundColor: '#BB0000',
-        // borderColor:'rgba(0,0,0,0.2)',
       },
       roundButton: {
         backgroundColor:'#999',
@@ -104,18 +96,24 @@ export default class Dpad extends Sprite {
         if (xDiff*xDiff > yDiff*yDiff) {
           if (xDiff < 0) {
             this.props.onDpadChange(CONSTANTS.DPADSTATES.LEFT);
+            this.setState({direction: CONSTANTS.DPADSTATES.LEFT});
           } else {
             this.props.onDpadChange(CONSTANTS.DPADSTATES.RIGHT);
+            this.setState({direction: CONSTANTS.DPADSTATES.RIGHT});
           }
         } else {
           if (yDiff < 0) {
             this.props.onDpadChange(CONSTANTS.DPADSTATES.UP);
+            this.setState({direction: CONSTANTS.DPADSTATES.UP});
           } else {
-            this.props.onDpadChange(CONSTANTS.DPADSTATES.DOWN);
+          this.props.onDpadChange(CONSTANTS.DPADSTATES.DOWN);
+            this.setState({direction: CONSTANTS.DPADSTATES.DOWN});
           }
         }
       } else {
         this.props.onDpadChange(CONSTANTS.DPADSTATES.NONE);
+        this.setState({direction: CONSTANTS.DPADSTATES.NONE});
+
       }
     }
   };
@@ -125,21 +123,35 @@ export default class Dpad extends Sprite {
   // onResponderTerminate = function(event) {
   //
   // };
-  shouldComponentUpdate(nextProps, nextState) {
-    if (this.shouldUpdate) {
-      this.shouldUpdate = false;
-      return true;
-    }
-    return false;
-  }
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   if (this.shouldUpdate) {
+  //     this.shouldUpdate = false;
+  //     return true;
+  //   }
+  //   return false;
+  // }
   render() {
+    console.log("render");
+    var uButton = (<View style={[this.styles.roundButton, this.styles.ubutton]}></View>);
+    var dButton = (<View style={[this.styles.roundButton, this.styles.dbutton]}></View>);
+    var rButton = (<View style={[this.styles.roundButton, this.styles.rbutton]}></View>);
+    var lButton = (<View style={[this.styles.roundButton, this.styles.lbutton]}></View>);
+    if (this.props.pressedButton == CONSTANTS.DPADSTATES.UP) {
+      uButton = (<View style={[{opacity: 0.7, },this.styles.roundButton, this.styles.ubutton]}></View>);
+    } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.DOWN) {
+      dButton = (<View style={[{opacity: 0.7, },this.styles.roundButton, this.styles.dbutton]}></View>);
+    } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.RIGHT) {
+      rButton = (<View style={[{opacity: 0.7, },this.styles.roundButton, this.styles.rbutton]}></View>);
+    } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.LEFT) {
+      lButton = (<View style={[{opacity: 0.7, },this.styles.roundButton, this.styles.lbutton]}></View>);
+    }
     return (
       <View
         style={this.styles.dpad}>
-        <View style={[this.styles.roundButton, this.styles.lbutton]}></View>
-        <View style={[this.styles.roundButton, this.styles.rbutton]}></View>
-        <View style={[this.styles.roundButton, this.styles.ubutton]}></View>
-        <View style={[this.styles.roundButton, this.styles.dbutton]}></View>
+        {lButton}
+        {rButton}
+        {uButton}
+        {dButton}
         <View style={this.styles.inputCapture}
           onStartShouldSetResponder={this.onStartShouldSetResponder}
           onMoveShouldSetResponder={this.onMoveShouldSetResponder}

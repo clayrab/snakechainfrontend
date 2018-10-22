@@ -61,7 +61,7 @@ export default class App extends React.Component {
             onDied={this.onDied.bind(this)}>
           </Snek>
           <Buttons running={this.state.running} start={this.start.bind(this)} restart={this.restart.bind(this)}></Buttons>
-          <Dpad onDpadChange={this.onDpadChange.bind(this)}></Dpad>
+          <Dpad onDpadChange={this.onDpadChange.bind(this)} pressedButton={this.state.pressedButton}></Dpad>
         </Loop>
       </View>
 
