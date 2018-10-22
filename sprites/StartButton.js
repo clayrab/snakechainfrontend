@@ -9,10 +9,11 @@ export default class ResetButton extends Sprite {
   constructor(props) {
     super(props);
     this.styles = StyleSheet.create({
-      button: {
+      buttonHolder: {
         position: "absolute",
         top: CONSTANTS.GAMEHEIGHT + 65,
         left: 20,
+        backgroundColor: "#0ff",
       },
     });
   }
@@ -24,31 +25,31 @@ export default class ResetButton extends Sprite {
   onMoveShouldSetResponder = function(e) {
     return true;
   };
+
   onStartShouldSetResponderCapture =  function(e) {
     return true;
   };
+
   onMoveShouldSetResponderCapture =  function(e) {
     return true;
   };
+
   onResponderMove(event) {
     var evt = event.nativeEvent;
   };
+
   onResponderRelease(event) {
     this.props.onDpadChange(CONSTANTS.DPADSTATES.NONE);
   };
 
   render() {
-    //if (!this.props.running) {
-      return (
-        <View style={this.styles.button}>
-          <Button
-            title="Go"
-            onPress={() => this.props.start()}
-          />
-        </View>
-     );
-   // } else {
-   //     return null;
-   // }
+    return (
+      <View style={this.styles.buttonHolder}>
+        <Button
+          title="Go"
+          onPress={() => this.props.start()}
+        />
+      </View>
+   );
   }
 }

@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Animated, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Sprite } from 'react-game-kit/native';
 import PropTypes from 'prop-types';
 import CONSTANTS from '../Constants.js';
 import SnekPart from './SnekPart.js'
+import ScoreBoard from './ScoreBoard.js'
 
 export default class Snek extends Sprite {
 
@@ -25,19 +26,19 @@ export default class Snek extends Sprite {
       direction: CONSTANTS.DPADSTATES.UP,
       tailIndex: -1,
       tail: [],
-      pelletLocation: null
+      baseScore: 0,
+      multiplier: 1,
+      score: 0,
+      pelletLocation: null,
+      pelletRot: new Animated.Value(0),
+      alive: true,
     };
-    //this.state = this.defaultState;
+    this.nextID = 0;
+    this.state.toggleReset = this.props.toggleReset;
     this.state = this.copyDefaultState();
-    this.state.toggleReset = this.props.toggleReset,
-    this.state.alive = true;
-    this.state.tail = this.makeTail(3);
-    this.state.tailIndex = 2;
     this.resetBoard();
+    this.lastFrameTime = null;
 
-    //console.log(this.state.tail.length);
-    this.lastFrameTime;
-    this.previousTime = null;
     this.styles = StyleSheet.create({
       snek: {
         position: "absolute",
@@ -58,18 +59,27 @@ export default class Snek extends Sprite {
         backgroundColor: CONSTANTS.PELLETCOLOR,
       }
     });
+    this.pelletAnim = Animated.timing(this.state.pelletRot, {
+      toValue: 1,
+      duration: 2000,
+    });
   }
 
-  makeTail(length) {
+  getNextID() {
+    this.nextID++;
+    return this.nextID;
+  }
+
+  makeTail(length, startBoardX, startBoardY) {
     var newTail = [];
     for (var index = 0; index < length; index++) {
       newTail.push(<SnekPart
-          key={index}
+          key={this.getNextID()}
           running={this.props.running}
-          posX={this.boardXtoPosX(this.state.boardX)}
-          posY={this.boardYtoPosY(this.state.boardY + 1 + index)}
-          boardX={this.state.boardX}
-          boardY={this.state.boardY + 1 + index}
+          posX={this.boardXtoPosX(startBoardX)}
+          posY={this.boardYtoPosY(startBoardY + 1 + index)}
+          boardX={startBoardX}
+          boardY={startBoardY + 1 + index}
           toggleUpdate={true}>
           direction={CONSTANTS.DPADSTATES.UP}></SnekPart>);
     }
@@ -83,7 +93,12 @@ export default class Snek extends Sprite {
     startState.boardY = this.defaultState.boardY;
     startState.direction = this.defaultState.direction;
     startState.pelletLocation = this.defaultState.pelletLocation;
-    startState.tail = this.makeTail(2);
+    startState.pelletRot = this.defaultState.pelletRot;
+    startState.baseScore = this.defaultState.baseScore;
+    startState.multiplier = this.defaultState.multiplier;
+    startState.score = this.defaultState.score;
+    startState.alive = this.defaultState.alive;
+    startState.tail = this.makeTail(3, this.defaultState.boardX, this.defaultState.boardY);
     startState.tailIndex = 2;
     return startState;
   }
@@ -105,7 +120,7 @@ export default class Snek extends Sprite {
     return CONSTANTS.BOARDCENTERX + (CONSTANTS.SNEKSIZE*(boardX - CONSTANTS.BOARDSIZEX + 0.5));
   }
   boardYtoPosY(boardY) {
-    return CONSTANTS.BOARDCENTERY + (CONSTANTS.SNEKSIZE*(boardY - CONSTANTS.BOARDSIZEY + 0.5));
+    return CONSTANTS.BOARDCENTERY + (CONSTANTS.SNEKSIZE*(boardY - CONSTANTS.BOARDSIZEY + 0.5) );
   }
   die() {
     this.setState({alive: false});
@@ -113,10 +128,6 @@ export default class Snek extends Sprite {
   }
   reset() {
     var startState = this.copyDefaultState();
-    this.setState(startState);
-    startState.tail = this.makeTail(3);
-    startState.tailIndex = 2;
-    startState.alive = true;
     startState.toggleReset = this.props.toggleReset;
     this.setState(startState);
     this.resetBoard();
@@ -137,16 +148,28 @@ export default class Snek extends Sprite {
 
   placePellet(){
     var isTail = true;
-    while (isTail) {
+    while (isTail || isHead) {
       var x = this.getRandomInt(0, CONSTANTS.BOARDWIDTH - 1);
       var y = this.getRandomInt(0, CONSTANTS.BOARDHEIGHT - 1);
       isTail = this.board[y][x];
+      isHead = this.state.boardX == x && this.state.boardY == y;
     }
     this.setState({pelletLocation: {x: x, y: y}});
+    if ((this.state.baseScore + 2) % 5 == 0) {
+      this.state.pelletRot.setValue(0);
+      this.pelletAnim.start();
+    }
   }
+
   eatPellet(){
     this.growTail();
     this.placePellet();
+    var mult = this.state.multiplier;
+    if ((this.state.baseScore + 1) % 5 == 0) {
+      mult++;
+    }
+    var score = (this.state.baseScore + 1) * mult;
+    this.setState({baseScore: this.state.baseScore + 1, multiplier: mult, score: score});
   }
   growTail(){
     if (this.state.tail.length > 0) {
@@ -155,7 +178,7 @@ export default class Snek extends Sprite {
       var lastPart = this.state.tail[this.state.tailIndex];
       newTailStart.push(
         <SnekPart
-          key={this.state.tail.length}
+          key={this.getNextID()}
           running={this.props.running}
           posX={this.boardXtoPosX(lastPart.props.boardX)}
           posY={this.boardYtoPosY(lastPart.props.boardY)}
@@ -172,7 +195,6 @@ export default class Snek extends Sprite {
       var newTail = [];
       newTail.push(
         <SnekPart
-          key={this.state.tail.length}
           running={this.props.running}
           posX={this.boardXtoPosX(this.state.boardX)}
           posY={this.boardYtoPosY(this.state.boardY)}
@@ -185,25 +207,8 @@ export default class Snek extends Sprite {
       var newTailIndex = this.state.tailIndex+1;;
       this.setState({tail: newTail, tailIndex: newTailIndex});
     }
-
-    //
-    // this.state.tail.splice(this.state.tailIndex, 0, (
-    //   <SnekPart
-    //     key={this.state.tail.length}
-    //     running={this.props.running}
-    //     posX={this.boardXtoPosX(this.state.tail[this.state.tailIndex].props.boardX)}
-    //     posY={this.boardYtoPosY(this.state.tail[this.state.tailIndex].props.boardY)}
-    //     boardX={this.state.tail[this.state.tailIndex].props.boardX}
-    //     boardY={this.state.tail[this.state.tailIndex].props.boardY}
-    //     toggleUpdate={true}
-    //     direction={this.state.tail[this.state.tailIndex].props.direction}>
-    //   </SnekPart>
-    // ));
-    //this.setState({tailIndex: newTailIndex});
   }
   moveTail(direction) {
-    //var newTail = this.state.tail.slice(0);
-    //var oldTip = this.state.tail[this.state.tailIndex];
     if(this.state.tailIndex >= 0){
       this.onLeaveBoardTile(this.state.tail[this.state.tailIndex].props.boardX,this.state.tail[this.state.tailIndex].props.boardY);
       this.state.tail[this.state.tailIndex] = React.cloneElement(
@@ -225,10 +230,8 @@ export default class Snek extends Sprite {
     } else if (newTailIndex == -2) { //no tail
       newTailIndex = -1;
     }
-    // var newTailIndex = this.state.tailIndex==0 ? this.state.tail.length-1 : this.state.tailIndex-1;
     var newPosX = this.boardXtoPosX(this.state.boardX);
     var newPosY = this.boardYtoPosY(this.state.boardY);
-    //this.setState( {tailIndex: newTailIndex, tail: newTail, posX: newPosX, posY: newPosY} );
     this.setState( {tailIndex: newTailIndex, posX: newPosX, posY: newPosY} );
   }
   goUp() {
@@ -340,12 +343,12 @@ export default class Snek extends Sprite {
       // animate
       if (this.state.alive) {
         var now = new Date().getTime();
-        if(this.previousTime == null) { //first frame
+        if(this.lastFrameTime == null) { //first frame
           var speed = 0;
         } else {
-          var speed = this.props.snekSpeed * (now - this.previousTime);
+          var speed = this.props.snekSpeed * (now - this.lastFrameTime);
         }
-        this.previousTime = now;
+        this.lastFrameTime = now;
         if (this.state.direction == CONSTANTS.DPADSTATES.UP) {
           this.setState({posY: this.state.posY - speed});
         } else if (this.state.direction == CONSTANTS.DPADSTATES.DOWN) {
@@ -358,6 +361,12 @@ export default class Snek extends Sprite {
       }
     }
   }
+  spin() {
+      return this.state.pelletRot.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['0deg', '1440deg']
+      });
+  }
   render() {
     var pellet = null;
     var snek = (<View style={[this.styles.snek, {
@@ -365,11 +374,11 @@ export default class Snek extends Sprite {
       top: this.state.posY,
     }]}></View>);
     if(this.state.pelletLocation != null) {
-      var pellet = (<View style={[this.styles.pellet, {
+      var pellet = (<Animated.View style={[this.styles.pellet, {
         left: this.boardXtoPosX(this.state.pelletLocation.x),
         top: this.boardYtoPosY(this.state.pelletLocation.y),
-      }]}></View>);
-      //(<View style={[this.styles.pellet, {left: this.state.posX, top: this.state.posY,}]}></View>);
+        transform: [{ rotate: this.spin()}],
+      }]}></Animated.View>);
     }
     if(!this.state.alive) {
       snek = (<View style={[this.styles.snek,{
@@ -380,6 +389,11 @@ export default class Snek extends Sprite {
     }
     return (
       <View style={{position: "absolute", top: 0, left: 0}}>
+        <ScoreBoard
+          baseScore={this.state.baseScore}
+          score={this.state.score}
+          multiplier={this.state.multiplier}
+          ></ScoreBoard>
         {this.state.tail.map((elem) => {
           return (elem);
         })}

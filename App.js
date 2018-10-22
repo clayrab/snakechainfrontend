@@ -1,10 +1,9 @@
 import React from 'react';
-import { Text, View, TouchableHighlight, TouchableOpacity } from 'react-native';
+import { StatusBar, View } from 'react-native';
 import { Loop, Stage, World, Body, Sprite } from 'react-game-kit/native';
 import PropTypes from 'prop-types';
 import Dpad from './sprites/Dpad.js';
-import StartButton from './sprites/StartButton.js';
-import ResetButton from './sprites/ResetButton.js';
+import Buttons from './sprites/Buttons.js';
 import Snek from './sprites/Snek.js';
 import Board from './sprites/Board.js';
 import CONSTANTS from './Constants.js';
@@ -46,35 +45,26 @@ export default class App extends React.Component {
     this.setState({toggleReset: !this.state.toggleReset});
   }
   render() {
-    console.log("render app");
     return (
-      <Loop>
-        <Board>
-        </Board>
-        <Snek
-          pressedButton={this.state.pressedButton}
-          snekSpeed={0.10}
-          running={this.state.running}
-          toggleReset={this.state.toggleReset}
-          onDied={this.onDied.bind(this)}>
-        </Snek>
-        <StartButton running={this.state.running} start={this.start.bind(this)}></StartButton>
-        <ResetButton running={this.state.running} start={this.restart.bind(this)}></ResetButton>
-        <Dpad onDpadChange={this.onDpadChange.bind(this)}></Dpad>
-      </Loop>
-      //
-      // <Loop>
-      //   <Stage>
-      //     <World>
-      //       <Body args={[0,0,75,75]} ref={ (b) => this.body = b.body }>
-      //         // Sprites go here
-      //         <Snek>
-      //
-      //         </Snek>
-      //       </Body>
-      //     </World>
-      //   </Stage>
-      // </Loop>
+      <View>
+        <View style={{height: CONSTANTS.STATUSBARHEIGHT, backgroundColor: "#000" }}>
+          <StatusBar { ...this.props }  barStyle="light-content"/>
+        </View>
+        <Loop>
+          <Board>
+          </Board>
+          <Snek
+            pressedButton={this.state.pressedButton}
+            snekSpeed={0.10}
+            running={this.state.running}
+            toggleReset={this.state.toggleReset}
+            onDied={this.onDied.bind(this)}>
+          </Snek>
+          <Buttons running={this.state.running} start={this.start.bind(this)} restart={this.restart.bind(this)}></Buttons>
+          <Dpad onDpadChange={this.onDpadChange.bind(this)}></Dpad>
+        </Loop>
+      </View>
+
     );
   }
 }

@@ -17,62 +17,62 @@ export default class Dpad extends Sprite {
     //      *   O   *
     //         * *
     // Assuming O height = 1 => Large circle height = 1+0.5^0.5 ~= 2.414
-    //console.log(this.state.pressedButton)
 
-    this.buttonSize = 60;
-    this.buttonSizeHalf = this.buttonSize/2;
-    this.touchableSize = this.buttonSize * 2.414;
-    this.touchableSizeHalf = this.buttonSize * 1.207;
+    this.dpadButtonSize = 60;
+    this.dpadButtonSizeHalf = this.dpadButtonSize/2;
+    this.dpadSize = this.dpadButtonSize * 2.414;
+    this.dpadSizeHalf = this.dpadButtonSize * 1.207;
     this.padding = 0;
-    this.dpadPosition = 210 - this.touchableSizeHalf;
+    this.dpadPosition = CONSTANTS.DEVICEWIDTH/2 - this.dpadSizeHalf;
     this.shouldUpdate = true;
     this.styles = StyleSheet.create({
       dpad: {
         position: 'absolute',
-        width: this.touchableSize,
-        height: this.touchableSize,
-        // borderRadius: this.touchableSize,
+        width: this.dpadSize,
+        height: this.dpadSize,
+        // borderRadius: this.dpadSize,
         // borderWidth: 2,
         // backgroundColor: '#BBBBBB',
         // borderColor:'rgba(0,0,0,0.2)',
-        top: CONSTANTS.GAMEHEIGHT + 20,
+        //top: CONSTANTS.GAMEHEIGHT + 20 + CONSTANTS.STATUSBARHEIGHT,
+        top: CONSTANTS.DEVICEHEIGHT - CONSTANTS.DPADSIZE - CONSTANTS.STATUSBARHEIGHT - 10,
         left: this.dpadPosition,
       },
       inputCapture: {
         opacity: 0.5,
         position: 'absolute',
-        width: this.touchableSize,
-        height: this.touchableSize,
-        borderRadius: this.touchableSize,
+        width: this.dpadSize,
+        height: this.dpadSize,
+        borderRadius: this.dpadSize,
         // backgroundColor: '#BB0000',
         // borderColor:'rgba(0,0,0,0.2)',
       },
       roundButton: {
-        backgroundColor:'#DDDDDD',
+        backgroundColor:'#999',
         borderWidth: 6,
         borderColor:'rgba(0,0,0,0.2)',
         alignItems:'center',
         justifyContent:'center',
-        width: this.buttonSize,
-        height: this.buttonSize,
-        borderRadius: this.buttonSize,
+        width: this.dpadButtonSize,
+        height: this.dpadButtonSize,
+        borderRadius: this.dpadButtonSize,
         position: 'absolute',
       },
       lbutton: {
-        top: this.touchableSizeHalf - this.buttonSizeHalf,
+        top: this.dpadSizeHalf - this.dpadButtonSizeHalf,
         left: this.padding,
       },
       rbutton: {
-        top: this.touchableSizeHalf - this.buttonSizeHalf,
-        left: this.touchableSize - this.buttonSize - this.padding,
+        top: this.dpadSizeHalf - this.dpadButtonSizeHalf,
+        left: this.dpadSize - this.dpadButtonSize - this.padding,
       },
       ubutton: {
         top: this.padding,
-        left: this.touchableSizeHalf - this.buttonSizeHalf,
+        left: this.dpadSizeHalf - this.dpadButtonSizeHalf,
       },
       dbutton: {
-        top: this.touchableSize - this.buttonSize - this.padding,
-        left: this.touchableSizeHalf - this.buttonSizeHalf,
+        top: this.dpadSize - this.dpadButtonSize - this.padding,
+        left: this.dpadSizeHalf - this.dpadButtonSizeHalf,
       }
     });
   }
@@ -93,12 +93,12 @@ export default class Dpad extends Sprite {
   onResponderMove(event) {
     var evt = event.nativeEvent;
     if (evt.locationX != undefined) {
-      var xDiff = evt.locationX - this.touchableSizeHalf;
-      var yDiff = evt.locationY - this.touchableSizeHalf;
+      var xDiff = evt.locationX - this.dpadSizeHalf;
+      var yDiff = evt.locationY - this.dpadSizeHalf;
       var xDiffSquared = xDiff*xDiff;
       var xDiffSquared = yDiff*yDiff;
-      // makes sure the input is within a circle of radius touchableSizeHalf
-      if (xDiffSquared + xDiffSquared < this.touchableSizeHalf * this.touchableSizeHalf) {
+      // makes sure the input is within a circle of radius dpadSizeHalf
+      if (xDiffSquared + xDiffSquared < this.dpadSizeHalf * this.dpadSizeHalf) {
         // console.log("onResponderMove " + xDiff + ", " + yDiff);
         // if magnitude(x) > magnitude(y)
         if (xDiff*xDiff > yDiff*yDiff) {

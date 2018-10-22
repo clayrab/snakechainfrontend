@@ -13,19 +13,18 @@ export default class Board extends Sprite {
   constructor(props) {
     super(props);
     var borderWidth = 5;
-    var width = CONSTANTS.BOARDWIDTH * CONSTANTS.SNEKSIZE + 2 * borderWidth + 2;
-    var height = CONSTANTS.BOARDHEIGHT * CONSTANTS.SNEKSIZE + 2 * borderWidth + 2;
+    var boardWidth = CONSTANTS.BOARDWIDTH * CONSTANTS.SNEKSIZE + 2 * borderWidth + 2;
+    var boardHeight = CONSTANTS.BOARDHEIGHT * CONSTANTS.SNEKSIZE + 2 * borderWidth + 2;
     this.shouldUpdate = true;
     this.styles = StyleSheet.create({
       field: {
-        width: width,
+        width: boardWidth,
         backgroundColor: '#2c1',
-        height: height,
+        height: boardHeight,
         position: "absolute",
-        top: (CONSTANTS.GAMEHEIGHT/2) - (0.5 * height),
-        left: (CONSTANTS.DEVICEWIDTH/2) - (0.5 * width),
+        top: CONSTANTS.BOARDCENTERY - (0.5 * boardHeight),
+        left: (CONSTANTS.DEVICEWIDTH/2) - (0.5 * boardWidth),
         borderWidth: borderWidth,
-        // backgroundColor: '#BBBBBB',
         borderColor: CONSTANTS.BOARDCOLOR,
       },
       tile: {
@@ -33,6 +32,12 @@ export default class Board extends Sprite {
         width: CONSTANTS.SNEKSIZE,
         height: CONSTANTS.SNEKSIZE,
         backgroundColor: "#fff",
+      },
+      gameBack: {
+        position: 'absolute',
+        width: CONSTANTS.DEVICEWIDTH,
+        height: CONSTANTS.GAMEHEIGHT + CONSTANTS.DPADAREAHEIGHT,
+        backgroundColor: "#8d8",
       },
     });
   }
@@ -46,7 +51,9 @@ export default class Board extends Sprite {
   }
   render() {
     return (
-      <View style={this.styles.field}>
+      <View style={this.styles.gameBack}>
+        <View style={this.styles.field}>
+        </View>
       </View>
     );
   }
