@@ -37,8 +37,6 @@ export default class Homepage extends React.Component {
     this.setState({overlay: -1});
   }
   render() {
-    console.log("render");
-
     return (
       <SafeAreaView style={styles.screen}>
         <ImageBackground source={require('../assets/homepage/back.png')} style={styles.backgroundImage}>

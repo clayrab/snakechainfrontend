@@ -50,7 +50,6 @@ export default class App extends React.Component {
     this.setState({screen: screens.SELECTLEVEL});
   }
   onSelectLevelPlayPress() {
-    console.log("onSelectLevelPlayPress");
     this.setState({screen: screens.GAME});
   }
   closeOverlay() {
