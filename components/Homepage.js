@@ -1,154 +1,44 @@
 import React from 'react';
 import {
-  ImageBackground,
   Image,
+  ImageBackground,
   StyleSheet,
   Text,
-  Button,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
-//import { isAuthenticated } from "../Auth";
-//import { SecureScreen } from './SecureScreen';
+import MineOverlay from './MineOverlay.js';
+import { Font } from 'expo';
 
+var overlays = { "MINE": 0 };
 export default class Homepage extends React.Component {
-//export class Homepage extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    this.state = {
+      overlay: -1,
+    };
   }
-  componentDidMount(){
-
+  async componentDidMount(){
+    await Font.loadAsync({
+      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
+    });
+    styles.titleBarText = {
+      color: "#fab523",
+      fontSize: 18,
+      fontFamily: 'riffic-free-bold',
+    }
+    this.setState({overlay: -1}); // a little "hack" to cause render() to fire
+  }
+  onMinePress = () => {
+    this.setState({overlay: overlays.MINE});
+  }
+  closeOverlay() {
+    this.setState({overlay: -1});
   }
   render() {
-    console.log("Homepage render");
-    var screenWidth = require('Dimensions').get('window').width;
-    var titleBarHeight = screenWidth*.757/3.6;
-    const styles = StyleSheet.create({
-      screen: {
-        width: "100%",
-        height: "100%",
-        //borderWidth: 20,
-      },
-      backgroundImage: {
-        width: "100%",
-        height: "100%",
-        flex: 0,
-      },
-      titleBar: {
-        flex: 0,
-        width: screenWidth,
-        height: titleBarHeight,
-        flexDirection: "row",
-      },
-      optionsIcon: {
-        flex: 0,
-        width: "15.55555555%",
-        aspectRatio: 1,
-        marginTop: titleBarHeight*.06/.757,
-        marginLeft: screenWidth*.157/3.6,
-        resizeMode: "contain",
-      },
-      coinBox: {
-        flex: 0,
-        width: screenWidth*1.273/3.6,
-        height: titleBarHeight*.323/.757,
-        marginTop: titleBarHeight*.170/.757,
-        marginLeft: screenWidth*.123/3.6,
-      },
-      ethBox: {
-        flex: 0,
-        width: screenWidth*1.273/3.6,
-        //height: titleBarHeight*.323/.757,
-        marginTop: titleBarHeight*.170/.757,
-        marginLeft: screenWidth*.103/3.6,
-      },
-      titleBarSnekTextHolder: {
-        width: screenWidth*.833/3.6,
-        height: titleBarHeight*.175/.757,
-        marginTop: titleBarHeight*.075/.757,
-        marginLeft: screenWidth*.360/3.6,
-        justifyContent: 'center',
-        //backgroundColor: "#F0F",
-        // TODO fix bottom alignment when content is very large number e.g. "150000000000000000"
-      },
-      titleBarEthTextHolder: {
-        width: screenWidth*.727/3.6,
-        height: titleBarHeight*.175/.757,
-        marginTop: titleBarHeight*.075/.757,
-        marginLeft: screenWidth*.250/3.6,
-        justifyContent: 'center',
-        //backgroundColor: "#F0F",
-      },
-      titleBarText: {
-        color: "#fab523",
-        fontSize: 25,
-      },
-      titleBarTextDark :{
+    console.log("render");
 
-      },
-      contentHolder: {
-        flex: 1,
-        //height: "80%",
-        width: "100%",
-        alignItems: "flex-start",
-      },
-      /// 0.263 - 1.610 - 3.783
-      contentTopMargin: {
-        flex: 0.263,
-      },
-      contentTop: {
-        flex: 1.610,
-        flexDirection: "row",
-        width: "100%",
-      },
-      contentBottom: {
-        flex: 3.783,
-        flexDirection: "row",
-        width: "100%",
-      },
-      snakechain: {
-        width: screenWidth*1.65/3.6,
-        aspectRatio: 1.65/.917,
-        marginLeft: screenWidth*.303/3.6,
-      },
-      iconsHolder: {
-        marginLeft: screenWidth*.577/3.6,
-        flexDirection: "column",
-      },
-      profile: {
-        width: screenWidth*.860/3.6,
-        aspectRatio: .860/.750,
-      },
-      powerups: {
-        width: screenWidth*.767/3.6,
-        aspectRatio: .767/.753,
-        marginTop: screenWidth*.117/3.6,
-      },
-      mine: {
-        width: screenWidth*1.317/3.6,
-        marginLeft: screenWidth*.150/3.6,
-        aspectRatio: 1.317/3.047,
-        //marginTop: screenWidth*.117/3.6,
-      },
-      bottomIconsHolder: {
-        //marginLeft: screenWidth*.577/3.6,
-        flexDirection: "column",
-      },
-      playnow: {
-        width: screenWidth * 1.787/3.6,
-        aspectRatio: 1.787/.612,
-        marginLeft: screenWidth*.140/3.6,
-        marginTop: screenWidth*.257/3.6,
-        //resizeMode: "contain",
-      },
-      gototown: {
-        width: screenWidth*1.950/3.6,
-        //2.547
-        aspectRatio: 1.950/2.547,
-        marginTop: screenWidth*.220/3.6,
-        ///resizeMode: "contain",
-      },
-    });
     return (
       <SafeAreaView style={styles.screen}>
         <ImageBackground source={require('../assets/homepage/back.png')} style={styles.backgroundImage}>
@@ -164,7 +54,6 @@ export default class Homepage extends React.Component {
                 <Text
                   adjustsFontSizeToFit
                   numberOfLines={1}
-                  // allowFontScaling
                   style={styles.titleBarText}>
                   15000
                 </Text>
@@ -175,7 +64,6 @@ export default class Homepage extends React.Component {
                 <Text
                   adjustsFontSizeToFit
                   numberOfLines={1}
-                  // allowFontScaling
                   style={styles.titleBarText}>
                   50000000000
                 </Text>
@@ -193,23 +81,141 @@ export default class Homepage extends React.Component {
               </View>
             </View>
             <View style={styles.contentBottom}>
-              <ImageBackground source={require('../assets/homepage/mine/mine80.png')} style={styles.mine}>
-                <Text
-                  adjustsFontSizeToFit
-                  numberOfLines={1}
-                  // allowFontScaling
-                  style={styles.titleBarTextDark}>
-
-                </Text>
-              </ImageBackground>
+              <TouchableOpacity style={styles.mine} onPress={this.onMinePress}>
+                <Image style={styles.mineImage} source={require('../assets/homepage/mine/mine80.png')}/>
+              </TouchableOpacity>
               <View style={styles.bottomIconsHolder}>
-                <ImageBackground source={require('../assets/homepage/playnow.png')} style={styles.playnow}></ImageBackground>
+                <TouchableOpacity style={styles.playnow} onPress={this.props.onPlayPress}>
+                  <Image style={styles.playnowImage} source={require('../assets/homepage/playnow.png')}/>
+                </TouchableOpacity>
                 <ImageBackground source={require('../assets/homepage/gototown.png')} style={styles.gototown}></ImageBackground>
               </View>
             </View>
           </View>
+          <MineOverlay show={this.state.overlay == overlays.MINE} closeOverlay={this.closeOverlay.bind(this)}/>
         </ImageBackground>
       </SafeAreaView>
     )
   }
 }
+let screenWidth = require('Dimensions').get('window').width;
+let titleBarHeight = screenWidth*.757/3.6;
+let styles = StyleSheet.create({
+  screen: {
+  },
+  backgroundImage: {
+    width: "100%",
+    height: "100%",
+  },
+  titleBar: {
+    flex: 0,
+    width: screenWidth,
+    height: titleBarHeight,
+    flexDirection: "row",
+  },
+  optionsIcon: {
+    flex: 0,
+    width: "15.55555555%",
+    aspectRatio: 1,
+    marginTop: titleBarHeight*.06/.757,
+    marginLeft: screenWidth*.157/3.6,
+    resizeMode: "contain",
+  },
+  coinBox: {
+    flex: 0,
+    width: screenWidth*1.273/3.6,
+    height: titleBarHeight*.323/.757,
+    marginTop: titleBarHeight*.170/.757,
+    marginLeft: screenWidth*.123/3.6,
+  },
+  ethBox: {
+    flex: 0,
+    width: screenWidth*1.273/3.6,
+    marginTop: titleBarHeight*.170/.757,
+    marginLeft: screenWidth*.103/3.6,
+  },
+  titleBarSnekTextHolder: {
+    width: screenWidth*.833/3.6,
+    height: titleBarHeight*.175/.757,
+    marginTop: titleBarHeight*.075/.757,
+    marginLeft: screenWidth*.360/3.6,
+    justifyContent: 'center',
+  },
+  titleBarEthTextHolder: {
+    width: screenWidth*.727/3.6,
+    height: titleBarHeight*.175/.757,
+    marginTop: titleBarHeight*.075/.757,
+    marginLeft: screenWidth*.250/3.6,
+    justifyContent: 'center',
+  },
+  titleBarText: {
+    display: "none", // need to load font first
+  },
+  contentHolder: {
+    flex: 1,
+    width: "100%",
+    alignItems: "flex-start",
+  },
+  contentTopMargin: {
+    flex: 0.263,
+  },
+  contentTop: {
+    flex: 1.610,
+    flexDirection: "row",
+    width: "100%",
+  },
+  contentBottom: {
+    flex: 3.783,
+    flexDirection: "row",
+    width: "100%",
+  },
+  snakechain: {
+    width: screenWidth*1.65/3.6,
+    aspectRatio: 1.65/.917,
+    marginLeft: screenWidth*.303/3.6,
+  },
+  iconsHolder: {
+    marginLeft: screenWidth*.577/3.6,
+    flexDirection: "column",
+  },
+  profile: {
+    width: screenWidth*.860/3.6,
+    aspectRatio: .860/.750,
+  },
+  powerups: {
+    width: screenWidth*.767/3.6,
+    aspectRatio: .767/.753,
+    marginTop: screenWidth*.117/3.6,
+  },
+  mine: {
+    width: screenWidth*1.317/3.6,
+    aspectRatio: 1.317/3.047,
+    marginLeft: screenWidth*.150/3.6,
+  },
+  mineImage: {
+    flex: 1,
+    width: screenWidth*1.317/3.6,
+    aspectRatio: 1.317/3.047,
+    resizeMode: "contain",
+  },
+  bottomIconsHolder: {
+    flexDirection: "column",
+  },
+  playnow: {
+    width: screenWidth * 1.787/3.6,
+    aspectRatio: 1.787/.612,
+    marginLeft: screenWidth*.147/3.6,
+    marginTop: screenWidth*.270/3.6,
+  },
+  playnowImage: {
+    flex: 1,
+    width: screenWidth * 1.787/3.6,
+    aspectRatio: 1.787/.612,
+    resizeMode: "contain",
+  },
+  gototown: {
+    width: screenWidth*1.950/3.6,
+    aspectRatio: 1.950/2.547,
+    marginTop: screenWidth*.220/3.6,
+  },
+});

@@ -34,11 +34,10 @@ export default class Snek extends Sprite {
       alive: true,
     };
     this.nextID = 0;
-    this.state.toggleReset = this.props.toggleReset;
     this.state = this.copyDefaultState();
+    this.state.toggleReset = this.props.toggleReset;
     this.resetBoard();
     this.lastFrameTime = null;
-
     this.styles = StyleSheet.create({
       snek: {
         position: "absolute",
@@ -278,7 +277,6 @@ export default class Snek extends Sprite {
       this.setState({direction: CONSTANTS.DPADSTATES.RIGHT, boardX: this.state.boardX + 1,});
     }
   }
-  // 16ms game loop
 
   componentDidMount() {
     this.context.loop.subscribe(this.update.bind(this));
