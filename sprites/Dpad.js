@@ -9,22 +9,11 @@ export default class Dpad extends Sprite {
   constructor(props) {
     super(props);
     this.state.direction = CONSTANTS.DPADSTATES.NONE;
+    this.dpadButtonSizeHalf = dpadButtonSize/2;
+    this.dpadSizeHalf = dpadButtonSize * 1.207;
   }
 
-  onStartShouldSetResponder = function(e) {
-    return true;
-  };
-
-  onMoveShouldSetResponder = function(e) {
-    return true;
-  };
-  onStartShouldSetResponderCapture =  function(e) {
-    return true;
-  };
-  onMoveShouldSetResponderCapture =  function(e) {
-    return true;
-  };
-  onResponderMove(event) {
+  checkDpad = function(event) {
     var evt = event.nativeEvent;
     if (evt.locationX != undefined) {
       var xDiff = evt.locationX - this.dpadSizeHalf;
@@ -55,9 +44,24 @@ export default class Dpad extends Sprite {
         this.setState({direction: CONSTANTS.DPADSTATES.NONE});
       }
     }
+  }
+  onStartShouldSetResponder = function(e) {
+    return true;
+  };
+  onMoveShouldSetResponder = function(e) {
+    return true;
+  };
+  onStartShouldSetResponderCapture =  function(e) {
+    return true;
+  };
+  onMoveShouldSetResponderCapture =  function(e) {
+    return true;
+  };
+  onResponderMove(event) {
+    this.checkDpad(event);
   };
   onResponderRelease(event) {
-    this.props.onDpadChange(CONSTANTS.DPADSTATES.NONE);
+    this.checkDpad(event);
   };
 
   render() {
