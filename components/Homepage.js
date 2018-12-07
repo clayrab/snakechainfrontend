@@ -7,9 +7,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Font } from 'expo';
 import SafeAreaView from 'react-native-safe-area-view';
 import MineOverlay from './MineOverlay.js';
-import { Font } from 'expo';
+import {context} from "../utils/Context.js";
+import {asyncStore, getFromAsyncStore, removeItemValue} from "../utils/AsyncStore.js";
 
 var overlays = { "MINE": 0 };
 export default class Homepage extends React.Component {
@@ -17,6 +19,7 @@ export default class Homepage extends React.Component {
     super(props);
     this.state = {
       overlay: -1,
+      loadingBalances: false,
     };
   }
   async componentDidMount(){
@@ -27,6 +30,13 @@ export default class Homepage extends React.Component {
       color: "#fab523",
       fontSize: 18,
       fontFamily: 'riffic-free-bold',
+    }
+    try{
+      this.setState({loadingBalances: true});
+    
+    } catch(error){
+      alert(error);
+      this.setState({loading: false});
     }
     this.setState({overlay: -1}); // a little "hack" to cause render() to fire
   }

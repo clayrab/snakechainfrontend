@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {
   TouchableOpacity,
@@ -8,7 +9,7 @@ import {
 } from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
 
-export default class GameOverOverlay extends React.Component {
+export default class DoMineOverlay extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -19,15 +20,16 @@ export default class GameOverOverlay extends React.Component {
       return (
         <View style={styles.container}>
           <View style={styles.content}>
-            <Text style={{color: "#ff0",}}>Score: {this.props.score}</Text>
-            <TouchableOpacity style={styles.button} onPress={this.props.doMine}>
-              <Text>Transfer to snake wallet now</Text>
+            <TouchableOpacity style={styles.closeButton} onPress={this.props.closeOverlay}>
+              <Image style={styles.closeButtonImage} source={require('../assets/closebutton_bad.png')}/>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={this.props.restart}>
-              <Text>restart</Text>
+            <Text style={{color: "#ff0",}}>Convert X gold into Snek Tokens?</Text>
+            <Text style={{color: "#ff0",}}>Cost of gas: Y</Text>
+            <TouchableOpacity style={styles.button} onPress={this.props.confirm}>
+              <Text>confirm</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={this.props.exit}>
-              <Text>exit</Text>
+            <TouchableOpacity style={styles.button} onPress={this.props.back}>
+              <Text>back</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -37,7 +39,6 @@ export default class GameOverOverlay extends React.Component {
 }
 let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
-
 var styles = StyleSheet.create({
   container: {
     flex: 1,

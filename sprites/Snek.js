@@ -123,7 +123,7 @@ export default class Snek extends Sprite {
   }
   die() {
     this.setState({alive: false});
-    this.props.onDied();
+    this.props.onDied(this.state.score);
   }
   reset() {
     var startState = this.copyDefaultState();
