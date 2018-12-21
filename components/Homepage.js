@@ -13,32 +13,82 @@ import MineOverlay from './MineOverlay.js';
 import {context} from "../utils/Context.js";
 import {asyncStore, getFromAsyncStore, removeItemValue} from "../utils/AsyncStore.js";
 
+mineImages = [
+  require('../assets/homepage/mine/mine0.png'),
+  require('../assets/homepage/mine/mine10.png'),
+  require('../assets/homepage/mine/mine20.png'),
+  require('../assets/homepage/mine/mine30.png'),
+  require('../assets/homepage/mine/mine40.png'),
+  require('../assets/homepage/mine/mine50.png'),
+  require('../assets/homepage/mine/mine60.png'),
+  require('../assets/homepage/mine/mine70.png'),
+  require('../assets/homepage/mine/mine80.png'),
+  require('../assets/homepage/mine/mine90.png'),
+  require('../assets/homepage/mine/mine100.png'),
+]
 var overlays = { "MINE": 0 };
 export default class Homepage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       overlay: -1,
-      loadingBalances: false,
+      loading: false,
+      ethBal: -1,
+      snekBal: -1,
+      haul: -1,
+      mineImg: mineImages[0],
+      minePercent: 0,
     };
   }
   async componentDidMount(){
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    styles.titleBarText = {
-      color: "#fab523",
-      fontSize: 18,
-      fontFamily: 'riffic-free-bold',
-    }
     try{
-      this.setState({loadingBalances: true});
-    
+      await Font.loadAsync({
+        'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
+      });
+      styles.titleBarText = {
+        color: "#fab523",
+        fontSize: 18,
+        fontFamily: 'riffic-free-bold',
+      }
+      styles.mineText = {
+        color: "#fab523",
+        fontSize: 18,
+        fontFamily: 'riffic-free-bold',
+      }
+      this.setState({loading: true});
+      let jwt = await getFromAsyncStore("jwt");
+      fetch(`${context.host}/getuser`, {
+        method: "GET", // *GET, POST, PUT, DELETE, etc.
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            "Authorization": "JWT " + jwt,
+            //application/x-www-form-urlencoded on Postman... hmmm
+        },
+      }).then(async(response) => {
+        var resp = await response.json();
+        if(resp.error){
+          alert(resp.error);
+          this.setState({loading: false});
+        }else if(resp) {
+          let minePercent = (resp.haul/resp.mineMax).toPrecision(2);
+          let mineGraphicIndex = (resp.haul/resp.mineMax).toPrecision(1);
+          let weiPerEth = 1000000000000000000;
+          let ethBal = (resp.eth/weiPerEth).toPrecision(4);
+          this.setState({
+            loading: false,
+            ethBal: ethBal,
+            snekBal: resp.snek,
+            haul: resp.unredeemed,
+            mineImg: mineImages[mineGraphicIndex],
+            minePercent: minePercent,
+          })
+        }
+      });
     } catch(error){
       alert(error);
       this.setState({loading: false});
     }
-    this.setState({overlay: -1}); // a little "hack" to cause render() to fire
+    //this.setState({overlay: -1}); // a little "hack" to cause render() to fire
   }
   onMinePress = () => {
     this.setState({overlay: overlays.MINE});
@@ -63,7 +113,7 @@ export default class Homepage extends React.Component {
                   adjustsFontSizeToFit
                   numberOfLines={1}
                   style={styles.titleBarText}>
-                  15000
+                  {this.state.snekBal}
                 </Text>
               </View>
             </ImageBackground>
@@ -73,7 +123,7 @@ export default class Homepage extends React.Component {
                   adjustsFontSizeToFit
                   numberOfLines={1}
                   style={styles.titleBarText}>
-                  50000000000
+                  {this.state.ethBal}
                 </Text>
               </View>
             </ImageBackground>
@@ -90,7 +140,9 @@ export default class Homepage extends React.Component {
             </View>
             <View style={styles.contentBottom}>
               <TouchableOpacity style={styles.mine} onPress={this.onMinePress}>
-                <Image style={styles.mineImage} source={require('../assets/homepage/mine/mine80.png')}/>
+                <ImageBackground style={styles.mineImage} source={this.state.mineImg}>
+                  <Text style={styles.mineText}>{this.state.minePercent}%</Text>
+                </ImageBackground>
               </TouchableOpacity>
               <View style={styles.bottomIconsHolder}>
                 <TouchableOpacity style={styles.playnow} onPress={this.props.onPlayPress}>
@@ -204,7 +256,11 @@ let styles = StyleSheet.create({
     flex: 1,
     width: screenWidth*1.317/3.6,
     aspectRatio: 1.317/3.047,
-    resizeMode: "contain",
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  mineText: {
+    display: "none",
   },
   bottomIconsHolder: {
     flexDirection: "column",

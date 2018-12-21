@@ -12,6 +12,14 @@ import SafeAreaView from 'react-native-safe-area-view';
 export default class MineOverlay extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      loading: false,
+      ethBal: -1,
+      snekBal: -1,
+      haul: -1,
+      mineImg: mineImages[0],
+      minePercent: 0,
+    };
   }
   render() {
     if (!this.props.show) {
@@ -28,6 +36,30 @@ export default class MineOverlay extends React.Component {
       );
     }
   }
+  async componentDidMount(){
+    // try{
+    //   this.setState({loading: true});
+    //   let jwt = await getFromAsyncStore("jwt");
+    //   fetch(`${context.host}/getbalances`, {
+    //     method: "GET", // *GET, POST, PUT, DELETE, etc.
+    //     headers: {
+    //         "Content-Type": "application/json; charset=utf-8",
+    //         "Authorization": "JWT " + jwt,
+    //         //application/x-www-form-urlencoded on Postman... hmmm
+    //     },
+    //   }).then(async(response) => {
+    //     var resp = await response.json();
+    //     if(resp.error){
+    //       alert(resp.error);
+    //       this.setState({loading: false});
+    //     }else if(resp) {
+    //     }
+    //   });
+    // } catch(err) {
+    //
+    // }
+  }
+
 }
 let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
