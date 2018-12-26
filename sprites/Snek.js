@@ -1,5 +1,5 @@
 import React from 'react';
-import { Animated, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Animated, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Sprite } from 'react-game-kit/native';
 import PropTypes from 'prop-types';
 import CONSTANTS from '../Constants.js';
@@ -43,7 +43,6 @@ export default class Snek extends Sprite {
         position: "absolute",
         width: CONSTANTS.SNEKSIZE,
         height: CONSTANTS.SNEKSIZE,
-        backgroundColor: CONSTANTS.SNEKCOLOR,
       },
       snekPart: {
         position: "absolute",
@@ -53,9 +52,8 @@ export default class Snek extends Sprite {
       },
       pellet: {
         position: "absolute",
-        width: CONSTANTS.SNEKSIZE,
-        height: CONSTANTS.SNEKSIZE,
-        backgroundColor: CONSTANTS.PELLETCOLOR,
+        width: CONSTANTS.SNEKSIZE + 2,
+        height: CONSTANTS.SNEKSIZE + 2,
       }
     });
     this.pelletAnim = Animated.timing(this.state.pelletRot, {
@@ -370,13 +368,15 @@ export default class Snek extends Sprite {
     var snek = (<View style={[this.styles.snek, {
       left: this.state.posX,
       top: this.state.posY,
-    }]}></View>);
+    }]}><Image source={require('../assets/gameplay/SnakeMouth.png')} style={this.styles.snek} resizeMode="stretch"/></View>);
     if(this.state.pelletLocation != null) {
       var pellet = (<Animated.View style={[this.styles.pellet, {
         left: this.boardXtoPosX(this.state.pelletLocation.x),
         top: this.boardYtoPosY(this.state.pelletLocation.y),
         transform: [{ rotate: this.spin()}],
-      }]}></Animated.View>);
+      }]}>
+        <Image source={require('../assets/gameplay/Diamond.png')} style={this.styles.pellet} resizeMode="stretch"/>
+      </Animated.View>);
     }
     if(!this.state.alive) {
       snek = (<View style={[this.styles.snek,{

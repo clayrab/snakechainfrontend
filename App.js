@@ -95,6 +95,7 @@ export default class App extends React.Component {
             </Snek>
             <Buttons running={this.state.running} start={this.start.bind(this)} pause={this.pause.bind(this)}></Buttons>
             <Dpad onDpadChange={this.onDpadChange.bind(this)} pressedButton={this.state.pressedButton}></Dpad>
+            <Buttons running={this.state.running} isPower={true} start={this.start.bind(this)} pause={this.pause.bind(this)}></Buttons>
           </Loop>
           <PauseOverlay
             show={this.state.overlay == overlays.PAUSE}

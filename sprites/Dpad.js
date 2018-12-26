@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ImageBackground, Image } from 'react-native';
 import { Sprite } from 'react-game-kit/native';
 import PropTypes from 'prop-types';
 import CONSTANTS from '../Constants.js';
@@ -65,21 +65,37 @@ export default class Dpad extends Sprite {
   };
 
   render() {
-    var uButton = (<View style={[styles.roundButton, styles.ubutton]}></View>);
-    var dButton = (<View style={[styles.roundButton, styles.dbutton]}></View>);
-    var rButton = (<View style={[styles.roundButton, styles.rbutton]}></View>);
-    var lButton = (<View style={[styles.roundButton, styles.lbutton]}></View>);
+    var uButton = (<View style={[styles.roundButton, styles.ubutton]}>
+      <Image source={require('../assets/gameplay/UpArrow.png')} style={styles.arrowImage} resizeMode="stretch" />
+    </View>);
+    var dButton = (<View style={[styles.roundButton, styles.dbutton]}>
+      <Image source={require('../assets/gameplay/DownArrow.png')} style={styles.arrowImage} resizeMode="stretch" />
+    </View>);
+    var rButton = (<View style={[styles.roundButton, styles.rbutton]}>
+      <Image source={require('../assets/gameplay/RightArrow.png')} style={styles.arrowImage} resizeMode="stretch" />
+    </View>);
+    var lButton = (<View style={[styles.roundButton, styles.lbutton]}>
+      <Image source={require('../assets/gameplay/LeftArrow.png')} style={styles.arrowImage} resizeMode="stretch" />
+    </View>);
     if (this.props.pressedButton == CONSTANTS.DPADSTATES.UP) {
-      uButton = (<View style={[{opacity: 0.7, },styles.roundButton, styles.ubutton]}></View>);
+      uButton = (<View style={[{opacity: 0.7, },styles.roundButton, styles.ubutton]}>
+        <Image source={require('../assets/gameplay/UpArrow.png')} style={styles.arrowImage} resizeMode="stretch" />
+      </View>);
     } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.DOWN) {
-      dButton = (<View style={[{opacity: 0.7, },styles.roundButton, styles.dbutton]}></View>);
+      dButton = (<View style={[{opacity: 0.7, },styles.roundButton, styles.dbutton]}>
+        <Image source={require('../assets/gameplay/DownArrow.png')} style={styles.arrowImage} resizeMode="stretch" />
+      </View>);
     } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.RIGHT) {
-      rButton = (<View style={[{opacity: 0.7, },styles.roundButton, styles.rbutton]}></View>);
+      rButton = (<View style={[{opacity: 0.7, },styles.roundButton, styles.rbutton]}>
+        <Image source={require('../assets/gameplay/RightArrow.png')} style={styles.arrowImage} resizeMode="stretch" />
+      </View>);
     } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.LEFT) {
-      lButton = (<View style={[{opacity: 0.7, },styles.roundButton, styles.lbutton]}></View>);
+      lButton = (<View style={[{opacity: 0.7, },styles.roundButton, styles.lbutton]}>
+        <Image source={require('../assets/gameplay/LeftArrow.png')} style={styles.arrowImage} resizeMode="stretch" />
+      </View>);
     }
     return (
-      <View
+      <ImageBackground source={require('../assets/gameplay/ButtonBackground.png')}
         style={styles.dpad}>
         {lButton}
         {rButton}
@@ -92,7 +108,7 @@ export default class Dpad extends Sprite {
           onMoveShouldSetResponder={this.onMoveShouldSetResponderCapture}
           onResponderMove={this.onResponderMove.bind(this)}
           onResponderRelease={this.onResponderRelease.bind(this)}></View>
-      </View>
+      </ImageBackground>
    );
   }
 }
@@ -128,9 +144,9 @@ let styles = StyleSheet.create({
     borderRadius: dpadSize,
   },
   roundButton: {
-    backgroundColor:'#999',
+    backgroundColor:'#FAB523',
     borderWidth: 6,
-    borderColor:'rgba(0,0,0,0.2)',
+    borderColor:'#FAB523',
     alignItems:'center',
     justifyContent:'center',
     width: dpadButtonSize,
@@ -153,5 +169,9 @@ let styles = StyleSheet.create({
   dbutton: {
     top: dpadSize - dpadButtonSize - padding,
     left: dpadSizeHalf - dpadButtonSizeHalf,
+  },
+  arrowImage: {
+    width: dpadButtonSize / 2,
+    height: dpadButtonSize / 2
   }
 });
