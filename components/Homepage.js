@@ -7,11 +7,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Font } from 'expo';
 import SafeAreaView from 'react-native-safe-area-view';
 import MineOverlay from './MineOverlay.js';
-import {context} from "../utils/Context.js";
-import {asyncStore, getFromAsyncStore, removeItemValue} from "../utils/AsyncStore.js";
+import { Font } from 'expo';
 
 var overlays = { "MINE": 0 };
 export default class Homepage extends React.Component {
@@ -19,7 +17,6 @@ export default class Homepage extends React.Component {
     super(props);
     this.state = {
       overlay: -1,
-      loadingBalances: false,
     };
   }
   async componentDidMount(){
@@ -30,13 +27,6 @@ export default class Homepage extends React.Component {
       color: "#fab523",
       fontSize: 18,
       fontFamily: 'riffic-free-bold',
-    }
-    try{
-      this.setState({loadingBalances: true});
-    
-    } catch(error){
-      alert(error);
-      this.setState({loading: false});
     }
     this.setState({overlay: -1}); // a little "hack" to cause render() to fire
   }
@@ -50,7 +40,6 @@ export default class Homepage extends React.Component {
     return (
       <SafeAreaView style={styles.screen}>
         <ImageBackground source={require('../assets/homepage/back.png')} style={styles.backgroundImage}>
-          /***** TITLE BAR START *****/
           <ImageBackground source={require('../assets/homepage/titleback.png')} style={styles.titleBar}>
             <Image source={require('../assets/homepage/options.png')}
               resizeMethod={"scale"}
@@ -78,7 +67,6 @@ export default class Homepage extends React.Component {
               </View>
             </ImageBackground>
           </ImageBackground>
-          /***** TITLE BAR END *****/
           <View style={styles.contentHolder}>
             <View style={styles.contentTopMargin}></View>
             <View style={styles.contentTop}>
@@ -96,7 +84,9 @@ export default class Homepage extends React.Component {
                 <TouchableOpacity style={styles.playnow} onPress={this.props.onPlayPress}>
                   <Image style={styles.playnowImage} source={require('../assets/homepage/playnow.png')}/>
                 </TouchableOpacity>
-                <ImageBackground source={require('../assets/homepage/gototown.png')} style={styles.gototown}></ImageBackground>
+                <TouchableOpacity onPress={this.props.onPausePress}>
+                  <ImageBackground source={require('../assets/homepage/gototown.png')} style={styles.gototown}></ImageBackground>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
