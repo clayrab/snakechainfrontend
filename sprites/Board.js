@@ -52,7 +52,7 @@ export default class Board extends Sprite {
   render() {
     return (
       <View style={this.styles.gameBack}>
-        <ImageBackground source={require('../assets/gameplay/LightBrownBackground.png')} style={this.styles.field} resizeMode="stretch">
+        <ImageBackground source={require('../assets/gameplay/Background.png')} style={this.styles.field} resizeMode="stretch">
         </ImageBackground>
       </View>
     );
