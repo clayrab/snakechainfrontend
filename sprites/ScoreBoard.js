@@ -20,39 +20,32 @@ export default class ScoreBoard extends Sprite {
   render() {
     return (
       <ImageBackground source={require('../assets/homepage/titleback.png')} style={styles.titleBar}>
-            <ImageBackground source={require('../assets/homepage/coinbox.png')} style={styles.coinBox}>
-              <View style={styles.titleBarSnekTextHolder}>
-                <View style={styles.top}></View>
-                <Text
-                  adjustsFontSizeToFit
-                  numberOfLines={1}
-                  style={styles.titleBarText}>
-                  Score: {this.props.score}
-                </Text>
-              </View>
-            </ImageBackground>
-            <ImageBackground source={require('../assets/homepage/coinbox.png')} style={styles.coinBox}>
-              <View style={styles.titleBarSnekTextHolder}>
-                <View style={styles.top}></View>
-                <Text
-                  adjustsFontSizeToFit
-                  numberOfLines={1}
-                  style={styles.titleBarText}>
-                  {this.props.score}
-                </Text>
-              </View>
-            </ImageBackground>
-            <ImageBackground source={require('../assets/homepage/ethbox.png')} style={styles.coinBox}>
-              <View style={styles.titleBarEthTextHolder}>
-                <Text
-                  adjustsFontSizeToFit
-                  numberOfLines={1}
-                  style={styles.titleBarText}>
-                  {this.props.baseScore} x {this.props.multiplier}
-                </Text>
-              </View>
-            </ImageBackground>
-          </ImageBackground>
+        <ImageBackground source={require('../assets/gameplay/scoreBackground.png')} style={styles.coinBox} resizeMode={'stretch'}>
+          <Text
+            adjustsFontSizeToFit
+            numberOfLines={1}
+            style={styles.scoreText}>
+            Score&nbsp;&nbsp;
+            <Text style={[styles.scoreText,{color: '#fff'}]}>{this.props.score}</Text>
+          </Text>
+        </ImageBackground>
+        <ImageBackground source={require('../assets/homepage/coinbox.png')} style={styles.coinBox} resizeMode={'stretch'}>
+          <Text
+            adjustsFontSizeToFit
+            numberOfLines={1}
+            style={styles.scoreText}>
+            {this.props.score}
+          </Text>
+        </ImageBackground>
+        <ImageBackground source={require('../assets/homepage/ethbox.png')} style={styles.coinBox} resizeMode={'stretch'}>
+          <Text
+            adjustsFontSizeToFit
+            numberOfLines={1}
+            style={styles.scoreText}>
+            {this.props.baseScore} x {this.props.multiplier}
+          </Text>
+        </ImageBackground>
+      </ImageBackground>
       // <View style={this.styles.back}>
       //   <Text style={this.styles.baseScore}>{this.props.baseScore} x {this.props.multiplier}</Text>
       //   <Text style={this.styles.score}>{this.props.score}</Text>
@@ -99,6 +92,8 @@ let screenWidth = require('Dimensions').get('window').width;
         height: titleBarHeight*.323/.757,
         marginTop: titleBarHeight*.170/.757,
         marginLeft: screenWidth*.123/4.6,
+        alignItems: 'center',
+        justifyContent: 'center'
       },
       titleBarSnekTextHolder: {
         width: screenWidth*.833/4.6,
@@ -114,7 +109,9 @@ let screenWidth = require('Dimensions').get('window').width;
         marginLeft: screenWidth*.250/3.6,
         justifyContent: 'center',
       },
-      titleBarText: {
-        display: "none", // need to load font first
-      },
+      scoreText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#FAB523'
+      }
     });

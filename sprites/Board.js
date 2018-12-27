@@ -13,18 +13,17 @@ export default class Board extends Sprite {
   constructor(props) {
     super(props);
     var borderWidth = 5;
-    let screenWidth = require('Dimensions').get('window').width;
     var boardWidth = CONSTANTS.BOARDWIDTH * CONSTANTS.SNEKSIZE + 2 * borderWidth + 2;
     var boardHeight = CONSTANTS.BOARDHEIGHT * CONSTANTS.SNEKSIZE + 2 * borderWidth + 2;
     this.shouldUpdate = true;
     this.styles = StyleSheet.create({
       field: {
-        width: screenWidth,
+        width: boardWidth,
         backgroundColor: 'transparent',
         height: boardHeight,
         position: "absolute",
         top: CONSTANTS.BOARDCENTERY - (0.5 * boardHeight),
-        left: 0,
+        left: (CONSTANTS.DEVICEWIDTH/2) - (0.5 * boardWidth),
         borderWidth: borderWidth,
         borderColor: CONSTANTS.BOARDCOLOR,
       },
@@ -53,7 +52,7 @@ export default class Board extends Sprite {
   render() {
     return (
       <View style={this.styles.gameBack}>
-        <ImageBackground source={require('../assets/gameplay/Background.png')} style={this.styles.field} resizeMode="stretch">
+        <ImageBackground source={require('../assets/gameplay/LightBrownBackground.png')} style={this.styles.field} resizeMode="stretch">
         </ImageBackground>
       </View>
     );

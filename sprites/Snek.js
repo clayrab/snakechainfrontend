@@ -32,6 +32,7 @@ export default class Snek extends Sprite {
       pelletLocation: null,
       pelletRot: new Animated.Value(0),
       alive: true,
+      snakeHead: {transform: [{ rotate: '0deg'}]}
     };
     this.nextID = 0;
     this.state = this.copyDefaultState();
@@ -97,6 +98,7 @@ export default class Snek extends Sprite {
     startState.alive = this.defaultState.alive;
     startState.tail = this.makeTail(3, this.defaultState.boardX, this.defaultState.boardY);
     startState.tailIndex = 2;
+    startState.snakeHead = {transform: [{ rotate: '0deg'}]};
     return startState;
   }
   resetBoard(){
@@ -239,7 +241,7 @@ export default class Snek extends Sprite {
       this.die();
     } else {
       this.onBoardTile(this.state.boardX, this.state.boardY - 1);
-      this.setState({direction: CONSTANTS.DPADSTATES.UP, boardY: this.state.boardY - 1});
+      this.setState({direction: CONSTANTS.DPADSTATES.UP, boardY: this.state.boardY - 1, snakeHead: {transform: [{ rotate: '0deg'}]}});
     }
   }
   goDown() {
@@ -250,7 +252,7 @@ export default class Snek extends Sprite {
       this.die();
     } else {
       this.onBoardTile(this.state.boardX, this.state.boardY + 1);
-      this.setState({direction: CONSTANTS.DPADSTATES.DOWN, boardY: this.state.boardY + 1});
+      this.setState({direction: CONSTANTS.DPADSTATES.DOWN, boardY: this.state.boardY + 1,snakeHead: {transform: [{ rotate: '180deg'}]}});
     }
   }
   goLeft() {
@@ -261,7 +263,7 @@ export default class Snek extends Sprite {
       this.die();
     } else {
       this.onBoardTile(this.state.boardX - 1, this.state.boardY);
-      this.setState({direction: CONSTANTS.DPADSTATES.LEFT, boardX: this.state.boardX - 1,});
+      this.setState({direction: CONSTANTS.DPADSTATES.LEFT, boardX: this.state.boardX - 1,snakeHead: {transform: [{ rotate: '270deg'}]}});
     }
   }
   goRight() {
@@ -272,7 +274,7 @@ export default class Snek extends Sprite {
       this.die();
     } else {
       this.onBoardTile(this.state.boardX + 1, this.state.boardY);
-      this.setState({direction: CONSTANTS.DPADSTATES.RIGHT, boardX: this.state.boardX + 1,});
+      this.setState({direction: CONSTANTS.DPADSTATES.RIGHT, boardX: this.state.boardX + 1, snakeHead: {transform: [{ rotate: '90deg'}]}});
     }
   }
 
@@ -365,10 +367,11 @@ export default class Snek extends Sprite {
   }
   render() {
     var pellet = null;
+    
     var snek = (<View style={[this.styles.snek, {
       left: this.state.posX,
       top: this.state.posY,
-    }]}><Image source={require('../assets/gameplay/SnakeMouth.png')} style={this.styles.snek} resizeMode="stretch"/></View>);
+    }]}><Image source={require('../assets/gameplay/headUp.png')} style={[this.styles.snek, this.state.snakeHead]} resizeMode="stretch"/></View>);
     if(this.state.pelletLocation != null) {
       var pellet = (<Animated.View style={[this.styles.pellet, {
         left: this.boardXtoPosX(this.state.pelletLocation.x),
@@ -390,8 +393,7 @@ export default class Snek extends Sprite {
         <ScoreBoard
           baseScore={this.state.baseScore}
           score={this.state.score}
-          multiplier={this.state.multiplier}
-          ></ScoreBoard>
+          multiplier={this.state.multiplier}/>
         {this.state.tail.map((elem) => {
           return (elem);
         })}

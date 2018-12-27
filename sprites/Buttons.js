@@ -30,7 +30,7 @@ export default class Buttons extends Sprite {
   render() {
     if (this.props.isPower) {
       return (
-        <View>
+        <View style={{alignContent: 'center', justifyContent: 'center'}}>
           <TouchableOpacity
             color={"#fff"}
             style={styles.power}
@@ -67,12 +67,12 @@ export default class Buttons extends Sprite {
     }
   }
 }
-let buttonSize = 60;
+
 let styles = StyleSheet.create({
   back: {
     position: 'absolute',
-    top: CONSTANTS.GAMEHEIGHT + 2,
-    left: 20,
+    top: CONSTANTS.GAMEHEIGHT * 9 / 8,
+    left: CONSTANTS.DEVICEWIDTH / 6 - 25,
   },
   content: {
     color: "#fff",
@@ -84,7 +84,7 @@ let styles = StyleSheet.create({
   },
   power: {
     position: 'absolute',
-    top: CONSTANTS.GAMEHEIGHT + 2,
-    right: 20,
+    top: CONSTANTS.GAMEHEIGHT * 9 / 8 ,
+    right: CONSTANTS.DEVICEWIDTH / 6 - 25,
   }
 });
