@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, StyleSheet, View, TouchableOpacity } from 'react-native';
+import { Text, StyleSheet, View, TouchableOpacity, Image } from 'react-native';
 import { Sprite } from 'react-game-kit/native';
 import PropTypes from 'prop-types';
 import CONSTANTS from '../Constants.js';
@@ -28,48 +28,63 @@ export default class Buttons extends Sprite {
     this.props.onDpadChange(CONSTANTS.DPADSTATES.NONE);
   };
   render() {
-    if (this.props.running) {
+    if (this.props.isPower) {
       return (
-        <View>
+        <View style={{alignContent: 'center', justifyContent: 'center'}}>
           <TouchableOpacity
             color={"#fff"}
-            style={styles.back}
+            style={styles.power}
             onPress={() => this.props.pause()}>
-            <Text style={styles.content}>Pause</Text>
-          </TouchableOpacity>
-        </View>
-      );
-    } else {
-      return (
-        <View>
-          <TouchableOpacity
-            color={"#fff"}
-            style={styles.back}
-            onPress={() => this.props.start()}>
-            <Text style={styles.content}>Go</Text>
+            <Image source={require('../assets/gameplay/EnergyButton.png')} style={styles.buttonImage} resizeMode="stretch" />
           </TouchableOpacity>
         </View>
       );
     }
+    else {
+      if (this.props.running) {
+        return (
+          <View>
+            <TouchableOpacity
+              color={"#fff"}
+              style={styles.back}
+              onPress={() => this.props.pause()}>
+              <Image source={require('../assets/gameplay/PauseButton.png')} style={styles.buttonImage} resizeMode="stretch" />
+            </TouchableOpacity>
+          </View>
+        );
+      } else {
+        return (
+          <View>
+            <TouchableOpacity
+              color={"#fff"}
+              style={styles.back}
+              onPress={() => this.props.start()}>
+              <Image source={require('../assets/gameplay/PauseButton.png')} style={styles.buttonImage} resizeMode="stretch" />
+            </TouchableOpacity>
+          </View>
+        );
+      }
+    }
   }
 }
-let buttonSize = 60;
+
 let styles = StyleSheet.create({
   back: {
-    backgroundColor:'#999',
-    borderWidth: 2,
-    borderColor:'rgba(0,0,0,0.2)',
-    alignItems:'center',
-    justifyContent:'center',
-    width: buttonSize,
-    height: buttonSize/2,
-    borderRadius: buttonSize,
     position: 'absolute',
-    top: CONSTANTS.GAMEHEIGHT + 2,
-    left: 20,
+    top: CONSTANTS.GAMEHEIGHT * 9 / 8,
+    left: CONSTANTS.DEVICEWIDTH / 6 - 25,
   },
   content: {
     color: "#fff",
     fontSize: 14
   },
+  buttonImage: {
+    width: 50,
+    height: 50
+  },
+  power: {
+    position: 'absolute',
+    top: CONSTANTS.GAMEHEIGHT * 9 / 8 ,
+    right: CONSTANTS.DEVICEWIDTH / 6 - 25,
+  }
 });

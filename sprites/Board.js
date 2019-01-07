@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
 import { Sprite } from 'react-game-kit/native';
 import PropTypes from 'prop-types';
 import CONSTANTS from '../Constants.js';
@@ -19,7 +19,7 @@ export default class Board extends Sprite {
     this.styles = StyleSheet.create({
       field: {
         width: boardWidth,
-        backgroundColor: '#2c1',
+        backgroundColor: 'transparent',
         height: boardHeight,
         position: "absolute",
         top: CONSTANTS.BOARDCENTERY - (0.5 * boardHeight),
@@ -37,7 +37,7 @@ export default class Board extends Sprite {
         position: 'absolute',
         width: CONSTANTS.DEVICEWIDTH,
         height: CONSTANTS.GAMEHEIGHT + CONSTANTS.DPADAREAHEIGHT,
-        backgroundColor: "#8d8",
+        backgroundColor: "#FAB523",
       },
     });
   }
@@ -52,8 +52,8 @@ export default class Board extends Sprite {
   render() {
     return (
       <View style={this.styles.gameBack}>
-        <View style={this.styles.field}>
-        </View>
+        <ImageBackground source={require('../assets/gameplay/Background.png')} style={this.styles.field} resizeMode="stretch">
+        </ImageBackground>
       </View>
     );
   }

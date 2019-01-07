@@ -1,5 +1,5 @@
 import React from 'react';
-import { Animated, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Animated, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Sprite } from 'react-game-kit/native';
 import PropTypes from 'prop-types';
 import CONSTANTS from '../Constants.js';
@@ -32,6 +32,7 @@ export default class Snek extends Sprite {
       pelletLocation: null,
       pelletRot: new Animated.Value(0),
       alive: true,
+      snakeHead: {transform: [{ rotate: '0deg'}]}
     };
     this.nextID = 0;
     this.state = this.copyDefaultState();
@@ -43,7 +44,6 @@ export default class Snek extends Sprite {
         position: "absolute",
         width: CONSTANTS.SNEKSIZE,
         height: CONSTANTS.SNEKSIZE,
-        backgroundColor: CONSTANTS.SNEKCOLOR,
       },
       snekPart: {
         position: "absolute",
@@ -53,9 +53,8 @@ export default class Snek extends Sprite {
       },
       pellet: {
         position: "absolute",
-        width: CONSTANTS.SNEKSIZE,
-        height: CONSTANTS.SNEKSIZE,
-        backgroundColor: CONSTANTS.PELLETCOLOR,
+        width: CONSTANTS.SNEKSIZE + 2,
+        height: CONSTANTS.SNEKSIZE + 2,
       }
     });
     this.pelletAnim = Animated.timing(this.state.pelletRot, {
@@ -99,6 +98,7 @@ export default class Snek extends Sprite {
     startState.alive = this.defaultState.alive;
     startState.tail = this.makeTail(3, this.defaultState.boardX, this.defaultState.boardY);
     startState.tailIndex = 2;
+    startState.snakeHead = {transform: [{ rotate: '0deg'}]};
     return startState;
   }
   resetBoard(){
@@ -241,7 +241,7 @@ export default class Snek extends Sprite {
       this.die();
     } else {
       this.onBoardTile(this.state.boardX, this.state.boardY - 1);
-      this.setState({direction: CONSTANTS.DPADSTATES.UP, boardY: this.state.boardY - 1});
+      this.setState({direction: CONSTANTS.DPADSTATES.UP, boardY: this.state.boardY - 1, snakeHead: {transform: [{ rotate: '0deg'}]}});
     }
   }
   goDown() {
@@ -252,7 +252,7 @@ export default class Snek extends Sprite {
       this.die();
     } else {
       this.onBoardTile(this.state.boardX, this.state.boardY + 1);
-      this.setState({direction: CONSTANTS.DPADSTATES.DOWN, boardY: this.state.boardY + 1});
+      this.setState({direction: CONSTANTS.DPADSTATES.DOWN, boardY: this.state.boardY + 1,snakeHead: {transform: [{ rotate: '180deg'}]}});
     }
   }
   goLeft() {
@@ -263,7 +263,7 @@ export default class Snek extends Sprite {
       this.die();
     } else {
       this.onBoardTile(this.state.boardX - 1, this.state.boardY);
-      this.setState({direction: CONSTANTS.DPADSTATES.LEFT, boardX: this.state.boardX - 1,});
+      this.setState({direction: CONSTANTS.DPADSTATES.LEFT, boardX: this.state.boardX - 1,snakeHead: {transform: [{ rotate: '270deg'}]}});
     }
   }
   goRight() {
@@ -274,7 +274,7 @@ export default class Snek extends Sprite {
       this.die();
     } else {
       this.onBoardTile(this.state.boardX + 1, this.state.boardY);
-      this.setState({direction: CONSTANTS.DPADSTATES.RIGHT, boardX: this.state.boardX + 1,});
+      this.setState({direction: CONSTANTS.DPADSTATES.RIGHT, boardX: this.state.boardX + 1, snakeHead: {transform: [{ rotate: '90deg'}]}});
     }
   }
 
@@ -367,16 +367,19 @@ export default class Snek extends Sprite {
   }
   render() {
     var pellet = null;
+    
     var snek = (<View style={[this.styles.snek, {
       left: this.state.posX,
       top: this.state.posY,
-    }]}></View>);
+    }]}><Image source={require('../assets/gameplay/headUp.png')} style={[this.styles.snek, this.state.snakeHead]} resizeMode="stretch"/></View>);
     if(this.state.pelletLocation != null) {
       var pellet = (<Animated.View style={[this.styles.pellet, {
         left: this.boardXtoPosX(this.state.pelletLocation.x),
         top: this.boardYtoPosY(this.state.pelletLocation.y),
         transform: [{ rotate: this.spin()}],
-      }]}></Animated.View>);
+      }]}>
+        <Image source={require('../assets/gameplay/Diamond.png')} style={this.styles.pellet} resizeMode="stretch"/>
+      </Animated.View>);
     }
     if(!this.state.alive) {
       snek = (<View style={[this.styles.snek,{
@@ -390,8 +393,7 @@ export default class Snek extends Sprite {
         <ScoreBoard
           baseScore={this.state.baseScore}
           score={this.state.score}
-          multiplier={this.state.multiplier}
-          ></ScoreBoard>
+          multiplier={this.state.multiplier}/>
         {this.state.tail.map((elem) => {
           return (elem);
         })}
