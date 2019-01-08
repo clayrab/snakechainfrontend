@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { Font } from 'expo';
 import SafeAreaView from 'react-native-safe-area-view';
-import MineOverlay from './MineOverlay.js';
+import GameHistory from './GameHistory.js';
 import {context} from "../utils/Context.js";
 import {asyncStore, getFromAsyncStore, removeItemValue} from "../utils/AsyncStore.js";
 
@@ -39,6 +39,7 @@ export default class Homepage extends React.Component {
       mineImg: mineImages[0],
       minePercent: 0,
     };
+    this.closeOverlay = this.closeOverlay.bind(this);
   }
   async componentDidMount(){
     try{
@@ -94,6 +95,7 @@ export default class Homepage extends React.Component {
     this.setState({overlay: overlays.MINE});
   }
   closeOverlay() {
+    console.log("closeOverlay")
     this.setState({overlay: -1});
   }
   render() {
@@ -152,7 +154,7 @@ export default class Homepage extends React.Component {
               </View>
             </View>
           </View>
-          <MineOverlay show={this.state.overlay == overlays.MINE} closeOverlay={this.closeOverlay.bind(this)}/>
+          <GameHistory show={this.state.overlay == overlays.MINE} closeOverlay={this.closeOverlay}/>
         </ImageBackground>
       </SafeAreaView>
     )

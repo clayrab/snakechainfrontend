@@ -10,46 +10,111 @@ import {
 } from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
 import { Font } from 'expo';
+import {context} from "../utils/Context.js";
+import Loading from './Loading.js';
 
+let loginPlaceHolder = 'Login/Phone';
+let passwordPlaceHolder = 'Password';
+let easterEggCount = 0;
 export default class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loginPlaceHolder: 'Login/Phone',
-      passwordPlaceHolder: '',
-      remember: true
+      showLoginPlaceHolder: true,
+      showPasswordPlaceHolder: true,
+      remember: true,
+      buttonDynamicStyle: {},
+      username: "",
+      pw: "",
+      usernameRender: loginPlaceHolder,
+      passwordRender: passwordPlaceHolder,
+      loading: false,
     };
-    this.sendLoginCreds = this.sendLoginCreds.bind(this);
+    // this.sendLoginCreds = this.sendLoginCreds.bind(this);
+    // this.easterEgg = this.easterEgg.bind(this);
   }
   async componentDidMount(){
+    console.log("component did mount")
     await Font.loadAsync({
       'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
     });
-    styles.buttonText = {
-      fontFamily: 'riffic-free-bold'
+    this.setState({buttonDynamicStyle: {
+      fontFamily: 'riffic-free-bold',
+    }});
+    // styles.buttonText = {
+    //   fontFamily: 'riffic-free-bold'
+    // };
+    //rerender();
+  }
+
+  // rerender = () => {
+  //   this.setState({rerender: !this.state.rerender}); // trick react into rerunning render function
+  // }
+  setLoginRenderState = () => {
+    if(this.state.showLoginPlaceHolder) {
+      this.setState({usernameRender: loginPlaceHolder});
+    } else {
+      this.setState({usernameRender: this.state.username});
     }
   }
-
-  loginFocus = () => {
-    this.setState({loginPlaceHolder: ''});
+  setPasswordRenderState = () => {
+    if(this.state.showPasswordPlaceHolder) {
+      this.setState({passwordRender: passwordPlaceHolder});
+    } else {
+      this.setState({passwordRender: this.state.pw});
+    }
   }
-
-  loginChangeText = (value) => {
-    this.setState({loginPlaceHolder: value});
+  loginFocus = async() => {
+    await this.setState({showLoginPlaceHolder: false});
+    this.setLoginRenderState();
+    //this.setState({loginPlaceHolder: ''});
   }
-
-  loginBlur = () => {
-    this.setState({loginPlaceHolder: 'Login/Phone'});
+  passwordFocus = async() => {
+    await this.setState({showPasswordPlaceHolder: false});
+    this.setPasswordRenderState();
+    //this.setState({loginPlaceHolder: ''});
   }
-
-  passwordChange = (value) => {
-    this.setState({passwordPlaceHolder: value});
+  loginChange= async(value) => {
+    await this.setState({username: value});
   }
+  passwordChange= async(value) => {
+    await this.setState({pw: value});
+  }
+  easterEgg = async() => {
+    console.log("easteregg")
+    easterEggCount = easterEggCount + 1;
+    if(easterEggCount > 5) {
+      await this.setState({
+        username: "clayrab",
+        pw: "asdf",
+        showLoginPlaceHolder: false,
+        showPasswordPlaceHolder: false,
+      });
+      this.setLoginRenderState();
+      this.setPasswordRenderState();
+    }
+  }
+  // loginChangeText = (value) => {
+  //   // not really necessary,
+  //   if(!this.state.showLoginPlaceHolder) {
+  //     this.setState({username: value});
+  //   }
+  // }
+
+  // loginBlur = () => {
+  //   this.setState({loginPlaceHolder: 'Login/Phone'});
+  // }
+
+  // passwordChange = (value) => {
+  //   this.setState({passwordPlaceHolder: value});
+  // }
 
   rememberPress = () => {
     this.setState({ remember: !this.state.remember })
+    this.easterEgg();
   }
-  async sendLoginCreds() {
+  sendLoginCreds = async() => {
+    console.log("sendLoginCreds");
     try{
       this.setState({loading: true});
       var data = { user: this.state.username, pw: this.state.pw };
@@ -81,29 +146,36 @@ export default class Login extends React.Component {
     } else {
       return (
         <SafeAreaView style={styles.screen}>
-          <ImageBackground source={require('../assets/login/background.png')} style={styles.backgroundImage} resizeMode="stretch">
+          <ImageBackground source={require('../assets/login/background.png')} style={styles.backgroundImage} resizeMode="stretch"
+            onClick={this.easterEgg}>
             <View style={[styles.halfView, styles.topView]}>
               <ImageBackground source={require('../assets/login/textBox.png')} style={styles.loginInput} resizeMode="stretch">
-                <TextInput style={styles.textInput} underlineColorAndroid="transparent" onFocus={this.loginFocus} onChangeText={this.loginChangeText} onBlur={this.loginBlur}>
-                  <Text style={[styles.placeHolder, styles.buttonText]}>{this.state.loginPlaceHolder}</Text>
+                <TextInput style={[styles.textInput, this.state.buttonDynamicStyle]} underlineColorAndroid="transparent" autoCapitalize={false}
+                  onFocus={this.loginFocus}
+                  onChangeText={this.loginChange}
+                  value={this.state.usernameRender}>
                 </TextInput>
               </ImageBackground>
             </View>
             <View style={[styles.halfView, styles.bottomView]}>
               <ImageBackground source={require('../assets/login/textBox.png')} style={[styles.loginInput, styles.passwordInput]} resizeMode="stretch">
                 <Image source={require('../assets/login/passwordIcon.png')} style={styles.lockImage} resizeMode="stretch"/>
-                <TextInput style={styles.textInput} underlineColorAndroid="transparent" secureTextEntry={true} onChangeText={this.passwordChange} value={this.state.passwordPlaceHolder}/>
+                <TextInput style={[styles.textInput, this.state.buttonDynamicStyle]} underlineColorAndroid="transparent" secureTextEntry={true} autoCapitalize={false}
+                  onFocus={this.passwordFocus}
+                  onChangeText={this.passwordChange}
+                  value={this.state.passwordRender}/>
               </ImageBackground>
-              <TouchableOpacity onPress={this.loginPress}>
+              <TouchableOpacity
+                onPress={this.sendLoginCreds}>
                 <ImageBackground source={require('../assets/login/button.png')} style={[styles.loginButton, styles.passwordInput]} resizeMode="stretch">
-                  <Text style={[styles.loginText, styles.buttonText]}>LOGIN</Text>
+                  <Text style={[styles.loginText, this.state.buttonDynamicStyle]}>LOGIN</Text>
                 </ImageBackground>
               </TouchableOpacity>
               <View style={styles.rememberView}>
                 <TouchableOpacity onPress={this.rememberPress}>
                   <Image source={ this.state.remember ? require('../assets/login/checkBox.png') : require('../assets/login/checkBox-1.png')} style={styles.checkBoxImage} resizeMode="stretch"/>
                 </TouchableOpacity>
-                <Text style={[styles.checkboxText, styles.buttonText]}>Remember me</Text>
+                <Text style={[styles.checkboxText, this.state.buttonDynamicStyle]}>Remember me</Text>
               </View>
             </View>
           </ImageBackground>
@@ -136,7 +208,9 @@ let styles = StyleSheet.create({
   textInput: {
     width: screenWidth - 80,
     height: 40,
-    marginLeft: 20
+    marginLeft: 20,
+    fontSize: 24,
+    color: '#fab523'
   },
   loginInput: {
     backgroundColor: 'transparent',
@@ -145,10 +219,6 @@ let styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row'
-  },
-  placeHolder: {
-    fontSize: 24,
-    color: '#fab523'
   },
   lockImage: {
     width: 20,
