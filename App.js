@@ -3,6 +3,9 @@ import { Loop, Stage, World, Body, Sprite } from 'react-game-kit/native';
 import SafeAreaView from 'react-native-safe-area-view';
 
 import CONSTANTS from './Constants.js';
+import {asyncStore, getFromAsyncStore, removeItemValue} from "./utils/AsyncStore.js";
+import {context} from "./utils/Context.js";
+
 import Dpad from './sprites/Dpad.js';
 import Buttons from './sprites/Buttons.js';
 import Board from './sprites/Board.js';
@@ -17,8 +20,10 @@ import Withdraw from './components/Withdraw.js';
 import AccountHistory from './components/AccountHistory.js';
 import GameHistory from './components/GameHistory.js';
 import SnakeMine from './components/SnakeMine.js';
+import Login from './components/Login.js';
+import Loading from './components/Loading.js';
 
-var screens = { "GAME": 0, "HOME": 1, "SELECTLEVEL": 2, "WALLET": 3, "PREFERENCES": 4, "PROFILE": 5, "ACCOUNTHISTORY": 6, "GAMEHISTORY": 7 };
+var screens = { "GAME": 0, "HOME": 1, "SELECTLEVEL": 2, "WALLET": 3, "PREFERENCES": 4, "PROFILE": 5, "ACCOUNTHISTORY": 6, "GAMEHISTORY": 7, "LOGIN": 8, "LOADING": 9 };
 var overlays = {"PAUSE": 0, "GAMEOVER": 1};
 export default class App extends React.Component {
   constructor(props) {
@@ -26,7 +31,7 @@ export default class App extends React.Component {
     var board = [];
     this.state = {
       running: false,
-      screen: screens.HOME,
+      screen: screens.LOGIN,
       pressedButton: CONSTANTS.DPADSTATES.UP,
       toggleReset: true,
     };
@@ -64,22 +69,29 @@ export default class App extends React.Component {
     this.setState({running: true, overlay: -1});
   }
   render() {
-    if(this.state.screen == screens.HOME){
-      return (
+
         // <GameHistory />
         //<AccountHistory />
-        // <GameOverOverlay 
+        // <GameOverOverlay
         //     show={true}
         //   />
         //<Wallet />
         //<Withdraw/>
         //<SnakeMine show={true}/>
-        <Homepage onPlayPress={this.onPlayPress.bind(this)} onPausePress={this.onPausePress.bind(this)}></Homepage>
+        //<Homepage onPlayPress={this.onPlayPress.bind(this)} onPausePress={this.onPausePress.bind(this)}></Homepage>
         //<PauseOverlay show={true} closeOverlay={this.closeOverlay.bind(this)}/>
+
+    if(this.state.screen == screens.HOME){
+      return (
+        <Homepage onPlayPress={this.onPlayPress}></Homepage>
+      );
+    }else if(this.state.screen == screens.LOGIN){
+      return (
+        <Login loggedIn={this.loggedIn}></Login>
       );
     }else if(this.state.screen == screens.SELECTLEVEL){
       return (
-        <SelectLevel onSelectLevelPlayPress={this.onSelectLevelPlayPress.bind(this)}></SelectLevel>
+        <SelectLevel onSelectLevelPlayPress={this.onSelectLevelPlayPress}></SelectLevel>
       );
     }else if(this.state.screen == screens.GAME){
       return (

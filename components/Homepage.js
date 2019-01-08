@@ -7,9 +7,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Font } from 'expo';
 import SafeAreaView from 'react-native-safe-area-view';
 import MineOverlay from './MineOverlay.js';
-import { Font } from 'expo';
+import {context} from "../utils/Context.js";
+import {asyncStore, getFromAsyncStore, removeItemValue} from "../utils/AsyncStore.js";
 
 mineImages = [
   require('../assets/homepage/mine/mine0.png'),
@@ -98,6 +100,7 @@ export default class Homepage extends React.Component {
     return (
       <SafeAreaView style={styles.screen}>
         <ImageBackground source={require('../assets/homepage/back.png')} style={styles.backgroundImage}>
+          /***** TITLE BAR START *****/
           <ImageBackground source={require('../assets/homepage/titleback.png')} style={styles.titleBar}>
             <Image source={require('../assets/homepage/options.png')}
               resizeMethod={"scale"}
@@ -125,6 +128,7 @@ export default class Homepage extends React.Component {
               </View>
             </ImageBackground>
           </ImageBackground>
+          /***** TITLE BAR END *****/
           <View style={styles.contentHolder}>
             <View style={styles.contentTopMargin}></View>
             <View style={styles.contentTop}>
@@ -144,9 +148,7 @@ export default class Homepage extends React.Component {
                 <TouchableOpacity style={styles.playnow} onPress={this.props.onPlayPress}>
                   <Image style={styles.playnowImage} source={require('../assets/homepage/playnow.png')}/>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={this.props.onPausePress}>
-                  <ImageBackground source={require('../assets/homepage/gototown.png')} style={styles.gototown}></ImageBackground>
-                </TouchableOpacity>
+                <ImageBackground source={require('../assets/homepage/gototown.png')} style={styles.gototown}></ImageBackground>
               </View>
             </View>
           </View>
