@@ -10,7 +10,7 @@ import {
 import SafeAreaView from 'react-native-safe-area-view';
 import { Font } from 'expo';
 
-export default class AccountHistory extends React.Component {
+export default class SnakeTown extends React.Component {
   constructor(props) {
     super(props);
   }
