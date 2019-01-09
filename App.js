@@ -1,6 +1,7 @@
 import React from 'react';
 import { Loop, Stage, World, Body, Sprite } from 'react-game-kit/native';
 import SafeAreaView from 'react-native-safe-area-view';
+import SocketIOClient from 'socket.io-client';
 
 import CONSTANTS from './Constants.js';
 import {asyncStore, getFromAsyncStore, removeItemValue} from "./utils/AsyncStore.js";
@@ -24,12 +25,28 @@ import Login from './components/Login.js';
 import Loading from './components/Loading.js';
 import DoMineOverlay from './components/DoMineOverlay.js';
 
+const connectionConfig = {
+  jsonp: false,
+  reconnection: true,
+  reconnectionDelay: 100,
+  reconnectionAttempts: 100000,
+  transports: ['websocket'], // you need to explicitly tell it to use websockets
+ };
 
 var screens = { "GAME": 0, "HOME": 1, "SELECTLEVEL": 2, "WALLET": 3, "PREFERENCES": 4, "PROFILE": 5, "ACCOUNTHISTORY": 6, "GAMEHISTORY": 7, "LOGIN": 8 , "LOADING": 9 };
 var overlays = {"PAUSE": 0, "GAMEOVER": 1, "DOMINE": 2, "DOMINEFREE": 3, "MINE": 4};
 export default class App extends React.Component {
   constructor(props) {
     super(props);
+    //this.socket = SocketIOClient('http://{context.host}:3002');
+    this.socket = SocketIOClient('http://192.168.1.5:3002');
+    //this.socket = SocketIO('http://localhost:3000',connectionConfig);
+    this.socket.on('connect', () => {
+      console.log('connected to server');
+    });
+    this.socket.on("FromAPI", (secs) => {
+      console.log(secs);
+    })
     var board = [];
     this.state = {
       running: false,
@@ -138,8 +155,6 @@ export default class App extends React.Component {
     //this.setState({running: true, overlay: -1});
   }
   render() {
-
-
     if(this.state.screen == screens.HOME){
       return (
         <Homepage onPlayPress={this.onPlayPress}></Homepage>
