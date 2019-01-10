@@ -21,16 +21,17 @@ export default class Signup extends React.Component {
       robotCBPress: true,
       termCBPress: true,
       securePassword: false,
-      securerePassword: false
+      securerePassword: false,
+      buttonDynamicStyle: {}
     }
   }
   async componentDidMount(){
     await Font.loadAsync({
       'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
     });
-    styles.buttonText = {
-      fontFamily: 'riffic-free-bold'
-    }
+    this.setState({buttonDynamicStyle: {
+      fontFamily: 'riffic-free-bold',
+    }});
   }
 
   loginFocus = () => {
@@ -90,25 +91,25 @@ export default class Signup extends React.Component {
     return (
       <View style={styles.container}>
         <ImageBackground style={styles.content} source={require('../assets/pauseoverlay/BackgroundBrown.png')} resizeMode={'stretch'}>
-          <Text style={styles.titleText}>
+          <Text style={[styles.titleText, this.state.buttonDynamicStyle]}>
             SIGN-UP
           </Text>
           <ImageBackground source={require('../assets/signup/textBox.png')} style={styles.loginInput} resizeMode="stretch">
             <Image source={require('../assets/signup/phoneIcon.png')} style={styles.lockImage} resizeMode="stretch"/>
             <TextInput style={styles.textInput} underlineColorAndroid="transparent" onFocus={this.loginFocus} onChangeText={this.loginChangeText} onBlur={this.loginBlur}>
-              <Text style={[styles.placeHolder, styles.buttonText]}>{this.state.loginPlaceHolder}</Text>
+              <Text style={[styles.placeHolder, this.state.buttonDynamicStyle]}>{this.state.loginPlaceHolder}</Text>
             </TextInput>
           </ImageBackground>
           <ImageBackground source={require('../assets/signup/textBox.png')} style={styles.loginInput} resizeMode="stretch">
             <Image source={require('../assets/login/passwordIcon.png')} style={styles.lockImage} resizeMode="stretch"/>
             <TextInput style={styles.textInput} underlineColorAndroid="transparent" secureTextEntry={this.state.securePassword} onFocus={this.passwordFocus} onChangeText={this.passwordChangeText} onBlur={this.passwordBlur}>
-              <Text style={[styles.placeHolder, styles.buttonText]}>{this.state.passwordPlaceHolder}</Text>
+              <Text style={[styles.placeHolder, this.state.buttonDynamicStyle]}>{this.state.passwordPlaceHolder}</Text>
             </TextInput>
           </ImageBackground>
           <ImageBackground source={require('../assets/signup/textBox.png')} style={styles.loginInput} resizeMode="stretch">
             <Image source={require('../assets/login/passwordIcon.png')} style={styles.lockImage} resizeMode="stretch"/>
             <TextInput style={styles.textInput} underlineColorAndroid="transparent" secureTextEntry={this.state.securerePassword} onFocus={this.repasswordFocus} onChangeText={this.repasswordChangeText} onBlur={this.repasswordBlur}>
-              <Text style={[styles.placeHolder, styles.buttonText]}>{this.state.repasswordPlaceHolder}</Text>
+              <Text style={[styles.placeHolder, this.state.buttonDynamicStyle]}>{this.state.repasswordPlaceHolder}</Text>
             </TextInput>
           </ImageBackground>
           <ImageBackground source={require('../assets/signup/checkBoxBG.png')} style={styles.checkboxBG} resizeMode="stretch">
@@ -116,18 +117,18 @@ export default class Signup extends React.Component {
               <TouchableOpacity onPress={this.robotPress} style={{flex: 1, marginLeft: 20}}>
                 <Image source={ this.state.robotCBPress ? require('../assets/login/checkBox.png') : require('../assets/login/checkBox-1.png')} style={styles.checkBoxImage} resizeMode="stretch"/>
               </TouchableOpacity>
-              <Text style={[styles.checkboxText, styles.buttonText, {flex: 3}]}>IM NOT A ROBOT</Text>
+              <Text style={[styles.checkboxText, this.state.buttonDynamicStyle, {flex: 3}]}>IM NOT A ROBOT</Text>
             </View>
             <View style={styles.checkboxView}>
               <TouchableOpacity onPress={this.termPress} style={{flex: 1, marginLeft: 20}}>
                 <Image source={ this.state.termCBPress ? require('../assets/login/checkBox.png') : require('../assets/login/checkBox-1.png')} style={styles.checkBoxImage} resizeMode="stretch"/>
               </TouchableOpacity>
-              <Text style={[styles.checkboxText, styles.buttonText, {flex: 3}]}>TERMS & CONDITION</Text>
+              <Text style={[styles.checkboxText, this.state.buttonDynamicStyle, {flex: 3}]}>TERMS & CONDITION</Text>
             </View>
           </ImageBackground>
           <TouchableOpacity onPress={this.confirmPress}>
             <ImageBackground source={require('../assets/login/button.png')} style={[styles.confirmButton, styles.passwordInput]} resizeMode="stretch">
-              <Text style={[styles.confirmText, styles.buttonText]}>CONFIRM</Text>
+              <Text style={[styles.confirmText, this.state.buttonDynamicStyle]}>CONFIRM</Text>
             </ImageBackground>
           </TouchableOpacity>
         </ImageBackground>
