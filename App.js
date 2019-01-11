@@ -15,6 +15,7 @@ import Snek from './sprites/Snek.js';
 import Homepage from './components/Homepage.js';
 import PauseOverlay from './components/PauseOverlay.js';
 import GameOverOverlay from './components/GameOverOverlay.js';
+import AreYouSureOverlay from './components/AreYouSureOverlay.js';
 import SelectLevel from './components/SelectLevel.js';
 import Wallet from './components/Wallet.js';
 import Withdraw from './components/Withdraw.js';
@@ -23,6 +24,8 @@ import GameHistory from './components/GameHistory.js';
 import SnakeMine from './components/SnakeMine.js';
 import Login from './components/Login.js';
 import Loading from './components/Loading.js';
+import LoadingOverlay from './components/LoadingOverlay.js';
+import ConfirmTxOverlay from './components/ConfirmTxOverlay.js';
 import DoMineOverlay from './components/DoMineOverlay.js';
 
 const connectionConfig = {
@@ -30,16 +33,17 @@ const connectionConfig = {
   reconnection: true,
   reconnectionDelay: 100,
   reconnectionAttempts: 100000,
-  transports: ['websocket'], // you need to explicitly tell it to use websockets
+  transports: ['websocket'],
  };
 
 var screens = { "GAME": 0, "HOME": 1, "SELECTLEVEL": 2, "WALLET": 3, "PREFERENCES": 4, "PROFILE": 5, "ACCOUNTHISTORY": 6, "GAMEHISTORY": 7, "LOGIN": 8 , "LOADING": 9 };
-var overlays = {"PAUSE": 0, "GAMEOVER": 1, "DOMINE": 2, "DOMINEFREE": 3, "MINE": 4};
+var overlays = {"PAUSE": 0, "GAMEOVER": 1, "DOMINE": 2, "DOMINEFREE": 3, "MINE": 4, "AREYOUSURE": 5, "LOADING": 6, "CONFIRMTX": 7};
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     //this.socket = SocketIOClient('http://{context.host}:3002');
-    this.socket = SocketIOClient('http://192.168.1.5:3002');
+    //this.socket = SocketIOClient('http://192.168.1.5:3002');
+    this.socket = SocketIOClient(`{context.host}:{context.socketPort}`);
     //this.socket = SocketIO('http://localhost:3000',connectionConfig);
     this.socket.on('connect', () => {
       console.log('connected to server');
@@ -53,10 +57,17 @@ export default class App extends React.Component {
       screen: screens.LOGIN,
       pressedButton: CONSTANTS.DPADSTATES.UP,
       toggleReset: true,
-      gameOverScore: -1,
+      lastScore: -1,
       unredeemedSnekBalance: -1,
       snekBalance: -1,
       ethBalance: -1,
+      miningPrice: -1,
+      gameOverInfo: {
+        score: 0,
+        level: 0,
+        time: 0,
+      },
+      lastTxHash: "",
     };
     this.loggedIn = this.loggedIn.bind(this);
     this.onDpadChange = this.onDpadChange.bind(this);
@@ -74,7 +85,35 @@ export default class App extends React.Component {
     this.doMineBack = this.doMineBack.bind(this);
     this.doMineFreeConfirm = this.doMineConfirm.bind(this);
     this.doMineFreeBack = this.doMineBack.bind(this);
+    this.onDoContract = this.onDoContract.bind(this);
+    this.onDontDoContract = this.onDontDoContract.bind(this);
+    this.gameOverDoContract = this.gameOverDoContract.bind(this);
+    this.onConfirmTxOk = this.onConfirmTxOk.bind(this);
   }
+  async componentDidMount(){
+    console.log("componentDidMount")
+    // let jwt = await getFromAsyncStore("jwt");
+    // //var data = { user: this.state.username, pw: this.state.pw };
+    // var data = {howmany: 1000, price: 30000 };
+    var response = await fetch(`${context.host}:${context.port}/getPrices`, {
+    //var response = await fetch(`{context.host}:{context.port}/getPrices`, {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      headers: {
+          "Content-Type": "application/json; charset=utf-8",
+    //       "Authorization": "JWT " + jwt,
+    //       //application/x-www-form-urlencoded on Postman... hmmm
+      },
+    });
+    var resp = await response.json();
+    if(resp.error){
+      alert(resp.error);
+    }else if(resp.miningPrice) {
+      console.log("set mining price")
+      console.log(resp.miningPrice)
+      this.setState({miningPrice: resp.miningPrice});
+    }
+  }
+
   onDpadChange(direction) {
     if (direction != CONSTANTS.DPADSTATES.NONE && direction != this.state.pressedButton) {
       this.setState({pressedButton: direction});
@@ -100,8 +139,13 @@ export default class App extends React.Component {
   doMineFreeBack() {
     //this.setState({running: true});
   }
-  onDied(){
-    this.setState({running: false, overlay: overlays.GAMEOVER});
+  onDied(score){
+    let gameOverInfo = {
+      score: score,
+      level: 1,
+      time: 5*60,
+    }
+    this.setState({running: false, overlay: overlays.GAMEOVER, gameOverInfo: gameOverInfo});
   }
   start() {
     this.setState({running: true});
@@ -119,30 +163,45 @@ export default class App extends React.Component {
     this.setState({running: false, overlay: overlays.PAUSE});
   }
   async onPlayPress() {
-    // let jwt = await getFromAsyncStore("jwt");
-    // //var data = { user: this.state.username, pw: this.state.pw };
-    // var data = {howmany: 1000, price: 30000 };
-    // var response = await fetch(`${context.host}/mine`, {
-    //   method: "POST", // *GET, POST, PUT, DELETE, etc.
-    //   body: JSON.stringify(data), // body data type must match "Content-Type" header
-    //   headers: {
-    //       "Content-Type": "application/json; charset=utf-8",
-    //       "Authorization": "JWT " + jwt,
-    //       //application/x-www-form-urlencoded on Postman... hmmm
-    //   },
-    // });
-    // var resp = await response.json();
-    // console.log(resp);
-    // if(resp.error){
-    //   alert(resp.error);
-    //   this.setState({loading: false});
-    // }else if(resp.token) {
-    //   this.props.loggedIn(resp.token);
-    // }
     this.setState({screen: screens.SELECTLEVEL});
   }
   onSelectLevelPlayPress() {
     this.setState({screen: screens.GAME});
+  }
+  async onDoContract() {
+    console.log("onDoContract")
+    await this.setState({overlay: overlays.LOADING});
+    let jwt = await getFromAsyncStore("jwt");
+    //var data = { user: this.state.username, pw: this.state.pw };
+    var data = {howmany: this.state.gameOverInfo.score, price: this.state.miningPrice };
+    console.log(data)
+    var response = await fetch(`${context.host}:${context.port}/mine`, {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      body: JSON.stringify(data), // body data type must match "Content-Type" header
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Authorization": "JWT " + jwt,
+      },
+    });
+    var resp = await response.json();
+    if(resp.error){
+      alert(resp.error);
+      lastTxHash
+      await this.setState({overlay: overlays.GAMEOVER});
+    }else if(resp.txhash) {
+      await this.setState({overlay: overlays.GAMEOVER});
+    } else {
+      alert("Error sending transaction");
+    }
+  }
+  onDontDoContract() {
+    console.log("onDontDoContract")
+  }
+  gameOverDoContract() {
+    this.setState({overlay: overlays.AREYOUSURE});
+  }
+  onConfirmTxOk() {
+
   }
   closeOverlay() {
     this.setState({running: true, overlay: -1});
@@ -199,7 +258,9 @@ export default class App extends React.Component {
           <GameOverOverlay
             show={this.state.overlay == overlays.GAMEOVER}
             closeOverlay={this.closeOverlay}
-            score={this.state.gameOverScore}
+            gameOverInfo={this.state.gameOverInfo}
+            miningPrice={this.state.miningPrice}
+            onDoContract={this.gameOverDoContract}
             doMine={this.doMine}
             restart={this.restart}
             exit={this.exit} />
@@ -207,6 +268,18 @@ export default class App extends React.Component {
             show={this.state.overlay == overlays.DOMINE}
             confirm={this.doMineConfirm}
             back={this.doMineBack} />
+          <AreYouSureOverlay
+            show={this.state.overlay == overlays.AREYOUSURE}
+            text={`Are you sure you want to pay ${this.state.miningPrice} for ${this.state.gameOverInfo.score} Snake Coins?`}
+            onYes={this.onDoContract}
+            onNo={this.onDontDoContract}/>
+          <LoadingOverlay
+            show={this.state.overlay == overlays.LOADING}/>
+          <ConfirmTxOverlay
+            show={this.state.overlay == overlays.CONFIRMTX}
+            transactionId={this.state.lastTxHash}
+            onOk={this.onConfirmTxOk}/>
+            />
         </SafeAreaView>
       );
     }else if(this.state.screen == screens.WALLET) {

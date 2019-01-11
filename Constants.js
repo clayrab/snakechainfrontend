@@ -28,4 +28,5 @@ export default CONSTANTS = {
   SNEKPARTCOLOR: "#FAB523",
   BOARDCOLOR: "transparent",
   PELLETCOLOR: "black",
+  WEIPERETH: 1000000000000000000,
 };

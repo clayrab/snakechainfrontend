@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
 import { Font } from 'expo';
+import CONSTANTS from '../Constants.js';
 
 export default class GameOverOverlay extends React.Component {
   constructor(props) {
@@ -26,39 +27,41 @@ export default class GameOverOverlay extends React.Component {
     if (!this.props.show) {
       return null;
     } else {
+      // Level and Time
+      // <ImageBackground source={require('../assets/gameover/darkLevelBG.png')} style={styles.darkLevelBG} resizeMode="contain">
+      //   <Text style={[styles.buttonText, styles.levelText]}>Level: 13</Text>
+      //   <Text style={[styles.buttonText, styles.levelText]}>Time: 5:00</Text>
+      // </ImageBackground>
+
+      //CLOSE BUTTON
+      // <View style={styles.topButtonView}>
+      //   <TouchableOpacity style={styles.closeButton}>
+      //     <ImageBackground source={require('../assets/wallet/closeBG.png')} style={styles.closeButtonImage} resizeMode="stretch" />
+      //   </TouchableOpacity>
+      // </View>
       return (
-        <SafeAreaView style={styles.screen}>
+        <View style={styles.container}>
           <ImageBackground source={require('../assets/gameover/BG.png')} style={styles.backgroundImage} resizeMode="cover">
-            <View style={styles.topButtonView}>
-              <TouchableOpacity style={styles.closeButton}>
-                <ImageBackground source={require('../assets/wallet/closeBG.png')} style={styles.closeButtonImage} resizeMode="stretch" />
-              </TouchableOpacity>
-            </View>
             <Text style={[styles.buttonText, styles.gameOverText]}>
               GAME OVER
             </Text>
             <Text style={[styles.buttonText, styles.selectionText]}>
-              you ???? 
-                <Text style={[styles.buttonText, styles.numberText]}> 300 </Text>
-              subsection at mined gold
+              You got <Text style={[styles.buttonText, styles.numberText]}>{this.props.gameOverInfo.score}</Text> more mined gold!
             </Text>
-            <ImageBackground source={require('../assets/gameover/darkLevelBG.png')} style={styles.darkLevelBG} resizeMode="contain">
-              <Text style={[styles.buttonText, styles.levelText]}>Level: 13</Text>
-              <Text style={[styles.buttonText, styles.levelText]}>Time: 5:00</Text>
-            </ImageBackground>
             <View style={styles.contractView}>
-              <Image source={require('../assets/gameover/yellowsnake.png')} style={styles.leftSnakeImage}  resizeMode="contain"/>
+              <Image source={require('../assets/gameover/yellowsnake.png')} style={styles.leftSnakeImage} resizeMode="contain"/>
               <ImageBackground source={require('../assets/gameover/contract.png')} style={styles.contactImage} resizeMode="contain">
                 <Text style={[styles.buttonText, styles.contractText]}>
                   CONTRACT
                 </Text>
                 <Text style={[styles.buttonText, styles.contractDetails]}>
-                  Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                  Exchange gold for minted snek coin now.{"\n"}{"\n"}
+                  {(this.props.miningPrice/CONSTANTS.WEIPERETH).toPrecision(4)} ETH.
                 </Text>
               </ImageBackground>
               <Image source={require('../assets/gameover/greensnake.png')} style={styles.rightSnakeImage}  resizeMode="contain"/>
             </View>
-            <TouchableOpacity style={[styles.touchableButton, styles.smallTouchableButton]}>
+            <TouchableOpacity style={[styles.touchableButton, styles.smallTouchableButton]} onPress={this.props.onDoContract}>
               <ImageBackground source={require('../assets/gameover/yellowButton.png')} style={styles.yellowButton} resizeMode="stretch">
                 <Text style={[styles.buttonText, styles.smallButtonBText]}>
                   SIGN CONTRACT
@@ -82,22 +85,7 @@ export default class GameOverOverlay extends React.Component {
               </ImageBackground>
             </TouchableOpacity>
           </ImageBackground>
-        </SafeAreaView>
-
-
-        // <View style={styles.container}>
-        //   <View style={styles.content}>
-        //     <TouchableOpacity style={styles.closeButton} onPress={this.props.closeOverlay}>
-        //       <Image style={styles.closeButtonImage} source={require('../assets/closebutton_bad.png')}/>
-        //     </TouchableOpacity>
-        //     <TouchableOpacity style={styles.button} onPress={this.props.restart}>
-        //       <Text>restart</Text>
-        //     </TouchableOpacity>
-        //     <TouchableOpacity style={styles.button} onPress={this.props.exit}>
-        //       <Text>exit</Text>
-        //     </TouchableOpacity>
-        //   </View>
-        // </View>
+        </View>
       );
     }
   }
@@ -106,9 +94,16 @@ let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
 
 var styles = StyleSheet.create({
-
-  screen: {
-    marginTop: 20
+  container: {
+    flex: 1,
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    backgroundColor:  'rgba(0,0,0,0.6)',
+    width: screenWidth,
+    height: screenHeight,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   backgroundImage: {
    width: screenWidth,
@@ -138,18 +133,18 @@ var styles = StyleSheet.create({
     flexDirection: 'row'
   },
   leftSnakeImage: {
-    width: (screenWidth - 30) / 3,
     height: 150,
-    marginRight: -15
+    width: 150*943/950,
+    marginRight: 0,
   },
   rightSnakeImage: {
-    width: (screenWidth - 30) / 3,
     height: 150,
-    marginLeft:-30
+    width: 150*717/994,
+    marginLeft: 0
   },
   contactImage: {
-    width: (screenWidth + 30) / 3,
     height: 150,
+    width: 150*707/992,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center'
@@ -206,7 +201,8 @@ var styles = StyleSheet.create({
   },
   contractText: {
     color: '#000',
-    fontSize: 18
+    fontSize: 16,
+    marginTop: 5,
   },
   contractDetails: {
     color: '#000',
@@ -218,37 +214,4 @@ var styles = StyleSheet.create({
   smallTouchableButton: {
     marginBottom: 50
   }
-
-
-
-
-  // --------------------------------//
-  // container: {
-  //   flex: 1,
-  //   position: 'absolute',
-  //   left: 0,
-  //   top: 0,
-  //   backgroundColor:  'rgba(0,0,0,0.6)',
-  //   width: screenWidth,
-  //   height: screenHeight,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  // },
-  // content: {
-  //   backgroundColor:  'rgba(0,0,0,1.0)',
-  //   width: screenWidth*4/5,
-  //   height: screenHeight*4/5,
-  //   position: 'relative',
-  // },
-  // closeButton: {
-  //   position: 'absolute',
-  //   right: 0,
-  //   top: 0,
-  // },
-  // button: { // DELETE ME
-  //   backgroundColor: "#F00",
-  //   marginTop: 100,
-  //   marginLeft: "25%",
-  //   width: "50%",
-  // }
 });

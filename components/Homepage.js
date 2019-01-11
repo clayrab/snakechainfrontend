@@ -12,6 +12,7 @@ import SafeAreaView from 'react-native-safe-area-view';
 import GameHistory from './GameHistory.js';
 import {context} from "../utils/Context.js";
 import {asyncStore, getFromAsyncStore, removeItemValue} from "../utils/AsyncStore.js";
+import CONSTANTS from '../Constants.js';
 
 mineImages = [
   require('../assets/homepage/mine/mine0.png'),
@@ -58,12 +59,12 @@ export default class Homepage extends React.Component {
       }
       this.setState({loading: true});
       let jwt = await getFromAsyncStore("jwt");
-      fetch(`${context.host}/getuser`, {
+      fetch(`${context.host}:${context.port}/getUser`, {
         method: "GET", // *GET, POST, PUT, DELETE, etc.
         headers: {
             "Content-Type": "application/json; charset=utf-8",
+            //"Content-Type": "application/x-www-form-urlencoded",
             "Authorization": "JWT " + jwt,
-            //application/x-www-form-urlencoded on Postman... hmmm
         },
       }).then(async(response) => {
         var resp = await response.json();
@@ -73,8 +74,7 @@ export default class Homepage extends React.Component {
         }else if(resp) {
           let minePercent = (resp.haul/resp.mineMax).toPrecision(2);
           let mineGraphicIndex = (resp.haul/resp.mineMax).toPrecision(1);
-          let weiPerEth = 1000000000000000000;
-          let ethBal = (resp.eth/weiPerEth).toPrecision(4);
+          let ethBal = (resp.eth/CONSTANTS.WEIPERETH).toPrecision(4);
           this.setState({
             loading: false,
             ethBal: ethBal,
@@ -136,7 +136,7 @@ export default class Homepage extends React.Component {
             <View style={styles.contentTop}>
               <ImageBackground source={require('../assets/homepage/snakechain.png')} style={styles.snakechain}></ImageBackground>
               <View style={styles.iconsHolder}>
-                <ImageBackground source={require('../assets/homepage/profile.png')} style={styles.profile}></ImageBackground>
+                <Text style={styles.profile}>Town</Text>
                 <ImageBackground source={require('../assets/homepage/powerups.png')} style={styles.powerups}></ImageBackground>
               </View>
             </View>

@@ -30,113 +30,110 @@ export default class GameHistory extends React.Component {
       //this.props.closeOverlay()
       return (
         //<ImageBackground source={require('../assets/wallet/screenBG2.png')}
-
         <View style={styles.container}>
           <TouchableOpacity style={styles.closeButton} onPress={this.props.closeOverlay}>
             <Image style={styles.closeButtonImage} source={require('../assets/closebutton_bad.png')}/>
           </TouchableOpacity>
-          
-            <ImageBackground style={styles.backgroundImage} resizeMode="cover">
-              <View style={styles.topView}>
-                <View style={styles.topHalfView}>
-                  <Text style={[styles.buttonText, styles.historyLabelText, {marginTop: 10, fontSize: 18, marginBottom: 10}]}>
-                    YOUR SNAKE MINE
+          <ImageBackground style={styles.backgroundImage} resizeMode="cover">
+            <View style={styles.topView}>
+              <View style={styles.topHalfView}>
+                <Text style={[styles.buttonText, styles.historyLabelText, {marginTop: 10, fontSize: 18, marginBottom: 10}]}>
+                  YOUR SNAKE MINE
+                </Text>
+                <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage} resizeMode="contain">
+                  <Text style={[styles.buttonText, styles.headerLabelText, styles.opacityFont]}>
+                    REMAINING MINE POTENTIAL
                   </Text>
-                  <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage} resizeMode="contain">
-                    <Text style={[styles.buttonText, styles.headerLabelText, styles.opacityFont]}>
-                      REMAINING MINE POTENTIAL
-                    </Text>
-                    <Text style={[styles.buttonText, styles.headerText]}>
-                      300
-                    </Text>
-                  </ImageBackground>
-                  <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage} resizeMode="contain">
-                    <Text style={[styles.buttonText, styles.headerLabelText, styles.opacityFont]}>
-                      GAME PLAYED
-                    </Text>
-                    <Text style={[styles.buttonText, styles.headerText]}>
-                      23
-                    </Text>
-                  </ImageBackground>
-                  <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage} resizeMode="contain">
-                    <Text style={[styles.buttonText, styles.headerLabelText, styles.opacityFont]}>
-                      AVERAGE POOR GAME
-                    </Text>
-                    <Text style={[styles.buttonText, styles.headerText]}>
-                      101
-                    </Text>
-                  </ImageBackground>
-                </View>
-                <View style={styles.topHalfView}>
-                  <ImageBackground source={require('../assets/gamehistory/liquid.png')} style={styles.liquidImage} resizeMode="contain" >
-                    <Text style={[styles.buttonText, styles.historyLabelText, styles.liquidText]}>
-                      30%
-                    </Text>
-                  </ImageBackground>
-                </View>
-              </View>
-               <ImageBackground source={require('../assets/gamehistory/trackBG.png')} style={styles.trackBGImage} resizeMode="contain">
-                <View style={styles.leftTrackNo}>
-                  <Text style={[styles.buttonText, styles.snakeNoText]}>100</Text>
-                </View>
-                <TouchableOpacity style={styles.rightTrackContent}>
-                  <ImageBackground source={require('../assets/gamehistory/mintbutton.png')} style={styles.buttonImage} resizeMode="contain">
-                    <Text style={[styles.buttonText, styles.historyLabelText]}>MINT UNREFINED</Text>
-                    <Text style={[styles.buttonText, styles.historyLabelText]}>SNAKECHAIN</Text>
-                  </ImageBackground>
-                </TouchableOpacity>
-              </ImageBackground>
-              <View style={styles.contentView}>
-                <ImageBackground source={require('../assets/gamehistory/GHBG.png')} style={[styles.contentImageBG, {flexDirection: 'column'}]} resizeMode="contain">
-                  <ImageBackground source={require('../assets/gamehistory/ghButtonBG.png')} style={[styles.historyBG]} resizeMode="contain">
-                    <View style={styles.historyLeftView}>
-                      <Text style={[styles.buttonText, styles.historyLabelText]}>SIMPLE</Text>
-                      <Text style={[styles.buttonText, styles.historyLabelText]}>SNAKE</Text>
-                    </View>
-                    <Image source={require('../assets/gamehistory/Line.png')} style={styles.historySepImage} resizeMode="contain"/>
-                    <View style={styles.historyLeftView}>
-                      <Text style={[styles.buttonText, styles.historyLabelText]}>3</Text>
-                      <Text style={[styles.buttonText, styles.historyLabelText, styles.opacityFont]}>POWER UPS</Text>
-                    </View>
-                    <View style={styles.historyLeftView}>
-                      <Text style={[styles.buttonText, styles.historyLabelText]}>50</Text>
-                      <Text style={[styles.buttonText, styles.historyLabelText, styles.opacityFont]}>SNAKE</Text>
-                    </View>
-                  </ImageBackground>
-                  <ImageBackground source={require('../assets/gamehistory/ghButtonBG.png')} style={[styles.historyBG]} resizeMode="contain">
-                    <View style={styles.historyLeftView}>
-                      <Text style={[styles.buttonText, styles.historyLabelText]}>SIMPLE</Text>
-                      <Text style={[styles.buttonText, styles.historyLabelText]}>SNAKE</Text>
-                    </View>
-                    <Image source={require('../assets/gamehistory/Line.png')} style={styles.historySepImage} resizeMode="contain"/>
-                    <View style={styles.historyLeftView}>
-                      <Text style={[styles.buttonText, styles.historyLabelText]}>3</Text>
-                      <Text style={[styles.buttonText, styles.historyLabelText, styles.opacityFont]}>POWER UPS</Text>
-                    </View>
-                    <View style={styles.historyLeftView}>
-                      <Text style={[styles.buttonText, styles.historyLabelText]}>50</Text>
-                      <Text style={[styles.buttonText, styles.historyLabelText, styles.opacityFont]}>SNAKE</Text>
-                    </View>
-                  </ImageBackground>
-                  <ImageBackground source={require('../assets/gamehistory/ghButtonBG.png')} style={[styles.historyBG]} resizeMode="contain">
-                    <View style={styles.historyLeftView}>
-                      <Text style={[styles.buttonText, styles.historyLabelText]}>SIMPLE</Text>
-                      <Text style={[styles.buttonText, styles.historyLabelText]}>SNAKE</Text>
-                    </View>
-                    <Image source={require('../assets/gamehistory/Line.png')} style={styles.historySepImage} resizeMode="contain"/>
-                    <View style={styles.historyLeftView}>
-                      <Text style={[styles.buttonText, styles.historyLabelText]}>3</Text>
-                      <Text style={[styles.buttonText, styles.historyLabelText, styles.opacityFont]}>POWER UPS</Text>
-                    </View>
-                    <View style={styles.historyLeftView}>
-                      <Text style={[styles.buttonText, styles.historyLabelText]}>50</Text>
-                      <Text style={[styles.buttonText, styles.historyLabelText, styles.opacityFont]}>SNAKE</Text>
-                    </View>
-                  </ImageBackground>
+                  <Text style={[styles.buttonText, styles.headerText]}>
+                    300
+                  </Text>
+                </ImageBackground>
+                <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage} resizeMode="contain">
+                  <Text style={[styles.buttonText, styles.headerLabelText, styles.opacityFont]}>
+                    GAME PLAYED
+                  </Text>
+                  <Text style={[styles.buttonText, styles.headerText]}>
+                    23
+                  </Text>
+                </ImageBackground>
+                <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage} resizeMode="contain">
+                  <Text style={[styles.buttonText, styles.headerLabelText, styles.opacityFont]}>
+                    AVERAGE POOR GAME
+                  </Text>
+                  <Text style={[styles.buttonText, styles.headerText]}>
+                    101
+                  </Text>
                 </ImageBackground>
               </View>
+              <View style={styles.topHalfView}>
+                <ImageBackground source={require('../assets/gamehistory/liquid.png')} style={styles.liquidImage} resizeMode="contain" >
+                  <Text style={[styles.buttonText, styles.historyLabelText, styles.liquidText]}>
+                    30%
+                  </Text>
+                </ImageBackground>
+              </View>
+            </View>
+             <ImageBackground source={require('../assets/gamehistory/trackBG.png')} style={styles.trackBGImage} resizeMode="contain">
+              <View style={styles.leftTrackNo}>
+                <Text style={[styles.buttonText, styles.snakeNoText]}>100</Text>
+              </View>
+              <TouchableOpacity style={styles.rightTrackContent}>
+                <ImageBackground source={require('../assets/gamehistory/mintbutton.png')} style={styles.buttonImage} resizeMode="contain">
+                  <Text style={[styles.buttonText, styles.historyLabelText]}>MINT UNREFINED</Text>
+                  <Text style={[styles.buttonText, styles.historyLabelText]}>SNAKECHAIN</Text>
+                </ImageBackground>
+              </TouchableOpacity>
             </ImageBackground>
-
+            <View style={styles.contentView}>
+              <ImageBackground source={require('../assets/gamehistory/GHBG.png')} style={[styles.contentImageBG, {flexDirection: 'column'}]} resizeMode="contain">
+                <ImageBackground source={require('../assets/gamehistory/ghButtonBG.png')} style={[styles.historyBG]} resizeMode="contain">
+                  <View style={styles.historyLeftView}>
+                    <Text style={[styles.buttonText, styles.historyLabelText]}>SIMPLE</Text>
+                    <Text style={[styles.buttonText, styles.historyLabelText]}>SNAKE</Text>
+                  </View>
+                  <Image source={require('../assets/gamehistory/Line.png')} style={styles.historySepImage} resizeMode="contain"/>
+                  <View style={styles.historyLeftView}>
+                    <Text style={[styles.buttonText, styles.historyLabelText]}>3</Text>
+                    <Text style={[styles.buttonText, styles.historyLabelText, styles.opacityFont]}>POWER UPS</Text>
+                  </View>
+                  <View style={styles.historyLeftView}>
+                    <Text style={[styles.buttonText, styles.historyLabelText]}>50</Text>
+                    <Text style={[styles.buttonText, styles.historyLabelText, styles.opacityFont]}>SNAKE</Text>
+                  </View>
+                </ImageBackground>
+                <ImageBackground source={require('../assets/gamehistory/ghButtonBG.png')} style={[styles.historyBG]} resizeMode="contain">
+                  <View style={styles.historyLeftView}>
+                    <Text style={[styles.buttonText, styles.historyLabelText]}>SIMPLE</Text>
+                    <Text style={[styles.buttonText, styles.historyLabelText]}>SNAKE</Text>
+                  </View>
+                  <Image source={require('../assets/gamehistory/Line.png')} style={styles.historySepImage} resizeMode="contain"/>
+                  <View style={styles.historyLeftView}>
+                    <Text style={[styles.buttonText, styles.historyLabelText]}>3</Text>
+                    <Text style={[styles.buttonText, styles.historyLabelText, styles.opacityFont]}>POWER UPS</Text>
+                  </View>
+                  <View style={styles.historyLeftView}>
+                    <Text style={[styles.buttonText, styles.historyLabelText]}>50</Text>
+                    <Text style={[styles.buttonText, styles.historyLabelText, styles.opacityFont]}>SNAKE</Text>
+                  </View>
+                </ImageBackground>
+                <ImageBackground source={require('../assets/gamehistory/ghButtonBG.png')} style={[styles.historyBG]} resizeMode="contain">
+                  <View style={styles.historyLeftView}>
+                    <Text style={[styles.buttonText, styles.historyLabelText]}>SIMPLE</Text>
+                    <Text style={[styles.buttonText, styles.historyLabelText]}>SNAKE</Text>
+                  </View>
+                  <Image source={require('../assets/gamehistory/Line.png')} style={styles.historySepImage} resizeMode="contain"/>
+                  <View style={styles.historyLeftView}>
+                    <Text style={[styles.buttonText, styles.historyLabelText]}>3</Text>
+                    <Text style={[styles.buttonText, styles.historyLabelText, styles.opacityFont]}>POWER UPS</Text>
+                  </View>
+                  <View style={styles.historyLeftView}>
+                    <Text style={[styles.buttonText, styles.historyLabelText]}>50</Text>
+                    <Text style={[styles.buttonText, styles.historyLabelText, styles.opacityFont]}>SNAKE</Text>
+                  </View>
+                </ImageBackground>
+              </ImageBackground>
+            </View>
+          </ImageBackground>
         </View>
       );
     }
