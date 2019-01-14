@@ -9,12 +9,14 @@ import {
 } from 'react-native';
 import { Font } from 'expo';
 import SafeAreaView from 'react-native-safe-area-view';
-import GameHistory from './GameHistory.js';
+
+import CONSTANTS from '../Constants.js';
 import {context} from "../utils/Context.js";
 import {asyncStore, getFromAsyncStore, removeItemValue} from "../utils/AsyncStore.js";
-import CONSTANTS from '../Constants.js';
+import GameHistoryOverlay from './GameHistoryOverlay.js';
+import SelectLevelOverlay from '../components/SelectLevelOverlay.js';
 
-mineImages = [
+let mineImages = [
   require('../assets/homepage/mine/mine0.png'),
   require('../assets/homepage/mine/mine10.png'),
   require('../assets/homepage/mine/mine20.png'),
@@ -27,78 +29,73 @@ mineImages = [
   require('../assets/homepage/mine/mine90.png'),
   require('../assets/homepage/mine/mine100.png'),
 ]
-var overlays = { "MINE": 0 };
+var overlays = { "MINE": 0, "SELECTLEVEL": 1 };
 export default class Homepage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       overlay: -1,
-      loading: false,
-      ethBal: -1,
-      snekBal: -1,
-      haul: -1,
-      mineImg: mineImages[0],
-      minePercent: 0,
+      loading: true,
+      mineTextStyle: { display: "none",},
+      titleBarTextStyle: { display: "none",},
     };
     this.closeOverlay = this.closeOverlay.bind(this);
+  }
+  static getDerivedStateFromProps(props, state) {
+    //let ethBal = (props.user.eth/CONSTANTS.WEIPERETH).toPrecision(4);
+    if(props.user.name != "") {
+      console.log("user loaded")
+      return {
+        loading: false,
+      };
+    }
   }
   async componentDidMount(){
     try{
       await Font.loadAsync({
         'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
       });
-      styles.titleBarText = {
-        color: "#fab523",
-        fontSize: 18,
-        fontFamily: 'riffic-free-bold',
-      }
-      styles.mineText = {
-        color: "#fab523",
-        fontSize: 18,
-        fontFamily: 'riffic-free-bold',
-      }
-      this.setState({loading: true});
-      let jwt = await getFromAsyncStore("jwt");
-      fetch(`${context.host}:${context.port}/getUser`, {
-        method: "GET", // *GET, POST, PUT, DELETE, etc.
-        headers: {
-            "Content-Type": "application/json; charset=utf-8",
-            //"Content-Type": "application/x-www-form-urlencoded",
-            "Authorization": "JWT " + jwt,
+      this.setState({
+        mineTextStyle: {
+          color: "#fab523",
+          fontFamily: 'riffic-free-bold',
         },
-      }).then(async(response) => {
-        var resp = await response.json();
-        if(resp.error){
-          alert(resp.error);
-          this.setState({loading: false});
-        }else if(resp) {
-          let minePercent = (resp.haul/resp.mineMax).toPrecision(2);
-          let mineGraphicIndex = (resp.haul/resp.mineMax).toPrecision(1);
-          let ethBal = (resp.eth/CONSTANTS.WEIPERETH).toPrecision(4);
-          this.setState({
-            loading: false,
-            ethBal: ethBal,
-            snekBal: resp.snek,
-            haul: resp.unredeemed,
-            mineImg: mineImages[mineGraphicIndex],
-            minePercent: minePercent,
-          })
-        }
+        titleBarTextStyle: {
+          fontFamily: 'riffic-free-bold',
+        },
       });
+      //await this.setState({loading: true});
     } catch(error){
       alert(error);
-      this.setState({loading: false});
+      //this.setState({loading: false});
     }
     //this.setState({overlay: -1}); // a little "hack" to cause render() to fire
   }
   onMinePress = () => {
-    this.setState({overlay: overlays.MINE});
+    this.setState({overlay: overlays.MINE });
+  }
+  onMineHaul = () => {
+    this.setState({overlay: overlays.MINE });
+  }
+  onPlayPress = () => {
+    this.setState({overlay: overlays.SELECTLEVEL });
   }
   closeOverlay() {
-    console.log("closeOverlay")
     this.setState({overlay: -1});
   }
   render() {
+
+    console.log("homeagpe render")
+    console.lo
+    let mineGraphicIndex = Math.floor(10*this.props.user.haul/this.props.user.mineMax);
+    let mineTextColorStyle = {};
+    if(mineGraphicIndex > 6){
+      mineTextColorStyle = { color: "#333333", }
+      //  this.setState({})
+      // TODO change color of text
+    }
+    let mineImg = mineImages[mineGraphicIndex];
+    let minePercent = (100*this.props.user.haul/this.props.user.mineMax).toPrecision(2);
     return (
       <SafeAreaView style={styles.screen}>
         <ImageBackground source={require('../assets/homepage/back.png')} style={styles.backgroundImage}>
@@ -111,22 +108,20 @@ export default class Homepage extends React.Component {
             <ImageBackground source={require('../assets/homepage/coinbox.png')} style={styles.coinBox}>
               <View style={styles.titleBarSnekTextHolder}>
                 <View style={styles.top}></View>
-                <Text
-                  adjustsFontSizeToFit
-                  numberOfLines={1}
-                  style={styles.titleBarText}>
-                  {this.state.snekBal}
-                </Text>
+                {this.state.loading ? null :
+                  <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.titleBarText, this.state.titleBarTextStyle]}>
+                    {this.props.user.snek}
+                  </Text>
+                }
               </View>
             </ImageBackground>
             <ImageBackground source={require('../assets/homepage/ethbox.png')} style={styles.coinBox}>
               <View style={styles.titleBarEthTextHolder}>
-                <Text
-                  adjustsFontSizeToFit
-                  numberOfLines={1}
-                  style={styles.titleBarText}>
-                  {this.state.ethBal}
-                </Text>
+                {this.state.loading ? null :
+                  <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.titleBarText, this.state.titleBarTextStyle]}>
+                    {(this.props.user.eth/CONSTANTS.WEIPERETH).toPrecision(4)}
+                  </Text>
+                }
               </View>
             </ImageBackground>
           </ImageBackground>
@@ -141,23 +136,33 @@ export default class Homepage extends React.Component {
               </View>
             </View>
             <View style={styles.contentBottom}>
-              <TouchableOpacity style={styles.mine} onPress={this.onMinePress}>
-                <ImageBackground style={styles.mineImage} source={this.state.mineImg}>
-                  <Text style={styles.mineText}>{this.state.minePercent}%</Text>
-                </ImageBackground>
+              <TouchableOpacity style={styles.mine}
+                onPress={this.onMinePress}>
+                {this.state.loading ? null :
+                  <ImageBackground style={styles.mineImage} source={mineImg}>
+                    <Text style={[styles.mineText, this.state.mineTextStyle, mineTextColorStyle]}>
+                      {minePercent}%
+                    </Text>
+                  </ImageBackground>
+                }
               </TouchableOpacity>
               <View style={styles.bottomIconsHolder}>
-                <TouchableOpacity style={styles.playnow} onPress={this.props.onPlayPress}>
+                <TouchableOpacity style={styles.playnow}
+                  onPress={this.onPlayPress}>
                   <Image style={styles.playnowImage} source={require('../assets/homepage/playnow.png')}/>
                 </TouchableOpacity>
-                <ImageBackground source={require('../assets/homepage/gototown.png')} style={styles.gototown}></ImageBackground>
+                <TouchableOpacity
+                  onPress={this.onMineHaul}>
+                  <ImageBackground source={require('../assets/homepage/gototown.png')} style={styles.gototown}></ImageBackground>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
-          <GameHistory show={this.state.overlay == overlays.MINE} closeOverlay={this.closeOverlay}/>
+          <GameHistoryOverlay show={this.state.overlay == overlays.MINE} user={this.props.user} closeOverlay={this.closeOverlay}/>
+          <SelectLevelOverlay show={this.state.overlay == overlays.SELECTLEVEL} onSelectLevel={this.props.onSelectLevel}/>
         </ImageBackground>
       </SafeAreaView>
-    )
+    );
   }
 }
 let screenWidth = require('Dimensions').get('window').width;
@@ -211,7 +216,8 @@ let styles = StyleSheet.create({
     justifyContent: 'center',
   },
   titleBarText: {
-    display: "none", // need to load font first
+    color: "#fab523",
+    fontSize: 18,
   },
   contentHolder: {
     flex: 1,
@@ -262,7 +268,9 @@ let styles = StyleSheet.create({
     alignItems: 'center'
   },
   mineText: {
-    display: "none",
+    fontSize: 18,
+    paddingBottom: 90,
+    paddingLeft: 20,
   },
   bottomIconsHolder: {
     flexDirection: "column",

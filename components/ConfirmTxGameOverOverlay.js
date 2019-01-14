@@ -11,7 +11,7 @@ import SafeAreaView from 'react-native-safe-area-view';
 import { Font } from 'expo';
 import CONSTANTS from '../Constants.js';
 
-export default class GameOverOverlay extends React.Component {
+export default class ConfirmTxGameOverOverlay extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -22,28 +22,12 @@ export default class GameOverOverlay extends React.Component {
     styles.buttonText = {
       fontFamily: 'riffic-free-bold'
     }
-
-
-    
-
-
   }
   render() {
     if (!this.props.show) {
       return null;
     } else {
-      // Level and Time
-      // <ImageBackground source={require('../assets/gameover/darkLevelBG.png')} style={styles.darkLevelBG} resizeMode="contain">
-      //   <Text style={[styles.buttonText, styles.levelText]}>Level: 13</Text>
-      //   <Text style={[styles.buttonText, styles.levelText]}>Time: 5:00</Text>
-      // </ImageBackground>
 
-      //CLOSE BUTTON
-      // <View style={styles.topButtonView}>
-      //   <TouchableOpacity style={styles.closeButton}>
-      //     <ImageBackground source={require('../assets/wallet/closeBG.png')} style={styles.closeButtonImage} resizeMode="stretch" />
-      //   </TouchableOpacity>
-      // </View>
       return (
         <View style={styles.container}>
           <ImageBackground source={require('../assets/gameover/BG.png')} style={styles.backgroundImage} resizeMode="cover">
@@ -51,29 +35,12 @@ export default class GameOverOverlay extends React.Component {
               GAME OVER
             </Text>
             <Text style={[styles.buttonText, styles.selectionText]}>
-              You got <Text style={[styles.buttonText, styles.numberText]}>{this.props.gameOverInfo.score}</Text> more mined gold!
+              You will receive <Text style={[styles.buttonText, styles.numberText]}>{this.props.gameOverInfo.score}</Text> Snake Coin when the transaction is mined!
             </Text>
             <View style={styles.contractView}>
               <Image source={require('../assets/gameover/yellowsnake.png')} style={styles.leftSnakeImage} resizeMode="contain"/>
-              <ImageBackground source={require('../assets/gameover/contract.png')} style={styles.contactImage} resizeMode="contain">
-                <Text style={[styles.buttonText, styles.contractText]}>
-                  CONTRACT
-                </Text>
-                <Text style={[styles.buttonText, styles.contractDetails]}>
-                  Exchange you gold for minted snek coin now.{"\n"}{"\n"}
-                  {(this.props.miningPrice/CONSTANTS.WEIPERETH).toPrecision(4)} ETH.
-                </Text>
-              </ImageBackground>
               <Image source={require('../assets/gameover/greensnake.png')} style={styles.rightSnakeImage}  resizeMode="contain"/>
             </View>
-            <TouchableOpacity style={[styles.touchableButton, styles.smallTouchableButton]} onPress={this.props.onDoContract}>
-              <ImageBackground source={require('../assets/gameover/yellowButton.png')} style={styles.yellowButton} resizeMode="stretch">
-                <Text style={[styles.buttonText, styles.smallButtonBText]}>
-                  SIGN CONTRACT
-                </Text>
-              </ImageBackground>
-            </TouchableOpacity>
-
             <TouchableOpacity style={styles.touchableButton} onPress={this.props.restart}>
               <ImageBackground source={require('../assets/gameover/greenButton.png')} style={styles.largeButton} resizeMode="stretch">
                 <Text style={[styles.buttonText, styles.largeButtonBText]}>

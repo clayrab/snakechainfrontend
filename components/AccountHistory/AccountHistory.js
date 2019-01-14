@@ -76,7 +76,6 @@ export default class AccountHistory extends Component {
                       </View>
                     </ImageBackground>
                   </View>
-
                   <View style={styles.sendBtnCont}>
                     <ImageBackground  source={require('./../../assets/accounthistory/yellow-btn-bg.png')} style={styles.fullBg} resizeMode="contain">
                       <View style={[styles.centerStff, styles.sendBtnInnerCont]}>

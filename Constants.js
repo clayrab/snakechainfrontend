@@ -29,4 +29,5 @@ export default CONSTANTS = {
   BOARDCOLOR: "transparent",
   PELLETCOLOR: "black",
   WEIPERETH: 1000000000000000000,
+  LEVELS: {"FREE":0, "WILD": 1, "SCATTER1": 2, "SCATTER2": 3, "SCATTER3": 4, "BLOCK1": 5, "BLOCK2": 6, "BLOCK3": 7, },
 };

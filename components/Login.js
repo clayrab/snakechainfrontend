@@ -83,7 +83,7 @@ export default class Login extends React.Component {
   easterEgg = async() => {
     console.log("easteregg")
     easterEggCount = easterEggCount + 1;
-    if(easterEggCount > 5) {
+    if(easterEggCount > 3) {
       await this.setState({
         username: "clayrab",
         pw: "asdf",

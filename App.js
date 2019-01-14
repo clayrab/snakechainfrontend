@@ -6,27 +6,28 @@ import SocketIOClient from 'socket.io-client';
 import CONSTANTS from './Constants.js';
 import {asyncStore, getFromAsyncStore, removeItemValue} from "./utils/AsyncStore.js";
 import {context} from "./utils/Context.js";
+import {makeRetry} from "./utils/Retry.js";
 
 import Dpad from './sprites/Dpad.js';
 import Buttons from './sprites/Buttons.js';
 import Board from './sprites/Board.js';
 import Snek from './sprites/Snek.js';
 
-import Homepage from './components/Homepage.js';
-import PauseOverlay from './components/PauseOverlay.js';
-import GameOverOverlay from './components/GameOverOverlay.js';
-import AreYouSureOverlay from './components/AreYouSureOverlay.js';
-import SelectLevel from './components/SelectLevel.js';
-import Wallet from './components/Wallet.js';
-import Withdraw from './components/Withdraw.js';
 import AccountHistory from './components/AccountHistory.js';
-import GameHistory from './components/GameHistory.js';
-import SnakeMine from './components/SnakeMine.js';
+import AreYouSureOverlay from './components/AreYouSureOverlay.js';
+import ConfirmTxGameOverOverlay from './components/ConfirmTxGameOverOverlay.js';
+import ConfirmTxOverlay from './components/ConfirmTxOverlay.js';
+import DoMineOverlay from './components/DoMineOverlay.js';
+import GameOverOverlay from './components/GameOverOverlay.js';
+import Homepage from './components/Homepage.js';
 import Login from './components/Login.js';
 import Loading from './components/Loading.js';
 import LoadingOverlay from './components/LoadingOverlay.js';
-import ConfirmTxOverlay from './components/ConfirmTxOverlay.js';
-import DoMineOverlay from './components/DoMineOverlay.js';
+import PauseOverlay from './components/PauseOverlay.js';
+import SnakeTown from './components/SnakeTown.js';
+import SignUp from './components/Signup.js';
+import Wallet from './components/Wallet.js';
+import Withdraw from './components/Withdraw.js';
 
 const connectionConfig = {
   jsonp: false,
@@ -36,8 +37,8 @@ const connectionConfig = {
   transports: ['websocket'],
  };
 
-var screens = { "GAME": 0, "HOME": 1, "SELECTLEVEL": 2, "WALLET": 3, "PREFERENCES": 4, "PROFILE": 5, "ACCOUNTHISTORY": 6, "GAMEHISTORY": 7, "LOGIN": 8 , "LOADING": 9 };
-var overlays = {"PAUSE": 0, "GAMEOVER": 1, "DOMINE": 2, "DOMINEFREE": 3, "MINE": 4, "AREYOUSURE": 5, "LOADING": 6, "CONFIRMTX": 7};
+var screens = { "GAME": 0, "HOME": 1, "LOADING": 2, "WALLET": 3, "PREFERENCES": 4, "PROFILE": 5, "ACCOUNTHISTORY": 6, "GAMEHISTORY": 7, "LOGIN": 8, };
+var overlays = {"PAUSE": 0, "GAMEOVER": 1, "DOMINE": 2, "DOMINEFREE": 3, "MINE": 4, "AREYOUSURE": 5, "LOADING": 6, "CONFIRMTX": 7, "TRANSACTION": 8, };
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -53,6 +54,17 @@ export default class App extends React.Component {
     })
     var board = [];
     this.state = {
+      user: {
+        eth: 0,
+        snek: 0,
+        pubkey: "",
+        name: "",
+        unredeemed: 0,
+        mineMax: 1000,
+        haul: 0,
+        gamecount: 0,
+        totalhaul: 0,
+      },
       running: false,
       screen: screens.LOGIN,
       pressedButton: CONSTANTS.DPADSTATES.UP,
@@ -78,7 +90,7 @@ export default class App extends React.Component {
     this.pause = this.pause.bind(this);
     this.onDied = this.onDied.bind(this);
     this.onSelectLevelPlayPress = this.onSelectLevelPlayPress.bind(this);
-    this.onPlayPress = this.onPlayPress.bind(this);
+    this.onSelectLevel = this.onSelectLevel.bind(this);
     this.doMine = this.doMine.bind(this);
     this.doMineFree = this.doMineFree.bind(this);
     this.doMineConfirm = this.doMineConfirm.bind(this);
@@ -96,24 +108,67 @@ export default class App extends React.Component {
     // //var data = { user: this.state.username, pw: this.state.pw };
     // var data = {howmany: 1000, price: 30000 };
     var response = await fetch(`${context.host}:${context.port}/getPrices`, {
-    //var response = await fetch(`{context.host}:{context.port}/getPrices`, {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
       headers: {
           "Content-Type": "application/json; charset=utf-8",
-    //       "Authorization": "JWT " + jwt,
-    //       //application/x-www-form-urlencoded on Postman... hmmm
       },
     });
     var resp = await response.json();
     if(resp.error){
       alert(resp.error);
     }else if(resp.miningPrice) {
-      console.log("set mining price")
-      console.log(resp.miningPrice)
       this.setState({miningPrice: resp.miningPrice});
     }
   }
+  async loggedIn(jwt) {
+    console.log("LoggedIn")
+    await asyncStore("jwt", jwt);
+    if(this.state.screen == screens.LOGIN){
+      this.setState({screen: screens.HOME});
+    }
+    // // makeRetrier
+    // //let jwt = await getFromAsyncStore("jwt");
+    //let prom = new Promise(function(resolve, reject) {
+    let prom = async() => {
+      return await new Promise((resolve, reject) => {
+        console.log("getuser")
+        fetch(`${context.host}:${context.port}/getUser`, {
+          method: "GET", // *GET, POST, PUT, DELETE, etc.
+          headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              //"Content-Type": "application/x-www-form-urlencoded",
+              "Authorization": "JWT " + jwt,
+          },
+        }).then(async(response) => {
+          var resp = await response.json();
+          if(!resp.error){
+            if(resp) {
+              console.log("set user")
+              resolve({loading: false, user: resp})
+            } else{
+              alert("There was an error, no response.");
+              resolve({loading: false});
+            }
+          } else {
+            alert(resp.error);
+            resolve({loading: false});
+          }
+        }).catch(err => {throw err});
+      }).catch(err => {throw err});
+    }
+    //let retry = 
+    let state = await makeRetry()(100, prom);
+    console.log("************************************** state *************************************")
+    console.log(state)
+    this.setState(state);
+    //   console.log(this)
+    // makeRetrier(promise(), 1000).then((state)=>{
+    //   this.setState(state);
+    // });
 
+    //this.setState();
+    //this.setState({running: true, overlay: -1});
+  }
   onDpadChange(direction) {
     if (direction != CONSTANTS.DPADSTATES.NONE && direction != this.state.pressedButton) {
       this.setState({pressedButton: direction});
@@ -162,8 +217,8 @@ export default class App extends React.Component {
   onPausePress(){
     this.setState({running: false, overlay: overlays.PAUSE});
   }
-  async onPlayPress() {
-    this.setState({screen: screens.SELECTLEVEL});
+  async onSelectLevel(levelNumber) {
+    this.setState({screen: screens.GAME, level: levelNumber});
   }
   onSelectLevelPlayPress() {
     this.setState({screen: screens.GAME});
@@ -186,10 +241,9 @@ export default class App extends React.Component {
     var resp = await response.json();
     if(resp.error){
       alert(resp.error);
-      lastTxHash
       await this.setState({overlay: overlays.GAMEOVER});
     }else if(resp.txhash) {
-      await this.setState({overlay: overlays.GAMEOVER});
+      await this.setState({overlay: overlays.TRANSACTION});
     } else {
       alert("Error sending transaction");
     }
@@ -206,36 +260,23 @@ export default class App extends React.Component {
   closeOverlay() {
     this.setState({running: true, overlay: -1});
   }
-  async loggedIn(jwt) {
-    await asyncStore("jwt", jwt);
-    if(this.state.screen == screens.LOGIN){
-      this.setState({screen: screens.HOME});
-    }
-    //this.setState({running: true, overlay: -1});
-  }
+
   render() {
     if(this.state.screen == screens.HOME){
       return (
-        <Homepage onPlayPress={this.onPlayPress}></Homepage>
+        <Homepage onSelectLevel={this.onSelectLevel} user={this.state.user}></Homepage>
       );
     }else if(this.state.screen == screens.LOGIN){
       return (
-        // <GameHistory />
-        //<AccountHistory />
-        // <GameOverOverlay
-        //     show={true}
-        //   />
-        //<Wallet />
-        //<Withdraw/>
-        //<SnakeMine show={true}/>
-        //<Homepage onPlayPress={this.onPlayPress.bind(this)} onPausePress={this.onPausePress.bind(this)}></Homepage>
-        //<PauseOverlay show={true} closeOverlay={this.closeOverlay.bind(this)}/>
-        //<Homepage onPlayPress={this.onPlayPress}></Homepage>
         <Login loggedIn={this.loggedIn}></Login>
       );
-    }else if(this.state.screen == screens.SELECTLEVEL){
+    }else if(this.state.screen == screens.SIGNUP){
       return (
-        <SelectLevel onSelectLevelPlayPress={this.onSelectLevelPlayPress}></SelectLevel>
+        <SignUp/>
+      );
+    }else if(this.state.screen == screens.SNAKETOWN){
+      return (
+        <SnakeTown/>
       );
     }else if(this.state.screen == screens.GAME){
       return (
@@ -270,7 +311,7 @@ export default class App extends React.Component {
             back={this.doMineBack} />
           <AreYouSureOverlay
             show={this.state.overlay == overlays.AREYOUSURE}
-            text={`Are you sure you want to pay ${this.state.miningPrice} for ${this.state.gameOverInfo.score} Snake Coins?`}
+            text={`Pay ${(this.state.miningPrice/CONSTANTS.WEIPERETH).toPrecision(4)} ETH for ${this.state.gameOverInfo.score} Snake Coins.\n\nAre you sure?`}
             onYes={this.onDoContract}
             onNo={this.onDontDoContract}/>
           <LoadingOverlay
@@ -279,7 +320,11 @@ export default class App extends React.Component {
             show={this.state.overlay == overlays.CONFIRMTX}
             transactionId={this.state.lastTxHash}
             onOk={this.onConfirmTxOk}/>
-            />
+          <ConfirmTxGameOverOverlay
+            show={this.state.overlay == overlays.TRANSACTION}
+            gameOverInfo={this.state.gameOverInfo}
+            restart={this.restart}
+            exit={this.exit} />
         </SafeAreaView>
       );
     }else if(this.state.screen == screens.WALLET) {

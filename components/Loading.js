@@ -20,5 +20,5 @@ export default class Loading extends React.Component {
   }
 }
 let styles = StyleSheet.create({
-  
+
 });
