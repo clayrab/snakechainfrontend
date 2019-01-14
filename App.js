@@ -121,7 +121,7 @@ export default class App extends React.Component {
     }
   }
   async loggedIn(jwt) {
-    console.log("LoggedIn")
+    //console.log("LoggedIn")
     await asyncStore("jwt", jwt);
     if(this.state.screen == screens.LOGIN){
       this.setState({screen: screens.HOME});
@@ -131,7 +131,7 @@ export default class App extends React.Component {
     //let prom = new Promise(function(resolve, reject) {
     let prom = async() => {
       return await new Promise((resolve, reject) => {
-        console.log("getuser")
+        //console.log("getuser")
         fetch(`${context.host}:${context.port}/getUser`, {
           method: "GET", // *GET, POST, PUT, DELETE, etc.
           headers: {
@@ -143,7 +143,7 @@ export default class App extends React.Component {
           var resp = await response.json();
           if(!resp.error){
             if(resp) {
-              console.log("set user")
+              //console.log("set user")
               resolve({loading: false, user: resp})
             } else{
               alert("There was an error, no response.");
@@ -156,18 +156,11 @@ export default class App extends React.Component {
         }).catch(err => {throw err});
       }).catch(err => {throw err});
     }
-    //let retry = 
-    let state = await makeRetry()(100, prom);
+    //let retry =
+    let state = await makeRetry("getUser!")(1500, prom);
     console.log("************************************** state *************************************")
     console.log(state)
     this.setState(state);
-    //   console.log(this)
-    // makeRetrier(promise(), 1000).then((state)=>{
-    //   this.setState(state);
-    // });
-
-    //this.setState();
-    //this.setState({running: true, overlay: -1});
   }
   onDpadChange(direction) {
     if (direction != CONSTANTS.DPADSTATES.NONE && direction != this.state.pressedButton) {

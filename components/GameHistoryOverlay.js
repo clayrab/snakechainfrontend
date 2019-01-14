@@ -11,6 +11,7 @@ import SafeAreaView from 'react-native-safe-area-view';
 import { Font } from 'expo';
 import {asyncStore, getFromAsyncStore, removeItemValue} from "../utils/AsyncStore.js";
 import {makeRetry} from "../utils/Retry.js";
+import {context} from "../utils/Context.js";
 
 let mineImages = [
   require('../assets/homepage/mine/mine0.png'),
@@ -48,19 +49,18 @@ export default class GameHistoryOverlay extends React.Component {
     await Font.loadAsync({
       'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
     });
+    //setstate below will cause this to be applied. No need to make it a member of this.state.
     styles.buttonText = {
       fontFamily: 'riffic-free-bold'
-    }
-    console.log("get jwt");
+    };
     let prom = async() => {
       return await new Promise((resolve, reject) => {
-        console.log("getGames")
         getFromAsyncStore("jwt").then((jwt) =>{
           fetch(`${context.host}:${context.port}/getGames`, {
             method: "GET", // *GET, POST, PUT, DELETE, etc.
             headers: {
-                "Content-Type": "application/json; charset=utf-8",
-                //"Content-Type": "application/x-www-form-urlencoded",
+                //"Content-Type": "application/json; charset=utf-8",
+                "Content-Type": "application/x-www-form-urlencoded",
                 "Authorization": "JWT " + jwt,
             },
           }).then(async(response) => {
@@ -69,23 +69,19 @@ export default class GameHistoryOverlay extends React.Component {
               alert(resp.error);
               resolve({loading: false});
             }else if(resp) {
-              console.log("got games");
-              console.log(resp);
               resolve({games: resp.games});
             }
-          }).catch(err => {throw err});
+          }).catch(
+            err => {
+              throw err
+            });
         }).catch(err => {throw err});
-        console.log("getgames");
       }).catch(err => {throw err});
     }
-    let state = await makeRetry()(1000, prom);
+    let state = await makeRetry()(1500, prom);
     console.log("************************************** getGames state *************************************")
     console.log(state)
     this.setState(state);
-    // console.log("************************************** state *************************************")
-    // console.log(state)
-    // this.setState(state);
-
   }
   render() {
     if (!this.props.show) {
