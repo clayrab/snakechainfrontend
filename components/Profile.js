@@ -73,7 +73,7 @@ export default class Profile extends React.Component {
             <View style={styles.rankChildView}>
               <View style={styles.childView}>
                 <Text style={[this.state.buttonDynamicStyle, styles.keyText]}>
-                  Total Winnings: 
+                  Total Winnings:
                 </Text>
               </View>
               <View style={styles.childView}>
@@ -87,7 +87,7 @@ export default class Profile extends React.Component {
           <View style={styles.rankChildView}>
             <View style={styles.childView}>
                 <Text style={[this.state.buttonDynamicStyle, styles.keyText]}>
-                  Rank 
+                  Rank
                 </Text>
               </View>
               <View style={styles.childView}>

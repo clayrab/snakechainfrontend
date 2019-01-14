@@ -12,9 +12,12 @@ import {
 import SafeAreaView from 'react-native-safe-area-view';
 import { Font } from 'expo';
 
+import CONSTANTS from '../Constants.js';
+
 export default class SnakeMine extends React.Component {
   constructor(props) {
     super(props);
+    this.makeFnOnSelectLevel = this.makeFnOnSelectLevel.bind(this);
   }
   async componentDidMount(){
     await Font.loadAsync({
@@ -24,6 +27,19 @@ export default class SnakeMine extends React.Component {
       fontFamily: 'riffic-free-bold'
     }
   }
+  makeFnOnSelectLevel(level) {
+    let that = this;
+    //let theLevel = level;
+    let onSelectLevel = () => {
+      console.log(level)
+      that.props.onSelectLevel(level);
+    }
+    return onSelectLevel;
+  //   // return (() => {
+  //   //   this.props.onSelectLevel(level);
+  //   // });
+  }
+
   render() {
     if (!this.props.show) {
       return null;
@@ -35,27 +51,31 @@ export default class SnakeMine extends React.Component {
               <Image source={require('../assets/wallet/closeBG.png')} style={styles.closeButtonImage} resizeMode="stretch" />
             </TouchableOpacity>
             <View style={styles.buttonView}>
-              <ImageBackground style={styles.brownButton} source={require('../assets/snakemine/title.png')} resizeMode={'stretch'} >
-                <Text style={[styles.buttonText, styles.titleText]}>
-                  SELECT SNAKE MINE
-                </Text>
-              </ImageBackground>
+
+                <ImageBackground style={styles.brownButton} source={require('../assets/snakemine/title.png')} resizeMode={'stretch'} >
+                  <Text style={[styles.buttonText, styles.titleText]}>
+                    SELECT SNAKE MINE
+                  </Text>
+                </ImageBackground>
+
             </View>
             <ScrollView style={styles.contentView}>
               <View style={styles.childContentView}>
                 <View style={styles.childRowContent}>
-                  <ImageBackground source={require('../assets/snakemine/leftBG.png')}
-                    style={styles.snakeChainBG} resizeMode={'stretch'}>
-                    <Text style={[styles.buttonText, styles.headerSC]}>
-                      Original
-                    </Text>
-                    <Image source={require('../assets/snakemine/sc1.png')} style={styles.scImage} resizeMode={'stretch'}/>
-                    <ImageBackground source={require('../assets/snakemine/leftDetails.png')} style={styles.scNameBG} resizeMode={'stretch'}>
-                      <Text style={[styles.buttonText, styles.freeText]}>
-                        FREE
+                  <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.FREE)}>
+                    <ImageBackground source={require('../assets/snakemine/leftBG.png')}
+                      style={styles.snakeChainBG} resizeMode={'stretch'}>
+                      <Text style={[styles.buttonText, styles.headerSC]}>
+                        Original
                       </Text>
+                      <Image source={require('../assets/snakemine/sc1.png')} style={styles.scImage} resizeMode={'stretch'}/>
+                      <ImageBackground source={require('../assets/snakemine/leftDetails.png')} style={styles.scNameBG} resizeMode={'stretch'}>
+                        <Text style={[styles.buttonText, styles.freeText]}>
+                          FREE
+                        </Text>
+                      </ImageBackground>
                     </ImageBackground>
-                  </ImageBackground>
+                  </TouchableOpacity>
                   <ImageBackground source={require('../assets/snakemine/textPart.png')}
                     style={styles.scTitleBG} resizeMode={'stretch'}>
                     <Text style={[styles.buttonText, styles.avgTitleText]}>
@@ -64,18 +84,20 @@ export default class SnakeMine extends React.Component {
                   </ImageBackground>
                 </View>
                 <View style={styles.childRowContent}>
-                  <ImageBackground source={require('../assets/snakemine/leftBG.png')}
-                    style={styles.snakeChainBG} resizeMode={'stretch'}>
-                    <Text style={[styles.buttonText, styles.headerSC]}>
-                      Random
-                    </Text>
-                    <Image source={require('../assets/snakemine/sc2.png')} style={styles.scImage} resizeMode={'stretch'}/>
-                    <ImageBackground source={require('../assets/snakemine/leftDetails.png')} style={styles.scNameBG} resizeMode={'stretch'}>
-                      <Text style={[styles.buttonText, styles.snakeText]}>
-                        TBD
+                  <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.FREE)}>
+                    <ImageBackground source={require('../assets/snakemine/leftBG.png')}
+                      style={styles.snakeChainBG} resizeMode={'stretch'}>
+                      <Text style={[styles.buttonText, styles.headerSC]}>
+                        Random
                       </Text>
+                      <Image source={require('../assets/snakemine/sc2.png')} style={styles.scImage} resizeMode={'stretch'}/>
+                      <ImageBackground source={require('../assets/snakemine/leftDetails.png')} style={styles.scNameBG} resizeMode={'stretch'}>
+                        <Text style={[styles.buttonText, styles.snakeText]}>
+                          TBD
+                        </Text>
+                      </ImageBackground>
                     </ImageBackground>
-                  </ImageBackground>
+                  </TouchableOpacity>
                   <ImageBackground source={require('../assets/snakemine/textPart.png')}
                     style={styles.scTitleBG} resizeMode={'stretch'}>
                     <Text style={[styles.buttonText, styles.avgTitleText]}>
@@ -273,7 +295,8 @@ var styles = StyleSheet.create({
     alignItems: 'center'
   },
   snakeChainBG: {
-    width: '80%',
+    // leftBG.png = 650 × 865
+    width: 160 * 650/865,
     height: 160,
     alignItems: 'center',
     marginTop: 5

@@ -29,17 +29,17 @@ export default class SnakeTown extends React.Component {
     return (
       <SafeAreaView>
         <ImageBackground source={require('../assets/snaketown/snaketown.png')} style={styles.homeTownImage} resizeMode="stretch">
-          
+
         </ImageBackground>
         <ImageBackground source={require('../assets/snaketown/textBoxBG.png')} style={styles.bottomImageBG} resizeMode="stretch">
           <ImageBackground source={require('../assets/snaketown/textBox.png')} style={styles.bottomTextBoxBG} resizeMode="stretch">
-          
+
           </ImageBackground>
           <ImageBackground source={require('../assets/snaketown/textBox.png')} style={styles.bottomTextBoxBG} resizeMode="stretch">
-          
+
           </ImageBackground>
           <ImageBackground source={require('../assets/snaketown/textBox.png')} style={styles.bottomTextBoxBG} resizeMode="stretch">
-          
+
           </ImageBackground>
           <TouchableOpacity style={styles.bottomTextBoxBG}>
             <ImageBackground source={require('../assets/snaketown/button.png')} style={styles.buttonBG} resizeMode="stretch">

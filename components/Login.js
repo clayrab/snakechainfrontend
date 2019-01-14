@@ -83,7 +83,7 @@ export default class Login extends React.Component {
   easterEgg = async() => {
     console.log("easteregg")
     easterEggCount = easterEggCount + 1;
-    if(easterEggCount > 5) {
+    if(easterEggCount > 3) {
       await this.setState({
         username: "clayrab",
         pw: "asdf",
@@ -118,7 +118,7 @@ export default class Login extends React.Component {
     try{
       this.setState({loading: true});
       var data = { user: this.state.username, pw: this.state.pw };
-      var response = await fetch(`${context.host}/login`, {
+      var response = await fetch(`${context.host}:${context.port}/login`, {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         body: JSON.stringify(data), // body data type must match "Content-Type" header
         headers: {
