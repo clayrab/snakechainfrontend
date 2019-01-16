@@ -41,7 +41,7 @@ export default class AreYouSureOverlay extends React.Component {
             <TouchableOpacity style={styles.touchableButton} onPress={this.props.onNo}>
               <ImageBackground source={require('../assets/gameover/darkButton.png')} style={styles.largeButton} resizeMode="stretch">
                 <Text style={[styles.buttonText, styles.largeButtonText]}>
-                  NO
+                  CANCEL
                 </Text>
               </ImageBackground>
             </TouchableOpacity>

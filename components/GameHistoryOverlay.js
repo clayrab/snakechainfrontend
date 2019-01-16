@@ -3,6 +3,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Text,
+  ScrollView,
   View,
   ImageBackground,
   Image
@@ -155,31 +156,31 @@ export default class GameHistoryOverlay extends React.Component {
                 </ImageBackground>
               </TouchableOpacity>
             </ImageBackground>
-            <View style={styles.contentView}>
-              {this.state.games.map(function(game, idx){
-                console.log("idx:" + idx)
-              return (
-                <ImageBackground source={require('../assets/gamehistory/GHBG.png')} style={[styles.contentImageBG, {flexDirection: 'column'}]} resizeMode="contain">
-                  <ImageBackground source={require('../assets/gamehistory/ghButtonBG.png')} style={[styles.historyBG]} resizeMode="contain">
-                    <View style={styles.historyLeftView}>
-                      <Text style={[styles.buttonText, styles.historyLabelText]}>SIMPLE</Text>
-                      <Text style={[styles.buttonText, styles.historyLabelText]}>SNAKE</Text>
-                    </View>
-                    <Image source={require('../assets/gamehistory/Line.png')} style={styles.historySepImage} resizeMode="contain"/>
-                    <View style={styles.historyLeftView}>
-                      <Text style={[styles.buttonText, styles.historyLabelText]}>3</Text>
-                      <Text style={[styles.buttonText, styles.historyLabelText, styles.opacityFont]}>POWER UPS</Text>
-                    </View>
-                    <View style={styles.historyLeftView}>
-                      <Text style={[styles.buttonText, styles.historyLabelText]}>50</Text>
-                      <Text style={[styles.buttonText, styles.historyLabelText, styles.opacityFont]}>SNAKE</Text>
-                    </View>
-                  </ImageBackground>
-                </ImageBackground>
-              )
-              })}
-
-            </View>
+            <ScrollView style={styles.contentView}>
+              <ImageBackground source={require('../assets/gamehistory/GHBG.png')} style={[styles.contentImageBG, {flexDirection: 'column'}]} resizeMode="contain">
+                {
+                  this.state.games.map(function(game, idx){
+                    console.log(game)
+                    return (
+                      <ImageBackground source={require('../assets/gamehistory/ghButtonBG.png')} style={[styles.historyBG]} resizeMode="contain">
+                        <View style={styles.historyLeftView}>
+                          <Text style={[styles.buttonText, styles.historyLabelText]}>{game.level}</Text>
+                        </View>
+                        <Image source={require('../assets/gamehistory/Line.png')} style={styles.historySepImage} resizeMode="contain"/>
+                        <View style={styles.historyLeftView}>
+                          <Text style={[styles.buttonText, styles.historyLabelText]}>0</Text>
+                          <Text style={[styles.buttonText, styles.historyLabelText, styles.opacityFont]}>POWER UPS</Text>
+                        </View>
+                        <View style={styles.historyLeftView}>
+                          <Text style={[styles.buttonText, styles.historyLabelText]}>{game.score}</Text>
+                          <Text style={[styles.buttonText, styles.historyLabelText, styles.opacityFont]}>GOLD</Text>
+                        </View>
+                      </ImageBackground>
+                    )
+                  })
+                }
+              </ImageBackground>
+            </ScrollView>
           </ImageBackground>
         </View>
       );

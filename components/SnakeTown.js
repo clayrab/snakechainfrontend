@@ -41,10 +41,10 @@ export default class SnakeTown extends React.Component {
           <ImageBackground source={require('../assets/snaketown/textBox.png')} style={styles.bottomTextBoxBG} resizeMode="stretch">
 
           </ImageBackground>
-          <TouchableOpacity style={styles.bottomTextBoxBG}>
+          <TouchableOpacity style={styles.bottomTextBoxBG} onPress={this.props.exit}>
             <ImageBackground source={require('../assets/snaketown/button.png')} style={styles.buttonBG} resizeMode="stretch">
               <Text style={[this.state.buttonDynamicStyle, styles.gotoText]}>
-                GO TO MINE CAMP
+                BACK TO MINE CAMP
               </Text>
             </ImageBackground>
           </TouchableOpacity>

@@ -29,6 +29,7 @@ import SignUp from './components/Signup.js';
 import Wallet from './components/Wallet.js';
 import Withdraw from './components/Withdraw.js';
 
+
 const connectionConfig = {
   jsonp: false,
   reconnection: true,
@@ -37,7 +38,7 @@ const connectionConfig = {
   transports: ['websocket'],
  };
 
-var screens = { "GAME": 0, "HOME": 1, "LOADING": 2, "WALLET": 3, "PREFERENCES": 4, "PROFILE": 5, "ACCOUNTHISTORY": 6, "GAMEHISTORY": 7, "LOGIN": 8, };
+var screens = { "GAME": 0, "HOME": 1, "LOADING": 2, "WALLET": 3, "PREFERENCES": 4, "PROFILE": 5, "ACCOUNTHISTORY": 6, "GAMEHISTORY": 7, "LOGIN": 8, SNAKETOWN: "9"};
 var overlays = {"PAUSE": 0, "GAMEOVER": 1, "DOMINE": 2, "DOMINEFREE": 3, "MINE": 4, "AREYOUSURE": 5, "LOADING": 6, "CONFIRMTX": 7, "TRANSACTION": 8, };
 export default class App extends React.Component {
   constructor(props) {
@@ -73,7 +74,10 @@ export default class App extends React.Component {
       unredeemedSnekBalance: -1,
       snekBalance: -1,
       ethBalance: -1,
-      miningPrice: -1,
+      //miningPrice: -1,
+      prices: {
+        miningPrice: -1,
+      },
       gameOverInfo: {
         score: 0,
         level: 0,
@@ -116,8 +120,8 @@ export default class App extends React.Component {
     var resp = await response.json();
     if(resp.error){
       alert(resp.error);
-    }else if(resp.miningPrice) {
-      this.setState({miningPrice: resp.miningPrice});
+    }else if(resp.prices) {
+      this.setState({prices: resp.prices});
     }
   }
   async loggedIn(jwt) {
@@ -250,6 +254,11 @@ export default class App extends React.Component {
   onConfirmTxOk() {
 
   }
+  onGoToTown= () => {
+    console.log("onGoToTown")
+    this.setState({running: false, screen: screens.SNAKETOWN, overlay: -1});
+
+  }
   closeOverlay() {
     this.setState({running: true, overlay: -1});
   }
@@ -257,11 +266,13 @@ export default class App extends React.Component {
   render() {
     if(this.state.screen == screens.HOME){
       return (
-        <Homepage onSelectLevel={this.onSelectLevel} user={this.state.user}></Homepage>
+        <Homepage onSelectLevel={this.onSelectLevel} onGoToTown={this.onGoToTown} user={this.state.user} prices={this.state.prices}></Homepage>
       );
     }else if(this.state.screen == screens.LOGIN){
       return (
         <Login loggedIn={this.loggedIn}></Login>
+        //<AccountHistory/>
+        //<PurchageATicketOverlay show={true}/>
       );
     }else if(this.state.screen == screens.SIGNUP){
       return (
@@ -269,7 +280,7 @@ export default class App extends React.Component {
       );
     }else if(this.state.screen == screens.SNAKETOWN){
       return (
-        <SnakeTown/>
+        <SnakeTown exit={this.exit}/>
       );
     }else if(this.state.screen == screens.GAME){
       return (

@@ -11,10 +11,9 @@ import {
 } from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
 import { Font } from 'expo';
-
 import CONSTANTS from '../Constants.js';
 
-export default class SnakeMine extends React.Component {
+export default class SelectLevelOverlay extends React.Component {
   constructor(props) {
     super(props);
     this.makeFnOnSelectLevel = this.makeFnOnSelectLevel.bind(this);
@@ -47,17 +46,15 @@ export default class SnakeMine extends React.Component {
       return (
         <View style={styles.container}>
           <ImageBackground style={styles.content} source={require('../assets/pauseoverlay/BackgroundBrown.png')} resizeMode={'stretch'}>
-            <TouchableOpacity style={styles.closeButton}>
+            <TouchableOpacity style={styles.closeButton} onPress={this.props.closeOverlay}>
               <Image source={require('../assets/wallet/closeBG.png')} style={styles.closeButtonImage} resizeMode="stretch" />
             </TouchableOpacity>
             <View style={styles.buttonView}>
-
-                <ImageBackground style={styles.brownButton} source={require('../assets/snakemine/title.png')} resizeMode={'stretch'} >
-                  <Text style={[styles.buttonText, styles.titleText]}>
-                    SELECT SNAKE MINE
-                  </Text>
-                </ImageBackground>
-
+              <ImageBackground style={styles.brownButton} source={require('../assets/snakemine/title.png')} resizeMode={'stretch'} >
+                <Text style={[styles.buttonText, styles.titleText]}>
+                  SELECT SNAKE MINE
+                </Text>
+              </ImageBackground>
             </View>
             <ScrollView style={styles.contentView}>
               <View style={styles.childContentView}>

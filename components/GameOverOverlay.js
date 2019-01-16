@@ -22,11 +22,6 @@ export default class GameOverOverlay extends React.Component {
     styles.buttonText = {
       fontFamily: 'riffic-free-bold'
     }
-
-
-    
-
-
   }
   render() {
     if (!this.props.show) {
