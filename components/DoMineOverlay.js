@@ -17,23 +17,24 @@ export default class DoMineOverlay extends React.Component {
     if (!this.props.show) {
       return null;
     } else {
-      return (
-        <View style={styles.container}>
-          <View style={styles.content}>
-            <TouchableOpacity style={styles.closeButton} onPress={this.props.closeOverlay}>
-              <Image style={styles.closeButtonImage} source={require('../assets/closebutton_bad.png')}/>
-            </TouchableOpacity>
-            <Text style={{color: "#ff0",}}>Convert X gold into Snek Tokens?</Text>
-            <Text style={{color: "#ff0",}}>Cost of gas: Y</Text>
-            <TouchableOpacity style={styles.button} onPress={this.props.confirm}>
-              <Text>confirm</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={this.props.back}>
-              <Text>back</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      );
+      return null;
+      // return (
+      //   <View style={styles.container}>
+      //     <View style={styles.content}>
+      //       <TouchableOpacity style={styles.closeButton} onPress={this.props.closeOverlay}>
+      //         <Image style={styles.closeButtonImage} source={require('../assets/closebutton_bad.png')}/>
+      //       </TouchableOpacity>
+      //       <Text style={{color: "#ff0",}}>Convert X gold into Snek Tokens?</Text>
+      //       <Text style={{color: "#ff0",}}>Cost of gas: Y</Text>
+      //       <TouchableOpacity style={styles.button} onPress={this.props.confirm}>
+      //         <Text>confirm</Text>
+      //       </TouchableOpacity>
+      //       <TouchableOpacity style={styles.button} onPress={this.props.back}>
+      //         <Text>back</Text>
+      //       </TouchableOpacity>
+      //     </View>
+      //   </View>
+      // );
     }
   }
 }

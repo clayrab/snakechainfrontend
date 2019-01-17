@@ -13,11 +13,11 @@ import Buttons from './sprites/Buttons.js';
 import Board from './sprites/Board.js';
 import Snek from './sprites/Snek.js';
 
-import AccountHistory from './components/AccountHistory.js';
+//import AccountHistory from './components/AccountHistory.js';
 import AreYouSureOverlay from './components/AreYouSureOverlay.js';
 import ConfirmTxGameOverOverlay from './components/ConfirmTxGameOverOverlay.js';
 import ConfirmTxOverlay from './components/ConfirmTxOverlay.js';
-import DoMineOverlay from './components/DoMineOverlay.js';
+//import DoMineOverlay from './components/DoMineOverlay.js';
 import GameOverOverlay from './components/GameOverOverlay.js';
 import Homepage from './components/Homepage.js';
 import Login from './components/Login.js';
@@ -27,7 +27,7 @@ import PauseOverlay from './components/PauseOverlay.js';
 import SnakeTown from './components/SnakeTown.js';
 import SignUp from './components/Signup.js';
 import Wallet from './components/Wallet.js';
-import Withdraw from './components/Withdraw.js';
+//import Withdraw from './components/Withdraw.js';
 
 
 const connectionConfig = {
@@ -38,7 +38,7 @@ const connectionConfig = {
   transports: ['websocket'],
  };
 
-var screens = { "GAME": 0, "HOME": 1, "LOADING": 2, "WALLET": 3, "PREFERENCES": 4, "PROFILE": 5, "ACCOUNTHISTORY": 6, "GAMEHISTORY": 7, "LOGIN": 8, SNAKETOWN: "9"};
+var screens = { "GAME": 0, "HOME": 1, "LOADING": 2, "WALLET": 3, "PREFERENCES": 4, "PROFILE": 5, "ACCOUNTHISTORY": 6, "GAMEHISTORY": 7, "LOGIN": 8, "SNAKETOWN": 9, "WALLET": 10, };
 var overlays = {"PAUSE": 0, "GAMEOVER": 1, "DOMINE": 2, "DOMINEFREE": 3, "MINE": 4, "AREYOUSURE": 5, "LOADING": 6, "CONFIRMTX": 7, "TRANSACTION": 8, };
 export default class App extends React.Component {
   constructor(props) {
@@ -76,7 +76,12 @@ export default class App extends React.Component {
       ethBalance: -1,
       //miningPrice: -1,
       prices: {
-        miningPrice: -1,
+        mineGamePrice: -1,
+        mineHaulPrice: -1,
+        powerupPrice: -1,
+        lvlsnkPrice: -1,
+        lvlethPrice: -1,
+        gasPrice: -1,
       },
       gameOverInfo: {
         score: 0,
@@ -89,32 +94,29 @@ export default class App extends React.Component {
     this.onDpadChange = this.onDpadChange.bind(this);
     this.closeOverlay = this.closeOverlay.bind(this);
     this.restart = this.restart.bind(this);
-    this.exit = this.exit.bind(this);
+    //this.exit = this.exit.bind(this);
     this.start = this.start.bind(this);
     this.pause = this.pause.bind(this);
     this.onDied = this.onDied.bind(this);
     this.onSelectLevelPlayPress = this.onSelectLevelPlayPress.bind(this);
     this.onSelectLevel = this.onSelectLevel.bind(this);
-    this.doMine = this.doMine.bind(this);
-    this.doMineFree = this.doMineFree.bind(this);
-    this.doMineConfirm = this.doMineConfirm.bind(this);
-    this.doMineBack = this.doMineBack.bind(this);
-    this.doMineFreeConfirm = this.doMineConfirm.bind(this);
-    this.doMineFreeBack = this.doMineBack.bind(this);
+    //this.doMine = this.doMine.bind(this);
+    //this.doMineFree = this.doMineFree.bind(this);
+    //this.doMineConfirm = this.doMineConfirm.bind(this);
+    //this.doMineBack = this.doMineBack.bind(this);
+    // this.doMineFreeConfirm = this.doMineFreeConfirm.bind(this);
+    // this.doMineFreeBack = this.doMineFreeBack.bind(this);
     this.onDoContract = this.onDoContract.bind(this);
     this.onDontDoContract = this.onDontDoContract.bind(this);
     this.gameOverDoContract = this.gameOverDoContract.bind(this);
     this.onConfirmTxOk = this.onConfirmTxOk.bind(this);
   }
   async componentDidMount(){
-    console.log("componentDidMount")
-    // let jwt = await getFromAsyncStore("jwt");
-    // //var data = { user: this.state.username, pw: this.state.pw };
-    // var data = {howmany: 1000, price: 30000 };
     var response = await fetch(`${context.host}:${context.port}/getPrices`, {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
       headers: {
-          "Content-Type": "application/json; charset=utf-8",
+          //"Content-Type": "application/json; charset=utf-8",
+          "Content-Type": "application/x-www-form-urlencoded",
       },
     });
     var resp = await response.json();
@@ -122,6 +124,8 @@ export default class App extends React.Component {
       alert(resp.error);
     }else if(resp.prices) {
       this.setState({prices: resp.prices});
+    } else {
+      alert("error retrieving prices");
     }
   }
   async loggedIn(jwt) {
@@ -130,9 +134,6 @@ export default class App extends React.Component {
     if(this.state.screen == screens.LOGIN){
       this.setState({screen: screens.HOME});
     }
-    // // makeRetrier
-    // //let jwt = await getFromAsyncStore("jwt");
-    //let prom = new Promise(function(resolve, reject) {
     let prom = async() => {
       return await new Promise((resolve, reject) => {
         //console.log("getuser")
@@ -162,8 +163,6 @@ export default class App extends React.Component {
     }
     //let retry =
     let state = await makeRetry("getUser!")(1500, prom);
-    console.log("************************************** state *************************************")
-    console.log(state)
     this.setState(state);
   }
   onDpadChange(direction) {
@@ -171,26 +170,23 @@ export default class App extends React.Component {
       this.setState({pressedButton: direction});
     }
   }
-  doMine() {
-    //todo get price
-    this.setState({overlay: overlays.DOMINE, price: 50000});
-  }
-  doMineFree() {
-    //this.setState({running: true});
-  }
-  doMineConfirm() {
-    //TODO: mine it!!
-    //this.setState({running: true});
-  }
-  doMineBack() {
-    this.setState({overlay: overlays.GAMEOVER});
-  }
-  doMineFreeConfirm() {
-    //this.setState({running: true});
-  }
-  doMineFreeBack() {
-    //this.setState({running: true});
-  }
+  // doMine() {
+  //   //todo get price
+  //   this.setState({overlay: overlays.DOMINE, price: 50000});
+  // }
+  // doMineFree() {
+  //   //this.setState({running: true});
+  // }
+  //
+  // doMineBack() {
+  //   this.setState({overlay: overlays.GAMEOVER});
+  // }
+  // doMineFreeConfirm() {
+  //   //this.setState({running: true});
+  // }
+  // doMineFreeBack() {
+  //   //this.setState({running: true});
+  // }
   onDied(score){
     let gameOverInfo = {
       score: score,
@@ -208,7 +204,7 @@ export default class App extends React.Component {
   pause() {
     this.setState({running: false, overlay: overlays.PAUSE});
   }
-  exit() {
+  exit = () => {
     this.setState({running: false, screen: screens.HOME, overlay: -1});
   }
   onPausePress(){
@@ -225,13 +221,17 @@ export default class App extends React.Component {
     await this.setState({overlay: overlays.LOADING});
     let jwt = await getFromAsyncStore("jwt");
     //var data = { user: this.state.username, pw: this.state.pw };
-    var data = {howmany: this.state.gameOverInfo.score, price: this.state.miningPrice };
+    var data = {
+      howmany: this.state.gameOverInfo.score,
+      price: this.state.prices.mineGamePrice,
+    };
     console.log(data)
     var response = await fetch(`${context.host}:${context.port}/mine`, {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       body: JSON.stringify(data), // body data type must match "Content-Type" header
       headers: {
         "Content-Type": "application/json; charset=utf-8",
+        //"Content-Type": "application/x-www-form-urlencoded",
         "Authorization": "JWT " + jwt,
       },
     });
@@ -252,12 +252,13 @@ export default class App extends React.Component {
     this.setState({overlay: overlays.AREYOUSURE});
   }
   onConfirmTxOk() {
-
+    console.log("onConfirmTxOk")
   }
-  onGoToTown= () => {
-    console.log("onGoToTown")
-    this.setState({running: false, screen: screens.SNAKETOWN, overlay: -1});
-
+  onGoToTown = () => {
+    this.setState({screen: screens.SNAKETOWN, overlay: -1});
+  }
+  onWallet = () => {
+    this.setState({screen: screens.WALLET, overlay: -1});
   }
   closeOverlay() {
     this.setState({running: true, overlay: -1});
@@ -266,17 +267,28 @@ export default class App extends React.Component {
   render() {
     if(this.state.screen == screens.HOME){
       return (
-        <Homepage onSelectLevel={this.onSelectLevel} onGoToTown={this.onGoToTown} user={this.state.user} prices={this.state.prices}></Homepage>
+        <Homepage
+          user={this.state.user}
+          prices={this.state.prices}
+          onSelectLevel={this.onSelectLevel}
+          onGoToTown={this.onGoToTown}
+          onWallet={this.onWallet}/>
       );
     }else if(this.state.screen == screens.LOGIN){
       return (
         <Login loggedIn={this.loggedIn}></Login>
+        //<Wallet/>
         //<AccountHistory/>
         //<PurchageATicketOverlay show={true}/>
       );
     }else if(this.state.screen == screens.SIGNUP){
       return (
         <SignUp/>
+      );
+    }else if(this.state.screen == screens.WALLET){
+      return (
+        <Wallet
+          exit={this.exit}/>
       );
     }else if(this.state.screen == screens.SNAKETOWN){
       return (
@@ -306,13 +318,8 @@ export default class App extends React.Component {
             gameOverInfo={this.state.gameOverInfo}
             miningPrice={this.state.miningPrice}
             onDoContract={this.gameOverDoContract}
-            doMine={this.doMine}
             restart={this.restart}
             exit={this.exit} />
-          <DoMineOverlay
-            show={this.state.overlay == overlays.DOMINE}
-            confirm={this.doMineConfirm}
-            back={this.doMineBack} />
           <AreYouSureOverlay
             show={this.state.overlay == overlays.AREYOUSURE}
             text={`Pay ${(this.state.miningPrice/CONSTANTS.WEIPERETH).toPrecision(4)} ETH for ${this.state.gameOverInfo.score} Snake Coins.\n\nAre you sure?`}
@@ -330,10 +337,6 @@ export default class App extends React.Component {
             restart={this.restart}
             exit={this.exit} />
         </SafeAreaView>
-      );
-    }else if(this.state.screen == screens.WALLET) {
-      return (
-        <Wallet />
       );
     }
   }

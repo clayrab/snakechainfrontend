@@ -5,125 +5,163 @@ import {
   Text,
   View,
   ImageBackground,
-  Image,
-  TextInput
+  Image
 } from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
 import { Font } from 'expo';
 
-export default class Wallet extends React.Component {
+import DepositOverlay from '../components/DepositOverlay.js';
+import WithdrawOverlay from '../components/WithdrawOverlay.js';
+
+var overlays = {"DEPOSIT": 0, "WITHDRAW": 1, };
+export default class AccountHistory extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      overlay: -1,
+    };
   }
   async componentDidMount(){
     await Font.loadAsync({
       'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
     });
     styles.buttonText = {
-      fontFamily: 'riffic-free-bold',
-
+      fontFamily: 'riffic-free-bold'
     }
   }
+  withdraw = () => {
+    console.log("withdraw")
+    this.setState({overlay: overlays.WITHDRAW });
+  }
+  deposit = () => {
+    this.setState({overlay: overlays.DEPOSIT });
+  }
+
   render() {
     return (
-      <SafeAreaView style={styles.screen}>
-        <ImageBackground source={require('../assets/wallet/screenBG2.png')} style={styles.backgroundImage} resizeMode="cover">
-          <View style={styles.topButtonView}>
-            <TouchableOpacity style={styles.depositButton}>
-            <ImageBackground source={require('../assets/wallet/withDrawButton.png')} style={styles.withButtonImage} resizeMode="stretch">
-              <Image source={require('../assets/wallet/black_wallet.png')} style={styles.withdrawIcons} />
-              <Text style={[styles.buttonText, styles.depositText]}>
-                DEPOSIT
+      <SafeAreaView>
+        <ImageBackground source={require('../assets/accounthistory/BG.png')} style={styles.backgroundImage} resizeMode="cover">
+          <View style={styles.profileView}>
+            <View style={styles.profilePicView}>
+              <ImageBackground source={require('../assets/accounthistory/medalBG.png')} style={styles.medalImage} resizeMode="contain">
+                <Image source={require('../assets/accounthistory/profilepic.png')} style={styles.profileImage} resizeMode="contain"/>
+              </ImageBackground>
+            </View>
+            <View style={styles.profileDetailView}>
+              <Text style={[styles.buttonText, styles.buttonColorText]}>
+                BOBBER SON14
               </Text>
-              </ImageBackground>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.withdrawButton}>
-              <ImageBackground source={require('../assets/wallet/depositButton.png')} style={styles.withButtonImage} resizeMode="stretch">
-                <Image source={require('../assets/wallet/yellow_withdraw.png')} style={styles.withdrawIcons} />
-                <Text style={[styles.buttonText, styles.withdrawText]}>
-                  WITHDRAW
-                </Text>
-              </ImageBackground>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.closeButton}>
-              <ImageBackground source={require('../assets/wallet/closeBG.png')} style={styles.closeButtonImage} resizeMode="stretch">
-              </ImageBackground>
-            </TouchableOpacity>
+              <Text style={[styles.buttonText, styles.publicAddText]}>
+                PUBLIC ADDRESS: 0x123124
+              </Text>
+              <Text style={[styles.buttonText, styles.profileInfoText]}>
+                MORE PROFILE INFO
+              </Text>
+            </View>
           </View>
-            
-          <View style={styles.etherBGView}>
-            <ImageBackground source={require('../assets/wallet/etherBG.png')} style={styles.etherBGImage} resizeMode="contain">
-              <Image source={require('../assets/wallet/diamond.png')} style={styles.diamondImage} />
-              <Text style={[styles.buttonText, styles.blackEtherText]}>
-                Ethereum
-              </Text>
-              <Text style={[styles.buttonText, styles.blackEtherText]}>
-                0.010
-              </Text>
-            </ImageBackground>
-          </View>
+          <TouchableOpacity onPress={this.props.exit}>
+            <Text style={{padding: 10, fontSize: 16, }}>
+              BACK
+            </Text>
+          </TouchableOpacity>
 
-          <View style={styles.etherBGView}>
-            <ImageBackground source={require('../assets/wallet/snakechainBG.png')} style={styles.etherBGImage} resizeMode="contain">
-              <Image source={require('../assets/wallet/coin.png')} style={styles.diamondImage} />
-              <Text style={[styles.buttonText, styles.yellowSnakeText]}>Snakechain</Text>
-              <Text style={[styles.buttonText, styles.yellowSnakeText]}>305</Text>
-            </ImageBackground>
-          </View>
-
-          <View style={styles.etherBGView}>
-            <ImageBackground source={require('../assets/wallet/selectEtherBG.png')} style={styles.selectEtherImage} resizeMode="contain">
-              <Text style={[styles.buttonText, styles.selectAmountText]}>
-                You have selected Ether to send
-              </Text>
-              <View style={styles.amountTextView}>
-                <Text style={[styles.buttonText, styles.amountText]}>
-                  Amount
-                </Text>
-                <ImageBackground source={require('../assets/wallet/textInputBG.png')} style={styles.amountInput} resizeMode="contain">
-                  <TextInput style={styles.textInput} underlineColorAndroid="transparent">
-                    
-                  </TextInput>
-                  <Image source={require('../assets/wallet/pencil.png')} style={styles.pencilImage}/>
-                </ImageBackground>
+          <View style={styles.contentView}>
+            <ImageBackground source={require('../assets/accounthistory/sendreceiveBG.png')} style={styles.contentImageBG} resizeMode="contain">
+              <View style={styles.topContentView}>
+                <View style={[styles.innerContentView, styles.topInnerView]}>
+                  <Text style={[styles.buttonText, styles.snakeText]}>
+                    SNAKE
+                  </Text>
+                  <Text style={[styles.buttonText, styles.numberText]}>
+                    3.150
+                  </Text>
+                </View>
+                <View style={[styles.innerContentView, styles.bottomInnerView]}>
+                  <TouchableOpacity onPress={this.deposit}>
+                    <ImageBackground source={require('../assets/accounthistory/greenbtn.png')} style={styles.buttonImage} resizeMode="contain">
+                      <Image source={require('../assets/accounthistory/receiveblack.png')} style={styles.buttonIconImage} />
+                      <Text style={[styles.buttonText, styles.buttonColorText]}>RECEIVE</Text>
+                    </ImageBackground>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View style={styles.topContentView}>
+                <View style={[styles.innerContentView, styles.topInnerView]}>
+                  <Image source={require('../assets/wallet/diamond.png')} style={styles.diamondImage} />
+                  <Text style={[styles.buttonText, styles.numberText]}>
+                    0.0150
+                  </Text>
+                </View>
+                <View style={[styles.innerContentView, styles.bottomInnerView]}>
+                  <TouchableOpacity onPress={this.withdraw}>
+                    <ImageBackground source={require('../assets/accounthistory/yellowbtn.png')} style={styles.buttonImage} resizeMode="contain">
+                      <Image source={require('../assets/accounthistory/sendblack.png')} style={styles.buttonIconImage} />
+                      <Text style={[styles.buttonText, styles.buttonColorText]}>SEND</Text>
+                    </ImageBackground>
+                  </TouchableOpacity>
+                </View>
               </View>
             </ImageBackground>
           </View>
+          <View style={styles.contentView}>
+            <ImageBackground source={require('../assets/accounthistory/accounthistoryBG.png')} style={[styles.contentImageBG, {flexDirection: 'column'}]} resizeMode="contain">
+              <ImageBackground source={require('../assets/accounthistory/historyBG.png')} style={[styles.historyBG, styles.topHistoryView]} resizeMode="contain">
+                <View style={styles.historyLeftView}>
+                  <Image source={require('../assets/accounthistory/sendicon.png')} style={styles.buttonIconImage} />
+                  <Text style={[styles.buttonText, styles.historyLabelText]}>SEND</Text>
+                  <Text style={[styles.buttonText, styles.dateText]}>15/10/2018</Text>
+                </View>
+                <Image source={require('../assets/accounthistory/historyseprate.png')} style={styles.historySepImage} resizeMode="contain"/>
+                <View style={styles.historyRightView}>
+                  <View style={styles.topRightHistoryView}>
+                    <Text style={[styles.buttonText, styles.headerText]}>
+                      0.0150
+                    </Text>
+                    <Image source={require('../assets/wallet/diamond.png')} style={styles.diamondImage} />
+                    <Text style={[styles.buttonText, styles.headerText]}>
+                      SENT
+                    </Text>
+                  </View>
+                  <View style={styles.topRightHistoryView}>
+                    <Text style={[styles.buttonText, styles.historyLabelText]}>
+                      to stansmith@gmail.com
+                    </Text>
+                  </View>
+                </View>
+              </ImageBackground>
 
-          <View style={styles.etherBGView}>
-            <ImageBackground source={require('../assets/wallet/selectEtherBG.png')} style={styles.selectEtherImage} resizeMode="contain">
-              <Text style={[styles.buttonText, styles.selectAmountText]}>
-                RECEIVING FROM PUBLIC ADDRESS
-              </Text>
-              <ImageBackground source={require('../assets/wallet/textInputBG.png')} style={styles.addressInput} resizeMode="contain">
-              <Image source={require('../assets/wallet/pencil.png')} style={styles.pencilImage}/>
-                <TextInput style={styles.textInput} underlineColorAndroid="transparent">
-                </TextInput>
+              <ImageBackground source={require('../assets/accounthistory/historyBG.png')} style={styles.historyBG} resizeMode="contain">
+                <View style={styles.historyLeftView}>
+                  <Image source={require('../assets/accounthistory/receiveicon.png')} style={styles.buttonIconImage} />
+                  <Text style={[styles.buttonText, styles.historyReceiveText]}>RECEIVE</Text>
+                  <Text style={[styles.buttonText, styles.dateText]}>15/10/2018</Text>
+                </View>
+                <Image source={require('../assets/accounthistory/historyseprate.png')} style={styles.historySepImage} resizeMode="contain"/>
+                <View style={styles.historyRightView}>
+                  <View style={styles.topRightHistoryView}>
+                    <Text style={[styles.buttonText, styles.headerText]}>
+                      0.0150
+                    </Text>
+                    <Image source={require('../assets/wallet/diamond.png')} style={styles.diamondImage} />
+                    <Text style={[styles.buttonText, styles.headerText]}>
+                      SENT
+                    </Text>
+                  </View>
+                  <View style={styles.topRightHistoryView}>
+                    <Text style={[styles.buttonText, styles.historyLabelText]}>
+                      to stansmith@gmail.com
+                    </Text>
+                  </View>
+                </View>
               </ImageBackground>
-                <Text style={[styles.buttonText, styles.addNotesText]}>
-                  * enter the ??? Eth public address
-                </Text>
             </ImageBackground>
           </View>
-          <View style={styles.sendButtonView}>
-            <TouchableOpacity>
-              <ImageBackground source={require('../assets/wallet/sendButtonBG.png')} style={styles.sendButtonImage} resizeMode="contain">
-                <Text style={[styles.buttonText, styles.depositText]}>SEND</Text>
-              </ImageBackground>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Image source={require('../assets/wallet/checked.png')} style={styles.checkedImage} resizeMode="contain" />
-            </TouchableOpacity>
-            <Text style={[styles.buttonText, styles.depositText]}>
-              I agree to <Text style={[styles.buttonText, styles.withdrawText]}>terms</Text>
-            </Text>
-          </View>
-          <View style={styles.etherBGView}>
-            <ImageBackground source={require('../assets/wallet/noticeBG.png')} style={styles.selectEtherImage} resizeMode="contain">
-              <Text style={[styles.buttonText, styles.addNotesText, {marginLeft: 5}]}>
-                Notice: Lorem Ipsum is simply dummy text of the printing and typesetting industry.type and scrambled it to make a type specimen book.</Text>
-            </ImageBackground>
-        </View>
+          <DepositOverlay
+            closeOverlay={this.closeOverlay}
+            show={this.state.overlay == overlays.DEPOSIT}/>
+          <WithdrawOverlay
+            closeOverlay={this.closeOverlay}
+            show={this.state.overlay == overlays.WITHDRAW}/>
         </ImageBackground>
       </SafeAreaView>
     )
@@ -136,138 +174,145 @@ let styles = StyleSheet.create({
     marginTop: 20
   },
   backgroundImage: {
-   width: screenWidth,
-   height: screenHeight,
-  },
-  topButtonView: {
-    flexDirection: 'row',
-    justifyContent: 'space-around'
-  },
-  withdrawIcons: {
-    width: 15,
-    height: 15,
-    marginRight: 5
-  },
-  withdrawButton: {
+    width: screenWidth,
+    height: screenHeight,
+    flexDirection: 'column'
+   },
+   profileView: {
+     height: screenHeight / 10,
+     flexDirection: 'row'
+   },
+   profilePicView: {
+    flex: 3,
+    justifyContent: 'center',
     alignItems: 'center'
-  },
-  depositButton: {
-    alignItems: 'center',
-    marginLeft: 20
-  },
-  withButtonImage: {
-    width: 110,
-    height: 50,
+   },
+   profileDetailView: {
+    flex: 7,
+    marginTop: 10
+   },
+   contentView: {
+    height: screenHeight * 0.45,
+    marginLeft: 10,
+    marginRight: 10
+   },
+   contentImageBG: {
+    backgroundColor: 'transparent',
+    width: screenWidth - 20,
+    height: screenHeight * 0.45,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row'
   },
-  closeButtonImage: {
-    width: 40,
-    height: 40,
+  topContentView: {
+    flex: 1,
+    height: screenHeight * 0.32,
+    flexDirection: 'column'
   },
-  etherBGImage: {
-    width: screenWidth - 100,
-    height: 60,
-    justifyContent: 'space-around',
-    flexDirection: 'row',
+  innerContentView: {
+    justifyContent: 'center',
     alignItems: 'center'
   },
-  etherBGView:{
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 10
+  topInnerView: {
+    flex: 6,
   },
-  diamondImage: {
-    width: 50,
-    height: 30,
-    resizeMode: 'contain'
-  },
-  selectEtherImage: {
-    width: screenWidth - 100,
-    height: 120,
-    justifyContent: 'center',
-    flexDirection: 'column',
-    alignItems: 'center'
-  },
-  amountTextView: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 10
-  },
-  amountInput: {
-    backgroundColor: 'transparent',
-    width: screenWidth / 3,
-    height: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 10,
-    flexDirection: 'row'
-  },
-  pencilImage: {
-    width: 15,
-    height: 15
-  },
-  textInput: {
-    width: screenWidth / 3 - 20,
-  },
-  addressInput: {
-    backgroundColor: 'transparent',
-    width: screenWidth / 2,
-    height: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 10,
-    flexDirection: 'row',
-    marginTop: 5
-  },
-  sendButtonView: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  checkedImage: {
-    width: 30,
-    height: 30
-  },
-  sendButtonImage: {
-    width: 100,
-    height: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
+  bottomInnerView: {
+    flex: 4
   },
   buttonText: {
     fontWeight: 'bold'
   },
-  withdrawText: {
-    color: "#fab523",
-    fontSize: 16,
-  },
-  depositText: {
+  buttonColorText: {
     color: "#000",
     fontSize: 16
   },
-  blackEtherText: {
+  buttonImage: {
+    width: screenWidth * 0.4,
+    height: screenHeight * 0.20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row'
+  },
+  buttonIconImage: {
+    width: 20,
+    height: 20,
+    marginRight: 5
+  },
+  diamondImage: {
+    width: 20,
+    height: 30,
+    resizeMode: 'contain'
+  },
+  medalImage: {
+    width: 100,
+    height: screenHeight / 10 - 10,
+  },
+  profileImage: {
+    width: 80,
+    height: screenHeight / 10 - 25,
+    marginLeft: 5,
+    marginTop: 5
+  },
+  historyBG: {
+    width: screenWidth * 0.8,
+    height: 100,
+    marginRight: 10,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  topHistoryView: {
+    marginTop: 10
+  },
+  historySepImage: {
+    width: 5,
+    height: 70,
+  },
+  historyLeftView: {
+    flex: 3,
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  historyRightView: {
+    flex: 6,
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  topRightHistoryView: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  publicAddText: {
     color: "#000",
-    fontSize: 20
+    fontSize: 14
   },
-  yellowSnakeText: {
-    color: "#fab523",
-    fontSize: 20
+  profileInfoText: {
+    color: "red",
+    fontSize: 10,
+    opacity: 0.5
   },
-  selectAmountText: {
+  snakeText: {
     color: "#fab523",
     fontSize: 14
   },
-  amountText: {
+  numberText: {
     color: "#fab523",
-    fontSize: 16,
-    opacity: 0.5
+    fontSize: 24
   },
-  addNotesText: {
+  historyLabelText: {
+    color: "#fab523",
+    fontSize: 14
+  },
+  dateText: {
     color: "#fab523",
     fontSize: 10,
-    opacity: 0.5,
-    marginTop: 5
+    opacity: 0.5
+  },
+  historyReceiveText: {
+    color: '#10BB1A',
+    fontSize: 14
+  },
+  headerText: {
+    color: "#fab523",
+    fontSize: 20
   }
 });

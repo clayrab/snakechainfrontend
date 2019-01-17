@@ -17,6 +17,7 @@ import AreYouSureOverlay from '../components/AreYouSureOverlay.js';
 import ConfirmTxOverlay from '../components/ConfirmTxOverlay.js';
 import GameHistoryOverlay from '../components/GameHistoryOverlay.js';
 import LoadingOverlay from '../components/LoadingOverlay.js';
+import PowerupOverlay from '../components/PowerupOverlay.js';
 import PurchageATicketOverlay from '../components/PurchageATicketOverlay.js';
 import SelectLevelOverlay from '../components/SelectLevelOverlay.js';
 import SnakeTown from '../components/SnakeTown.js';
@@ -34,7 +35,7 @@ let mineImages = [
   require('../assets/homepage/mine/mine90.png'),
   require('../assets/homepage/mine/mine100.png'),
 ]
-var overlays = { "MINE": 0, "SELECTLEVEL": 1, "PURCHASETICKET": 2, "CONFIRMTICKET": 3, "LOADING": 4, "CONFIRMTX": 5};
+var overlays = { "MINE": 0, "SELECTLEVEL": 1, "PURCHASETICKET": 2, "CONFIRMTICKET": 3, "LOADING": 4, "CONFIRMTX": 5, "POWERUPS": 6, };
 export default class Homepage extends React.Component {
   constructor(props) {
     super(props);
@@ -142,8 +143,11 @@ export default class Homepage extends React.Component {
     this.setState({overlay: -1 });
   }
   goToTown = () => {
-    this.props.onGoToTown()
-
+    this.props.onGoToTown();
+  }
+  onPowerups = () => {
+    console.log("onPowerups")
+    this.setState({overlay: overlays.POWERUPS });
   }
   closeOverlay() {
     this.setState({overlay: -1});
@@ -167,25 +171,29 @@ export default class Homepage extends React.Component {
               resizeMethod={"scale"}
               style={styles.optionsIcon}>
             </Image>
-            <ImageBackground source={require('../assets/homepage/coinbox.png')} style={styles.coinBox}>
-              <View style={styles.titleBarSnekTextHolder}>
-                <View style={styles.top}></View>
-                {this.state.loading ? null :
-                  <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.titleBarText, this.state.titleBarTextStyle]}>
-                    {this.props.user.snek}
-                  </Text>
-                }
-              </View>
-            </ImageBackground>
-            <ImageBackground source={require('../assets/homepage/ethbox.png')} style={styles.coinBox}>
-              <View style={styles.titleBarEthTextHolder}>
-                {this.state.loading ? null :
-                  <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.titleBarText, this.state.titleBarTextStyle]}>
-                    {(this.props.user.eth/CONSTANTS.WEIPERETH).toPrecision(4)}
-                  </Text>
-                }
-              </View>
-            </ImageBackground>
+            <TouchableOpacity onPress={this.props.onWallet}>
+              <ImageBackground source={require('../assets/homepage/coinbox.png')} style={styles.coinBox}>
+                <View style={styles.titleBarSnekTextHolder}>
+                  <View style={styles.top}></View>
+                  {this.state.loading ? null :
+                    <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.titleBarText, this.state.titleBarTextStyle]}>
+                      {this.props.user.snek}
+                    </Text>
+                  }
+                </View>
+              </ImageBackground>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.props.onWallet}>
+              <ImageBackground source={require('../assets/homepage/ethbox.png')} style={styles.coinBox}>
+                <View style={styles.titleBarEthTextHolder}>
+                  {this.state.loading ? null :
+                    <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.titleBarText, this.state.titleBarTextStyle]}>
+                      {(this.props.user.eth/CONSTANTS.WEIPERETH).toPrecision(4)}
+                    </Text>
+                  }
+                </View>
+              </ImageBackground>
+            </TouchableOpacity>
           </ImageBackground>
           /***** TITLE BAR END *****/
           <View style={styles.contentHolder}>
@@ -196,7 +204,7 @@ export default class Homepage extends React.Component {
                 <TouchableOpacity onPress={this.props.onGoToTown}>
                   <Text style={styles.profile}>Town</Text>
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={this.onPowerups}>
                   <ImageBackground source={require('../assets/homepage/powerups.png')} style={styles.powerups}></ImageBackground>
                 </TouchableOpacity>
               </View>
@@ -224,11 +232,14 @@ export default class Homepage extends React.Component {
               </View>
             </View>
           </View>
-          <GameHistoryOverlay show={this.state.overlay == overlays.MINE} closeOverlay={this.closeOverlay}
+          <GameHistoryOverlay show={this.state.overlay == overlays.MINE}
+            closeOverlay={this.closeOverlay}
             user={this.props.user} />
-          <SelectLevelOverlay show={this.state.overlay == overlays.SELECTLEVEL} closeOverlay={this.closeOverlay}
+          <SelectLevelOverlay show={this.state.overlay == overlays.SELECTLEVEL}
+            closeOverlay={this.closeOverlay}
             onSelectLevel={this.props.onSelectLevel}/>
-          <PurchageATicketOverlay show={this.state.overlay == overlays.PURCHASETICKET} closeOverlay={this.closeOverlay}
+          <PurchageATicketOverlay show={this.state.overlay == overlays.PURCHASETICKET}
+            closeOverlay={this.closeOverlay}
             user={this.props.user}
             prices={this.props.prices}
             onSelectTicket={this.onPurchaseTicketSelect}
@@ -239,10 +250,13 @@ export default class Homepage extends React.Component {
             onYes={this.onConfirm}
             onNo={this.onCancelConfirm}/>
           <LoadingOverlay show={this.state.overlay == overlays.LOADING}/>
-            <ConfirmTxOverlay
-              show={this.state.overlay == overlays.CONFIRMTX}
-              transactionId={this.state.lastTxHash}
-              onOk={this.onConfirmTxOk}/>
+          <ConfirmTxOverlay
+            show={this.state.overlay == overlays.CONFIRMTX}
+            transactionId={this.state.lastTxHash}
+            onOk={this.onConfirmTxOk}/>
+          <PowerupOverlay
+            closeOverlay={this.closeOverlay}
+            show={this.state.overlay == overlays.POWERUPS}/>
         </ImageBackground>
       </SafeAreaView>
     );
