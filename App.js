@@ -28,7 +28,6 @@ import SnakeTown from './components/SnakeTown.js';
 import SignUp from './components/Signup.js';
 import Wallet from './components/Wallet.js';
 import Profile from './components/Profile.js';
-import GameHistory from './components/GameHistory.js';
 import SelectLevel from './components/SelectLevel.js';
 import SnakeMine from './components/SnakeMine.js';
 //import Withdraw from './components/Withdraw.js';
@@ -286,10 +285,10 @@ export default class App extends React.Component {
       );
     }else if(this.state.screen == screens.LOGIN){
       return (
-        //<Login loggedIn={this.loggedIn}></Login>
+        <Login loggedIn={this.loggedIn}></Login>
         //<GameHistory/>
         //<SelectLevel/>
-        <SnakeMine show={true}/>
+        //<SnakeMine show={true}/>
         //<Profile/>
         //<AccountHistory/>
         //<PurchageATicketOverlay show={true}/>
