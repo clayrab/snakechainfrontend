@@ -193,7 +193,7 @@ export default class App extends React.Component {
     await this.setState({running: false, overlay: overlays.LOADING});
     let jwt = await getFromAsyncStore("jwt");
     let data = {
-      howmany: score,
+      howmany: 0,
       level: 1,
     };
     fetch(`${context.host}:${context.port}/recordScore`, {
@@ -208,9 +208,6 @@ export default class App extends React.Component {
       if(!resp.error){
         if(resp) {
           if(resp.status == "OK") {
-            // TODODO
-            console.log("score recorded")
-            this.setState({});
             let gameOverInfo = {
               score: score,
               level: 1,
@@ -254,33 +251,78 @@ export default class App extends React.Component {
     this.setState({screen: screens.GAME});
   }
   async onDoContract() {
-    console.log("onDoContract")
-    await this.setState({overlay: overlays.LOADING});
-    let jwt = await getFromAsyncStore("jwt");
-    //var data = { user: this.state.username, pw: this.state.pw };
-    var data = {
-      howmany: this.state.gameOverInfo.score,
-      price: this.state.prices.mineGamePrice,
-    };
-    console.log(data)
-    var response = await fetch(`${context.host}:${context.port}/mine`, {
-      method: "POST", // *GET, POST, PUT, DELETE, etc.
-      body: JSON.stringify(data), // body data type must match "Content-Type" header
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        //"Content-Type": "application/x-www-form-urlencoded",
-        "Authorization": "JWT " + jwt,
-      },
-    });
-    var resp = await response.json();
-    if(resp.error){
-      alert(resp.error);
-      await this.setState({overlay: overlays.GAMEOVER});
-    }else if(resp.txhash) {
-      await this.setState({overlay: overlays.TRANSACTION});
-    } else {
-      alert("Error sending transaction");
-    }
+  //   console.log("onDoContract")
+  //
+  //   await this.setState({overlay: overlays.LOADING});
+  //   let jwt = await getFromAsyncStore("jwt");
+  //   let data = {
+  //     amount: this.props.prices.mineGamePrice,
+  //     type: "ETH",
+  //   };
+  //   fetch(`${context.host}:${context.port}/createTransaction`, {
+  //     method: "POST",
+  //     body: JSON.stringify(data), // body data type must match "Content-Type" header
+  //     headers: {
+  //         "Content-Type": "application/json; charset=utf-8",
+  //         "Authorization": "JWT " + jwt,
+  //     },
+  //   }).then(async(response) => {
+  //     // var resp = await response.json();
+  //     // if(!resp.error){
+  //     //   if(resp) {
+  //     //     if(resp.transactionKey) {
+  //     //       var data = {
+  //     //         howmany: this.state.gameOverInfo.score,
+  //     //         price: this.state.prices.mineGamePrice,
+  //     //       };
+  //     //       var data = {
+  //     //         txkey: this.state.txKey,
+  //     //         amount: this.props.prices.mineGamePrice,
+  //     //         type: "ETH",
+  //     //       };
+  //     //       console.log(data)
+  //     //       var response = await fetch(`${context.host}:${context.port}/mine`, {
+  //     //         method: "POST", // *GET, POST, PUT, DELETE, etc.
+  //     //         body: JSON.stringify(data), // body data type must match "Content-Type" header
+  //     //         headers: {
+  //     //           "Content-Type": "application/json; charset=utf-8",
+  //     //           //"Content-Type": "application/x-www-form-urlencoded",
+  //     //           "Authorization": "JWT " + jwt,
+  //     //         },
+  //     //       });
+  //     //       var resp = await response.json();
+  //     //       if(resp.error){
+  //     //         alert(resp.error);
+  //     //         await this.setState({overlay: overlays.GAMEOVER});
+  //     //       }else if(resp.txhash) {
+  //     //         console.log("dispatchede")
+  //     //         await this.setState({overlay: overlays.CONFIRMTX, lastTxHash: resp.txhash});
+  //     //       } else {
+  //     //         alert("Error sending transaction");
+  //     //       }
+  //     //
+  //     //       // this.setState({
+  //     //       //   overlay: overlays.CONFIRMTICKET,
+  //     //       //   confirmAmount: price,
+  //     //       //   confirmTokenType: ticketType,
+  //     //       //   txKey: resp.transactionKey
+  //     //       // });
+  //     //     } else {
+  //     //       alert("There was an error, malformed response.");
+  //     //       this.setState({overlay: -1});
+  //     //     }
+  //     //   } else{
+  //     //     alert("There was an error, no response.");
+  //     //     this.setState({overlay: -1});
+  //     //   }
+  //     // } else {
+  //     //   alert(resp.error);
+  //     //   resolve({loading: false});
+  //     // }
+  //   }).catch(err => {throw err});
+  //
+  //   //var data = { user: this.state.username, pw: this.state.pw };
+  //
   }
   onDontDoContract() {
     console.log("onDontDoContract")

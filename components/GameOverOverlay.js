@@ -55,8 +55,10 @@ export default class GameOverOverlay extends React.Component {
                   CONTRACT
                 </Text>
                 <Text style={[styles.buttonText, styles.contractDetails]}>
-                  Exchange you gold for minted snek coin now.{"\n"}{"\n"}
-                  {(this.props.miningPrice/CONSTANTS.WEIPERETH).toPrecision(4)} ETH.
+                  Exchange all your gold for minted snek coin now.{"\n"}{"\n"}
+                  <Text style={[styles.buttonText, styles.contractDetails, {fontSize: 20},]}>
+                    {(this.props.miningPrice/CONSTANTS.WEIPERETH).toPrecision(4)} ETH.
+                  </Text>
                 </Text>
               </ImageBackground>
               <Image source={require('../assets/gameover/greensnake.png')} style={styles.rightSnakeImage}  resizeMode="contain"/>

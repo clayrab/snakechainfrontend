@@ -85,7 +85,6 @@ export default class GameHistoryOverlay extends React.Component {
     if (!this.props.show) {
       return null;
     } else {
-      console.log("gamehistoryoverlay render")
       let mineGraphicIndex = Math.floor(10*this.props.user.haul/this.props.user.mineMax);
       let mineTextColorStyle = {};
       if(mineGraphicIndex > 6){
@@ -93,10 +92,10 @@ export default class GameHistoryOverlay extends React.Component {
       }
       let mineImg = mineImages[mineGraphicIndex];
       let minePercent = (100*this.props.user.haul/this.props.user.mineMax).toPrecision(2);
-      console.log(mineImg)
-      //this.props.closeOverlay()
+      if(this.props.user.haul == this.props.user.mineMax){
+          minePercent = 100;
+      }
       return (
-        //<ImageBackground source={require('../assets/wallet/screenBG2.png')}
         <View style={styles.container}>
           <TouchableOpacity style={styles.closeButton} onPress={this.props.closeOverlay}>
             <Image style={styles.closeButtonImage} source={require('../assets/closebutton_bad.png')}/>
@@ -109,15 +108,15 @@ export default class GameHistoryOverlay extends React.Component {
                 </Text>
                 <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage} resizeMode="contain">
                   <Text style={[styles.buttonText, styles.headerLabelText, styles.opacityFont]}>
-                    REMAINING MINE POTENTIAL
+                    EXTRA UNMINTED GOLD
                   </Text>
                   <Text style={[styles.buttonText, styles.headerText]}>
-                    {this.props.user.mineMax - this.props.user.haul}
+                    {this.props.user.unredeemed - this.props.user.haul}
                   </Text>
                 </ImageBackground>
                 <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage} resizeMode="contain">
                   <Text style={[styles.buttonText, styles.headerLabelText, styles.opacityFont]}>
-                    GAMES PLAYED
+                    REMAINING MINE POTENTIAL
                   </Text>
                   <Text style={[styles.buttonText, styles.headerText]}>
                     {this.props.user.gamecount}
@@ -125,7 +124,7 @@ export default class GameHistoryOverlay extends React.Component {
                 </ImageBackground>
                 <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage} resizeMode="contain">
                   <Text style={[styles.buttonText, styles.headerLabelText, styles.opacityFont]}>
-                    AVERAGE PER GAME
+                    GAMES PLAYED
                   </Text>
                   <Text style={[styles.buttonText, styles.headerText]}>
                     ????
@@ -155,7 +154,6 @@ export default class GameHistoryOverlay extends React.Component {
               <ImageBackground source={require('../assets/gamehistory/GHBG.png')} style={[styles.contentImageBG, {flexDirection: 'column'}]} resizeMode="contain">
                 {
                   this.state.games.map(function(game, idx){
-                    console.log(game)
                     return (
                       <ImageBackground source={require('../assets/gamehistory/ghButtonBG.png')} style={[styles.historyBG]} resizeMode="contain">
                         <View style={styles.historyLeftView}>
