@@ -27,6 +27,7 @@ import PauseOverlay from './components/PauseOverlay.js';
 import SnakeTown from './components/SnakeTown.js';
 import SignUp from './components/Signup.js';
 import Wallet from './components/Wallet.js';
+import Profile from './components/Profile.js';
 //import Withdraw from './components/Withdraw.js';
 
 
@@ -138,7 +139,7 @@ export default class App extends React.Component {
       return await new Promise((resolve, reject) => {
         //console.log("getuser")
         fetch(`${context.host}:${context.port}/getUser`, {
-          method: "GET", // *GET, POST, PUT, DELETE, etc.
+          method: "GET",
           headers: {
               "Content-Type": "application/json; charset=utf-8",
               //"Content-Type": "application/x-www-form-urlencoded",
@@ -196,6 +197,7 @@ export default class App extends React.Component {
     this.setState({running: false, overlay: overlays.GAMEOVER, gameOverInfo: gameOverInfo});
   }
   start() {
+    console.log("start")
     this.setState({running: true});
   }
   restart() {
@@ -260,6 +262,9 @@ export default class App extends React.Component {
   onWallet = () => {
     this.setState({screen: screens.WALLET, overlay: -1});
   }
+  onProfile = () => {
+    this.setState({screen: screens.PROFILE, overlay: -1});
+  }
   closeOverlay() {
     this.setState({running: true, overlay: -1});
   }
@@ -272,18 +277,24 @@ export default class App extends React.Component {
           prices={this.state.prices}
           onSelectLevel={this.onSelectLevel}
           onGoToTown={this.onGoToTown}
-          onWallet={this.onWallet}/>
+          onWallet={this.onWallet}
+          onProfile={this.onProfile}
+          />
       );
     }else if(this.state.screen == screens.LOGIN){
       return (
         <Login loggedIn={this.loggedIn}></Login>
-        //<Wallet/>
+        //<Profile/>
         //<AccountHistory/>
         //<PurchageATicketOverlay show={true}/>
       );
     }else if(this.state.screen == screens.SIGNUP){
       return (
         <SignUp/>
+      );
+    }else if(this.state.screen == screens.PROFILE){
+      return (
+        <Profile/>
       );
     }else if(this.state.screen == screens.WALLET){
       return (
@@ -316,13 +327,13 @@ export default class App extends React.Component {
             show={this.state.overlay == overlays.GAMEOVER}
             closeOverlay={this.closeOverlay}
             gameOverInfo={this.state.gameOverInfo}
-            miningPrice={this.state.miningPrice}
+            miningPrice={this.state.prices.mineGamePrice}
             onDoContract={this.gameOverDoContract}
             restart={this.restart}
             exit={this.exit} />
           <AreYouSureOverlay
             show={this.state.overlay == overlays.AREYOUSURE}
-            text={`Pay ${(this.state.miningPrice/CONSTANTS.WEIPERETH).toPrecision(4)} ETH for ${this.state.gameOverInfo.score} Snake Coins.\n\nAre you sure?`}
+            text={`Pay ${(this.state.prices.mineGamePrice/CONSTANTS.WEIPERETH).toPrecision(4)} ETH for ${this.state.gameOverInfo.score} Snake Coins.\n\nAre you sure?`}
             onYes={this.onDoContract}
             onNo={this.onDontDoContract}/>
           <LoadingOverlay

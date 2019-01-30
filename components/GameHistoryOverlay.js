@@ -89,9 +89,7 @@ export default class GameHistoryOverlay extends React.Component {
       let mineGraphicIndex = Math.floor(10*this.props.user.haul/this.props.user.mineMax);
       let mineTextColorStyle = {};
       if(mineGraphicIndex > 6){
-        mineTextColorStyle = { color: "#333333", }
-        //  this.setState({})
-        // TODO change color of text
+        mineTextColorStyle = { color: "#6A534F", }
       }
       let mineImg = mineImages[mineGraphicIndex];
       let minePercent = (100*this.props.user.haul/this.props.user.mineMax).toPrecision(2);

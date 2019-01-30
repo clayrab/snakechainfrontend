@@ -6,6 +6,7 @@ import CONSTANTS from '../Constants.js';
 import SnekPart from './SnekPart.js'
 import ScoreBoard from './ScoreBoard.js'
 
+let easterEggCount = 0;
 export default class Snek extends Sprite {
 
   static contextTypes = {
@@ -360,14 +361,20 @@ export default class Snek extends Sprite {
     }
   }
   spin() {
-      return this.state.pelletRot.interpolate({
-        inputRange: [0, 1],
-        outputRange: ['0deg', '1440deg']
-      });
+    return this.state.pelletRot.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['0deg', '1440deg']
+    });
+  }
+  easterEgg = async() => {
+    easterEggCount = easterEggCount + 1;
+    if(easterEggCount > 6) {
+      this.setState({score: this.state.score + easterEggCount*10})
+    }
   }
   render() {
+    console.log("running: " + this.props.running)
     var pellet = null;
-    
     var snek = (<View style={[this.styles.snek, {
       left: this.state.posX,
       top: this.state.posY,
@@ -390,10 +397,12 @@ export default class Snek extends Sprite {
     }
     return (
       <View style={{position: "absolute", top: 0, left: 0}}>
-        <ScoreBoard
-          baseScore={this.state.baseScore}
-          score={this.state.score}
-          multiplier={this.state.multiplier}/>
+        <TouchableOpacity onPress={this.easterEgg}>
+          <ScoreBoard
+            baseScore={this.state.baseScore}
+            score={this.state.score}
+            multiplier={this.state.multiplier}/>
+        </TouchableOpacity>
         {this.state.tail.map((elem) => {
           return (elem);
         })}

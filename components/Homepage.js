@@ -46,6 +46,7 @@ export default class Homepage extends React.Component {
       titleBarTextStyle: { display: "none",},
       confirmAmount: -1,
       confirmTokenType: "ETH",
+      txKey: "",
     };
     this.closeOverlay = this.closeOverlay.bind(this);
     // this.onConfirm = this.onConfirm.bind(this);
@@ -89,21 +90,51 @@ export default class Homepage extends React.Component {
   onPlayPress = () => {
     this.setState({overlay: overlays.SELECTLEVEL });
   }
-  onPurchaseTicketSelect = (ticketType) => {
-    if(ticketType == "ETH") {
-      this.setState({
-        overlay: overlays.CONFIRMTICKET,
-        confirmAmount: this.props.prices.mineGamePrice,
-        confirmTokenType: ticketType,
-      });
-    } else if(ticketType == "SNK") {
-      this.setState({
-        overlay: overlays.CONFIRMTICKET,
-        confirmAmount: this.props.prices.mineHaulPrice,
-        confirmTokenType: ticketType,
-      });
-    } else{
-      throw "ticket type must be ETH or SNK";
+  onPurchaseTicketSelect = async(ticketType) => {
+    if(ticketType == "ETH" || ticketType == "SNK") {
+      await this.setState({overlay: overlays.LOADING});
+      let jwt = await getFromAsyncStore("jwt");
+      let price = this.props.prices.mineGamePrice;
+      if(ticketType == "SNK") {
+        price = this.props.prices.mineHaulPrice;
+      }
+      let data = {
+        amount: price,
+        type: ticketType,
+      };
+      fetch(`${context.host}:${context.port}/createTransaction`, {
+        method: "POST",
+        body: JSON.stringify(data), // body data type must match "Content-Type" header
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            "Authorization": "JWT " + jwt,
+        },
+      }).then(async(response) => {
+        var resp = await response.json();
+        if(!resp.error){
+          if(resp) {
+            if(resp.transactionKey) {
+              this.setState({
+                overlay: overlays.CONFIRMTICKET,
+                confirmAmount: price,
+                confirmTokenType: ticketType,
+                txKey: resp.transactionKey
+              });
+            } else {
+              alert("There was an error, malformed response.");
+              this.setState({overlay: -1});
+            }
+          } else{
+            alert("There was an error, no response.");
+            this.setState({overlay: -1});
+          }
+        } else {
+          alert(resp.error);
+          resolve({loading: false});
+        }
+      }).catch(err => {throw err});
+    } else {
+      alert("Error. Ticket type must be ETH or SNK.")
     }
   }
   onConfirm = async() => {
@@ -116,7 +147,11 @@ export default class Homepage extends React.Component {
       price = this.props.prices.minehaulPrice;
       url = "/mineWithSnek"
     }
-    var data = {howmany: this.props.user.haul, price: price };
+    var data = {
+      txkey: this.state.txKey,
+      type: this.state.confirmTokenType,
+      amount: this.state.confirmAmount,
+    };
     var response = await fetch(`${context.host}:${context.port}${url}`, {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       body: JSON.stringify(data), // body data type must match "Content-Type" header
@@ -156,21 +191,22 @@ export default class Homepage extends React.Component {
     let mineGraphicIndex = Math.floor(10*this.props.user.haul/this.props.user.mineMax);
     let mineTextColorStyle = {};
     if(mineGraphicIndex > 6){
-      mineTextColorStyle = { color: "#333333", }
-      //  this.setState({})
-      // TODO change color of text
+      mineTextColorStyle = { color: "#6A534F", }
     }
     let mineImg = mineImages[mineGraphicIndex];
     let minePercent = (100*this.props.user.haul/this.props.user.mineMax).toPrecision(2);
+    if(this.props.user.haul == this.props.user.mineMax){
+        minePercent = 100;
+    }
     return (
       <SafeAreaView style={styles.screen}>
         <ImageBackground source={require('../assets/homepage/back.png')} style={styles.backgroundImage}>
           /***** TITLE BAR START *****/
           <ImageBackground source={require('../assets/homepage/titleback.png')} style={styles.titleBar}>
-            <Image source={require('../assets/homepage/options.png')}
-              resizeMethod={"scale"}
-              style={styles.optionsIcon}>
-            </Image>
+            <TouchableOpacity style={styles.optionsTouchable} onPress={this.props.onProfile}>
+              <ImageBackground source={require('../assets/homepage/options.png')} style={styles.optionsIcon}>
+              </ImageBackground>
+            </TouchableOpacity>
             <TouchableOpacity onPress={this.props.onWallet}>
               <ImageBackground source={require('../assets/homepage/coinbox.png')} style={styles.coinBox}>
                 <View style={styles.titleBarSnekTextHolder}>
@@ -277,13 +313,18 @@ let styles = StyleSheet.create({
     height: titleBarHeight,
     flexDirection: "row",
   },
-  optionsIcon: {
+  optionsTouchable: {
     flex: 0,
     width: "15.55555555%",
-    aspectRatio: 1,
     marginTop: titleBarHeight*.06/.757,
     marginLeft: screenWidth*.157/3.6,
+    //backgroundColor: "#333333",
+    aspectRatio: 1,
+  },
+  optionsIcon: {
+    aspectRatio: 1,
     resizeMode: "contain",
+    width: "100%",
   },
   coinBox: {
     flex: 0,

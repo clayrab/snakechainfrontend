@@ -14,7 +14,7 @@ export default class ScoreBoard extends Sprite {
   };
   constructor(props) {
     super(props);
-    
+
   }
 
   render() {

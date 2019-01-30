@@ -30,8 +30,6 @@ export default class Login extends React.Component {
       passwordRender: passwordPlaceHolder,
       loading: false,
     };
-    // this.sendLoginCreds = this.sendLoginCreds.bind(this);
-    // this.easterEgg = this.easterEgg.bind(this);
   }
   async componentDidMount(){
     console.log("component did mount")
@@ -81,15 +79,23 @@ export default class Login extends React.Component {
     await this.setState({pw: value});
   }
   easterEgg = async() => {
-    console.log("easteregg")
     easterEggCount = easterEggCount + 1;
     if(easterEggCount > 3) {
-      await this.setState({
-        username: "clayrab",
-        pw: "asdf",
-        showLoginPlaceHolder: false,
-        showPasswordPlaceHolder: false,
-      });
+      if(easterEggCount%2){
+        await this.setState({
+          username: "clayrab",
+          pw: "asdf",
+          showLoginPlaceHolder: false,
+          showPasswordPlaceHolder: false,
+        });
+      } else {
+        await this.setState({
+          username: "testuser",
+          pw: "asdf",
+          showLoginPlaceHolder: false,
+          showPasswordPlaceHolder: false,
+        });
+      }
       this.setLoginRenderState();
       this.setPasswordRenderState();
     }
@@ -128,7 +134,13 @@ export default class Login extends React.Component {
       });
       var resp = await response.json();
       if(resp.error){
-        alert(resp.error);
+        if(resp.error.startsWith("Object not found in model")){
+          alert("User not found");
+        } else if(resp.error.startsWith("did not pass")){
+          alert("Incorrect password");
+        } else {
+          alert("Unknown error:\n\n" + resp.error);
+        }
         this.setState({loading: false});
       }else if(resp.token) {
         this.props.loggedIn(resp.token);
