@@ -100,7 +100,7 @@ export default class App extends React.Component {
     //this.exit = this.exit.bind(this);
     this.start = this.start.bind(this);
     this.pause = this.pause.bind(this);
-    this.onDied = this.onDied.bind(this);
+    //this.onDied = this.onDied.bind(this);
     this.onSelectLevelPlayPress = this.onSelectLevelPlayPress.bind(this);
     this.onSelectLevel = this.onSelectLevel.bind(this);
     //this.doMine = this.doMine.bind(this);
@@ -164,7 +164,6 @@ export default class App extends React.Component {
         }).catch(err => {throw err});
       }).catch(err => {throw err});
     }
-    //let retry =
     let state = await makeRetry("getUser!")(1500, prom);
     this.setState(state);
   }
@@ -190,13 +189,47 @@ export default class App extends React.Component {
   // doMineFreeBack() {
   //   //this.setState({running: true});
   // }
-  onDied(score){
-    let gameOverInfo = {
-      score: score,
+  onDied = async(score) => {
+    await this.setState({running: false, overlay: overlays.LOADING});
+    let jwt = await getFromAsyncStore("jwt");
+    let data = {
+      howmany: score,
       level: 1,
-      time: 5*60,
-    }
-    this.setState({running: false, overlay: overlays.GAMEOVER, gameOverInfo: gameOverInfo});
+    };
+    fetch(`${context.host}:${context.port}/recordScore`, {
+      method: "POST",
+      body: JSON.stringify(data), // body data type must match "Content-Type" header
+      headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          "Authorization": "JWT " + jwt,
+      },
+    }).then(async(response) => {
+      var resp = await response.json();
+      if(!resp.error){
+        if(resp) {
+          if(resp.status == "OK") {
+            // TODODO
+            console.log("score recorded")
+            this.setState({});
+            let gameOverInfo = {
+              score: score,
+              level: 1,
+              time: 5*60,
+            }
+            this.setState({overlay: overlays.GAMEOVER, gameOverInfo: gameOverInfo, loading: false, user: resp.user, lastScore: resp.score});
+          } else {
+            alert("There was an error, malformed response.");
+            this.setState({overlay: -1});
+          }
+        } else{
+          alert("There was an error, no response.");
+          this.setState({overlay: -1});
+        }
+      } else {
+        alert("Unknown error: " + resp.error);
+        this.setState({overlay: -1});
+      }
+    }).catch(err => {throw err});
   }
   start() {
     console.log("start")
