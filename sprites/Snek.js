@@ -373,7 +373,6 @@ export default class Snek extends Sprite {
     }
   }
   render() {
-    console.log("running: " + this.props.running)
     var pellet = null;
     var snek = (<View style={[this.styles.snek, {
       left: this.state.posX,

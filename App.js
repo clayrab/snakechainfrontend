@@ -42,7 +42,7 @@ const connectionConfig = {
  };
 
 var screens = { "GAME": 0, "HOME": 1, "LOADING": 2, "WALLET": 3, "PREFERENCES": 4, "PROFILE": 5, "ACCOUNTHISTORY": 6, "GAMEHISTORY": 7, "LOGIN": 8, "SNAKETOWN": 9, "WALLET": 10, };
-var overlays = {"PAUSE": 0, "GAMEOVER": 1, "DOMINE": 2, "DOMINEFREE": 3, "MINE": 4, "AREYOUSURE": 5, "LOADING": 6, "CONFIRMTX": 7, "TRANSACTION": 8, };
+var overlays = {"PAUSE": 0, "GAMEOVER": 1, "DOMINE": 2, "DOMINEFREE": 3, "MINE": 4, "AREYOUSURE": 5, "LOADING": 6, "CONFIRMTX": 7, "TRANSACTION": 8, "CONFIRMCONTRACT": 9 };
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -92,23 +92,19 @@ export default class App extends React.Component {
         time: 0,
       },
       lastTxHash: "",
+      confirmAmount: -1,
+      confirmTokenType: "ETH",
+      txKey: "",
+      offerContract: true,
     };
     this.loggedIn = this.loggedIn.bind(this);
     this.onDpadChange = this.onDpadChange.bind(this);
     this.closeOverlay = this.closeOverlay.bind(this);
     this.restart = this.restart.bind(this);
-    //this.exit = this.exit.bind(this);
     this.start = this.start.bind(this);
     this.pause = this.pause.bind(this);
-    //this.onDied = this.onDied.bind(this);
     this.onSelectLevelPlayPress = this.onSelectLevelPlayPress.bind(this);
     this.onSelectLevel = this.onSelectLevel.bind(this);
-    //this.doMine = this.doMine.bind(this);
-    //this.doMineFree = this.doMineFree.bind(this);
-    //this.doMineConfirm = this.doMineConfirm.bind(this);
-    //this.doMineBack = this.doMineBack.bind(this);
-    // this.doMineFreeConfirm = this.doMineFreeConfirm.bind(this);
-    // this.doMineFreeBack = this.doMineFreeBack.bind(this);
     this.onDoContract = this.onDoContract.bind(this);
     this.onDontDoContract = this.onDontDoContract.bind(this);
     this.gameOverDoContract = this.gameOverDoContract.bind(this);
@@ -172,23 +168,6 @@ export default class App extends React.Component {
       this.setState({pressedButton: direction});
     }
   }
-  // doMine() {
-  //   //todo get price
-  //   this.setState({overlay: overlays.DOMINE, price: 50000});
-  // }
-  // doMineFree() {
-  //   //this.setState({running: true});
-  // }
-  //
-  // doMineBack() {
-  //   this.setState({overlay: overlays.GAMEOVER});
-  // }
-  // doMineFreeConfirm() {
-  //   //this.setState({running: true});
-  // }
-  // doMineFreeBack() {
-  //   //this.setState({running: true});
-  // }
   onDied = async(score) => {
     await this.setState({running: false, overlay: overlays.LOADING});
     let jwt = await getFromAsyncStore("jwt");
@@ -229,8 +208,7 @@ export default class App extends React.Component {
     }).catch(err => {throw err});
   }
   start() {
-    console.log("start")
-    this.setState({running: true});
+    this.setState({offerContract: true, running: true});
   }
   restart() {
     this.setState({toggleReset: !this.state.toggleReset, overlay: -1});
@@ -251,87 +229,86 @@ export default class App extends React.Component {
     this.setState({screen: screens.GAME});
   }
   async onDoContract() {
-  //   console.log("onDoContract")
-  //
-  //   await this.setState({overlay: overlays.LOADING});
-  //   let jwt = await getFromAsyncStore("jwt");
-  //   let data = {
-  //     amount: this.props.prices.mineGamePrice,
-  //     type: "ETH",
-  //   };
-  //   fetch(`${context.host}:${context.port}/createTransaction`, {
-  //     method: "POST",
-  //     body: JSON.stringify(data), // body data type must match "Content-Type" header
-  //     headers: {
-  //         "Content-Type": "application/json; charset=utf-8",
-  //         "Authorization": "JWT " + jwt,
-  //     },
-  //   }).then(async(response) => {
-  //     // var resp = await response.json();
-  //     // if(!resp.error){
-  //     //   if(resp) {
-  //     //     if(resp.transactionKey) {
-  //     //       var data = {
-  //     //         howmany: this.state.gameOverInfo.score,
-  //     //         price: this.state.prices.mineGamePrice,
-  //     //       };
-  //     //       var data = {
-  //     //         txkey: this.state.txKey,
-  //     //         amount: this.props.prices.mineGamePrice,
-  //     //         type: "ETH",
-  //     //       };
-  //     //       console.log(data)
-  //     //       var response = await fetch(`${context.host}:${context.port}/mine`, {
-  //     //         method: "POST", // *GET, POST, PUT, DELETE, etc.
-  //     //         body: JSON.stringify(data), // body data type must match "Content-Type" header
-  //     //         headers: {
-  //     //           "Content-Type": "application/json; charset=utf-8",
-  //     //           //"Content-Type": "application/x-www-form-urlencoded",
-  //     //           "Authorization": "JWT " + jwt,
-  //     //         },
-  //     //       });
-  //     //       var resp = await response.json();
-  //     //       if(resp.error){
-  //     //         alert(resp.error);
-  //     //         await this.setState({overlay: overlays.GAMEOVER});
-  //     //       }else if(resp.txhash) {
-  //     //         console.log("dispatchede")
-  //     //         await this.setState({overlay: overlays.CONFIRMTX, lastTxHash: resp.txhash});
-  //     //       } else {
-  //     //         alert("Error sending transaction");
-  //     //       }
-  //     //
-  //     //       // this.setState({
-  //     //       //   overlay: overlays.CONFIRMTICKET,
-  //     //       //   confirmAmount: price,
-  //     //       //   confirmTokenType: ticketType,
-  //     //       //   txKey: resp.transactionKey
-  //     //       // });
-  //     //     } else {
-  //     //       alert("There was an error, malformed response.");
-  //     //       this.setState({overlay: -1});
-  //     //     }
-  //     //   } else{
-  //     //     alert("There was an error, no response.");
-  //     //     this.setState({overlay: -1});
-  //     //   }
-  //     // } else {
-  //     //   alert(resp.error);
-  //     //   resolve({loading: false});
-  //     // }
-  //   }).catch(err => {throw err});
-  //
-  //   //var data = { user: this.state.username, pw: this.state.pw };
-  //
+    await this.setState({overlay: overlays.LOADING});
+    let jwt = await getFromAsyncStore("jwt");
+    let price = this.state.prices.mineGamePrice;
+    let data = {
+      amount: price,
+      type: "ETH",
+    };
+    fetch(`${context.host}:${context.port}/createTransaction`, {
+      method: "POST",
+      body: JSON.stringify(data), // body data type must match "Content-Type" header
+      headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          "Authorization": "JWT " + jwt,
+      },
+    }).then(async(response) => {
+      var resp = await response.json();
+      if(!resp.error){
+        if(resp) {
+          if(resp.transactionKey) {
+            this.setState({
+              overlay: overlays.CONFIRMCONTRACT,
+              confirmAmount: price,
+              confirmTokenType: "ETH",
+              txKey: resp.transactionKey
+            });
+          } else {
+            alert("There was an error, malformed response.");
+            this.setState({overlay: -1});
+          }
+        } else{
+          alert("There was an error, no response.");
+          this.setState({overlay: -1});
+        }
+      } else {
+        alert(resp.error);
+        resolve({loading: false});
+      }
+    }).catch(err => {throw err});
   }
+  onConfirmContract = async() => {
+    await this.setState({overlay: overlays.LOADING});
+    let jwt = await getFromAsyncStore("jwt");
+    let price = this.state.prices.mineGamePrice;
+    var data = {
+      txkey: this.state.txKey,
+      type: "ETH",
+      amount: price,
+    };
+    var response = await fetch(`${context.host}:${context.port}/mine`, {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      body: JSON.stringify(data), // body data type must match "Content-Type" header
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Authorization": "JWT " + jwt,
+      },
+    });
+    var resp = await response.json();
+    if(resp.error){
+      alert(resp.error);
+      await this.setState({overlay: -1});
+    }else if(resp.txhash) {
+      await this.setState({offerContract: false, overlay: overlays.CONFIRMTX, lastTxHash: resp.txhash});
+    } else {
+      alert("Error sending transaction");
+      await this.setState({overlay: -1});
+    }
+  }
+
   onDontDoContract() {
-    console.log("onDontDoContract")
+    this.setState({overlay: overlays.GAMEOVER});
+  }
+  onCancelConfirmContract = () => {
+    this.setState({overlay: overlays.AREYOUSURE});
   }
   gameOverDoContract() {
     this.setState({overlay: overlays.AREYOUSURE});
   }
   onConfirmTxOk() {
-    console.log("onConfirmTxOk")
+    this.setState({overlay: overlays.GAMEOVER});
+    //this.setState({screen: screens.HOMEoverlay: -1});
   }
   onGoToTown = () => {
     this.setState({screen: screens.SNAKETOWN, overlay: -1});
@@ -409,6 +386,7 @@ export default class App extends React.Component {
             gameOverInfo={this.state.gameOverInfo}
             miningPrice={this.state.prices.mineGamePrice}
             onDoContract={this.gameOverDoContract}
+            offerContract={this.state.offerContract}
             restart={this.restart}
             exit={this.exit} />
           <AreYouSureOverlay
@@ -416,6 +394,11 @@ export default class App extends React.Component {
             text={`Pay ${(this.state.prices.mineGamePrice/CONSTANTS.WEIPERETH).toPrecision(4)} ETH for ${this.state.gameOverInfo.score} Snake Coins.\n\nAre you sure?`}
             onYes={this.onDoContract}
             onNo={this.onDontDoContract}/>
+          <AreYouSureOverlay
+            show={this.state.overlay == overlays.CONFIRMCONTRACT}
+            text={`Pay ${this.state.confirmAmount} ${this.state.confirmTokenType} for ${this.state.user.haul} Snake Coins.\n\nAre you sure?`}
+            onYes={this.onConfirmContract}
+            onNo={this.onCancelConfirmContract}/>
           <LoadingOverlay
             show={this.state.overlay == overlays.LOADING}/>
           <ConfirmTxOverlay

@@ -45,32 +45,35 @@ export default class GameOverOverlay extends React.Component {
             <Text style={[styles.buttonText, styles.gameOverText]}>
               GAME OVER
             </Text>
-            <Text style={[styles.buttonText, styles.selectionText]}>
-              You got <Text style={[styles.buttonText, styles.numberText]}>{this.props.gameOverInfo.score}</Text> more mined gold!
-            </Text>
-            <View style={styles.contractView}>
-              <Image source={require('../assets/gameover/yellowsnake.png')} style={styles.leftSnakeImage} resizeMode="contain"/>
-              <ImageBackground source={require('../assets/gameover/contract.png')} style={styles.contactImage} resizeMode="contain">
-                <Text style={[styles.buttonText, styles.contractText]}>
-                  CONTRACT
+            { this.props.offerContract &&
+              <View show={false}>
+                <Text style={[styles.buttonText, styles.selectionText]}>
+                  You got <Text style={[styles.buttonText, styles.numberText]}>{this.props.gameOverInfo.score}</Text> more mined gold!
                 </Text>
-                <Text style={[styles.buttonText, styles.contractDetails]}>
-                  Exchange all your gold for minted snek coin now.{"\n"}{"\n"}
-                  <Text style={[styles.buttonText, styles.contractDetails, {fontSize: 20},]}>
-                    {(this.props.miningPrice/CONSTANTS.WEIPERETH).toPrecision(4)} ETH.
-                  </Text>
-                </Text>
-              </ImageBackground>
-              <Image source={require('../assets/gameover/greensnake.png')} style={styles.rightSnakeImage}  resizeMode="contain"/>
-            </View>
-            <TouchableOpacity style={[styles.touchableButton, styles.smallTouchableButton]} onPress={this.props.onDoContract}>
-              <ImageBackground source={require('../assets/gameover/yellowButton.png')} style={styles.yellowButton} resizeMode="stretch">
-                <Text style={[styles.buttonText, styles.smallButtonBText]}>
-                  SIGN CONTRACT
-                </Text>
-              </ImageBackground>
-            </TouchableOpacity>
-
+                <View style={styles.contractView}>
+                  <Image source={require('../assets/gameover/yellowsnake.png')} style={styles.leftSnakeImage} resizeMode="contain"/>
+                  <ImageBackground source={require('../assets/gameover/contract.png')} style={styles.contactImage} resizeMode="contain">
+                    <Text style={[styles.buttonText, styles.contractText]}>
+                      CONTRACT
+                    </Text>
+                    <Text style={[styles.buttonText, styles.contractDetails]}>
+                      Exchange all your gold for minted snek coin now.{"\n"}{"\n"}
+                      <Text style={[styles.buttonText, styles.contractDetails, {fontSize: 20},]}>
+                        {(this.props.miningPrice/CONSTANTS.WEIPERETH).toPrecision(4)} ETH.
+                      </Text>
+                    </Text>
+                  </ImageBackground>
+                  <Image source={require('../assets/gameover/greensnake.png')} style={styles.rightSnakeImage}  resizeMode="contain"/>
+                </View>
+                <TouchableOpacity style={[styles.touchableButton, styles.smallTouchableButton]} onPress={this.props.onDoContract}>
+                  <ImageBackground source={require('../assets/gameover/yellowButton.png')} style={styles.yellowButton} resizeMode="stretch">
+                    <Text style={[styles.buttonText, styles.smallButtonBText]}>
+                      SIGN CONTRACT
+                    </Text>
+                  </ImageBackground>
+                </TouchableOpacity>
+              </View>
+            }
             <TouchableOpacity style={styles.touchableButton} onPress={this.props.restart}>
               <ImageBackground source={require('../assets/gameover/greenButton.png')} style={styles.largeButton} resizeMode="stretch">
                 <Text style={[styles.buttonText, styles.largeButtonBText]}>
