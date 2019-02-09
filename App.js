@@ -19,6 +19,7 @@ import ConfirmTxGameOverOverlay from './components/ConfirmTxGameOverOverlay.js';
 import ConfirmTxOverlay from './components/ConfirmTxOverlay.js';
 //import DoMineOverlay from './components/DoMineOverlay.js';
 import GameOverOverlay from './components/GameOverOverlay.js';
+import Header from './components/Header.js';
 import Homepage from './components/Homepage.js';
 import Login from './components/Login.js';
 import Loading from './components/Loading.js';
@@ -333,17 +334,13 @@ export default class App extends React.Component {
           onGoToTown={this.onGoToTown}
           onWallet={this.onWallet}
           onProfile={this.onProfile}
-          />
+          >
+          <Header loading={this.state.loading} user={this.state.user} onProfile={this.onProfile} onWallet={this.onWallet}/>
+        </Homepage>
       );
     }else if(this.state.screen == screens.LOGIN){
       return (
         <Login loggedIn={this.loggedIn}></Login>
-        //<GameHistory/>
-        //<SelectLevel/>
-        //<SnakeMine show={true}/>
-        //<Profile/>
-        //<AccountHistory/>
-        //<PurchageATicketOverlay show={true}/>
       );
     }else if(this.state.screen == screens.SIGNUP){
       return (
@@ -351,13 +348,14 @@ export default class App extends React.Component {
       );
     }else if(this.state.screen == screens.PROFILE){
       return (
-        <Profile/>
+        <Profile loading={this.state.loading} user={this.state.user}>
+          <Header loading={this.state.loading} user={this.state.user} onProfile={this.onProfile} onWallet={this.onWallet} hasBackButton={true} exit={this.exit} />
+        </Profile>
       );
-    }else if(this.state.screen == screens.WALLET){
-      return (
-        <Wallet
-          exit={this.exit}/>
-      );
+    // }else if(this.state.screen == screens.WALLET){
+    //   return (
+    //     <Wallet exit={this.exit}/>
+    //   );
     }else if(this.state.screen == screens.SNAKETOWN){
       return (
         <SnakeTown exit={this.exit}/>

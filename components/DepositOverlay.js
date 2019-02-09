@@ -27,49 +27,7 @@ export default class Wallet extends React.Component {
   render() {
     return (
       <SafeAreaView style={styles.screen}>
-        <ImageBackground source={require('../assets/wallet/screenBG2.png')} style={styles.backgroundImage} resizeMode="cover">
-          <View style={styles.topButtonView}>
-            <TouchableOpacity style={styles.depositButton}>
-            <ImageBackground source={require('../assets/wallet/withDrawButton.png')} style={styles.withButtonImage} resizeMode="stretch">
-              <Image source={require('../assets/wallet/black_wallet.png')} style={styles.withdrawIcons} />
-              <Text style={[styles.buttonText, styles.depositText]}>
-                DEPOSIT
-              </Text>
-              </ImageBackground>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.withdrawButton}>
-              <ImageBackground source={require('../assets/wallet/depositButton.png')} style={styles.withButtonImage} resizeMode="stretch">
-                <Image source={require('../assets/wallet/yellow_withdraw.png')} style={styles.withdrawIcons} />
-                <Text style={[styles.buttonText, styles.withdrawText]}>
-                  WITHDRAW
-                </Text>
-              </ImageBackground>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.closeButton}>
-              <ImageBackground source={require('../assets/wallet/closeBG.png')} style={styles.closeButtonImage} resizeMode="stretch">
-              </ImageBackground>
-            </TouchableOpacity>
-          </View>
-            
-          <View style={styles.etherBGView}>
-            <ImageBackground source={require('../assets/wallet/etherBG.png')} style={styles.etherBGImage} resizeMode="contain">
-              <Image source={require('../assets/wallet/diamond.png')} style={styles.diamondImage} />
-              <Text style={[styles.buttonText, styles.blackEtherText]}>
-                Ethereum
-              </Text>
-              <Text style={[styles.buttonText, styles.blackEtherText]}>
-                0.010
-              </Text>
-            </ImageBackground>
-          </View>
-
-          <View style={styles.etherBGView}>
-            <ImageBackground source={require('../assets/wallet/snakechainBG.png')} style={styles.etherBGImage} resizeMode="contain">
-              <Image source={require('../assets/wallet/coin.png')} style={styles.diamondImage} />
-              <Text style={[styles.buttonText, styles.yellowSnakeText]}>Snakechain</Text>
-              <Text style={[styles.buttonText, styles.yellowSnakeText]}>305</Text>
-            </ImageBackground>
-          </View>
+        <ImageBackground source={require('../assets/wallet/background.png')} style={styles.backgroundImage} resizeMode="cover">
 
           <View style={styles.etherBGView}>
             <ImageBackground source={require('../assets/wallet/selectEtherBG.png')} style={styles.selectEtherImage} resizeMode="contain">
@@ -82,7 +40,7 @@ export default class Wallet extends React.Component {
                 </Text>
                 <ImageBackground source={require('../assets/wallet/textInputBG.png')} style={styles.amountInput} resizeMode="contain">
                   <TextInput style={styles.textInput} underlineColorAndroid="transparent">
-                    
+
                   </TextInput>
                   <Image source={require('../assets/wallet/pencil.png')} style={styles.pencilImage}/>
                 </ImageBackground>
@@ -90,21 +48,6 @@ export default class Wallet extends React.Component {
             </ImageBackground>
           </View>
 
-          <View style={styles.etherBGView}>
-            <ImageBackground source={require('../assets/wallet/selectEtherBG.png')} style={styles.selectEtherImage} resizeMode="contain">
-              <Text style={[styles.buttonText, styles.selectAmountText]}>
-                RECEIVING FROM PUBLIC ADDRESS
-              </Text>
-              <ImageBackground source={require('../assets/wallet/textInputBG.png')} style={styles.addressInput} resizeMode="contain">
-              <Image source={require('../assets/wallet/pencil.png')} style={styles.pencilImage}/>
-                <TextInput style={styles.textInput} underlineColorAndroid="transparent">
-                </TextInput>
-              </ImageBackground>
-                <Text style={[styles.buttonText, styles.addNotesText]}>
-                  * enter the ??? Eth public address
-                </Text>
-            </ImageBackground>
-          </View>
           <View style={styles.sendButtonView}>
             <TouchableOpacity>
               <ImageBackground source={require('../assets/wallet/sendButtonBG.png')} style={styles.sendButtonImage} resizeMode="contain">

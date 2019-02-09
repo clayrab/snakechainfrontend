@@ -26,22 +26,10 @@ export default class Profile extends React.Component {
     }});
   }
   render() {
+    console.log(this.props.user)
     return (
       <SafeAreaView style={styles.safeArea}>
-        <ImageBackground source={require('../assets/profile/header.png')} style={styles.backgroundImage} resizeMode="stretch">
-          <Image source={require('../assets/profile/settingButton.png')} style={styles.settingImage} resizeMode="stretch" />
-          <ImageBackground source={require('../assets/profile/imageHolderBG.png')} style={styles.diamondBG} resizeMode="stretch">
-            <Image source={require('../assets/profile/coinIcon.png')} style={styles.iconImage} resizeMode="stretch" />
-            <Text style={[this.state.buttonDynamicStyle, styles.headerText]}>
-              10
-            </Text>
-          </ImageBackground>
-          <ImageBackground source={require('../assets/profile/diamondBox.png')} style={styles.diamondBG} resizeMode="stretch">
-            <Text style={[this.state.buttonDynamicStyle, styles.headerText]}>
-              100,000
-            </Text>
-          </ImageBackground>
-        </ImageBackground>
+        {this.props.children}
         <ImageBackground source={require('../assets/profile/imageHolderBG.png')} style={styles.profileDetailsBG} resizeMode="stretch">
           <ImageBackground source={require('../assets/profile/imageHolder.png')} style={styles.profileImageBG} resizeMode="stretch">
           </ImageBackground>
@@ -49,20 +37,20 @@ export default class Profile extends React.Component {
             <View style={styles.nameView}>
               <Image source={require('../assets/profile/greenIcon.png')} style={styles.iconImage} />
               <Text style={[styles.profileName, this.state.buttonDynamicStyle]}>
-                John Smith
+                {this.props.user.name}
               </Text>
             </View>
             <View style={styles.numbersView}>
               <ImageBackground source={require('../assets/profile/iconBG.png')} style={styles.iconBG} resizeMode="stretch">
                 <Image source={require('../assets/withdraw/DiamondIcom.png')} style={[styles.iconImage, {height: 25}]} resizeMode="stretch" />
-                <Text style={styles.numberText}>
-                  10000
+                <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.numberText, this.state.titleBarTextStyle]}>
+                  {(this.props.user.eth/CONSTANTS.WEIPERETH).toPrecision(4)}
                 </Text>
               </ImageBackground>
               <ImageBackground source={require('../assets/profile/iconBG.png')} style={styles.iconBG} resizeMode="stretch">
                 <Image source={require('../assets/profile/coinIcon.png')} style={styles.iconImage} resizeMode="stretch" />
-                <Text style={styles.numberText}>
-                  10
+                <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.numberText, this.state.titleBarTextStyle]}>
+                  {this.props.user.snek}
                 </Text>
               </ImageBackground>
             </View>
@@ -78,7 +66,7 @@ export default class Profile extends React.Component {
               </View>
               <View style={styles.childView}>
                 <Text style={[this.state.buttonDynamicStyle, styles.valueText]}>
-                  4528
+                  ????
                 </Text>
               </View>
             </View>
@@ -92,7 +80,7 @@ export default class Profile extends React.Component {
               </View>
               <View style={styles.childView}>
                 <Text style={[this.state.buttonDynamicStyle, styles.valueText]}>
-                  141
+                  ????
                 </Text>
               </View>
             </View>
@@ -214,11 +202,6 @@ let styles = StyleSheet.create({
   valueText: {
     color: '#F0C747',
     fontSize: 22
-  },
-  settingImage: {
-    width: screenHeight / 12,
-    height: screenHeight / 12,
-    marginLeft: 10
   },
   diamondBG: {
     width: screenWidth / 3,

@@ -26,32 +26,13 @@ export default class Wallet extends React.Component {
   render() {
     return (
       <SafeAreaView style={styles.screen}>
-        <ImageBackground source={require('../assets/wallet/screenBG2.png')} style={styles.backgroundImage} resizeMode="cover">
+        <ImageBackground source={require('../assets/wallet/background.png')} style={styles.backgroundImage} resizeMode="cover">
           <View style={styles.topButtonView}>
-            <TouchableOpacity style={styles.depositButton}>
-              <ImageBackground source={require('../assets/withdraw/WalletButton.png')} style={styles.withButtonImage} resizeMode="stretch">
-                <Image source={require('../assets/withdraw/WalletIcon.png')} style={styles.withdrawIcons} />
-                <Text style={[styles.buttonText, styles.depositText]}>
-                  DEPOSIT
-                </Text>
-              </ImageBackground>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.withdrawButton}>
-              <ImageBackground source={require('../assets/withdraw/WithdrowButton.png')} style={styles.withButtonImage} resizeMode="stretch">
-                <Image source={require('../assets/withdraw/WithdrowIcon.png')} style={styles.withdrawIcons} />
-                <Text style={[styles.buttonText, styles.withdrawText]}>
-                  WITHDROW
-                </Text>
-              </ImageBackground>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.closeButton}>
-              <ImageBackground source={require('../assets/wallet/closeBG.png')} style={styles.closeButtonImage} resizeMode="stretch">
-              </ImageBackground>
-            </TouchableOpacity>
+
           </View>
-            
+
           <View style={styles.etherBGView}>
-            <ImageBackground source={require('../assets/withdraw/Ethereum.png')} style={styles.etherBGImage} resizeMode="contain">
+            <ImageBackground source={require('../assets/wallet/brownBG.png')} style={styles.etherBGImage} resizeMode="contain">
               <Image source={require('../assets/wallet/diamond.png')} style={styles.diamondImage} />
               <Text style={[styles.buttonText, styles.yellowSnakeText]}>
                 Ethereum
@@ -63,7 +44,7 @@ export default class Wallet extends React.Component {
           </View>
 
           <View style={styles.etherBGView}>
-            <ImageBackground source={require('../assets/withdraw/Ethereum.png')} style={styles.etherBGImage} resizeMode="contain">
+            <ImageBackground source={require('../assets/wallet/brownBG.png')} style={styles.etherBGImage} resizeMode="contain">
               <Image source={require('../assets/wallet/coin.png')} style={styles.diamondImage} />
               <Text style={[styles.buttonText, styles.yellowSnakeText]}>Snakechain</Text>
               <Text style={[styles.buttonText, styles.yellowSnakeText]}>305</Text>
@@ -93,11 +74,6 @@ export default class Wallet extends React.Component {
             </ImageBackground>
           </View>
 
-          <View style={styles.qrView}>
-            <ImageBackground source={require('../assets/withdraw/QRCodeBackground.png')} style={styles.qrBG} resizeMode="stretch">
-              <Image source={require('../assets/withdraw/qrImage.png')} resizeMode="stretch" style={styles.qrCode}/>
-            </ImageBackground>
-          </View>
 
           <View style={styles.etherBGView}>
             <ImageBackground source={require('../assets/wallet/noticeBG.png')} style={styles.selectEtherImage} resizeMode="contain">

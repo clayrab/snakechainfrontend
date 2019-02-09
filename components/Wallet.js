@@ -34,6 +34,7 @@ export default class AccountHistory extends React.Component {
     this.setState({overlay: overlays.WITHDRAW });
   }
   deposit = () => {
+    console.log("deposit")
     this.setState({overlay: overlays.DEPOSIT });
   }
 
@@ -42,6 +43,11 @@ export default class AccountHistory extends React.Component {
       <SafeAreaView>
         <ImageBackground source={require('../assets/accounthistory/BG.png')} style={styles.backgroundImage} resizeMode="cover">
           <View style={styles.profileView}>
+            <TouchableOpacity onPress={this.props.exit}>
+              <Text style={{padding: 10, fontSize: 16, }}>
+                BACK
+              </Text>
+            </TouchableOpacity>
             <View style={styles.profilePicView}>
               <ImageBackground source={require('../assets/accounthistory/medalBG.png')} style={styles.medalImage} resizeMode="contain">
                 <Image source={require('../assets/accounthistory/profilepic.png')} style={styles.profileImage} resizeMode="contain"/>
@@ -59,12 +65,6 @@ export default class AccountHistory extends React.Component {
               </Text>
             </View>
           </View>
-          <TouchableOpacity onPress={this.props.exit}>
-            <Text style={{padding: 10, fontSize: 16, }}>
-              BACK
-            </Text>
-          </TouchableOpacity>
-
           <View style={styles.contentView}>
             <ImageBackground source={require('../assets/accounthistory/sendreceiveBG.png')} style={styles.contentImageBG} resizeMode="contain">
               <View style={styles.topContentView}>

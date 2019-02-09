@@ -16,11 +16,15 @@ import {asyncStore, getFromAsyncStore, removeItemValue} from "../utils/AsyncStor
 import AreYouSureOverlay from '../components/AreYouSureOverlay.js';
 import ConfirmTxOverlay from '../components/ConfirmTxOverlay.js';
 import GameHistoryOverlay from '../components/GameHistoryOverlay.js';
+import Header from '../components/Header.js';
 import LoadingOverlay from '../components/LoadingOverlay.js';
 import PowerupOverlay from '../components/PowerupOverlay.js';
 import PurchageATicketOverlay from '../components/PurchageATicketOverlay.js';
 import SelectLevelOverlay from '../components/SelectLevelOverlay.js';
 import SnakeTown from '../components/SnakeTown.js';
+import WalletOverlay from '../components/WalletOverlay.js';
+import WithdrawOverlay from '../components/WithdrawOverlay.js';
+import DepositOverlay from '../components/DepositOverlay.js';
 
 let mineImages = [
   require('../assets/homepage/mine/mine0.png'),
@@ -43,7 +47,6 @@ export default class Homepage extends React.Component {
       overlay: -1,
       loading: true,
       mineTextStyle: { display: "none",},
-      titleBarTextStyle: { display: "none",},
       confirmAmount: -1,
       confirmTokenType: "ETH",
       txKey: "",
@@ -70,9 +73,9 @@ export default class Homepage extends React.Component {
           color: "#fab523",
           fontFamily: 'riffic-free-bold',
         },
-        titleBarTextStyle: {
-          fontFamily: 'riffic-free-bold',
-        },
+        // titleBarTextStyle: {
+        //   fontFamily: 'riffic-free-bold',
+        // },
       });
       //await this.setState({loading: true});
     } catch(error){
@@ -181,7 +184,6 @@ export default class Homepage extends React.Component {
     this.props.onGoToTown();
   }
   onPowerups = () => {
-    console.log("onPowerups")
     this.setState({overlay: overlays.POWERUPS });
   }
   closeOverlay() {
@@ -196,41 +198,12 @@ export default class Homepage extends React.Component {
     let mineImg = mineImages[mineGraphicIndex];
     let minePercent = (100*this.props.user.haul/this.props.user.mineMax).toPrecision(2);
     if(this.props.user.haul == this.props.user.mineMax){
-        minePercent = 100;
+      minePercent = 100;
     }
     return (
       <SafeAreaView style={styles.screen}>
         <ImageBackground source={require('../assets/homepage/back.png')} style={styles.backgroundImage}>
-          /***** TITLE BAR START *****/
-          <ImageBackground source={require('../assets/homepage/titleback.png')} style={styles.titleBar}>
-            <TouchableOpacity style={styles.optionsTouchable} onPress={this.props.onProfile}>
-              <ImageBackground source={require('../assets/homepage/options.png')} style={styles.optionsIcon}>
-              </ImageBackground>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={this.props.onWallet}>
-              <ImageBackground source={require('../assets/homepage/coinbox.png')} style={styles.coinBox}>
-                <View style={styles.titleBarSnekTextHolder}>
-                  <View style={styles.top}></View>
-                  {this.state.loading ? null :
-                    <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.titleBarText, this.state.titleBarTextStyle]}>
-                      {this.props.user.snek}
-                    </Text>
-                  }
-                </View>
-              </ImageBackground>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={this.props.onWallet}>
-              <ImageBackground source={require('../assets/homepage/ethbox.png')} style={styles.coinBox}>
-                <View style={styles.titleBarEthTextHolder}>
-                  {this.state.loading ? null :
-                    <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.titleBarText, this.state.titleBarTextStyle]}>
-                      {(this.props.user.eth/CONSTANTS.WEIPERETH).toPrecision(4)}
-                    </Text>
-                  }
-                </View>
-              </ImageBackground>
-            </TouchableOpacity>
-          </ImageBackground>
+          {this.props.children}
           /***** TITLE BAR END *****/
           <View style={styles.contentHolder}>
             <View style={styles.contentTopMargin}></View>
@@ -238,7 +211,7 @@ export default class Homepage extends React.Component {
               <ImageBackground source={require('../assets/homepage/snakechain.png')} style={styles.snakechain}></ImageBackground>
               <View style={styles.iconsHolder}>
                 <TouchableOpacity onPress={this.props.onGoToTown}>
-                  <Text style={styles.profile}>Town</Text>
+                  <ImageBackground source={require('../assets/homepage/town.png')} style={styles.town}></ImageBackground>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={this.onPowerups}>
                   <ImageBackground source={require('../assets/homepage/powerups.png')} style={styles.powerups}></ImageBackground>
@@ -293,6 +266,10 @@ export default class Homepage extends React.Component {
           <PowerupOverlay
             closeOverlay={this.closeOverlay}
             show={this.state.overlay == overlays.POWERUPS}/>
+          <WalletOverlay
+            show={true}
+            user={this.props.user}
+            exit={this.exit} />
         </ImageBackground>
       </SafeAreaView>
     );
@@ -306,56 +283,6 @@ let styles = StyleSheet.create({
   backgroundImage: {
     width: "100%",
     height: "100%",
-  },
-  titleBar: {
-    flex: 0,
-    width: screenWidth,
-    height: titleBarHeight,
-    flexDirection: "row",
-  },
-  optionsTouchable: {
-    flex: 0,
-    width: "15.55555555%",
-    marginTop: titleBarHeight*.06/.757,
-    marginLeft: screenWidth*.157/3.6,
-    //backgroundColor: "#333333",
-    aspectRatio: 1,
-  },
-  optionsIcon: {
-    aspectRatio: 1,
-    resizeMode: "contain",
-    width: "100%",
-  },
-  coinBox: {
-    flex: 0,
-    width: screenWidth*1.273/3.6,
-    height: titleBarHeight*.323/.757,
-    marginTop: titleBarHeight*.170/.757,
-    marginLeft: screenWidth*.123/3.6,
-  },
-  ethBox: {
-    flex: 0,
-    width: screenWidth*1.273/3.6,
-    marginTop: titleBarHeight*.170/.757,
-    marginLeft: screenWidth*.103/3.6,
-  },
-  titleBarSnekTextHolder: {
-    width: screenWidth*.833/3.6,
-    height: titleBarHeight*.175/.757,
-    marginTop: titleBarHeight*.075/.757,
-    marginLeft: screenWidth*.360/3.6,
-    justifyContent: 'center',
-  },
-  titleBarEthTextHolder: {
-    width: screenWidth*.727/3.6,
-    height: titleBarHeight*.175/.757,
-    marginTop: titleBarHeight*.075/.757,
-    marginLeft: screenWidth*.250/3.6,
-    justifyContent: 'center',
-  },
-  titleBarText: {
-    color: "#fab523",
-    fontSize: 18,
   },
   contentHolder: {
     flex: 1,
@@ -384,7 +311,7 @@ let styles = StyleSheet.create({
     marginLeft: screenWidth*.577/3.6,
     flexDirection: "column",
   },
-  profile: {
+  town: {
     width: screenWidth*.860/3.6,
     aspectRatio: .860/.750,
   },
