@@ -23,8 +23,6 @@ import PurchageATicketOverlay from '../components/PurchageATicketOverlay.js';
 import SelectLevelOverlay from '../components/SelectLevelOverlay.js';
 import SnakeTown from '../components/SnakeTown.js';
 import WalletOverlay from '../components/WalletOverlay.js';
-import WithdrawOverlay from '../components/WithdrawOverlay.js';
-import DepositOverlay from '../components/DepositOverlay.js';
 
 let mineImages = [
   require('../assets/homepage/mine/mine0.png'),
@@ -62,6 +60,7 @@ export default class Homepage extends React.Component {
         loading: false,
       };
     }
+    return null;
   }
   async componentDidMount(){
     try{

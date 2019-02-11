@@ -51,8 +51,7 @@ export default class Header extends React.Component {
           </TouchableOpacity>
           :
           <TouchableOpacity style={styles.optionsTouchable} onPress={this.props.onProfile}>
-            <ImageBackground source={require('../assets/homepage/options.png')} style={styles.optionsIcon}>
-            </ImageBackground>
+            <ImageBackground source={require('../assets/homepage/options.png')} style={styles.optionsIcon}/>
           </TouchableOpacity>
         }
         <TouchableOpacity onPress={this.props.onWallet}>
@@ -101,7 +100,6 @@ let styles = StyleSheet.create({
   },
   backButtonIcon: {
     aspectRatio: 512/392,
-    resizeMode: "contain",
     width: "100%",
   },
   optionsTouchable: {
@@ -113,7 +111,6 @@ let styles = StyleSheet.create({
   },
   optionsIcon: {
     aspectRatio: 1,
-    resizeMode: "contain",
     width: "100%",
   },
   coinBox: {

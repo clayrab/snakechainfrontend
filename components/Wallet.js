@@ -10,9 +10,6 @@ import {
 import SafeAreaView from 'react-native-safe-area-view';
 import { Font } from 'expo';
 
-import DepositOverlay from '../components/DepositOverlay.js';
-import WithdrawOverlay from '../components/WithdrawOverlay.js';
-
 var overlays = {"DEPOSIT": 0, "WITHDRAW": 1, };
 export default class AccountHistory extends React.Component {
   constructor(props) {

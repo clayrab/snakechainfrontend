@@ -162,7 +162,7 @@ export default class Login extends React.Component {
             onClick={this.easterEgg}>
             <View style={[styles.halfView, styles.topView]}>
               <ImageBackground source={require('../assets/login/textBox.png')} style={styles.loginInput} resizeMode="stretch">
-                <TextInput style={[styles.textInput, this.state.buttonDynamicStyle]} underlineColorAndroid="transparent" autoCapitalize={false}
+                <TextInput style={[styles.textInput, this.state.buttonDynamicStyle]} underlineColorAndroid="transparent" 
                   onFocus={this.loginFocus}
                   onChangeText={this.loginChange}
                   value={this.state.usernameRender}>
@@ -172,7 +172,7 @@ export default class Login extends React.Component {
             <View style={[styles.halfView, styles.bottomView]}>
               <ImageBackground source={require('../assets/login/textBox.png')} style={[styles.loginInput, styles.passwordInput]} resizeMode="stretch">
                 <Image source={require('../assets/login/passwordIcon.png')} style={styles.lockImage} resizeMode="stretch"/>
-                <TextInput style={[styles.textInput, this.state.buttonDynamicStyle]} underlineColorAndroid="transparent" secureTextEntry={true} autoCapitalize={false}
+                <TextInput style={[styles.textInput, this.state.buttonDynamicStyle]} underlineColorAndroid="transparent" secureTextEntry={true}
                   onFocus={this.passwordFocus}
                   onChangeText={this.passwordChange}
                   value={this.state.passwordRender}/>

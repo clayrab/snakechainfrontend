@@ -44,6 +44,7 @@ export default class GameHistoryOverlay extends React.Component {
         loading: false,
       };
     }
+    return null;
   }
   async componentDidMount(){
     await Font.loadAsync({
@@ -155,7 +156,7 @@ export default class GameHistoryOverlay extends React.Component {
                 {
                   this.state.games.map(function(game, idx){
                     return (
-                      <ImageBackground source={require('../assets/gamehistory/ghButtonBG.png')} style={[styles.historyBG]} resizeMode="contain">
+                      <ImageBackground key={idx} source={require('../assets/gamehistory/ghButtonBG.png')} style={[styles.historyBG]} resizeMode="contain">
                         <View style={styles.historyLeftView}>
                           <Text style={[styles.buttonText, styles.historyLabelText]}>{game.level}</Text>
                         </View>
