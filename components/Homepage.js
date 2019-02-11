@@ -39,7 +39,7 @@ let mineImages = [
   require('../assets/homepage/mine/mine90.png'),
   require('../assets/homepage/mine/mine100.png'),
 ]
-var overlays = { "MINE": 0, "SELECTLEVEL": 1, "PURCHASETICKET": 2, "CONFIRMTICKET": 3, "LOADING": 4, "CONFIRMTX": 5, "POWERUPS": 6, };
+var overlays = { "MINE": 0, "SELECTLEVEL": 1, "PURCHASETICKET": 2, "CONFIRMTICKET": 3, "LOADING": 4, "CONFIRMTX": 5, "POWERUPS": 6, "WALLET": 7 };
 export default class Homepage extends React.Component {
   constructor(props) {
     super(props);
@@ -186,6 +186,9 @@ export default class Homepage extends React.Component {
   onPowerups = () => {
     this.setState({overlay: overlays.POWERUPS });
   }
+  onWallet = () => {
+    this.setState({overlay: overlays.WALLET });
+  }
   closeOverlay() {
     this.setState({overlay: -1});
   }
@@ -203,7 +206,7 @@ export default class Homepage extends React.Component {
     return (
       <SafeAreaView style={styles.screen}>
         <ImageBackground source={require('../assets/homepage/back.png')} style={styles.backgroundImage}>
-          {this.props.children}
+          <Header loading={this.props.loading} user={this.props.user} onProfile={this.props.onProfile} onWallet={this.onWallet}/>
           /***** TITLE BAR END *****/
           <View style={styles.contentHolder}>
             <View style={styles.contentTopMargin}></View>
@@ -267,9 +270,9 @@ export default class Homepage extends React.Component {
             closeOverlay={this.closeOverlay}
             show={this.state.overlay == overlays.POWERUPS}/>
           <WalletOverlay
-            show={true}
+            show={this.state.overlay == overlays.WALLET}
             user={this.props.user}
-            exit={this.exit} />
+            closeOverlay={this.closeOverlay} />
         </ImageBackground>
       </SafeAreaView>
     );

@@ -48,6 +48,21 @@ export default class Wallet extends React.Component {
             </ImageBackground>
           </View>
 
+          <View style={styles.etherBGView}>
+            <ImageBackground source={require('../assets/wallet/selectEtherBG.png')} style={styles.selectEtherImage} resizeMode="contain">
+              <Text style={[styles.buttonText, styles.selectAmountText]}>
+                RECEIVING FROM PUBLIC ADDRESS
+              </Text>
+              <ImageBackground source={require('../assets/wallet/textInputBG.png')} style={styles.addressInput} resizeMode="contain">
+              <Image source={require('../assets/wallet/pencil.png')} style={styles.pencilImage}/>
+                <TextInput style={styles.textInput} underlineColorAndroid="transparent">
+                </TextInput>
+              </ImageBackground>
+                <Text style={[styles.buttonText, styles.addNotesText]}>
+                  * enter the ??? Eth public address
+                </Text>
+            </ImageBackground>
+          </View>
           <View style={styles.sendButtonView}>
             <TouchableOpacity>
               <ImageBackground source={require('../assets/wallet/sendButtonBG.png')} style={styles.sendButtonImage} resizeMode="contain">
@@ -55,7 +70,7 @@ export default class Wallet extends React.Component {
               </ImageBackground>
             </TouchableOpacity>
             <TouchableOpacity>
-              <Image source={require('../assets/wallet/checked.png')} style={styles.checkedImage} resizeMode="contain" />
+              <Image source={require('../assets/wallet/checkboxChecked.png')} style={styles.checkedImage} resizeMode="contain" />
             </TouchableOpacity>
             <Text style={[styles.buttonText, styles.depositText]}>
               I agree to <Text style={[styles.buttonText, styles.withdrawText]}>terms</Text>

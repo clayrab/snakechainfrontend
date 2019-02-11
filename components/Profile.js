@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
 import { Font } from 'expo';
+import Header from '../components/Header.js';
 
 export default class Profile extends React.Component {
   constructor(props) {
@@ -29,7 +30,7 @@ export default class Profile extends React.Component {
     console.log(this.props.user)
     return (
       <SafeAreaView style={styles.safeArea}>
-        {this.props.children}
+        <Header loading={this.props.loading} user={this.props.user} onProfile={this.props.onProfile} onWallet={this.props.onWallet} hasBackButton={true} exit={this.props.exit} />
         <ImageBackground source={require('../assets/profile/imageHolderBG.png')} style={styles.profileDetailsBG} resizeMode="stretch">
           <ImageBackground source={require('../assets/profile/imageHolder.png')} style={styles.profileImageBG} resizeMode="stretch">
           </ImageBackground>
