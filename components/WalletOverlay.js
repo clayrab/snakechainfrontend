@@ -9,6 +9,7 @@ import {
   TextInput,
   Clipboard
 } from 'react-native';
+import { Keccak } from 'sha3';
 import SafeAreaView from 'react-native-safe-area-view';
 import { Font } from 'expo';
 
@@ -48,11 +49,9 @@ export default class Wallet extends React.Component {
     Clipboard.setString(this.props.user.pubkey);
   }
   onWithdrawMode = () => {
-    console.log("onwithdrawmode")
     this.setState({mode: modes.WITHDRAW});
   }
   onDepositMode = () => {
-    console.log("onDepositMode")
     this.setState({mode: modes.DEPOSIT});
   }
   onEthereumCoin = () => {
@@ -70,14 +69,41 @@ export default class Wallet extends React.Component {
   onTermsAgreed = () => {
     this.setState({termsAgreed: !this.state.termsAgreed});
   }
-  onSend = () => {
-    // validate amount
-    //validate address
-    //
-    if(this.state.termsAgreed){
-
+  isChecksumAddress = (address) => {
+    address = address.replace('0x','');
+    let hasher = new Keccak(256);
+    hasher.update(address.toLowerCase());
+    let addressHash = hasher.digest('hex');
+    for (var i = 0; i < 40; i++ ) {
+      if ((parseInt(addressHash[i], 16) > 7 && address[i].toUpperCase() !== address[i]) || (parseInt(addressHash[i], 16) <= 7 && address[i].toLowerCase() !== address[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  isAddress = (address) => {
+    if (!/^(0x)?[0-9a-f]{40}$/i.test(address)) {
+      return false;
+    } else if (/^(0x)?[0-9a-f]{40}$/.test(address) || /^(0x)?[0-9A-F]{40}$/.test(address)) {
+      return true;
     } else {
+      return this.isChecksumAddress(address);
+    }
+  }
+  onSend = () => {
+    if(!this.state.termsAgreed){
       alert("You must agree to the terms and conditions")
+    } else if (isNaN(this.state.amountText.replace(".",""))){
+      alert("Amount must be a number");
+    } else if (!this.isAddress(this.state.address)){
+      alert("To address is not a valid address");
+    } else {
+      let type = this.state.coin == coins.ETHEREUM?"ETH":"SNK";
+      let amt = Number(this.state.amountText);
+      if(type == "ETH") {
+        amt = amt * 1000000000000000000;
+      }
+      this.props.onSend(amt, this.state.address, type)
     }
   }
   render() {
@@ -140,7 +166,6 @@ export default class Wallet extends React.Component {
               </TouchableOpacity>
             </View>
             <View style={styles.contentHolder}>
-
               { this.state.mode == modes.WITHDRAW
                 ?
                   <View>
@@ -211,7 +236,7 @@ export default class Wallet extends React.Component {
                             <Image source={require('../assets/wallet/pencil.png')} style={styles.pencilImage}/>
                             <TextInput style={styles.addressTextInput} underlineColorAndroid="transparent"
                               keyboardType = 'numeric'
-                              onChangeText = {(text) => this.onAmountChanged(text)}/>
+                              onChangeText = {(text) => this.onAddressChanged(text)}/>
                           </ImageBackground>
                           <Text style={[styles.buttonText, styles.addNotesText]}>
                             Enter the receiver's public address
@@ -300,7 +325,7 @@ let styles = StyleSheet.create({
     alignItems: 'center',
   },
   content: {
-    width: screenWidth*685/723,
+    width: screenWidth*685/724,
     height: screenHeight*1238/1287,
     position: 'relative',
     flexDirection: 'column',
@@ -320,25 +345,25 @@ let styles = StyleSheet.create({
     alignItems: 'center',
   },
   depositButtonImage: {
-    width: screenWidth*263/723,
-    height: screenWidth*102/723,
-    marginLeft: screenWidth*55/723,
+    width: screenWidth*263/724,
+    height: screenWidth*102/724,
+    marginLeft: screenWidth*55/724,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row'
   },
   withButtonImage: {
-    width: screenWidth*263/723,
-    height: screenWidth*102/723,
-    marginLeft: screenWidth*29/723,
+    width: screenWidth*263/724,
+    height: screenWidth*102/724,
+    marginLeft: screenWidth*29/724,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row'
   },
   closeButton: {
     position: 'absolute',
-    top: -screenWidth*9/723,
-    right: -screenWidth*9/723,
+    top: -screenWidth*9/724,
+    right: -screenWidth*9/724,
   },
   closeButtonImage: {
     height: 50,
@@ -349,14 +374,14 @@ let styles = StyleSheet.create({
     alignItems: 'center',
   },
   etherBGImage: {
-    width: screenWidth*623/723,
-    height: screenWidth*104/723,
+    width: screenWidth*623/724,
+    height: screenWidth*104/724,
     marginTop: 10,
     flexDirection: 'row',
     alignItems: 'center'
   },
   coinIconHolder: {
-    width: screenWidth*130/723,
+    width: screenWidth*130/724,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -366,13 +391,13 @@ let styles = StyleSheet.create({
     resizeMode: 'contain'
   },
   coinTextHolder: {
-    width: screenWidth*290/723,
+    width: screenWidth*290/724,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
   selectEtherImage: {
-    width: screenWidth*623/723,
+    width: screenWidth*623/724,
     height: 100,
     marginTop: 10,
     justifyContent: 'center',
@@ -385,8 +410,8 @@ let styles = StyleSheet.create({
     marginTop: 10
   },
   amountInput: {
-    width: screenWidth * 317/723,
-    height: screenWidth * 73/723,
+    width: screenWidth * 317/724,
+    height: screenWidth * 73/724,
     marginLeft: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -395,13 +420,13 @@ let styles = StyleSheet.create({
   pencilImage: {
     position: 'absolute',
     right: 10,
-    top: screenWidth * 20/723,
+    top: screenWidth * 20/724,
     width: 15,
     height: 15,
   },
   textInput: {
-    width: screenWidth * 317/723,
-    height: screenWidth * 73/723,
+    width: screenWidth * 317/724,
+    height: screenWidth * 73/724,
     color: "#fab523",
     paddingLeft: 10,
     paddingRight: 25,
@@ -411,8 +436,8 @@ let styles = StyleSheet.create({
     marginBottom: 5,
   },
   addressInput: {
-    width: screenWidth * 515/723,
-    height: screenWidth * 73/723,
+    width: screenWidth * 515/724,
+    height: screenWidth * 73/724,
     //backgroundColor: 'transparent',
     // width: screenWidth * 2 / 3,
     // height: 30,
@@ -421,8 +446,8 @@ let styles = StyleSheet.create({
 
   },
   addressTextInput: {
-    width: screenWidth * 515/723,
-    height: screenWidth * 73/723,
+    width: screenWidth * 515/724,
+    height: screenWidth * 73/724,
     color: "#fab523",
     paddingLeft: 10,
     paddingRight: 25,
@@ -524,8 +549,8 @@ let styles = StyleSheet.create({
     alignItems: 'center',
   },
   sendButtonImage: {
-    width: screenWidth * 229/723,
-    height: screenWidth * 95/723,
+    width: screenWidth * 229/724,
+    height: screenWidth * 95/724,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -537,8 +562,8 @@ let styles = StyleSheet.create({
     alignItems: 'center',
   },
   checkedImage: {
-    marginLeft: screenWidth * 63/723,
-    marginRight: screenWidth * 10/723,
+    marginLeft: screenWidth * 63/724,
+    marginRight: screenWidth * 10/724,
     width: 30,
     height: 30
   },
