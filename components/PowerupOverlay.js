@@ -42,6 +42,11 @@ export default class PowerupOverlay extends React.Component {
                 </Text>
               </ImageBackground>
             </View>
+            <View style={styles.temporaryText}>
+              <Text style={[styles.buttonText, styles.titleText]}>
+                COMING SOON
+              </Text>
+            </View>
           </ImageBackground>
         </View>
       );
@@ -51,6 +56,11 @@ export default class PowerupOverlay extends React.Component {
 let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
 var styles = StyleSheet.create({
+  temporaryText: {
+    height: "100%",
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   container: {
     flex: 1,
     position: 'absolute',
@@ -72,6 +82,7 @@ var styles = StyleSheet.create({
     position: 'absolute',
     top: -20,
     right: -15,
+    zIndex: 100,
   },
   closeButtonImage: {
     height: 50,

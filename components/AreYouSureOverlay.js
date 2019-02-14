@@ -19,7 +19,7 @@ export default class AreYouSureOverlay extends React.Component {
     await Font.loadAsync({
       'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
     });
-    styles.buttonText = {
+    styles.riffic = {
       fontFamily: 'riffic-free-bold'
     }
   }
@@ -29,22 +29,16 @@ export default class AreYouSureOverlay extends React.Component {
     } else {
       return (
         <View style={styles.container}>
-          <ImageBackground source={require('../assets/gameover/BG.png')} style={styles.backgroundImage} resizeMode="cover">
-            <Text>{this.props.text}</Text>
-            <TouchableOpacity style={styles.touchableButton} onPress={this.props.onYes}>
-              <ImageBackground source={require('../assets/gameover/greenButton.png')} style={styles.largeButton} resizeMode="stretch">
-                <Text style={[styles.buttonText, styles.largeButtonBText]}>
-                  YES
-                </Text>
-              </ImageBackground>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.touchableButton} onPress={this.props.onNo}>
-              <ImageBackground source={require('../assets/gameover/darkButton.png')} style={styles.largeButton} resizeMode="stretch">
-                <Text style={[styles.buttonText, styles.largeButtonText]}>
-                  CANCEL
-                </Text>
-              </ImageBackground>
-            </TouchableOpacity>
+          <ImageBackground source={require('../assets/areyousure/background.png')} style={styles.backgroundImage} resizeMode="stretch">
+            <Text style={[styles.riffic, styles.text]}>{ this.props.text }</Text>
+            <View style={styles.buttonsHolder}>
+              <TouchableOpacity style={styles.touchableButton} onPress={this.props.onYes}>
+                <ImageBackground source={require('../assets/areyousure/yesButton.png')} style={[styles.largeButton, styles.yesButton]} resizeMode="stretch"/>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.touchableButton} onPress={this.props.onNo}>
+                <ImageBackground source={require('../assets/areyousure/noButton.png')} style={[styles.largeButton, styles.noButton]} resizeMode="stretch"/>
+              </TouchableOpacity>
+            </View>
           </ImageBackground>
         </View>
       );
@@ -67,25 +61,31 @@ var styles = StyleSheet.create({
     alignItems: 'center',
   },
   backgroundImage: {
-   width: 0.88*screenWidth,
-   height: 0.88*screenHeight,
+   width: screenWidth*633/724,
+   height: screenWidth*(748/960)*633/724,
    flexDirection: 'column',
    alignItems: 'center',
-   padding: 20,
+  },
+  text: {
+    padding: screenWidth*80/724,
+    paddingBottom: screenWidth*40/724,
+    color: "#fab523",
+    fontSize: 18,
+  },
+  buttonsHolder:{
+    flexDirection: "row",
   },
   touchableButton: {
     alignItems: 'center',
-    marginTop: 20,
   },
   largeButton: {
-
-    width: screenWidth * 0.75,
-    height: 60,
+    width: screenWidth * 340/1086,
+    height: screenWidth * 122/1086,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  largeButtonText: {
-    color: "#fab523",
-    fontSize: 20,
+  yesButton: {},
+  noButton: {
+    marginLeft: screenWidth * 44/1086,
   },
 });

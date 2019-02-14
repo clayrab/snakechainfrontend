@@ -23,14 +23,7 @@ export default class SnekPart extends Sprite {
       direction: CONSTANTS.DPADSTATES.UP,
     };
     this.toggleUpdateInternal = false;
-    this.styles = StyleSheet.create({
-      snek: {
-        position: "absolute",
-        width: CONSTANTS.SNEKSIZE,
-        height: CONSTANTS.SNEKSIZE,
-        backgroundColor: CONSTANTS.SNEKPARTCOLOR,
-      },
-    });
+
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -49,6 +42,15 @@ export default class SnekPart extends Sprite {
   }
 
   render() {
-    return (<View style={[this.styles.snek, {left: this.props.posX, top: this.props.posY,}]}></View>);
+    return (<View style={[styles.snekPart, {left: this.props.posX, top: this.props.posY,}]}></View>);
   }
 }
+let styles = StyleSheet.create({
+  snekPart: {
+    position: "absolute",
+    width: CONSTANTS.SNEKSIZE,
+    height: CONSTANTS.SNEKSIZE,
+    backgroundColor: CONSTANTS.SNEKPARTCOLOR,
+    zIndex: 3,
+  },
+});

@@ -8,9 +8,7 @@ import {asyncStore, getFromAsyncStore, removeItemValue} from "./utils/AsyncStore
 import {context} from "./utils/Context.js";
 import {makeRetry} from "./utils/Retry.js";
 
-import Dpad from './sprites/Dpad.js';
-import Buttons from './sprites/Buttons.js';
-import Board from './sprites/Board.js';
+
 import Snek from './sprites/Snek.js';
 
 //import AccountHistory from './components/AccountHistory.js';
@@ -352,16 +350,15 @@ export default class App extends React.Component {
       return (
         <SafeAreaView>
           <Loop>
-            <Board/>
             <Snek
               pressedButton={this.state.pressedButton}
-              snekSpeed={0.10}
+              onDpadChange={this.onDpadChange}
               running={this.state.running}
               toggleReset={this.state.toggleReset}
-              onDied={this.onDied}>
+              onDied={this.onDied}
+              start={this.start}
+              pause={this.pause}>
             </Snek>
-            <Buttons running={this.state.running} start={this.start} pause={this.pause}></Buttons>
-            <Dpad onDpadChange={this.onDpadChange} pressedButton={this.state.pressedButton}></Dpad>
           </Loop>
           <PauseOverlay
             show={this.state.overlay == overlays.PAUSE}

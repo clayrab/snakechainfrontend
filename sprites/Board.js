@@ -13,8 +13,9 @@ export default class Board extends Sprite {
   constructor(props) {
     super(props);
     var borderWidth = 5;
-    var boardWidth = CONSTANTS.BOARDWIDTH * CONSTANTS.SNEKSIZE + 2 * borderWidth + 2;
-    var boardHeight = CONSTANTS.BOARDHEIGHT * CONSTANTS.SNEKSIZE + 2 * borderWidth + 2;
+    // var boardWidth = CONSTANTS.BOARDWIDTH * CONSTANTS.SNEKSIZE + 2 * borderWidth + 2;
+    // var boardHeight = CONSTANTS.BOARDHEIGHT * CONSTANTS.SNEKSIZE + 2 * borderWidth + 2;
+    
     this.shouldUpdate = true;
     this.styles = StyleSheet.create({
       field: {

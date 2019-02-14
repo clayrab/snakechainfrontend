@@ -100,10 +100,11 @@ var styles = StyleSheet.create({
     position: 'absolute',
     top: -20,
     right: -15,
+    zIndex: 100,
   },
   closeButtonImage: {
     height: 50,
-    width: 35
+    width: 35,
   },
   buttonView: {
     alignItems: 'center',

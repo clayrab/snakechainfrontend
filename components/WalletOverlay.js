@@ -364,6 +364,7 @@ let styles = StyleSheet.create({
     position: 'absolute',
     top: -screenWidth*9/724,
     right: -screenWidth*9/724,
+    zIndex: 100,
   },
   closeButtonImage: {
     height: 50,

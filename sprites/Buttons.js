@@ -28,63 +28,77 @@ export default class Buttons extends Sprite {
     this.props.onDpadChange(CONSTANTS.DPADSTATES.NONE);
   };
   render() {
-    if (this.props.isPower) {
+    if(this.props.running) {
       return (
-        <View style={{alignContent: 'center', justifyContent: 'center'}}>
-          <TouchableOpacity
-            color={"#fff"}
-            style={styles.power}
-            onPress={() => this.props.pause()}>
-            <Image source={require('../assets/gameplay/EnergyButton.png')} style={styles.buttonImage} resizeMode="stretch" />
-          </TouchableOpacity>
-        </View>
-      );
-    }
-    else {
-      if (this.props.running) {
-        return (
-          <View>
+        <View style={styles.buttonsBackground}>
+          <View style={styles.buttonsSpacer}/>
+          <View style={styles.buttonsHolder}>
             <TouchableOpacity
               color={"#fff"}
-              style={styles.back}
+              style={styles.pause}
               onPress={() => this.props.pause()}>
               <Image source={require('../assets/gameplay/PauseButton.png')} style={styles.buttonImage} resizeMode="stretch" />
             </TouchableOpacity>
-          </View>
-        );
-      } else {
-        return (
-          <View>
+            <View style={styles.buttonsSpacer2}/>
             <TouchableOpacity
               color={"#fff"}
-              style={styles.back}
+              style={styles.power}
+              onPress={() => this.props.pause()}>
+              <Image source={require('../assets/gameplay/EnergyButton.png')} style={styles.buttonImage} resizeMode="stretch" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.buttonsBackground}>
+          <View style={styles.buttonsSpacer}/>
+          <View style={styles.buttonsHolder}>
+            <TouchableOpacity
+              color={"#fff"}
+              style={styles.pause}
               onPress={() => this.props.start()}>
               <Image source={require('../assets/gameplay/PauseButton.png')} style={styles.buttonImage} resizeMode="stretch" />
             </TouchableOpacity>
+            <View style={styles.buttonsSpacer2}/>
+            <TouchableOpacity
+              color={"#fff"}
+              style={styles.power}
+              onPress={() => this.props.start()}>
+              <Image source={require('../assets/gameplay/EnergyButton.png')} style={styles.buttonImage} resizeMode="stretch" />
+            </TouchableOpacity>
           </View>
-        );
-      }
+        </View>
+      );
     }
   }
 }
 
 let styles = StyleSheet.create({
-  back: {
-    position: 'absolute',
-    top: CONSTANTS.GAMEHEIGHT * 9 / 8,
-    left: CONSTANTS.DEVICEWIDTH / 6 - 25,
+  buttonsBackground: {
+    width: CONSTANTS.DEVICEWIDTH,
+    height: CONSTANTS.DEVICEHEIGHT - CONSTANTS.SCOREBOARDHEIGHT - CONSTANTS.GAMEHEIGHT - CONSTANTS.STATUSBARHEIGHT - 4,
   },
-  content: {
-    color: "#fff",
-    fontSize: 14
+  buttonsSpacer: {
+    flex: 1,
+  },
+  buttonsHolder: {
+    flexDirection: "row",
+    flex: 0,
+  },
+  buttonsSpacer2: {
+    flex: 1,
   },
   buttonImage: {
-    width: 50,
-    height: 50
+    width: CONSTANTS.DEVICEWIDTH*156/1080,
+    height: CONSTANTS.DEVICEWIDTH*156/1080,
+  },
+  pause: {
+    marginBottom: CONSTANTS.DEVICEWIDTH*115/1080,
+    marginLeft: CONSTANTS.DEVICEWIDTH*45/1080,
   },
   power: {
-    position: 'absolute',
-    top: CONSTANTS.GAMEHEIGHT * 9 / 8 ,
-    right: CONSTANTS.DEVICEWIDTH / 6 - 25,
+    marginBottom: CONSTANTS.DEVICEWIDTH*115/1080,
+    marginRight: CONSTANTS.DEVICEWIDTH*45/1080,
   }
 });
