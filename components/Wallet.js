@@ -153,12 +153,7 @@ export default class AccountHistory extends React.Component {
               </ImageBackground>
             </ImageBackground>
           </View>
-          <DepositOverlay
-            closeOverlay={this.closeOverlay}
-            show={this.state.overlay == overlays.DEPOSIT}/>
-          <WithdrawOverlay
-            closeOverlay={this.closeOverlay}
-            show={this.state.overlay == overlays.WITHDRAW}/>
+        
         </ImageBackground>
       </SafeAreaView>
     )

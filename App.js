@@ -28,10 +28,6 @@ import SnakeTown from './components/SnakeTown.js';
 import SignUp from './components/Signup.js';
 import Wallet from './components/Wallet.js';
 import Profile from './components/Profile.js';
-import SelectLevel from './components/SelectLevel.js';
-import SnakeMine from './components/SnakeMine.js';
-//import Withdraw from './components/Withdraw.js';
-
 
 const connectionConfig = {
   jsonp: false,
@@ -348,10 +344,6 @@ export default class App extends React.Component {
       return (
         <Profile loading={this.state.loading} user={this.state.user} exit={this.exit}/>
       );
-    // }else if(this.state.screen == screens.WALLET){
-    //   return (
-    //     <Wallet exit={this.exit}/>
-    //   );
     }else if(this.state.screen == screens.SNAKETOWN){
       return (
         <SnakeTown exit={this.exit}/>
