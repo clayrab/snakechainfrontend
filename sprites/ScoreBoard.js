@@ -14,38 +14,39 @@ export default class ScoreBoard extends Sprite {
   };
   constructor(props) {
     super(props);
-
   }
 
   render() {
     return (
       <ImageBackground source={require('../assets/homepage/titleback.png')} style={styles.scoreBoard}>
-        <ImageBackground source={require('../assets/gameplay/scoreBackground.png')} style={styles.coinBox} resizeMode={'stretch'}>
-          <Text
-            adjustsFontSizeToFit
-            numberOfLines={1}
-            style={styles.scoreText}>
-            Score&nbsp;&nbsp;
-            <Text style={[styles.scoreText,{color: '#fff'}]}>{this.props.score}</Text>
-          </Text>
+        <ImageBackground source={require('../assets/gameplay/scoreBackground.png')} style={styles.scoreBox} resizeMode={'stretch'}>
+          <View style={styles.scoreBoardScoreTextHolder}>
+            <Text numberOfLines={1} style={styles.scoreText}>
+              <Text style={{color: '#fff'}}>{this.props.score}</Text>
+            </Text>
+          </View>
         </ImageBackground>
         <TouchableOpacity onPress={this.props.easterEgg}>
           <ImageBackground source={require('../assets/homepage/coinbox.png')} style={styles.coinBox} resizeMode={'stretch'}>
-            <Text
-              adjustsFontSizeToFit
-              numberOfLines={1}
-              style={styles.scoreText}>
-              {this.props.score}
-            </Text>
+            <View style={styles.scoreBoardCoinTextHolder}>
+              {this.props.loading? null :
+                <Text adjustsFontSizeToFit numberOfLines={1} style={styles.scoreText}>
+                  {this.props.user.snek}
+                </Text>
+              }
+            </View>
           </ImageBackground>
         </TouchableOpacity>
-        <ImageBackground source={require('../assets/homepage/ethbox.png')} style={styles.coinBox} resizeMode={'stretch'}>
-          <Text
-            adjustsFontSizeToFit
-            numberOfLines={1}
-            style={styles.scoreText}>
-            {this.props.baseScore} x {this.props.multiplier}
-          </Text>
+        <ImageBackground source={require('../assets/homepage/ethbox.png')} style={styles.ethBox} resizeMode={'stretch'}>
+          <View style={styles.scoreBoardEthTextHolder}>
+            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.scoreText]}>
+              {this.props.loading? null :
+                <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.titleBarText, this.state.titleBarTextStyle]}>
+                  {(this.props.user.eth/CONSTANTS.WEIPERETH).toPrecision(4)}
+                </Text>
+              }
+            </Text>
+          </View>
         </ImageBackground>
       </ImageBackground>
     );
@@ -60,21 +61,39 @@ let styles = StyleSheet.create({
     height: scoreBoardHeight,
     flexDirection: "row",
   },
+  scoreBoardScoreTextHolder: {
+    width: screenWidth*.833/4.6,
+    height: scoreBoardHeight*.175/.757,
+    marginTop: scoreBoardHeight*.075/.757,
+    marginLeft: screenWidth*.15/4.6,
+    justifyContent: 'flex-start',
+  },
+  scoreBox: {
+    width: screenWidth*1.273/4.6,
+    height: scoreBoardHeight*.323/.757,
+    marginTop: scoreBoardHeight*.170/.757,
+    marginLeft: screenWidth*.123/4.6,
+  },
   coinBox: {
     flex: 0,
     width: screenWidth*1.273/4.6,
     height: scoreBoardHeight*.323/.757,
     marginTop: scoreBoardHeight*.170/.757,
     marginLeft: screenWidth*.123/4.6,
-    alignItems: 'center',
-    justifyContent: 'center'
   },
-  scoreBoardSnekTextHolder: {
+  scoreBoardCoinTextHolder: {
     width: screenWidth*.833/4.6,
     height: scoreBoardHeight*.175/.757,
     marginTop: scoreBoardHeight*.075/.757,
     marginLeft: screenWidth*.360/4.6,
     justifyContent: 'center',
+  },
+  ethBox: {
+    flex: 0,
+    width: screenWidth*1.273/3.6,
+    height: scoreBoardHeight*.363/.757,
+    marginTop: scoreBoardHeight*.170/.757,
+    marginLeft: screenWidth*.123/3.6,
   },
   scoreBoardEthTextHolder: {
     width: screenWidth*.727/3.6,
@@ -84,7 +103,7 @@ let styles = StyleSheet.create({
     justifyContent: 'center',
   },
   scoreText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#FAB523'
   }

@@ -67,7 +67,7 @@ export default class Header extends React.Component {
           </ImageBackground>
         </TouchableOpacity>
         <TouchableOpacity onPress={this.props.onWallet}>
-          <ImageBackground source={require('../assets/homepage/ethbox.png')} style={styles.coinBox}>
+          <ImageBackground source={require('../assets/homepage/ethbox.png')} style={styles.ethBox}>
             <View style={styles.titleBarEthTextHolder}>
               {this.props.loading? null :
                 <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.titleBarText, this.state.titleBarTextStyle]}>
@@ -123,8 +123,9 @@ let styles = StyleSheet.create({
   ethBox: {
     flex: 0,
     width: screenWidth*1.273/3.6,
+    height: titleBarHeight*.363/.757,
     marginTop: titleBarHeight*.170/.757,
-    marginLeft: screenWidth*.103/3.6,
+    marginLeft: screenWidth*.123/3.6,
   },
   titleBarSnekTextHolder: {
     width: screenWidth*.833/3.6,

@@ -15,15 +15,16 @@ import Snek from './sprites/Snek.js';
 import AreYouSureOverlay from './components/AreYouSureOverlay.js';
 import ConfirmTxGameOverOverlay from './components/ConfirmTxGameOverOverlay.js';
 import ConfirmTxOverlay from './components/ConfirmTxOverlay.js';
-//import DoMineOverlay from './components/DoMineOverlay.js';
 import GameOverOverlay from './components/GameOverOverlay.js';
 import Homepage from './components/Homepage.js';
 import Login from './components/Login.js';
 import Loading from './components/Loading.js';
 import LoadingOverlay from './components/LoadingOverlay.js';
 import PauseOverlay from './components/PauseOverlay.js';
-import SnakeTown from './components/SnakeTown.js';
+import PowerupOverlay from './components/PowerupOverlay.js';
 import SignUp from './components/Signup.js';
+import SnakeTown from './components/SnakeTown.js';
+import StartGameOverlay from './components/StartGameOverlay.js';
 import Wallet from './components/Wallet.js';
 import Profile from './components/Profile.js';
 
@@ -35,8 +36,8 @@ const connectionConfig = {
   transports: ['websocket'],
  };
 
-var screens = { "GAME": 0, "HOME": 1, "LOADING": 2, "WALLET": 3, "PREFERENCES": 4, "PROFILE": 5, "ACCOUNTHISTORY": 6, "GAMEHISTORY": 7, "LOGIN": 8, "SNAKETOWN": 9, "WALLET": 10, };
-var overlays = {"PAUSE": 0, "GAMEOVER": 1, "DOMINE": 2, "DOMINEFREE": 3, "MINE": 4, "AREYOUSURE": 5, "LOADING": 6, "CONFIRMTX": 7, "TRANSACTION": 8, "CONFIRMCONTRACT": 9 };
+var screens = { "GAME": 0, "HOME": 1, "LOADING": 2, "PREFERENCES": 3, "PROFILE": 4, "ACCOUNTHISTORY": 5, "GAMEHISTORY": 6, "LOGIN": 7, "SNAKETOWN": 8, };
+var overlays = {"PAUSE": 0, "GAMEOVER": 1, "MINE": 2, "AREYOUSURE": 3, "LOADING": 4, "CONFIRMTX": 5, "TRANSACTION": 6, "CONFIRMCONTRACT": 7, "POWERUPS": 8, "STARTGAME": 9};
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -65,6 +66,7 @@ export default class App extends React.Component {
       },
       running: false,
       screen: screens.LOGIN,
+      overlay: overlays.STARTGAME,
       pressedButton: CONSTANTS.DPADSTATES.UP,
       toggleReset: true,
       lastScore: -1,
@@ -98,7 +100,7 @@ export default class App extends React.Component {
     this.start = this.start.bind(this);
     this.pause = this.pause.bind(this);
     this.onSelectLevelPlayPress = this.onSelectLevelPlayPress.bind(this);
-    this.onSelectLevel = this.onSelectLevel.bind(this);
+    //this.onSelectLevel = this.onSelectLevel.bind(this);
     this.onDoContract = this.onDoContract.bind(this);
     //this.onDontDoContract = this.onDontDoContract.bind(this);
     this.gameOverDoContract = this.gameOverDoContract.bind(this);
@@ -201,27 +203,7 @@ export default class App extends React.Component {
       }
     }).catch(err => {throw err});
   }
-  start() {
-    this.setState({offerContract: true, running: true});
-  }
-  restart() {
-    this.setState({toggleReset: !this.state.toggleReset, overlay: -1});
-  }
-  pause() {
-    this.setState({running: false, overlay: overlays.PAUSE});
-  }
-  exit = () => {
-    this.setState({running: false, screen: screens.HOME, overlay: -1});
-  }
-  onPausePress(){
-    this.setState({running: false, overlay: overlays.PAUSE});
-  }
-  async onSelectLevel(levelNumber) {
-    this.setState({screen: screens.GAME, level: levelNumber});
-  }
-  onSelectLevelPlayPress() {
-    this.setState({screen: screens.GAME});
-  }
+
   async onDoContract() {
     console.log("onDoContract")
     await this.setState({overlay: overlays.LOADING});
@@ -292,7 +274,33 @@ export default class App extends React.Component {
       await this.setState({overlay: -1});
     }
   }
-
+  start() {
+    this.setState({offerContract: true, running: true, overlay: -1});
+  }
+  restart() {
+    this.setState({toggleReset: !this.state.toggleReset, overlay: overlays.STARTGAME});
+  }
+  pause() {
+    this.setState({running: false, overlay: overlays.PAUSE});
+  }
+  exit = () => {
+    this.setState({running: false, screen: screens.HOME, overlay: overlays.STARTGAME});
+  }
+  powerUps = () => {
+    this.setState({running: false, overlay: overlays.POWERUPS});
+  }
+  wallet = () => {
+    alert("wallet");
+  }
+  confirmQuit = () => {
+    alert("confirm quit");
+  }
+  onSelectLevel = (levelNumber) => {
+    this.setState({screen: screens.GAME, level: levelNumber});
+  }
+  onSelectLevelPlayPress() {
+    this.setState({screen: screens.GAME});
+  }
   onCancelConfirmContract = () => {
     this.setState({overlay: overlays.GAMEOVER});
   }
@@ -306,9 +314,6 @@ export default class App extends React.Component {
   onGoToTown = () => {
     this.setState({screen: screens.SNAKETOWN, overlay: -1});
   }
-  // onWallet = () => {
-  //   this.setState({screen: screens.WALLET, overlay: -1});
-  // }
   onProfile = () => {
     this.setState({screen: screens.PROFILE, overlay: -1});
   }
@@ -356,11 +361,17 @@ export default class App extends React.Component {
               toggleReset={this.state.toggleReset}
               onDied={this.onDied}
               start={this.start}
-              pause={this.pause}>
+              pause={this.pause}
+              powerUps={this.powerUps}
+              loading={this.state.loading} 
+              user={this.state.user}>
             </Snek>
           </Loop>
           <PauseOverlay
             show={this.state.overlay == overlays.PAUSE}
+            powerUps={this.powerUps}
+            wallet={this.wallet}
+            quit={this.confirmQuit}
             closeOverlay={this.closeOverlay}/>
           <GameOverOverlay
             show={this.state.overlay == overlays.GAMEOVER}
@@ -387,6 +398,12 @@ export default class App extends React.Component {
             gameOverInfo={this.state.gameOverInfo}
             restart={this.restart}
             exit={this.exit} />
+          <PowerupOverlay
+            closeOverlay={this.closeOverlay}
+            show={this.state.overlay == overlays.POWERUPS}/>
+          <StartGameOverlay
+            show={this.state.overlay == overlays.STARTGAME}
+            onStart={this.start}/>
         </SafeAreaView>
       );
     }

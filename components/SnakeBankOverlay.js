@@ -107,7 +107,7 @@ let styles = StyleSheet.create({
   },
   headingStyle: {
     color: "#EBAC26",
-    fontSize: 42,
+    fontSize: 36,
     textAlign: "center",
     marginTop: 20,
   },
@@ -126,7 +126,6 @@ let styles = StyleSheet.create({
     padding: 20,
     width: screenWidth*872/1080,
     height: (299/818)*screenWidth*872/1080,
-
   },
   snakeImageView: {
     marginTop: 10,

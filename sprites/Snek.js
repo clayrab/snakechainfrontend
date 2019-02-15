@@ -29,8 +29,8 @@ export default class Snek extends Sprite {
       direction: CONSTANTS.DPADSTATES.UP,
       tailIndex: -1,
       tail: [],
-      baseScore: 0,
-      multiplier: 1,
+      // baseScore: 0,
+      // multiplier: 1,
       score: 0,
       pelletLocation: null,
       pelletRot: new Animated.Value(0),
@@ -77,8 +77,8 @@ export default class Snek extends Sprite {
     startState.direction = this.defaultState.direction;
     startState.pelletLocation = this.defaultState.pelletLocation;
     startState.pelletRot = this.defaultState.pelletRot;
-    startState.baseScore = this.defaultState.baseScore;
-    startState.multiplier = this.defaultState.multiplier;
+    //startState.baseScore = this.defaultState.baseScore;
+    //startState.multiplier = this.defaultState.multiplier;
     startState.score = this.defaultState.score;
     startState.alive = this.defaultState.alive;
     startState.tail = this.makeTail(3, this.defaultState.boardX, this.defaultState.boardY);
@@ -139,21 +139,21 @@ export default class Snek extends Sprite {
       isHead = this.state.boardX == x && this.state.boardY == y;
     }
     this.setState({pelletLocation: {x: x, y: y}});
-    if ((this.state.baseScore + 2) % 5 == 0) {
-      this.state.pelletRot.setValue(0);
-      this.pelletAnim.start();
-    }
+    // if ((this.state.baseScore + 2) % 5 == 0) {
+    //   this.state.pelletRot.setValue(0);
+    //   this.pelletAnim.start();
+    // }
   }
 
   eatPellet(){
     this.growTail();
     this.placePellet();
-    var mult = this.state.multiplier;
-    if ((this.state.baseScore + 1) % 5 == 0) {
-      mult++;
-    }
-    var score = (this.state.baseScore + 1) * mult;
-    this.setState({baseScore: this.state.baseScore + 1, multiplier: mult, score: score});
+    //var mult = this.state.multiplier;
+    // if ((this.state.baseScore + 1) % 5 == 0) {
+    //   mult++;
+    // }
+    //var score = (this.state.baseScore + 1) * mult;
+    this.setState({score: this.state.score + 1});
   }
   growTail(){
     if (this.state.tail.length > 0) {
@@ -383,10 +383,10 @@ export default class Snek extends Sprite {
       <View style={styles.gameBack}>
         <ImageBackground source={require('../assets/gameplay/gameAreaBack.png')} style={styles.fieldBack} resizeMode="stretch">
           <ScoreBoard
-            baseScore={this.state.baseScore}
             score={this.state.score}
-            multiplier={this.state.multiplier}
-            easterEgg={this.easterEgg}/>
+            easterEgg={this.easterEgg}
+            loading={this.props.loading}
+            user={this.props.user} />
         </ImageBackground>
         <ImageBackground source={require('../assets/gameplay/gameArea.png')} style={styles.field} resizeMode="stretch"/>
         {this.state.tail.map((elem) => {
@@ -395,7 +395,7 @@ export default class Snek extends Sprite {
         {snek}
         {pellet}
         <Dpad onDpadChange={this.props.onDpadChange} pressedButton={this.props.pressedButton}></Dpad>
-        <Buttons running={this.props.running} start={this.props.start} pause={this.props.pause}></Buttons>
+        <Buttons running={this.props.running} powerUps={this.props.powerUps} pause={this.props.pause}></Buttons>
       </View>
     );
   }

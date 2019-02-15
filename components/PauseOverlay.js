@@ -28,44 +28,30 @@ export default class PauseOverlay extends React.Component {
     } else {
       return (
         <View style={styles.container}>
-        <Text style={[styles.buttonText, styles.titleText]}>PAUSED</Text>
           <ImageBackground style={styles.content} source={require('../assets/pauseoverlay/BackgroundBrown.png')} resizeMode={'stretch'}>
             <TouchableOpacity style={styles.closeButton} onPress={this.props.closeOverlay}>
               <Image style={styles.closeButtonImage} source={require('../assets/closebutton_bad.png')} resizeMode={'contain'}/>
             </TouchableOpacity>
+            <Text style={[styles.buttonText, styles.titleText]}>PAUSED</Text>
             <View style={styles.buttonView}>
-              <TouchableOpacity onPress={this.props.closeOverlay}>
+              <TouchableOpacity onPress={this.props.powerUps}>
                 <ImageBackground style={styles.brownButton} source={require('../assets/pauseoverlay/BrownButton.png')} resizeMode={'stretch'} >
                   <Text style={[styles.buttonText, styles.brownButtonText]}>
                     POWER UP INVENTORY
                   </Text>
                 </ImageBackground>
               </TouchableOpacity>
-              <TouchableOpacity onPress={this.props.closeOverlay}>
-                <ImageBackground style={styles.brownButton} source={require('../assets/pauseoverlay/BrownButton.png')} resizeMode={'stretch'} >
-                  <Text style={[styles.buttonText, styles.brownButtonText]}>
-                    OPTIONS
-                  </Text>
-                </ImageBackground>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={this.props.closeOverlay}>
-                <ImageBackground style={styles.brownButton} source={require('../assets/pauseoverlay/BrownButton.png')} resizeMode={'stretch'} >
-                  <Text style={[styles.buttonText, styles.brownButtonText]}>
-                    RESTART GAME
-                  </Text>
-                </ImageBackground>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={this.props.closeOverlay}>
-                <ImageBackground style={styles.brownButton} source={require('../assets/pauseoverlay/BrownButton.png')} resizeMode={'stretch'} >
-                  <Text style={[styles.buttonText, styles.brownButtonText]}>
-                    RETURN FROM GAME
-                  </Text>
-                </ImageBackground>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={this.props.closeOverlay}>
+              <TouchableOpacity onPress={this.props.wallet}>
                 <ImageBackground style={styles.brownButton} source={require('../assets/pauseoverlay/BrownButton.png')} resizeMode={'stretch'}>
                   <Text style={[styles.buttonText, styles.brownButtonText]}>
-                    RETURN TO WALLET
+                    WALLET
+                  </Text>
+                </ImageBackground>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this.props.quit}>
+                <ImageBackground style={styles.brownButton} source={require('../assets/pauseoverlay/BrownButton.png')} resizeMode={'stretch'} >
+                  <Text style={[styles.buttonText, styles.brownButtonText]}>
+                    QUIT GAME
                   </Text>
                 </ImageBackground>
               </TouchableOpacity>
@@ -91,17 +77,22 @@ var styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     top: 0,
-    backgroundColor:  'rgba(0,0,0,0.6)',
+    backgroundColor:  'rgba(0,0,0,0.8)',
     width: screenWidth,
     height: screenHeight,
     justifyContent: 'center',
     alignItems: 'center',
   },
   content: {
-    width: screenWidth*4/5,
-    height: screenHeight*4/5,
+    marginTop: 100,
+    paddingTop: 10,
+    width: screenWidth*932/1080,
+    height: (2359/1872)*screenWidth*932/1080,
     position: 'relative',
     flexDirection: 'column',
+    //justifyContent: 'center',
+    alignItems: 'center',
+
   },
   closeButton: {
     position: 'absolute',
@@ -113,21 +104,29 @@ var styles = StyleSheet.create({
     height: 50,
     width: 35
   },
+  titleText: {
+    fontWeight: 'bold',
+    fontSize: 44,
+    color: '#FAB523',
+    position: "absolute",
+    marginTop: -70,
+  },
   brownButton: {
-    width: screenWidth*4/6,
-    height: 60,
-    marginTop: 20,
+    width: screenWidth*746/1080,
+    height: (330/1494)*screenWidth*746/1080,
+    marginTop: 10,
     alignItems: 'center',
     justifyContent: 'center'
   },
   buttonView: {
     alignItems: 'center',
-    marginTop: 40,
+    flex: 1,
   },
   yellowButton: {
-    position: 'absolute',
-    left: ((screenWidth*4/5) - (screenWidth*4/6))/2,
-    bottom: -30
+    marginBottom: -30,
+    // position: 'absolute',
+    // left: ((screenWidth*4/5) - (screenWidth*4/6))/2,
+    // bottom: -30
   },
   yellowButtonText: {
     fontSize: 24,
@@ -139,9 +138,4 @@ var styles = StyleSheet.create({
     color: '#FAB523',
     fontWeight: 'bold'
   },
-  titleText: {
-    fontWeight: 'bold',
-    fontSize: 24,
-    color: '#FAB523'
-  }
 });

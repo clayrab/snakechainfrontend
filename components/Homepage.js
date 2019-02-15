@@ -50,7 +50,7 @@ export default class Homepage extends React.Component {
       txKey: "",
       confirmPubkey: "",
     };
-    this.closeOverlay = this.closeOverlay.bind(this);
+    // this.closeOverlay = this.closeOverlay.bind(this);
   }
   static getDerivedStateFromProps(props, state) {
     //let ethBal = (props.user.eth/CONSTANTS.WEIPERETH).toPrecision(4);
@@ -265,7 +265,7 @@ export default class Homepage extends React.Component {
   onWallet = () => {
     this.setState({overlay: overlays.WALLET });
   }
-  closeOverlay() {
+  closeOverlay = () => {
     this.setState({overlay: -1});
   }
   render() {
