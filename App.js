@@ -100,7 +100,7 @@ export default class App extends React.Component {
     this.onSelectLevelPlayPress = this.onSelectLevelPlayPress.bind(this);
     this.onSelectLevel = this.onSelectLevel.bind(this);
     this.onDoContract = this.onDoContract.bind(this);
-    this.onDontDoContract = this.onDontDoContract.bind(this);
+    //this.onDontDoContract = this.onDontDoContract.bind(this);
     this.gameOverDoContract = this.gameOverDoContract.bind(this);
     this.onConfirmTxOk = this.onConfirmTxOk.bind(this);
   }
@@ -223,6 +223,7 @@ export default class App extends React.Component {
     this.setState({screen: screens.GAME});
   }
   async onDoContract() {
+    console.log("onDoContract")
     await this.setState({overlay: overlays.LOADING});
     let jwt = await getFromAsyncStore("jwt");
     let price = this.state.prices.mineGamePrice;
@@ -263,6 +264,7 @@ export default class App extends React.Component {
     }).catch(err => {throw err});
   }
   onConfirmContract = async() => {
+    console.log("onConfirmContract")
     await this.setState({overlay: overlays.LOADING});
     let jwt = await getFromAsyncStore("jwt");
     let price = this.state.prices.mineGamePrice;
@@ -291,14 +293,11 @@ export default class App extends React.Component {
     }
   }
 
-  onDontDoContract() {
+  onCancelConfirmContract = () => {
     this.setState({overlay: overlays.GAMEOVER});
   }
-  onCancelConfirmContract = () => {
-    this.setState({overlay: overlays.AREYOUSURE});
-  }
   gameOverDoContract() {
-    this.setState({overlay: overlays.AREYOUSURE});
+    this.setState({overlay: overlays.CONFIRMCONTRACT});
   }
   onConfirmTxOk() {
     this.setState({overlay: overlays.GAMEOVER});
@@ -368,18 +367,13 @@ export default class App extends React.Component {
             closeOverlay={this.closeOverlay}
             gameOverInfo={this.state.gameOverInfo}
             miningPrice={this.state.prices.mineGamePrice}
-            onDoContract={this.gameOverDoContract}
+            onDoContract={this.onDoContract}
             offerContract={this.state.offerContract}
             restart={this.restart}
             exit={this.exit} />
           <AreYouSureOverlay
-            show={this.state.overlay == overlays.AREYOUSURE}
-            text={`Pay ${(this.state.prices.mineGamePrice/CONSTANTS.WEIPERETH).toPrecision(4)} ETH for ${this.state.gameOverInfo.score} Snake Coins.\n\nAre you sure?`}
-            onYes={this.onDoContract}
-            onNo={this.onDontDoContract}/>
-          <AreYouSureOverlay
             show={this.state.overlay == overlays.CONFIRMCONTRACT}
-            text={`Pay ${this.state.confirmAmount} ${this.state.confirmTokenType} for ${this.state.user.haul} Snake Coins.\n\nAre you sure?`}
+            text={`Pay ${(this.state.prices.mineGamePrice/CONSTANTS.WEIPERETH).toPrecision(4)} ETH for ${this.state.gameOverInfo.score} Snake Coins.\n\nAre you sure?`}
             onYes={this.onConfirmContract}
             onNo={this.onCancelConfirmContract}/>
           <LoadingOverlay

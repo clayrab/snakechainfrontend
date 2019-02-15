@@ -355,6 +355,11 @@ export default class Homepage extends React.Component {
             onSend={this.onSend}
             user={this.props.user}
             closeOverlay={this.closeOverlay} />
+          <AreYouSureOverlay
+            show={this.state.overlay == overlays.CONFIRMTICKET}
+            text={`Pay ${this.state.confirmAmount} ${this.state.confirmTokenType} for ${this.props.user.haul} Snake Coins.\n\nAre you sure?`}
+            onYes={this.onConfirm}
+            onNo={this.onCancelConfirm}/>
         </ImageBackground>
       </SafeAreaView>
     );

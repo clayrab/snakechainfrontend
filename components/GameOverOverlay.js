@@ -32,32 +32,25 @@ export default class GameOverOverlay extends React.Component {
       //   <Text style={[styles.buttonText, styles.levelText]}>Level: 13</Text>
       //   <Text style={[styles.buttonText, styles.levelText]}>Time: 5:00</Text>
       // </ImageBackground>
-
-      //CLOSE BUTTON
-      // <View style={styles.topButtonView}>
-      //   <TouchableOpacity style={styles.closeButton}>
-      //     <ImageBackground source={require('../assets/wallet/closeBG.png')} style={styles.closeButtonImage} resizeMode="stretch" />
-      //   </TouchableOpacity>
-      // </View>
       return (
         <View style={styles.container}>
-          <ImageBackground source={require('../assets/gameover/BG.png')} style={styles.backgroundImage} resizeMode="cover">
+          <ImageBackground source={require('../assets/gameover/BG.png')} style={styles.backgroundImage} resizeMode="stretch">
             <Text style={[styles.buttonText, styles.gameOverText]}>
               GAME OVER
             </Text>
             { this.props.offerContract &&
-              <View show={false}>
+              <View style={{alignItems: "center"}}>
                 <Text style={[styles.buttonText, styles.selectionText]}>
-                  You got <Text style={[styles.buttonText, styles.numberText]}>{this.props.gameOverInfo.score}</Text> more mined gold!
+                  You mined <Text style={[styles.buttonText, styles.numberText]}>{this.props.gameOverInfo.score}</Text> gold!
                 </Text>
                 <View style={styles.contractView}>
                   <Image source={require('../assets/gameover/yellowsnake.png')} style={styles.leftSnakeImage} resizeMode="contain"/>
-                  <ImageBackground source={require('../assets/gameover/contract.png')} style={styles.contactImage} resizeMode="contain">
+                  <ImageBackground source={require('../assets/gameover/contractSigned.png')} style={styles.contractImage} resizeMode="contain">
                     <Text style={[styles.buttonText, styles.contractText]}>
                       CONTRACT
                     </Text>
                     <Text style={[styles.buttonText, styles.contractDetails]}>
-                      Exchange all your gold for minted snek coin now.{"\n"}{"\n"}
+                      Exchange for minted snek coin now.{"\n"}{"\n"}
                       <Text style={[styles.buttonText, styles.contractDetails, {fontSize: 20},]}>
                         {(this.props.miningPrice/CONSTANTS.WEIPERETH).toPrecision(4)} ETH.
                       </Text>
@@ -66,8 +59,8 @@ export default class GameOverOverlay extends React.Component {
                   <Image source={require('../assets/gameover/greensnake.png')} style={styles.rightSnakeImage}  resizeMode="contain"/>
                 </View>
                 <TouchableOpacity style={[styles.touchableButton, styles.smallTouchableButton]} onPress={this.props.onDoContract}>
-                  <ImageBackground source={require('../assets/gameover/yellowButton.png')} style={styles.yellowButton} resizeMode="stretch">
-                    <Text style={[styles.buttonText, styles.smallButtonBText]}>
+                  <ImageBackground source={require('../assets/gameover/yellowButton.png')} style={styles.signConractButton} resizeMode="stretch">
+                    <Text style={[styles.buttonText, styles.signConractText]}>
                       SIGN CONTRACT
                     </Text>
                   </ImageBackground>
@@ -110,10 +103,12 @@ var styles = StyleSheet.create({
     alignItems: 'center',
   },
   backgroundImage: {
-   width: screenWidth,
-   height: screenHeight,
-   flexDirection: 'column',
-   alignItems: 'center',
+    width: screenWidth*685/724,
+    height: screenHeight*1180/1287,
+    position: 'relative',
+    flexDirection: 'column',
+    alignItems: 'center',
+    paddingTop: 40,
   },
   topButtonView: {
     width: screenWidth,
@@ -136,36 +131,48 @@ var styles = StyleSheet.create({
   contractView: {
     flexDirection: 'row'
   },
-  leftSnakeImage: {
-    height: 150,
-    width: 150*943/950,
-    marginRight: 0,
-  },
-  rightSnakeImage: {
-    height: 150,
-    width: 150*717/994,
-    marginLeft: 0
-  },
-  contactImage: {
-    height: 150,
-    width: 150*707/992,
+
+  contractImage: {
+    height: 508/362*screenWidth*359/1080,
+    width: screenWidth*359/1080,
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+  },
+  leftSnakeImage: {
+    width: screenWidth*407/1080,
+    height: (950/943)*screenWidth*407/1080,
+    marginRight: -screenWidth*40/1080,
+    marginLeft: -screenWidth*100/1080,
+    marginTop: (950/943)*screenWidth*90/1080,
+    zIndex: 100,
+  },
+  rightSnakeImage: {
+    width: screenWidth*294/1080,
+    height: (994/717)* screenWidth*294/1080,
+    marginLeft: -screenWidth*40/1080,
+    marginTop: (950/943)*screenWidth*90/1080,
   },
   touchableButton: {
     alignItems: 'center',
     marginTop: 5,
   },
-  yellowButton: {
-    width: screenWidth / 2,
-    height: 50,
+  signConractButton: {
+    marginTop: 10,
+    width: screenWidth*411/1080,
+    height: (294/1000)*screenWidth*411/1080,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  signConractText: {
+    color: "#000",
+    fontSize: 16,
+  },
   largeButton: {
-    width: screenWidth * 0.75,
-    height: 60,
+    width: screenWidth*708/1080,
+    //width: screenWidth * 0.75,
+    //height: 60,
+    height: (386/1425)*screenWidth*708/1080,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -180,14 +187,9 @@ var styles = StyleSheet.create({
     color: "#000",
     fontSize: 20,
   },
-  smallButtonBText: {
-    color: "#000",
-    fontSize: 18,
-  },
   gameOverText: {
     color: "#fab523",
     fontSize: 32,
-    marginTop: -20
   },
   levelText: {
     color: "#fab523",
