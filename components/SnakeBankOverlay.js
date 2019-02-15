@@ -26,71 +26,54 @@ export default class SnakeBankOverlay extends React.Component {
     } else {
       return (
         <SafeAreaView style={styles.screen}>
-          <View>
-            <View style={{ paddingVertical: 8 }}>
-              <ImageBackground source={require("../assets/snakebank/BackgroundBrown.png")}
-                  style={styles.content} resizeMode={'stretch'} />
-              <TouchableOpacity style={styles.closeButton} onPress={this.props.closeOverlay}>
-                  <Image source={require('../assets/snakebank/closeBG.png')} style={styles.closeButtonImage} resizeMode="stretch" />
-              </TouchableOpacity>
-              <View style={styles.container}>
-                <View style={{ flex: 1, paddingTop: '11%' }}>
-                  <View>
-                    <Text style={[styles.headingStyle, this.state.buttonDynamicStyle]}>SNAKE BANK</Text>
+          <ImageBackground source={require("../assets/BG.png")} style={styles.content} resizeMode={'stretch'}>
+            <TouchableOpacity style={styles.closeButton} onPress={this.props.closeOverlay}>
+              <Image source={require('../assets/snakebank/closeBG.png')} style={styles.closeButtonImage} resizeMode="stretch" />
+            </TouchableOpacity>
+            <Text style={[styles.headingStyle, this.state.buttonDynamicStyle]}>
+              SNAKE BANK
+            </Text>
+            <ImageBackground source={require("../assets/snakebank/textbox.png")} style={styles.textBox}>
+              <Text style={[styles.inputStyle, this.state.buttonDynamicStyle]}>
+                Text Box
+              </Text>
+            </ImageBackground>
+            <View style={styles.snakeImageView}>
+              <Image source={require("../assets/snakebank/yellowsnakeboard.png")}
+                style={styles.leftSnake} />
+              <Image source={require("../assets/snakebank/greensnake.png")}
+                style={styles.rightSnake} />
+            </View>
+            <ImageBackground source={require("../assets/snakebank/textbox.png")} style={styles.txBox}>
+              <View style={styles.tableHolder}>
+                <View style={styles.tableHeader}>
+                  <View style={styles.tableView}>
+                    <Text style={[{ color: "#EBAC26", fontSize: 12 }, this.state.buttonDynamicStyle]}>TX ID</Text>
                   </View>
-                  <View style={{ flex: 1, justifyContent: "center", alignItems: "center", marginTop: "3%" }}>
-                    <Image source={require("../assets/snakebank/textbox.png")}
-                        style={styles.inputImage} />
-                    <View style={styles.inputView}>
-                      <TextInput underlineColorAndroid={"transparent"}
-                        placeholder={"Text Input"}
-                        placeholderTextColor={"#EBAC26"}
-                        style={[styles.inputStyle, this.state.buttonDynamicStyle]} />
-                    </View>
+                  <View style={styles.tableView}>
+                    <Text style={[{ color: "#896A66", fontSize: 12 }, this.state.buttonDynamicStyle]}>TX ID</Text>
                   </View>
-                  <View style={styles.snakeImageView}>
-                    <Image source={require("../assets/snakebank/yellowsnakeboard.png")}
-                      style={styles.snakeImages1} />
-                    <Image source={require("../assets/snakebank/greensnake.png")}
-                      style={styles.snakeImages} />
+                  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                    <Text style={[{ color: "#896A66", fontSize: 12 }, this.state.buttonDynamicStyle]}>TX ID</Text>
                   </View>
-                  <View style={{ flex: 2, }}>
-                    <View style={{ flex: 1, justifyContent: "center", alignItems: 'center' }}>
-                      <Image source={require("../assets/snakebank/textbox.png")}
-                          style={styles.textBoxImage} />
-                      <View style={{ width: "70%", flex: 1, padding: 3 }}>
-                        <View style={{ flex: 1, flexDirection: "row", }}>
-                          <View style={styles.tableView}>
-                            <Text style={[{ color: "#EBAC26", fontSize: 12 }, this.state.buttonDynamicStyle]}>TX ID</Text>
-                          </View>
-                          <View style={styles.tableView}>
-                            <Text style={[{ color: "#d4cb9e", fontSize: 12 }, this.state.buttonDynamicStyle]}>TX ID</Text>
-                          </View>
-                          <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                            <Text style={[{ color: "#d4cb9e", fontSize: 12 }, this.state.buttonDynamicStyle]}>TX ID</Text>
-                          </View>
-                        </View>
-                        <View style={{ flex: 2, flexDirection: "row", }}>
-                          <View style={styles.tableViewBottom}>
-                          </View>
-                          <View style={styles.tableViewBottom}>
-                          </View>
-                          <View style={{ flex: 1, borderTopColor: "#EBAC26", borderTopWidth: 1 }}>
-                            <Text style={[{ color: "#EBAC26", textAlign: 'center' }, this.state.buttonDynamicStyle]}>105</Text>
-                          </View>
-                        </View>
-                      </View>
-                      </View>
-                      <TouchableOpacity style={{ width: "100%", flex: 1, justifyContent: "center", alignItems: 'center', }}>
-                        <Image source={require("../assets/snakebank/button.png")}
-                          style={{ resizeMode: "stretch", height: '80%', width: '75%', position: "absolute" }} />
-                        <Text style={[styles.textStyle, this.state.buttonDynamicStyle]}>RETURN TO MING COMP</Text>
-                      </TouchableOpacity>
+                </View>
+                <View style={{ flex: 2, flexDirection: "row", }}>
+                  <View style={styles.tableViewBottom}>
+                  </View>
+                  <View style={styles.tableViewBottom}>
+                  </View>
+                  <View style={{ flex: 1, borderTopColor: "#EBAC26", borderTopWidth: 1 }}>
+                    <Text style={[{ color: "#EBAC26", textAlign: 'center' }, this.state.buttonDynamicStyle]}>105</Text>
                   </View>
                 </View>
               </View>
-            </View>
-          </View>
+            </ImageBackground>
+            <TouchableOpacity>
+              <ImageBackground source={require("../assets/snakebank/button.png")} style={styles.backToCampButton}>
+                <Text style={[styles.backToCampButtonText, this.state.buttonDynamicStyle]}>RETURN TO MING CAMP</Text>
+              </ImageBackground>
+            </TouchableOpacity>
+          </ImageBackground>
         </SafeAreaView>
       );
     }
@@ -104,14 +87,18 @@ let styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     top: 0,
+    backgroundColor:  'rgba(0,0,0,0.6)',
     width: screenWidth,
     height: screenHeight,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  textStyle: {
-    color: "#EBAC26",
-    fontSize: 15
+  content: {
+    width: screenWidth*685/724,
+    height: screenHeight*1180/1287,
+    position: 'relative',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   inputStyle: {
     color: "#EBAC26",
@@ -120,15 +107,9 @@ let styles = StyleSheet.create({
   },
   headingStyle: {
     color: "#EBAC26",
-    fontSize: 28,
+    fontSize: 42,
     textAlign: "center",
-    paddingTop: 5
-  },
-  tableView: {
-    flex: 1, borderRightColor: "#EBAC26", borderRightWidth: 1, justifyContent: "center", alignItems: "center"
-  },
-  tableViewBottom: {
-    flex: 1, borderRightColor: "#EBAC26", borderRightWidth: 1, borderTopColor: "#EBAC26", borderTopWidth: 1
+    marginTop: 20,
   },
   closeButton: {
     position: 'absolute',
@@ -140,26 +121,64 @@ let styles = StyleSheet.create({
     height: 50,
     width: 35
   },
+  textBox: {
+    marginTop: 10,
+    padding: 20,
+    width: screenWidth*872/1080,
+    height: (299/818)*screenWidth*872/1080,
+
+  },
   snakeImageView: {
-    flex: 2, flexDirection: 'row', marginHorizontal: "10%",
-    justifyContent: "space-around", marginVertical: 4,
+    marginTop: 10,
+    flexDirection: 'row',
   },
-  container: {
-    position: 'absolute', height: "100%", width: "100%",
+  leftSnake: {
+    width: screenWidth*467/1080,
+    height: (444/434)*screenWidth*467/1080,
+    resizeMode: "stretch",
   },
-  inputView: {
-    position: "absolute", height: "82%", width: "75%",
+  rightSnake: {
+    width: screenWidth*330/1080,
+    height: (994/717)*screenWidth*330/1080,
+    resizeMode: "stretch",
   },
-  inputImage: { resizeMode: "stretch", height: '100%', width: '80%', },
-  textBoxImage: { resizeMode: "stretch", height: '100%', width: '75%', position: "absolute", },
-  backgroundImage: { resizeMode: "stretch", height: "95%", width: "95%", },
-  snakeImages1: { resizeMode: "stretch", height: '90%', width: '50%', },
-  snakeImages: { resizeMode: "stretch", height: '90%', width: '40%', },
-  mainView: { backgroundColor: "#323232", height: '100%', width: "100%" },
-  content: {
-    width: screenWidth * 4 / 5,
-    height: screenHeight * 4 / 5,
-    position: 'relative',
-    flexDirection: 'column',
+  txBox: {
+    marginTop: 10,
+    width: screenWidth*872/1080,
+    height: (299/818)*screenWidth*872/1080,
+    justifyContent: "center",
+    alignItems: 'center'
+  },
+  tableHolder: {
+    width: screenWidth*773/1080,
+    height: "80%",
+  },
+  tableHeader: {
+    flexDirection: "row",
+  },
+  tableView: {
+    flex: 1,
+    borderRightColor: "#EBAC26",
+    borderRightWidth: 1,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  tableViewBottom: {
+    flex: 1,
+    borderRightColor: "#EBAC26",
+    borderRightWidth: 1,
+    borderTopColor: "#EBAC26",
+    borderTopWidth: 1
+  },
+  backToCampButton:{
+    marginTop: 20,
+    width: screenWidth*709/1080,
+    height: (182/671)*screenWidth*709/1080,
+    justifyContent: "center",
+    alignItems: 'center'
+  },
+  backToCampButtonText: {
+    color: "#EBAC26",
+    fontSize: 18
   },
 });

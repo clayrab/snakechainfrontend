@@ -30,7 +30,7 @@ export default class ConfirmTxGameOverOverlay extends React.Component {
 
       return (
         <View style={styles.container}>
-          <ImageBackground source={require('../assets/gameover/BG.png')} style={styles.backgroundImage} resizeMode="cover">
+          <ImageBackground source={require('../assets/BG.png')} style={styles.backgroundImage} resizeMode="cover">
             <Text style={[styles.buttonText, styles.gameOverText]}>
               GAME OVER
             </Text>

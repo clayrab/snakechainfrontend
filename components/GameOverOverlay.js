@@ -34,7 +34,7 @@ export default class GameOverOverlay extends React.Component {
       // </ImageBackground>
       return (
         <View style={styles.container}>
-          <ImageBackground source={require('../assets/gameover/BG.png')} style={styles.backgroundImage} resizeMode="stretch">
+          <ImageBackground source={require('../assets/BG.png')} style={styles.backgroundImage} resizeMode="stretch">
             <Text style={[styles.buttonText, styles.gameOverText]}>
               GAME OVER
             </Text>

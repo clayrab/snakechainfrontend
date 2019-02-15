@@ -29,7 +29,7 @@ export default class ConfirmTxOverlay extends React.Component {
     } else {
       return (
         <View style={styles.container}>
-          <ImageBackground source={require('../assets/gameover/BG.png')} style={styles.backgroundImage} resizeMode="cover">
+          <ImageBackground source={require('../assets/BG.png')} style={styles.backgroundImage} resizeMode="cover">
             <Text>Your transaction has been sent and will be confirmed shortly</Text>
             <Text>Trasaction ID: {this.props.transactionId}</Text>
             <TouchableOpacity style={styles.touchableButton} onPress={this.props.onOk}>
