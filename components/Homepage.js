@@ -22,7 +22,6 @@ import PowerupOverlay from '../components/PowerupOverlay.js';
 import PurchageATicketOverlay from '../components/PurchageATicketOverlay.js';
 import SelectLevelOverlay from '../components/SelectLevelOverlay.js';
 import SnakeTown from '../components/SnakeTown.js';
-import WalletOverlay from '../components/WalletOverlay.js';
 
 let mineImages = [
   require('../assets/homepage/mine/mine0.png'),
@@ -37,7 +36,7 @@ let mineImages = [
   require('../assets/homepage/mine/mine90.png'),
   require('../assets/homepage/mine/mine100.png'),
 ]
-var overlays = { "MINE": 0, "SELECTLEVEL": 1, "PURCHASETICKET": 2, "CONFIRMTICKET": 3, "LOADING": 4, "CONFIRMTX": 5, "POWERUPS": 6, "WALLET": 7, "CONFIRMSEND": 8, };
+var overlays = { "MINE": 0, "SELECTLEVEL": 1, "PURCHASETICKET": 2, "CONFIRMTICKET": 3, "LOADING": 4, "CONFIRMTX": 5, "POWERUPS": 6, "CONFIRMSEND": 7, };
 export default class Homepage extends React.Component {
   constructor(props) {
     super(props);
@@ -175,84 +174,6 @@ export default class Homepage extends React.Component {
   onCancelConfirm = () => {
     this.setState({overlay: overlays.PURCHASETICKET });
   }
-  onSend = async(amount, pubkey, type) => {
-    await this.setState({overlay: overlays.LOADING});
-    let jwt = await getFromAsyncStore("jwt");
-    let data = {
-      amount: amount,
-      type: type,
-    };
-    fetch(`${context.host}:${context.port}/createTransaction`, {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          "Authorization": "JWT " + jwt,
-      },
-    }).then(async(response) => {
-      var resp = await response.json();
-      if(!resp.error){
-        if(resp) {
-          if(resp.transactionKey) {
-            this.setState({
-              overlay: overlays.CONFIRMSEND,
-              confirmAmount: amount,
-              confirmTokenType: type,
-              confirmPubkey: pubkey,
-              txKey: resp.transactionKey,
-            });
-          } else {
-            alert("There was an error, malformed response.");
-            this.setState({overlay: -1});
-          }
-        } else{
-          alert("There was an error, no response.");
-          this.setState({overlay: -1});
-        }
-      } else {
-        alert(resp.error);
-        this.setState({overlay: -1});
-      }
-    }).catch(err => {throw err});
-  }
-  onConfirmSend = async() => {
-    await this.setState({overlay: overlays.LOADING});
-    let jwt = await getFromAsyncStore("jwt");
-    let amount = this.state.confirmAmount;
-    let url = "/sendEth";
-    let type = "ETH";
-    if(this.state.confirmTokenType == "SNK") {
-      url = "/sendSnek";
-      type = "SNK";
-    }
-    var data = {
-      txkey: this.state.txKey,
-      type: type,
-      amount: this.state.confirmAmount,
-      to: this.state.confirmPubkey,
-    };
-    var response = await fetch(`${context.host}:${context.port}${url}`, {
-      method: "POST", // *GET, POST, PUT, DELETE, etc.
-      body: JSON.stringify(data), // body data type must match "Content-Type" header
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        "Authorization": "JWT " + jwt,
-      },
-    });
-    var resp = await response.json();
-    if(resp.error){
-      alert(resp.error);
-      await this.setState({overlay: -1});
-    }else if(resp.txhash) {
-      await this.setState({overlay: overlays.CONFIRMTX, lastTxHash: resp.txhash});
-    } else {
-      alert("Error sending transaction");
-      await this.setState({overlay: -1});
-    }
-  }
-  onCancelConfirmSend = () => {
-    this.setState({overlay: overlays.WALLETOVERLAY });
-  }
   onConfirmTxOk = () => {
     this.setState({overlay: -1 });
   }
@@ -261,9 +182,6 @@ export default class Homepage extends React.Component {
   }
   onPowerups = () => {
     this.setState({overlay: overlays.POWERUPS });
-  }
-  onWallet = () => {
-    this.setState({overlay: overlays.WALLET });
   }
   closeOverlay = () => {
     this.setState({overlay: -1});
@@ -282,7 +200,7 @@ export default class Homepage extends React.Component {
     return (
       <SafeAreaView style={styles.screen}>
         <ImageBackground source={require('../assets/homepage/back.png')} style={styles.backgroundImage}>
-          <Header loading={this.props.loading} user={this.props.user} onProfile={this.props.onProfile} onWallet={this.onWallet}/>
+          <Header loading={this.props.loading} user={this.props.user} onProfile={this.props.onProfile} onWallet={this.props.onWallet}/>
           /***** TITLE BAR END *****/
           <View style={styles.contentHolder}>
             <View style={styles.contentTopMargin}></View>
@@ -350,11 +268,6 @@ export default class Homepage extends React.Component {
           <PowerupOverlay
             closeOverlay={this.closeOverlay}
             show={this.state.overlay == overlays.POWERUPS}/>
-          <WalletOverlay
-            show={this.state.overlay == overlays.WALLET}
-            onSend={this.onSend}
-            user={this.props.user}
-            closeOverlay={this.closeOverlay} />
           <AreYouSureOverlay
             show={this.state.overlay == overlays.CONFIRMTICKET}
             text={`Pay ${this.state.confirmAmount} ${this.state.confirmTokenType} for ${this.props.user.haul} Snake Coins.\n\nAre you sure?`}
@@ -402,8 +315,10 @@ let styles = StyleSheet.create({
     flexDirection: "column",
   },
   town: {
-    width: screenWidth*.860/3.6,
-    aspectRatio: .860/.750,
+    // width: screenWidth*.860/3.6,
+    // aspectRatio: .860/.750,
+    width: screenWidth*.767/3.6,
+    aspectRatio: .767/.753,
   },
   powerups: {
     width: screenWidth*.767/3.6,

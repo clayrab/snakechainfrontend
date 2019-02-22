@@ -28,6 +28,12 @@ import StartGameOverlay from './components/StartGameOverlay.js';
 import Wallet from './components/Wallet.js';
 import Profile from './components/Profile.js';
 
+// import GameOverview from './components/GameOverview.js';
+// import Paused from './components/Paused.js';
+// import ChangePassword from './components/ChangePassword.js';
+// import TextInputView from './components/TextInputView.js';
+// import EditProfile from './components/EditProfile.js';
+
 const connectionConfig = {
   jsonp: false,
   reconnection: true,
@@ -36,7 +42,7 @@ const connectionConfig = {
   transports: ['websocket'],
  };
 
-var screens = { "GAME": 0, "HOME": 1, "LOADING": 2, "PREFERENCES": 3, "PROFILE": 4, "ACCOUNTHISTORY": 5, "GAMEHISTORY": 6, "LOGIN": 7, "SNAKETOWN": 8, };
+var screens = { "GAME": 0, "HOME": 1, "LOADING": 2, "PREFERENCES": 3, "PROFILE": 4, "ACCOUNTHISTORY": 5, "GAMEHISTORY": 6, "LOGIN": 7, "SNAKETOWN": 8, "WALLET": 9, };
 var overlays = {"PAUSE": 0, "GAMEOVER": 1, "MINE": 2, "AREYOUSURE": 3, "LOADING": 4, "CONFIRMTX": 5, "TRANSACTION": 6, "CONFIRMCONTRACT": 7, "POWERUPS": 8, "STARTGAME": 9};
 export default class App extends React.Component {
   constructor(props) {
@@ -168,7 +174,7 @@ export default class App extends React.Component {
     await this.setState({running: false, overlay: overlays.LOADING});
     let jwt = await getFromAsyncStore("jwt");
     let data = {
-      howmany: 0,
+      howmany: score,
       level: 1,
     };
     fetch(`${context.host}:${context.port}/recordScore`, {
@@ -286,6 +292,9 @@ export default class App extends React.Component {
   exit = () => {
     this.setState({running: false, screen: screens.HOME, overlay: overlays.STARTGAME});
   }
+  // exitWallet = () => {
+  //   this.setState({running: false, screen: screens.HOME, overlay: overlays.STARTGAME});
+  // }
   powerUps = () => {
     this.setState({running: false, overlay: overlays.POWERUPS});
   }
@@ -317,6 +326,9 @@ export default class App extends React.Component {
   onProfile = () => {
     this.setState({screen: screens.PROFILE, overlay: -1});
   }
+  onWallet = () => {
+    this.setState({screen: screens.WALLET, overlay: -1});
+  }
   closeOverlay() {
     this.setState({running: true, overlay: -1});
   }
@@ -336,7 +348,15 @@ export default class App extends React.Component {
       );
     }else if(this.state.screen == screens.LOGIN){
       return (
-        <Login loggedIn={this.loggedIn}></Login>
+        <Login loggedIn={this.loggedIn}/>
+        //<GameOverview/>
+        //<Paused/>
+        //<EditProfile/>
+        //<ChangePassword/>
+      );
+    }else if(this.state.screen == screens.WALLET){
+      return (
+        <Wallet user={this.state.user} exit={this.exit}/>
       );
     }else if(this.state.screen == screens.SIGNUP){
       return (
@@ -363,7 +383,7 @@ export default class App extends React.Component {
               start={this.start}
               pause={this.pause}
               powerUps={this.powerUps}
-              loading={this.state.loading} 
+              loading={this.state.loading}
               user={this.state.user}>
             </Snek>
           </Loop>

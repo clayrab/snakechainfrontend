@@ -45,6 +45,18 @@ export default class Wallet extends React.Component {
       fontFamily: 'riffic-free-bold'
     }
   }
+
+  static getDerivedStateFromProps(props, state) {
+    if(props.isSend && state.mode === modes.DEPOSIT) {
+      return {mode: modes.WITHDRAW};
+    } else if(!props.isSend && state.mode === modes.WITHDRAW) {
+      return {mode: modes.DEPOSIT};
+    }
+    return null;
+  }
+
+
+
   onCopyAddress = () => {
     Clipboard.setString(this.props.user.pubkey);
   }
@@ -142,7 +154,8 @@ export default class Wallet extends React.Component {
         snakeStyle = styles.blackSnakeText;
       }
       return (
-        <View style={styles.container}>
+
+        <SafeAreaView style={styles.container}>
           <ImageBackground source={require('../assets/wallet/background.png')} style={styles.content} resizeMode="cover">
             <View style={styles.topButtonView}>
               <TouchableOpacity style={styles.depositButton} onPress={this.onDepositMode}>
@@ -302,7 +315,7 @@ export default class Wallet extends React.Component {
               }
             </View>
           </ImageBackground>
-        </View>
+        </SafeAreaView>
       )
     }
   }

@@ -57,14 +57,14 @@ export default class Snek extends Sprite {
     var newTail = [];
     for (var index = 0; index < length; index++) {
       newTail.push(<SnekPart
-          key={this.getNextID()}
-          running={this.props.running}
-          posX={this.boardXtoPosX(startBoardX)}
-          posY={this.boardYtoPosY(startBoardY + 1 + index)}
-          boardX={startBoardX}
-          boardY={startBoardY + 1 + index}
-          toggleUpdate={true}>
-          direction={CONSTANTS.DPADSTATES.UP}></SnekPart>);
+        key={this.getNextID()}
+        running={this.props.running}
+        posX={this.boardXtoPosX(startBoardX)}
+        posY={this.boardYtoPosY(startBoardY + 1 + index)}
+        boardX={startBoardX}
+        boardY={startBoardY + 1 + index}
+        toggleUpdate={true}>
+        direction={CONSTANTS.DPADSTATES.UP}></SnekPart>);
     }
     return newTail;
   }

@@ -81,14 +81,14 @@ export default class Login extends React.Component {
   easterEgg = async() => {
     easterEggCount = easterEggCount + 1;
     if(easterEggCount > 3) {
-      if(easterEggCount%2){
+      if(easterEggCount%3 === 1){
         await this.setState({
           username: "clayrab",
           pw: "asdf",
           showLoginPlaceHolder: false,
           showPasswordPlaceHolder: false,
         });
-      } else {
+      } else if(easterEggCount%3 === 0){
         await this.setState({
           username: "testuser",
           pw: "asdf",
@@ -162,7 +162,7 @@ export default class Login extends React.Component {
             onClick={this.easterEgg}>
             <View style={[styles.halfView, styles.topView]}>
               <ImageBackground source={require('../assets/login/textBox.png')} style={styles.loginInput} resizeMode="stretch">
-                <TextInput style={[styles.textInput, this.state.buttonDynamicStyle]} underlineColorAndroid="transparent" 
+                <TextInput style={[styles.textInput, this.state.buttonDynamicStyle]} underlineColorAndroid="transparent"
                   onFocus={this.loginFocus}
                   onChangeText={this.loginChange}
                   value={this.state.usernameRender}>

@@ -82,8 +82,7 @@ export default class Header extends React.Component {
   }
 }
 let screenWidth = require('Dimensions').get('window').width;
-let titleBarHeight = screenWidth*.757/3.6;
-
+let titleBarHeight = CONSTANTS.SCOREBOARDHEIGHT;
 let styles = StyleSheet.create({
   titleBar: {
     flex: 0,
