@@ -27,13 +27,14 @@ import Wallet from './components/Wallet.js';
 import Profile from './components/Profile.js';
 
 //import EditProfile from './components/EditProfile.js';
-// import PurchaseTicket from './components/PurchaseTicket'
-// import PurchasedTicket from './components/PurchasedTicket'
 // import SuccessfulEdit from './components/SuccessfulEdit'
 // import UnSuccessfulEdit from './components/UnsucecessfulEdit'
 import ViewSponsor from './components/ViewSponsor.js';
 import PurchaseTicket from './components/PurchaseTicket.js';
 import PurchasedTicket from './components/PurchasedTicket.js';
+import Success from './components/Success.js';
+import Fail from './components/Fail.js';
+
 // components/ChangePassword.js
 // components/EditProfile.js
 //import GameOverview from './components/GameOverview.js'
@@ -363,12 +364,13 @@ export default class App extends React.Component {
       );
     }else if(this.state.screen == screens.LOGIN){
       return (
-        //<Login loggedIn={this.loggedIn}/>
+        <Login loggedIn={this.loggedIn}/>
         //<AccountHistory />
         //<ViewSponsor />
         //<PurchaseTicket />
-        <PurchasedTicket />
-
+        //<PurchasedTicket />
+        //<Success />
+        //<Fail />
         //<GameOverview />
         //<Paused/>
         //<EditProfile/>
