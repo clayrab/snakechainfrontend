@@ -55,8 +55,6 @@ export default class Wallet extends React.Component {
     return null;
   }
 
-
-
   onCopyAddress = () => {
     Clipboard.setString(this.props.user.pubkey);
   }

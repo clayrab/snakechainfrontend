@@ -36,14 +36,14 @@ let mineImages = [
   require('../assets/homepage/mine/mine90.png'),
   require('../assets/homepage/mine/mine100.png'),
 ]
-var overlays = { "MINE": 0, "SELECTLEVEL": 1, "PURCHASETICKET": 2, "CONFIRMTICKET": 3, "LOADING": 4, "CONFIRMTX": 5, "POWERUPS": 6, "CONFIRMSEND": 7, };
+var overlays = { "MINE": 0, "SELECTLEVEL": 1, "PURCHASETICKET": 2, "CONFIRMTICKET": 3, "LOADING": 4, "CONFIRMTX": 5, "POWERUPS": 6, };
 export default class Homepage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       overlay: -1,
       loading: true,
-      mineTextStyle: { display: "none",},
+      riffic: { display: "none",},
       confirmAmount: -1,
       confirmTokenType: "ETH",
       txKey: "",
@@ -66,7 +66,7 @@ export default class Homepage extends React.Component {
         'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
       });
       this.setState({
-        mineTextStyle: {
+        riffic: {
           color: "#fab523",
           fontFamily: 'riffic-free-bold',
         },
@@ -137,7 +137,8 @@ export default class Homepage extends React.Component {
       alert("Error. Ticket type must be ETH or SNK.")
     }
   }
-  onConfirm = async() => {
+  onConfirmTicket = async() => {
+    console.log("onConfirmTicket")
     await this.setState({overlay: overlays.LOADING});
     let jwt = await getFromAsyncStore("jwt");
     //var data = { user: this.state.username, pw: this.state.pw };
@@ -174,9 +175,6 @@ export default class Homepage extends React.Component {
   onCancelConfirm = () => {
     this.setState({overlay: overlays.PURCHASETICKET });
   }
-  onConfirmTxOk = () => {
-    this.setState({overlay: -1 });
-  }
   goToTown = () => {
     this.props.onGoToTown();
   }
@@ -187,15 +185,16 @@ export default class Homepage extends React.Component {
     this.setState({overlay: -1});
   }
   render() {
-    let mineGraphicIndex = Math.floor(10*this.props.user.haul/this.props.user.mineMax);
+    let mineGraphicIndex = 10-Math.floor(10*this.props.user.haul/this.props.user.mineMax);
     let mineTextColorStyle = {};
     if(mineGraphicIndex > 6){
-      mineTextColorStyle = { color: "#6A534F", }
+      //mineTextColorStyle = { color: "#6A534F", }
+      mineTextColorStyle = { color: "#352927", }
     }
     let mineImg = mineImages[mineGraphicIndex];
     let minePercent = (100*this.props.user.haul/this.props.user.mineMax).toPrecision(2);
     if(this.props.user.haul == this.props.user.mineMax){
-      minePercent = 100;
+      minePercent = 0;
     }
     return (
       <SafeAreaView style={styles.screen}>
@@ -220,7 +219,7 @@ export default class Homepage extends React.Component {
                 onPress={this.onMinePress}>
                 {this.state.loading ? null :
                   <ImageBackground style={styles.mineImage} source={mineImg}>
-                    <Text style={[styles.mineText, this.state.mineTextStyle, mineTextColorStyle]}>
+                    <Text style={[styles.mineText, this.state.riffic, mineTextColorStyle]}>
                       {minePercent}%
                     </Text>
                   </ImageBackground>
@@ -231,9 +230,13 @@ export default class Homepage extends React.Component {
                   onPress={this.onPlayPress}>
                   <Image style={styles.playnowImage} source={require('../assets/homepage/playnow.png')}/>
                 </TouchableOpacity>
+                <ImageBackground source={require('../assets/homepage/snakeCart.png')} style={styles.snakeCart}></ImageBackground>
                 <TouchableOpacity
                   onPress={this.onMineHaul}>
-                  <ImageBackground source={require('../assets/homepage/gototown.png')} style={styles.gototown}></ImageBackground>
+                  <ImageBackground source={require('../assets/homepage/gototownButton.png')} style={styles.gototownButton}>
+                    <ImageBackground source={require('../assets/homepage/gototown.png')} style={styles.gototown}></ImageBackground>
+                    <Text style={[styles.gototownText, this.state.riffic]}>{this.props.user.haul} gold (max {this.props.user.mineMax})</Text>
+                  </ImageBackground>
                 </TouchableOpacity>
               </View>
             </View>
@@ -253,26 +256,16 @@ export default class Homepage extends React.Component {
           <AreYouSureOverlay
             show={this.state.overlay == overlays.CONFIRMTICKET}
             text={`Pay ${this.state.confirmAmount} ${this.state.confirmTokenType} for ${this.props.user.haul} Snake Coins.\n\nAre you sure?`}
-            onYes={this.onConfirm}
+            onYes={this.onConfirmTicket}
             onNo={this.onCancelConfirm}/>
-          <AreYouSureOverlay
-            show={this.state.overlay == overlays.CONFIRMSEND}
-            text={`Send ${this.state.confirmAmount} ${this.state.confirmTokenType} to ${this.state.confirmPubkey}.\n\nAre you sure?`}
-            onYes={this.onConfirmSend}
-            onNo={this.onCancelConfirmSend}/>
           <LoadingOverlay show={this.state.overlay == overlays.LOADING}/>
           <ConfirmTxOverlay
             show={this.state.overlay == overlays.CONFIRMTX}
             transactionId={this.state.lastTxHash}
-            onOk={this.onConfirmTxOk}/>
+            onOk={this.closeOverlay}/>
           <PowerupOverlay
             closeOverlay={this.closeOverlay}
             show={this.state.overlay == overlays.POWERUPS}/>
-          <AreYouSureOverlay
-            show={this.state.overlay == overlays.CONFIRMTICKET}
-            text={`Pay ${this.state.confirmAmount} ${this.state.confirmTokenType} for ${this.props.user.haul} Snake Coins.\n\nAre you sure?`}
-            onYes={this.onConfirm}
-            onNo={this.onCancelConfirm}/>
         </ImageBackground>
       </SafeAreaView>
     );
@@ -349,7 +342,7 @@ let styles = StyleSheet.create({
     width: screenWidth * 1.787/3.6,
     aspectRatio: 1.787/.612,
     marginLeft: screenWidth*.147/3.6,
-    marginTop: screenWidth*.270/3.6,
+    marginTop: screenWidth*.250/3.6,
   },
   playnowImage: {
     flex: 1,
@@ -357,9 +350,24 @@ let styles = StyleSheet.create({
     aspectRatio: 1.787/.612,
     resizeMode: "contain",
   },
-  gototown: {
+  snakeCart: {
+    marginTop: screenWidth*.200/3.6,
     width: screenWidth*1.950/3.6,
-    aspectRatio: 1.950/2.547,
-    marginTop: screenWidth*.220/3.6,
+    aspectRatio: 606/702,
   },
+  gototownButton: {
+    marginTop: -screenWidth*.350/3.6,
+    width: screenWidth*1.950/3.6,
+    aspectRatio: 502/168,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  gototown: {
+    width: screenWidth*.950/3.6,
+    aspectRatio: 316/62,
+  },
+  gototownText: {
+    color: "#fab523",
+    fontSize: 18,
+  }
 });

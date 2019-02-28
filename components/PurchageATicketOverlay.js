@@ -38,20 +38,7 @@ export default class PurchageATicketOverlay extends React.Component {
       return null;
     } else {
       let ethPrice = (this.props.prices.mineGamePrice/CONSTANTS.WEIPERETH).toPrecision(4);
-      let secondClassButton = (
-        <TouchableOpacity style={{backgroundColor: "#333", margin: 10, padding: 10}} onPress={this.purchaseWithSNK}>
-          <Text style={{color: "#aaa"}}>2nd Class: Full Yield</Text>
-          <Text style={{color: "#aaa"}}>Unavailable</Text>
-        </TouchableOpacity>
-      );
-      if(this.props.user.haul >= this.props.user.mineMax) {
-        secondClassButton = (
-          <TouchableOpacity style={{backgroundColor: "#333", margin: 10, padding: 10}} onPress={this.purchaseWithSNK}>
-            <Text style={{color: "#aaa"}}>2nd Class: Full Yield</Text>
-            <Text style={{color: "#aaa"}}>{this.props.prices.mineHaulPrice}</Text>
-          </TouchableOpacity>
-        );
-      }
+
       return (
         <View style={styles.container}>
           <ImageBackground style={styles.content} source={require('../assets/pauseoverlay/BackgroundBrown.png')} resizeMode={'stretch'}>
@@ -59,11 +46,30 @@ export default class PurchageATicketOverlay extends React.Component {
               <Image source={require('../assets/wallet/closeBG.png')} style={styles.closeButtonImage} resizeMode="stretch" />
             </TouchableOpacity>
             <Text>Purchase a Train Ticket</Text>
-            <TouchableOpacity style={{backgroundColor: "#333", margin: 10, padding: 10}} onPress={this.purchaseWithETH}>
-              <Text style={{color: "#aaa"}}>1st Class: Any Yield</Text>
-              <Text style={{color: "#aaa"}}>{ethPrice} ETH</Text>
-            </TouchableOpacity>
-            {secondClassButton}
+            {this.props.user.haul > 0
+              ?
+              <TouchableOpacity style={{backgroundColor: "#333", margin: 10, padding: 10}} onPress={this.purchaseWithETH}>
+                <Text style={{color: "#aaa"}}>1st Class: Any Yield</Text>
+                <Text style={{color: "#aaa"}}>{ethPrice} ETH</Text>
+              </TouchableOpacity>
+              :
+              <TouchableOpacity style={{backgroundColor: "#333", margin: 10, padding: 10}}>
+                <Text style={{color: "#aaa"}}>1st Class: Any Yield</Text>
+                <Text style={{color: "#aaa"}}>Unavailable</Text>
+              </TouchableOpacity>
+            }
+            {this.props.user.haul >= this.props.user.mineMax
+              ?
+              <TouchableOpacity style={{backgroundColor: "#333", margin: 10, padding: 10}} onPress={this.purchaseWithSNK}>
+                <Text style={{color: "#aaa"}}>2nd Class: Full Yield</Text>
+                <Text style={{color: "#aaa"}}>{this.props.prices.mineHaulPrice}</Text>
+              </TouchableOpacity>
+              :
+              <TouchableOpacity style={{backgroundColor: "#333", margin: 10, padding: 10}}>
+                <Text style={{color: "#aaa"}}>2nd Class: Full Yield</Text>
+                <Text style={{color: "#aaa"}}>Unavailable</Text>
+              </TouchableOpacity>
+            }
           </ImageBackground>
         </View>
       );

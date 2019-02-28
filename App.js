@@ -8,10 +8,8 @@ import {asyncStore, getFromAsyncStore, removeItemValue} from "./utils/AsyncStore
 import {context} from "./utils/Context.js";
 import {makeRetry} from "./utils/Retry.js";
 
-
 import Snek from './sprites/Snek.js';
 
-//import AccountHistory from './components/AccountHistory.js';
 import AreYouSureOverlay from './components/AreYouSureOverlay.js';
 import ConfirmTxGameOverOverlay from './components/ConfirmTxGameOverOverlay.js';
 import ConfirmTxOverlay from './components/ConfirmTxOverlay.js';
@@ -28,11 +26,21 @@ import StartGameOverlay from './components/StartGameOverlay.js';
 import Wallet from './components/Wallet.js';
 import Profile from './components/Profile.js';
 
-// import GameOverview from './components/GameOverview.js';
-// import Paused from './components/Paused.js';
-// import ChangePassword from './components/ChangePassword.js';
-// import TextInputView from './components/TextInputView.js';
-// import EditProfile from './components/EditProfile.js';
+//import EditProfile from './components/EditProfile.js';
+// import PurchaseTicket from './components/PurchaseTicket'
+// import PurchasedTicket from './components/PurchasedTicket'
+// import SuccessfulEdit from './components/SuccessfulEdit'
+// import UnSuccessfulEdit from './components/UnsucecessfulEdit'
+import ViewSponsor from './components/ViewSponsor.js';
+import PurchaseTicket from './components/PurchaseTicket.js';
+import PurchasedTicket from './components/PurchasedTicket.js';
+// components/ChangePassword.js
+// components/EditProfile.js
+//import GameOverview from './components/GameOverview.js'
+
+// components/GameOverview.js
+// components/Paused.js
+// components/ViewSponsor.js
 
 const connectionConfig = {
   jsonp: false,
@@ -98,6 +106,7 @@ export default class App extends React.Component {
       confirmTokenType: "ETH",
       txKey: "",
       offerContract: true,
+      loadingUser: true,
     };
     this.loggedIn = this.loggedIn.bind(this);
     this.onDpadChange = this.onDpadChange.bind(this);
@@ -129,41 +138,48 @@ export default class App extends React.Component {
       alert("error retrieving prices");
     }
   }
-  async loggedIn(jwt) {
-    //console.log("LoggedIn")
-    await asyncStore("jwt", jwt);
-    if(this.state.screen == screens.LOGIN){
-      this.setState({screen: screens.HOME});
-    }
+
+  loadUser = async(jwt) => {
     let prom = async() => {
       return await new Promise((resolve, reject) => {
-        //console.log("getuser")
         fetch(`${context.host}:${context.port}/getUser`, {
           method: "GET",
           headers: {
               "Content-Type": "application/json; charset=utf-8",
-              //"Content-Type": "application/x-www-form-urlencoded",
               "Authorization": "JWT " + jwt,
           },
         }).then(async(response) => {
           var resp = await response.json();
           if(!resp.error){
             if(resp) {
-              //console.log("set user")
-              resolve({loading: false, user: resp})
+              resolve({loadingUser: false, user: resp})
             } else{
               alert("There was an error, no response.");
-              resolve({loading: false});
+              resolve({loadingUser: false});
             }
           } else {
             alert(resp.error);
-            resolve({loading: false});
+            resolve({loadingUser: false});
           }
         }).catch(err => {throw err});
       }).catch(err => {throw err});
     }
-    let state = await makeRetry("getUser!")(1500, prom);
+    //let state = await makeRetry("getUser!")(1500, prom);
+    let state = await prom();
     this.setState(state);
+  }
+
+  loadGames = async() => {
+
+  }
+
+  async loggedIn(jwt) {
+    //console.log("LoggedIn")
+    await asyncStore("jwt", jwt);
+    if(this.state.screen == screens.LOGIN){
+      this.setState({screen: screens.HOME});
+    }
+    this.loadUser(jwt);
   }
   onDpadChange(direction) {
     if (direction != CONSTANTS.DPADSTATES.NONE && direction != this.state.pressedButton) {
@@ -194,7 +210,7 @@ export default class App extends React.Component {
               level: 1,
               time: 5*60,
             }
-            this.setState({overlay: overlays.GAMEOVER, gameOverInfo: gameOverInfo, loading: false, user: resp.user, lastScore: resp.score});
+            this.setState({overlay: overlays.GAMEOVER, gameOverInfo: gameOverInfo, loadingScore: false, user: resp.user, lastScore: resp.score});
           } else {
             alert("There was an error, malformed response.");
             this.setState({overlay: -1});
@@ -247,12 +263,11 @@ export default class App extends React.Component {
         }
       } else {
         alert(resp.error);
-        resolve({loading: false});
+        this.setState({overlay: -1});
       }
     }).catch(err => {throw err});
   }
   onConfirmContract = async() => {
-    console.log("onConfirmContract")
     await this.setState({overlay: overlays.LOADING});
     let jwt = await getFromAsyncStore("jwt");
     let price = this.state.prices.mineGamePrice;
@@ -348,8 +363,13 @@ export default class App extends React.Component {
       );
     }else if(this.state.screen == screens.LOGIN){
       return (
-        <Login loggedIn={this.loggedIn}/>
-        //<GameOverview/>
+        //<Login loggedIn={this.loggedIn}/>
+        //<AccountHistory />
+        //<ViewSponsor />
+        //<PurchaseTicket />
+        <PurchasedTicket />
+
+        //<GameOverview />
         //<Paused/>
         //<EditProfile/>
         //<ChangePassword/>
@@ -364,7 +384,7 @@ export default class App extends React.Component {
       );
     }else if(this.state.screen == screens.PROFILE){
       return (
-        <Profile loading={this.state.loading} user={this.state.user} exit={this.exit}/>
+        <Profile loading={this.state.loadingUser} user={this.state.user} exit={this.exit}/>
       );
     }else if(this.state.screen == screens.SNAKETOWN){
       return (
@@ -383,7 +403,7 @@ export default class App extends React.Component {
               start={this.start}
               pause={this.pause}
               powerUps={this.powerUps}
-              loading={this.state.loading}
+              loading={this.state.loadingUser}
               user={this.state.user}>
             </Snek>
           </Loop>

@@ -41,13 +41,13 @@ export default class PauseOverlay extends React.Component {
                   </Text>
                 </ImageBackground>
               </TouchableOpacity>
-              <TouchableOpacity onPress={this.props.wallet}>
+              {/*}<TouchableOpacity onPress={this.props.wallet}>
                 <ImageBackground style={styles.brownButton} source={require('../assets/pauseoverlay/BrownButton.png')} resizeMode={'stretch'}>
                   <Text style={[styles.buttonText, styles.brownButtonText]}>
                     WALLET
                   </Text>
                 </ImageBackground>
-              </TouchableOpacity>
+              </TouchableOpacity>*/}
               <TouchableOpacity onPress={this.props.quit}>
                 <ImageBackground style={styles.brownButton} source={require('../assets/pauseoverlay/BrownButton.png')} resizeMode={'stretch'} >
                   <Text style={[styles.buttonText, styles.brownButtonText]}>

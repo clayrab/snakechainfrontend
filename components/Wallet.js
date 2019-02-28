@@ -10,9 +10,16 @@ import {
 } from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
 import { Font } from 'expo';
-import WalletOverlay from '../components/WalletOverlay.js';
+import {asyncStore, getFromAsyncStore, removeItemValue} from "../utils/AsyncStore.js";
+import {context} from "../utils/Context.js";
 
-var overlays = {"WALLETOVERLAY": 0, };
+import WalletOverlay from '../components/WalletOverlay.js';
+import ConfirmTxOverlay from '../components/ConfirmTxOverlay.js';
+import AreYouSureOverlay from '../components/AreYouSureOverlay.js';
+import LoadingOverlay from '../components/LoadingOverlay.js';
+
+var overlays = {"WALLETOVERLAY": 0, LOADING: 1, "CONFIRMSEND": 2, CONFIRMTX: 3, };
+
 export default class AccountHistory extends React.Component {
   constructor(props) {
     super(props);
@@ -20,6 +27,8 @@ export default class AccountHistory extends React.Component {
       overlay: -1,
       riffic: {},
       isSend: false,
+      loading: true,
+      transactions: null,
     };
   }
   async componentDidMount(){
@@ -29,6 +38,35 @@ export default class AccountHistory extends React.Component {
     this.setState({riffic: {
       fontFamily: 'riffic-free-bold',
     }});
+    let prom = async() => {
+      return await new Promise((resolve, reject) => {
+        getFromAsyncStore("jwt").then((jwt) =>{
+          fetch(`${context.host}:${context.port}/getTransactions`, {
+            method: "GET", // *GET, POST, PUT, DELETE, etc.
+            headers: {
+                //"Content-Type": "application/json; charset=utf-8",
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Authorization": "JWT " + jwt,
+            },
+          }).then(async(response) => {
+            var resp = await response.json();
+            if(resp.error){
+              alert(resp.error);
+              resolve({loading: false});
+            }else if(resp) {
+              resolve({loading: false, transactions: resp.transactions});
+            }
+          }).catch(
+            err => {
+              throw err
+            });
+        }).catch(err => {throw err});
+      }).catch(err => {throw err});
+    }
+    //let state = await makeRetry()(1500, prom);
+    let state = await prom();
+    this.setState(state);
+
   }
   closeOverlay = () => {
     this.setState({overlay: -1});
@@ -39,6 +77,7 @@ export default class AccountHistory extends React.Component {
     let data = {
       amount: amount,
       type: type,
+      lastTxHash: "",
     };
     fetch(`${context.host}:${context.port}/createTransaction`, {
       method: "POST",
@@ -111,22 +150,17 @@ export default class AccountHistory extends React.Component {
   onCancelConfirmSend = () => {
     this.setState({overlay: overlays.WALLETOVERLAY });
   }
-
   onDoReceive = () => {
     this.setState({overlay: overlays.WALLETOVERLAY, isSend: false, });
   }
   onDoSend = () => {
     this.setState({overlay: overlays.WALLETOVERLAY, isSend: true, });
   }
-  // withdraw = () => {
-  //   console.log("withdraw")
-  //   this.setState({overlay: overlays.WITHDRAW });
-  // }
-  // deposit = () => {
-  //   console.log("deposit")
-  //   this.setState({overlay: overlays.DEPOSIT });
-  // }
-
+  onConfirmTxOk = () => {
+    this.setState({overlay: -1 });
+  }
+  prettyTxTypes = {mineWithSnek: "Snek", mine: "Snek", eth: "ETH", };
+  recvTypes = {mineWithSnek: true, mine: true};
   render() {
     return (
       <SafeAreaView>
@@ -142,13 +176,13 @@ export default class AccountHistory extends React.Component {
             </View>
             <View style={styles.profileDetailView}>
               <Text style={[this.state.riffic, styles.buttonColorText]}>
-                BOBBER SON14
+                {this.props.user.name}
               </Text>
               <Text style={[this.state.riffic, styles.publicAddText]}>
-                PUBLIC ADDRESS: 0x123124
+                {this.props.user.pubkey.substring(0, 7)}...{this.props.user.pubkey.substring(37, 42)}
               </Text>
               <Text style={[this.state.riffic, styles.profileInfoText]}>
-                MORE PROFILE INFO
+
               </Text>
             </View>
           </View>
@@ -157,13 +191,13 @@ export default class AccountHistory extends React.Component {
               <View style={[styles.balancesNumbersView]}>
                 <Image source={require('../assets/wallet/coin.png')} style={styles.diamondImage} />
                 <Text style={[this.state.riffic, styles.numberText]}>
-                  3.150
+                  {this.props.user.snek}
                 </Text>
               </View>
               <View style={[styles.balancesNumbersView]}>
                 <Image source={require('../assets/wallet/diamond.png')} style={styles.diamondImage} />
                 <Text style={[this.state.riffic, styles.numberText]}>
-                  0.0150
+                  {(this.props.user.eth/CONSTANTS.WEIPERETH).toPrecision(4)}
                 </Text>
               </View>
             </View>
@@ -187,36 +221,64 @@ export default class AccountHistory extends React.Component {
             </View>
           </ImageBackground>
 
-          <ImageBackground source={require('../assets/accounthistory/accounthistoryBG.png')} style={styles.txHistory} resizeMode="contain">
-            <ScrollView>
-              {[0,1,3].map((object, i) => {
-                return (
-                  <ImageBackground key={i} source={require('../assets/accounthistory/historyBG.png')} style={[styles.historyBG, styles.topHistoryView]} resizeMode="contain">
-                    <View style={styles.historyLeftView}>
-                      <Image source={require('../assets/accounthistory/sendicon.png')} style={styles.buttonIconImage} />
-                      <Text style={[this.state.riffic, styles.historyLabelText]}>SEND</Text>
-                      <Text style={[this.state.riffic, styles.dateText]}>15/10/2018</Text>
-                    </View>
-                    <Image source={require('../assets/accounthistory/historyseprate.png')} style={styles.historySepImage} resizeMode="contain"/>
-                    <View style={styles.historyRightView}>
-                      <View style={styles.topRightHistoryView}>
-                        <Text style={[this.state.riffic, styles.headerText]}>
-                          0.0150
-                        </Text>
-                        <Image source={require('../assets/wallet/diamond.png')} style={styles.diamondImage} />
-                        <Text style={[this.state.riffic, styles.headerText]}>
-                          SENT
-                        </Text>
+          <ImageBackground source={require('../assets/accounthistory/accounthistoryBG.png')} style={styles.txHistory} resizeMode="stretch">
+            <ScrollView styles={styles.txHistoryScroll}>
+              { this.state.loading? null :
+                this.state.transactions.map((transaction, i) => {
+                  // "pubkey": "0x0b48797c3d9C0CF15B14f003d6A60B2F94F1F517",
+                  // "txhash": "0x66c78149c875543b666a49e93574f95eea20488157781357b0d6b22cead2499d",
+                  // "time": "2019-02-22T07:00:19.666Z",
+                  // "type": "snk",
+                  // "from": "0x0b48797c3d9C0CF15B14f003d6A60B2F94F1F517",
+                  // "to": "0x627306090abaB3A6e1400e9345bC60c78a8BEf57",
+                  // "amount": "70000",
+                  // "fee": null
+                  return (
+                    <ImageBackground key={i} source={require('../assets/accounthistory/historyBG.png')} style={styles.historyBG} resizeMode="contain">
+                        { this.recvTypes[transaction.type]
+                          ?
+                          <View style={styles.historyLeftView}>
+                            <Image source={require('../assets/accounthistory/receiveicon.png')} style={styles.buttonIconImage} />
+                            <Text style={[styles.buttonText, styles.historyReceiveText]}>RECEIVE</Text>
+                            <Text style={[styles.buttonText, styles.dateText]}>15/10/2018</Text>
+                          </View>
+                          :
+                          <View style={styles.historyLeftView}>
+                            <Image source={require('../assets/accounthistory/sendicon.png')} style={styles.buttonIconImage} />
+                            <Text style={[this.state.riffic, styles.historyLabelText]}>SENT</Text>
+                            <Text style={[this.state.riffic, styles.dateText]}>15/10/2018</Text>
+                          </View>
+                        }
+                      <Image source={require('../assets/accounthistory/historyseprate.png')} style={styles.historySepImage} resizeMode="contain"/>
+                      <View style={styles.historyRightView}>
+                        <View style={styles.topRightHistoryView}>
+                          <Text style={[this.state.riffic, styles.headerText]}>
+                            {transaction.type === "eth"
+                              ?
+                              (transaction.amount/CONSTANTS.WEIPERETH).toPrecision(4)
+                              :
+                              transaction.amount
+                            }
+                          </Text>
+                          <Image source={require('../assets/wallet/diamond.png')} style={styles.diamondImage} />
+                          <Text style={[this.state.riffic, styles.headerText]}>
+                            { this.state.loading ? null :
+                              this.prettyTxTypes[transaction.type]
+                            }
+                          </Text>
+                        </View>
+                        <View style={styles.topRightHistoryView}>
+                          { !transaction.to ? null :
+                            <Text style={[this.state.riffic, styles.historyLabelText]}>
+                              to {transaction.to.substring(0, 7)}...{transaction.to.substring(37, 42)}
+                            </Text>
+                          }
+                        </View>
                       </View>
-                      <View style={styles.topRightHistoryView}>
-                        <Text style={[this.state.riffic, styles.historyLabelText]}>
-                          to stansmith@gmail.com
-                        </Text>
-                      </View>
-                    </View>
-                  </ImageBackground>
-                );
-              })}
+                    </ImageBackground>
+                  );
+                })
+              }
             </ScrollView>
           </ImageBackground>
           <WalletOverlay
@@ -225,6 +287,16 @@ export default class AccountHistory extends React.Component {
             isSend={this.state.isSend}
             user={this.props.user}
             closeOverlay={this.closeOverlay} />
+          <LoadingOverlay show={this.state.overlay == overlays.LOADING}/>
+          <AreYouSureOverlay
+            show={this.state.overlay == overlays.CONFIRMSEND}
+            text={`Send ${this.state.confirmAmount} ${this.state.confirmTokenType} to ${this.state.confirmPubkey}.\n\nAre you sure?`}
+            onYes={this.onConfirmSend}
+            onNo={this.onCancelConfirmSend}/>
+          <ConfirmTxOverlay
+            show={this.state.overlay == overlays.CONFIRMTX}
+            transactionId={this.state.lastTxHash}
+            onOk={this.onConfirmTxOk}/>
         </ImageBackground>
       </SafeAreaView>
     )
@@ -328,21 +400,24 @@ let styles = StyleSheet.create({
   },
   txHistory: {
     width: screenWidth*1005/1080,
-    height: (1626/2022)*screenWidth*1005/1080,
-    paddingTop: 50,
+    //height: (1500/2022)*screenWidth*1005/1080,
+    flex: 1,
+    paddingTop: 60,
     marginTop: 10,
+    paddingBottom: 10,
+    marginBottom: 22,
     flexDirection: 'column',
     alignItems: 'center',
   },
-  historyBG: {
-    width: screenWidth * 0.8,
-    height: 100,
-    marginRight: 10,
-    flexDirection: 'row',
-    alignItems: 'center'
+  txHistoryScroll: {
+    paddingBottom: 100,
   },
-  topHistoryView: {
-    marginTop: 10
+  historyBG: {
+    width: screenWidth*890/1080,
+    height: (390/1784)*screenWidth*890/1080,
+    marginTop: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   historySepImage: {
     width: 5,

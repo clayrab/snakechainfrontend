@@ -19,7 +19,7 @@ export default class ConfirmTxOverlay extends React.Component {
     await Font.loadAsync({
       'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
     });
-    styles.buttonText = {
+    styles.riffic = {
       fontFamily: 'riffic-free-bold'
     }
   }
@@ -29,9 +29,9 @@ export default class ConfirmTxOverlay extends React.Component {
     } else {
       return (
         <View style={styles.container}>
-          <ImageBackground source={require('../assets/BG.png')} style={styles.backgroundImage} resizeMode="cover">
-            <Text>Your transaction has been sent and will be confirmed shortly</Text>
-            <Text>Trasaction ID: {this.props.transactionId}</Text>
+          <ImageBackground source={require('../assets/areyousure/background.png')} style={styles.backgroundImage} resizeMode="stretch">
+            <Text style={[styles.riffic, styles.text, styles.line1]}>Your transaction has been sent and will be confirmed shortly</Text>
+            <Text style={[styles.riffic, styles.text, styles.line2]}>Transaction ID: {this.props.transactionId}</Text>
             <TouchableOpacity style={styles.touchableButton} onPress={this.props.onOk}>
               <ImageBackground source={require('../assets/gameover/greenButton.png')} style={styles.largeButton} resizeMode="stretch">
                 <Text style={[styles.buttonText, styles.largeButtonBText]}>
@@ -61,11 +61,27 @@ var styles = StyleSheet.create({
     alignItems: 'center',
   },
   backgroundImage: {
-   width: 0.88*screenWidth,
-   height: 0.88*screenHeight,
+   width: screenWidth*633/724,
+   height: screenWidth*(748/960)*633/724,
    flexDirection: 'column',
    alignItems: 'center',
-   padding: 20,
+  },
+  text: {
+    // padding: screenWidth*80/724,
+    // paddingBottom: screenWidth*40/724,
+    color: "#fab523",
+    fontSize: 18,
+
+  },
+  line1: {
+    paddingTop: screenWidth*40/724,
+    paddingLeft: screenWidth*40/724,
+    paddingRight: screenWidth*40/724,
+  },
+  line2: {
+    paddingTop: screenWidth*20/724,
+    paddingLeft: screenWidth*40/724,
+    paddingRight: screenWidth*40/724,
   },
   touchableButton: {
     alignItems: 'center',
