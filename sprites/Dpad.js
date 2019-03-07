@@ -57,10 +57,10 @@ export default class Dpad extends Sprite {
   onMoveShouldSetResponderCapture =  function(e) {
     return true;
   };
-  onResponderMove(event) {
+  onResponderMove = (event) => {
     this.checkDpad(event);
   };
-  onResponderRelease(event) {
+  onResponderRelease = (event) => {
     this.checkDpad(event);
   };
 
@@ -107,8 +107,8 @@ export default class Dpad extends Sprite {
               onMoveShouldSetResponder={this.onMoveShouldSetResponder}
               onStartShouldSetResponder={this.onStartShouldSetResponderCapture}
               onMoveShouldSetResponder={this.onMoveShouldSetResponderCapture}
-              onResponderMove={this.onResponderMove.bind(this)}
-              onResponderRelease={this.onResponderRelease.bind(this)}></View>
+              onResponderMove={this.onResponderMove}
+              onResponderRelease={this.onResponderRelease}></View>
           </View>
         </ImageBackground>
    );

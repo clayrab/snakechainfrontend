@@ -86,17 +86,24 @@ export default class Profile extends React.Component {
               </View>
             </View>
           </ImageBackground>
-          <TouchableOpacity style={{marginTop: 10}}>
+          {/*<TouchableOpacity style={{marginTop: 10}}>
             <ImageBackground source={require('../assets/profile/button.png')} style={styles.buttonBG} resizeMode="stretch">
               <Text style={[this.state.buttonDynamicStyle, styles.button]}>
                 EDIT PROFILE PAGE
+              </Text>
+            </ImageBackground>
+          </TouchableOpacity>*/}
+          <TouchableOpacity>
+            <ImageBackground source={require('../assets/profile/button.png')} style={styles.buttonBG} resizeMode="stretch">
+              <Text style={[this.state.buttonDynamicStyle, styles.button]}>
+                CHANGE PASSWORD
               </Text>
             </ImageBackground>
           </TouchableOpacity>
           <TouchableOpacity>
             <ImageBackground source={require('../assets/profile/button.png')} style={styles.buttonBG} resizeMode="stretch">
               <Text style={[this.state.buttonDynamicStyle, styles.button]}>
-                CHANGE PASSWORD
+                LOG OUT
               </Text>
             </ImageBackground>
           </TouchableOpacity>

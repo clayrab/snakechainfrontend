@@ -19,9 +19,10 @@ import GameHistoryOverlay from '../components/GameHistoryOverlay.js';
 import Header from '../components/Header.js';
 import LoadingOverlay from '../components/LoadingOverlay.js';
 import PowerupOverlay from '../components/PowerupOverlay.js';
-import PurchageATicketOverlay from '../components/PurchageATicketOverlay.js';
+//import PurchageATicketOverlay from '../components/PurchageATicketOverlay.js';
 import SelectLevelOverlay from '../components/SelectLevelOverlay.js';
 import SnakeTown from '../components/SnakeTown.js';
+import PurchaseTicketOverlay from '../components/PurchaseTicketOverlay.js';
 
 let mineImages = [
   require('../assets/homepage/mine/mine0.png'),
@@ -49,7 +50,6 @@ export default class Homepage extends React.Component {
       txKey: "",
       confirmPubkey: "",
     };
-    // this.closeOverlay = this.closeOverlay.bind(this);
   }
   static getDerivedStateFromProps(props, state) {
     //let ethBal = (props.user.eth/CONSTANTS.WEIPERETH).toPrecision(4);
@@ -67,19 +67,12 @@ export default class Homepage extends React.Component {
       });
       this.setState({
         riffic: {
-          color: "#fab523",
           fontFamily: 'riffic-free-bold',
         },
-        // titleBarTextStyle: {
-        //   fontFamily: 'riffic-free-bold',
-        // },
       });
-      //await this.setState({loading: true});
     } catch(error){
       alert(error);
-      //this.setState({loading: false});
     }
-    //this.setState({overlay: -1}); // a little "hack" to cause render() to fire
   }
   onMinePress = () => {
     this.setState({overlay: overlays.MINE });
@@ -185,22 +178,27 @@ export default class Homepage extends React.Component {
     this.setState({overlay: -1});
   }
   render() {
-    let mineGraphicIndex = 10-Math.floor(10*this.props.user.haul/this.props.user.mineMax);
+    let haul = this.props.user.haul;
+    let mineGraphicIndex = 10-Math.floor(10*haul/this.props.user.mineMax);
     let mineTextColorStyle = {};
-    if(mineGraphicIndex > 6){
-      //mineTextColorStyle = { color: "#6A534F", }
+    if(mineGraphicIndex <= 6){
+      mineTextColorStyle = { color: "#fab523", }
+    } else {
       mineTextColorStyle = { color: "#352927", }
     }
     let mineImg = mineImages[mineGraphicIndex];
-    let minePercent = (100*this.props.user.haul/this.props.user.mineMax).toPrecision(2);
-    if(this.props.user.haul == this.props.user.mineMax){
-      minePercent = 0;
+    let minePercent = (100-Math.floor((100*haul/this.props.user.mineMax)))
+    if(minePercent >= 100.0){
+      minePercent = minePercent.toPrecision(3);
+    } else if(minePercent < 10.0){
+      minePercent = minePercent.toPrecision(1);
+    } else {
+      minePercent = minePercent.toPrecision(2);
     }
     return (
       <SafeAreaView style={styles.screen}>
         <ImageBackground source={require('../assets/homepage/back.png')} style={styles.backgroundImage}>
           <Header loading={this.props.loading} user={this.props.user} onProfile={this.props.onProfile} onWallet={this.props.onWallet}/>
-          /***** TITLE BAR END *****/
           <View style={styles.contentHolder}>
             <View style={styles.contentTopMargin}></View>
             <View style={styles.contentTop}>
@@ -219,7 +217,7 @@ export default class Homepage extends React.Component {
                 onPress={this.onMinePress}>
                 {this.state.loading ? null :
                   <ImageBackground style={styles.mineImage} source={mineImg}>
-                    <Text style={[styles.mineText, this.state.riffic, mineTextColorStyle]}>
+                    <Text style={[mineTextColorStyle, styles.mineText, this.state.riffic, mineTextColorStyle]}>
                       {minePercent}%
                     </Text>
                   </ImageBackground>
@@ -228,13 +226,15 @@ export default class Homepage extends React.Component {
               <View style={styles.bottomIconsHolder}>
                 <TouchableOpacity style={styles.playnow}
                   onPress={this.onPlayPress}>
-                  <Image style={styles.playnowImage} source={require('../assets/homepage/playnow.png')}/>
+                  <ImageBackground style={styles.playnowImage} source={require('../assets/homepage/playNowButton.png')}>
+                    <Text style={[styles.playnowText, this.state.riffic]}>Play Now</Text>
+                  </ImageBackground>
                 </TouchableOpacity>
                 <ImageBackground source={require('../assets/homepage/snakeCart.png')} style={styles.snakeCart}></ImageBackground>
                 <TouchableOpacity
                   onPress={this.onMineHaul}>
                   <ImageBackground source={require('../assets/homepage/gototownButton.png')} style={styles.gototownButton}>
-                    <ImageBackground source={require('../assets/homepage/gototown.png')} style={styles.gototown}></ImageBackground>
+                    <Text style={[styles.gototownText, this.state.riffic]}>MINT HAUL</Text>
                     <Text style={[styles.gototownText, this.state.riffic]}>{this.props.user.haul} gold (max {this.props.user.mineMax})</Text>
                   </ImageBackground>
                 </TouchableOpacity>
@@ -243,11 +243,12 @@ export default class Homepage extends React.Component {
           </View>
           <GameHistoryOverlay show={this.state.overlay == overlays.MINE}
             closeOverlay={this.closeOverlay}
-            user={this.props.user} />
+            user={this.props.user}
+            gototown={this.onMineHaul} />
           <SelectLevelOverlay show={this.state.overlay == overlays.SELECTLEVEL}
             closeOverlay={this.closeOverlay}
             onSelectLevel={this.props.onSelectLevel}/>
-          <PurchageATicketOverlay show={this.state.overlay == overlays.PURCHASETICKET}
+          <PurchaseTicketOverlay show={this.state.overlay == overlays.PURCHASETICKET}
             closeOverlay={this.closeOverlay}
             user={this.props.user}
             prices={this.props.prices}
@@ -334,6 +335,9 @@ let styles = StyleSheet.create({
     fontSize: 18,
     paddingBottom: 90,
     paddingLeft: 20,
+    textShadowColor: 'rgba(0, 0, 0, 1.00)',
+    textShadowOffset: {width: -1, height: 1},
+    textShadowRadius: 1,
   },
   bottomIconsHolder: {
     flexDirection: "column",
@@ -348,7 +352,8 @@ let styles = StyleSheet.create({
     flex: 1,
     width: screenWidth * 1.787/3.6,
     aspectRatio: 1.787/.612,
-    resizeMode: "contain",
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   snakeCart: {
     marginTop: screenWidth*.200/3.6,
@@ -369,5 +374,16 @@ let styles = StyleSheet.create({
   gototownText: {
     color: "#fab523",
     fontSize: 18,
-  }
+    textShadowColor: 'rgba(0, 0, 0, 1.00)',
+    textShadowOffset: {width: -1, height: 1},
+    textShadowRadius: 1,
+  },
+  playnowText: {
+    //color: "#fab523",
+    color: "#FEF75D",
+    fontSize: 28,
+    textShadowColor: 'rgba(0, 0, 0, 1.00)',
+    textShadowOffset: {width: -2, height: 2},
+    textShadowRadius: 1,
+  },
 });

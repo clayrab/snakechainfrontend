@@ -30,7 +30,6 @@ import Profile from './components/Profile.js';
 // import SuccessfulEdit from './components/SuccessfulEdit'
 // import UnSuccessfulEdit from './components/UnsucecessfulEdit'
 import ViewSponsor from './components/ViewSponsor.js';
-import PurchaseTicket from './components/PurchaseTicket.js';
 import PurchasedTicket from './components/PurchasedTicket.js';
 import Success from './components/Success.js';
 import Fail from './components/Fail.js';

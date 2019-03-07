@@ -87,16 +87,22 @@ export default class GameHistoryOverlay extends React.Component {
     if (!this.props.show) {
       return null;
     } else {
-      let mineGraphicIndex = 10-Math.floor(10*this.props.user.haul/this.props.user.mineMax);
+      let haul = this.props.user.haul
+      let mineGraphicIndex = 10-Math.floor(10*haul/this.props.user.mineMax);
       let mineTextColorStyle = {};
-      if(mineGraphicIndex > 6){
-        //mineTextColorStyle = { color: "#6A534F", }
+      if(mineGraphicIndex <= 6){
+        mineTextColorStyle = { color: "#fab523", }
+      } else {
         mineTextColorStyle = { color: "#352927", }
       }
       let mineImg = mineImages[mineGraphicIndex];
-      let minePercent = (100*this.props.user.haul/this.props.user.mineMax).toPrecision(2);
-      if(this.props.user.haul == this.props.user.mineMax){
-        minePercent = 0;
+      let minePercent = (100-Math.floor((100*haul/this.props.user.mineMax)))
+      if(minePercent >= 100.0){
+        minePercent = minePercent.toPrecision(3);
+      } else if(minePercent < 10.0){
+        minePercent = minePercent.toPrecision(1);
+      } else {
+        minePercent = minePercent.toPrecision(2);
       }
       return (
         <View style={styles.container}>
@@ -146,10 +152,9 @@ export default class GameHistoryOverlay extends React.Component {
               <View style={styles.leftTrackNo}>
                 <Text style={[this.state.riffic, styles.snakeNoText]}>{this.props.user.haul}</Text>
               </View>
-              <TouchableOpacity style={styles.rightTrackContent}>
+              <TouchableOpacity style={styles.rightTrackContent} onPress={this.props.gototown}>
                 <ImageBackground source={require('../assets/gamehistory/mintbutton.png')} style={styles.buttonImage} resizeMode="stretch">
-                  <Text style={[this.state.riffic, styles.historyLabelText]}>MINT UNREFINED</Text>
-                  <Text style={[this.state.riffic, styles.historyLabelText]}>SNAKECHAIN</Text>
+                  <Text style={[this.state.riffic, styles.historyLabelText]}>MINT HAUL</Text>
                 </ImageBackground>
               </TouchableOpacity>
             </ImageBackground>
@@ -158,16 +163,16 @@ export default class GameHistoryOverlay extends React.Component {
                 {
                   this.state.games.map((game, idx) => {
                     return (
-                      <ImageBackground key={idx} source={require('../assets/gamehistory/ghButtonBG.png')} style={[styles.historyBG]} resizeMode="contain">
-                        <View style={styles.historyLeftView}>
+                      <ImageBackground key={idx} source={require('../assets/gamehistory/ghButtonBG.png')} style={[styles.historyBG]} resizeMode="stretch">
+                        <View style={styles.historyFirstView}>
                           <Text style={[this.state.riffic, styles.historyLabelText]}>{levelNames[game.level]}</Text>
                         </View>
                         <Image source={require('../assets/gamehistory/Line.png')} style={styles.historySepImage} resizeMode="contain"/>
-                        <View style={styles.historyLeftView}>
+                        <View style={styles.historyView}>
                           <Text style={[this.state.riffic, styles.historyLabelText]}>0</Text>
                           <Text style={[this.state.riffic, styles.historyLabelText, styles.opacityFont]}>POWER UPS</Text>
                         </View>
-                        <View style={styles.historyLeftView}>
+                        <View style={styles.historyView}>
                           <Text style={[this.state.riffic, styles.historyLabelText]}>{game.score}</Text>
                           <Text style={[this.state.riffic, styles.historyLabelText, styles.opacityFont]}>GOLD</Text>
                         </View>
@@ -249,7 +254,7 @@ let styles = StyleSheet.create({
   },
   mineText: {
     fontSize: 16,
-    paddingBottom: 45,
+    paddingBottom: 65,
     paddingLeft: 10,
   },
   trackBGImage: {
@@ -336,13 +341,14 @@ let styles = StyleSheet.create({
     width: 5,
     height: 40,
   },
-  historyLeftView: {
-    flex: 3,
+  historyFirstView: {
+    flex: 1,
     flexDirection: 'column',
-    alignItems: 'center'
+    alignItems: 'center',
+    //backgroundColor: "#f00",
   },
-  historyRightView: {
-    flex: 6,
+  historyView: {
+    flex: 1,
     flexDirection: 'column',
     alignItems: 'center'
   },

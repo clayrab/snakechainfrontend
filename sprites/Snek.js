@@ -262,16 +262,13 @@ export default class Snek extends Sprite {
       this.setState({direction: CONSTANTS.DPADSTATES.RIGHT, boardX: this.state.boardX + 1, snakeHead: {transform: [{ rotate: '90deg'}]}});
     }
   }
-
   componentDidMount() {
-    this.context.loop.subscribe(this.update.bind(this));
+    this.context.loop.subscribe(this.update);
   }
-
   componentWillUnmount() {
-    this.context.loop.unsubscribe(this.update.bind(this));
+    this.context.loop.unsubscribe(this.update);
   }
-
-  update() {
+  update = () => {
     if (this.state.toggleReset == !this.props.toggleReset) { // player reset game
       this.reset();
     }
