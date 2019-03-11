@@ -1,11 +1,13 @@
 {
   "expo": {
-    "name": "Snek",
-    "description": "Snek Game",
-    "slug": "snek",
+    "name": "test expo",
+    "slug": "testExpo",
     "privacy": "public",
-    "sdkVersion": "30.0.0",
-    "platforms": ["ios", "android"],
+    "sdkVersion": "32.0.0",
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -22,9 +24,6 @@
     ],
     "ios": {
       "supportsTablet": true
-    },
-    "ios": {
-      "bundleIdentifier": "com.claytonrabenda.snek"
     },
     "android": {
       "package": "com.claytonrabenda.snek"

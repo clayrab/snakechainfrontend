@@ -24,6 +24,8 @@ import SelectLevelOverlay from '../components/SelectLevelOverlay.js';
 import SnakeTown from '../components/SnakeTown.js';
 import PurchaseTicketOverlay from '../components/PurchaseTicketOverlay.js';
 
+import {normalize} from '../utils/FontNormalizer.js';
+
 let mineImages = [
   require('../assets/homepage/mine/mine0.png'),
   require('../assets/homepage/mine/mine10.png'),
@@ -373,7 +375,7 @@ let styles = StyleSheet.create({
   },
   gototownText: {
     color: "#fab523",
-    fontSize: 18,
+    fontSize: normalize(14),
     textShadowColor: 'rgba(0, 0, 0, 1.00)',
     textShadowOffset: {width: -1, height: 1},
     textShadowRadius: 1,
@@ -381,7 +383,7 @@ let styles = StyleSheet.create({
   playnowText: {
     //color: "#fab523",
     color: "#FEF75D",
-    fontSize: 28,
+    fontSize: normalize(24),
     textShadowColor: 'rgba(0, 0, 0, 1.00)',
     textShadowOffset: {width: -2, height: 2},
     textShadowRadius: 1,
