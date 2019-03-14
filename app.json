@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "test expo",
-    "slug": "testExpo",
+    "name": "snek",
+    "description": "The Crypto Game",
+    "slug": "snek",
     "privacy": "public",
     "sdkVersion": "32.0.0",
     "platforms": [

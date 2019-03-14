@@ -79,7 +79,7 @@ export default class App extends React.Component {
         totalhaul: 0,
       },
       running: false,
-      screen: screens.GAME,
+      screen: screens.LOGIN,
       overlay: overlays.STARTGAME,
       pressedButton: CONSTANTS.DPADSTATES.UP,
       toggleReset: true,
@@ -349,7 +349,49 @@ export default class App extends React.Component {
   }
 
   render() {
-    if(this.state.screen == screens.GAME){
+    if(this.state.screen == screens.HOME){
+      return (
+        <Homepage
+          user={this.state.user}
+          prices={this.state.prices}
+          onSelectLevel={this.onSelectLevel}
+          onGoToTown={this.onGoToTown}
+          onWallet={this.onWallet}
+          onProfile={this.onProfile}
+          >
+        </Homepage>
+      );
+    }else if(this.state.screen == screens.LOGIN){
+      return (
+        <Login loggedIn={this.loggedIn}/>
+        //<AccountHistory />
+        //<ViewSponsor />
+        //<PurchaseTicket />
+        //<PurchasedTicket />
+        //<Success />
+        //<Fail />
+        //<GameOverview />
+        //<Paused/>
+        //<EditProfile/>
+        //<ChangePassword/>
+      );
+    }else if(this.state.screen == screens.WALLET){
+      return (
+        <Wallet user={this.state.user} exit={this.exit}/>
+      );
+    }else if(this.state.screen == screens.SIGNUP){
+      return (
+        <SignUp/>
+      );
+    }else if(this.state.screen == screens.PROFILE){
+      return (
+        <Profile loading={this.state.loadingUser} user={this.state.user} exit={this.exit}/>
+      );
+    }else if(this.state.screen == screens.SNAKETOWN){
+      return (
+        <SnakeTown exit={this.exit}/>
+      );
+    }else if(this.state.screen == screens.GAME){
       return (
 
         <SafeAreaView style={{width: "100%", height: "100%", }}>
