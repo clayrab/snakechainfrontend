@@ -1,0 +1,91 @@
+
+import React from 'react';
+import {
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  ImageBackground
+} from 'react-native';
+import SafeAreaView from 'react-native-safe-area-view';
+import { Font } from 'expo';
+import CONSTANTS from '../Constants.js';
+
+export default class ErrorOverlay extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      riffic: {},
+    }
+  }
+  async componentDidMount(){
+    await Font.loadAsync({
+      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
+    });
+    this.setState({riffic: {
+      fontFamily: 'riffic-free-bold',
+    }});
+  }
+  render() {
+    if (!this.props.show) {
+      return null;
+    } else {
+      return (
+        <View style={styles.container}>
+          <ImageBackground source={require("../assets/ticket/background.png")} resizeMode={"stretch"} style={styles.mainView}>
+            <TouchableOpacity style={styles.closeButton} onPress={this.props.closeOverlay}>
+              <Image source={require('../assets/wallet/closeBG.png')} style={styles.closeButtonImage} resizeMode="stretch" />
+            </TouchableOpacity>
+            <Text style={styles.titleText}>{this.props.title}</Text>
+            <Text style={styles.normalText}>{this.props.paragraph}</Text>
+          </ImageBackground>
+        </View>
+      );
+    }
+  }
+}
+let screenWidth = require('Dimensions').get('window').width;
+let screenHeight = require('Dimensions').get('window').height;
+var styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    backgroundColor:  'rgba(0,0,0,0.6)',
+    width: screenWidth,
+    height: screenHeight,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  mainView: {
+    width: screenWidth * 638/726,
+    aspectRatio: 960/983,
+    alignItems: 'center',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: -20,
+    right: -15,
+    zIndex: 100,
+  },
+  closeButtonImage: {
+    height: 50,
+    width: 35,
+  },
+  titleText: {
+    color: "#fab523",
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginTop: 40,
+  },
+  normalText: {
+    color: "#fab523",
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginTop: 20,
+    padding: 10,
+  },
+});

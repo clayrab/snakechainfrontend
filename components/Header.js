@@ -43,6 +43,17 @@ export default class Header extends React.Component {
   }
 
   render() {
+    let pending = false;
+    if(this.props.user){
+      if(this.props.user.transactions){
+        for(let tx of this.props.user.transactions) {
+          if(tx.pending){
+            pending = true;
+            break;
+          }
+        }
+      }
+    }
     return (
       <ImageBackground source={require('../assets/homepage/titleback.png')} style={styles.titleBar}>
         {this.props.hasBackButton?
@@ -56,6 +67,9 @@ export default class Header extends React.Component {
         }
         <TouchableOpacity onPress={this.props.onWallet}>
           <ImageBackground source={require('../assets/homepage/coinbox.png')} style={styles.coinBox}>
+            {!pending ? null :
+              <View style={styles.pendingIcon}/>
+            }
             <View style={styles.titleBarSnekTextHolder}>
               <View style={styles.top}></View>
               {this.props.loading? null :
@@ -118,6 +132,7 @@ let styles = StyleSheet.create({
     height: titleBarHeight*.323/.757,
     marginTop: titleBarHeight*.170/.757,
     marginLeft: screenWidth*.123/3.6,
+    position: "relative",
   },
   ethBox: {
     flex: 0,
@@ -139,6 +154,19 @@ let styles = StyleSheet.create({
     marginTop: titleBarHeight*.075/.757,
     marginLeft: screenWidth*.250/3.6,
     justifyContent: 'center',
+  },
+  pendingIcon: {
+    position: "absolute",
+    top: -2,
+    right: -2,
+    borderWidth:1,
+    borderColor:'rgba(0,0,0,0.2)',
+    alignItems:'center',
+    justifyContent:'center',
+    width:12,
+    height:12,
+    backgroundColor:'#f00',
+    borderRadius:6,
   },
   titleBarText: {
     color: "#fab523",

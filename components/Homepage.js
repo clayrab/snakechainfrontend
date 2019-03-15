@@ -2,15 +2,17 @@ import React from 'react';
 import {
   Image,
   ImageBackground,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import { Font } from 'expo';
 import SafeAreaView from 'react-native-safe-area-view';
 import CONSTANTS from '../Constants.js';
 import {context} from "../utils/Context.js";
+import {normalize} from '../utils/FontNormalizer.js';
 import {asyncStore, getFromAsyncStore, removeItemValue} from "../utils/AsyncStore.js";
 
 import AreYouSureOverlay from '../components/AreYouSureOverlay.js';
@@ -18,13 +20,12 @@ import ConfirmTxOverlay from '../components/ConfirmTxOverlay.js';
 import GameHistoryOverlay from '../components/GameHistoryOverlay.js';
 import Header from '../components/Header.js';
 import LoadingOverlay from '../components/LoadingOverlay.js';
+import MineEmptyOverlay from '../components/MineEmptyOverlay.js';
 import PowerupOverlay from '../components/PowerupOverlay.js';
-//import PurchageATicketOverlay from '../components/PurchageATicketOverlay.js';
-import SelectLevelOverlay from '../components/SelectLevelOverlay.js';
-import SnakeTown from '../components/SnakeTown.js';
 import PurchaseTicketOverlay from '../components/PurchaseTicketOverlay.js';
-
-import {normalize} from '../utils/FontNormalizer.js';
+import SelectLevelOverlay from '../components/SelectLevelOverlay.js';
+import ScreenView from '../components/ScreenView.js';
+import SnakeTown from '../components/SnakeTown.js';
 
 let mineImages = [
   require('../assets/homepage/mine/mine0.png'),
@@ -39,7 +40,7 @@ let mineImages = [
   require('../assets/homepage/mine/mine90.png'),
   require('../assets/homepage/mine/mine100.png'),
 ]
-var overlays = { "MINE": 0, "SELECTLEVEL": 1, "PURCHASETICKET": 2, "CONFIRMTICKET": 3, "LOADING": 4, "CONFIRMTX": 5, "POWERUPS": 6, };
+var overlays = { "MINE": 0, "SELECTLEVEL": 1, "PURCHASETICKET": 2, "CONFIRMTICKET": 3, "LOADING": 4, "CONFIRMTX": 5, "POWERUPS": 6, "MINEEMPTY": 7,};
 export default class Homepage extends React.Component {
   constructor(props) {
     super(props);
@@ -83,7 +84,11 @@ export default class Homepage extends React.Component {
     this.setState({overlay: overlays.PURCHASETICKET });
   }
   onPlayPress = () => {
-    this.setState({overlay: overlays.SELECTLEVEL });
+    if(this.props.user.haul >= this.props.user.mineMax) {
+      this.setState({overlay: overlays.MINEEMPTY });
+    } else {
+      this.setState({overlay: overlays.SELECTLEVEL });
+    }
   }
   onPurchaseTicketSelect = async(ticketType) => {
     if(ticketType == "ETH" || ticketType == "SNK") {
@@ -136,7 +141,6 @@ export default class Homepage extends React.Component {
     console.log("onConfirmTicket")
     await this.setState({overlay: overlays.LOADING});
     let jwt = await getFromAsyncStore("jwt");
-    //var data = { user: this.state.username, pw: this.state.pw };
     let price = this.props.prices.mineGamePrice;
     let url = "/mine";
     if(this.state.confirmTokenType == "SNK") {
@@ -198,7 +202,8 @@ export default class Homepage extends React.Component {
       minePercent = minePercent.toPrecision(2);
     }
     return (
-      <SafeAreaView style={styles.screen}>
+      <ScreenView>
+        <StatusBar translucent={true} backgroundColor={'transparent'} {...this.props} />
         <ImageBackground source={require('../assets/homepage/back.png')} style={styles.backgroundImage}>
           <Header loading={this.props.loading} user={this.props.user} onProfile={this.props.onProfile} onWallet={this.props.onWallet}/>
           <View style={styles.contentHolder}>
@@ -269,16 +274,18 @@ export default class Homepage extends React.Component {
           <PowerupOverlay
             closeOverlay={this.closeOverlay}
             show={this.state.overlay == overlays.POWERUPS}/>
+          <MineEmptyOverlay
+            closeOverlay={this.closeOverlay}
+            show={this.state.overlay == overlays.MINEEMPTY}/>
         </ImageBackground>
-      </SafeAreaView>
+      </ScreenView>
     );
   }
 }
 let screenWidth = require('Dimensions').get('window').width;
+let screenHeight = require('Dimensions').get('window').height;
 let titleBarHeight = screenWidth*.757/3.6;
 let styles = StyleSheet.create({
-  screen: {
-  },
   backgroundImage: {
     width: "100%",
     height: "100%",

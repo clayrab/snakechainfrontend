@@ -13,6 +13,7 @@ import Snek from './sprites/Snek.js';
 import AreYouSureOverlay from './components/AreYouSureOverlay.js';
 import ConfirmTxGameOverOverlay from './components/ConfirmTxGameOverOverlay.js';
 import ConfirmTxOverlay from './components/ConfirmTxOverlay.js';
+import ErrorOverlay from './components/ErrorOverlay.js';
 import GameOverOverlay from './components/GameOverOverlay.js';
 import Homepage from './components/Homepage.js';
 import Login from './components/Login.js';
@@ -20,6 +21,7 @@ import Loading from './components/Loading.js';
 import LoadingOverlay from './components/LoadingOverlay.js';
 import PauseOverlay from './components/PauseOverlay.js';
 import PowerupOverlay from './components/PowerupOverlay.js';
+import ScreenView from './components/ScreenView.js';
 import SignUp from './components/Signup.js';
 import SnakeTown from './components/SnakeTown.js';
 import StartGameOverlay from './components/StartGameOverlay.js';
@@ -51,20 +53,19 @@ const connectionConfig = {
  };
 
 var screens = { "GAME": 0, "HOME": 1, "LOADING": 2, "PREFERENCES": 3, "PROFILE": 4, "ACCOUNTHISTORY": 5, "GAMEHISTORY": 6, "LOGIN": 7, "SNAKETOWN": 8, "WALLET": 9, };
-var overlays = {"PAUSE": 0, "GAMEOVER": 1, "MINE": 2, "AREYOUSURE": 3, "LOADING": 4, "CONFIRMTX": 5, "TRANSACTION": 6, "CONFIRMCONTRACT": 7, "POWERUPS": 8, "STARTGAME": 9};
+var overlays = {"PAUSE": 0, "GAMEOVER": 1, "MINE": 2, "AREYOUSURE": 3, "LOADING": 4, "CONFIRMTX": 5, "TRANSACTION": 6, "CONFIRMCONTRACT": 7, "POWERUPS": 8, "STARTGAME": 9, "ERROR": 10, };
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    //this.socket = SocketIOClient('http://{context.host}:3002');
-    //this.socket = SocketIOClient('http://192.168.1.5:3002');
-    this.socket = SocketIOClient(`{context.host}:{context.socketPort}`);
-    //this.socket = SocketIO('http://localhost:3000',connectionConfig);
+    this.socket = SocketIOClient(`${context.host}:${context.socketPort}`);
     this.socket.on('connect', () => {
       console.log('connected to server');
     });
     this.socket.on("FromAPI", (secs) => {
       console.log(secs);
-    })
+    });
+    console.log("SOCKET CREATED")
+    console.log(`${context.host}:${context.socketPort}`)
     var board = [];
     this.state = {
       user: {
@@ -107,6 +108,8 @@ export default class App extends React.Component {
       txKey: "",
       offerContract: true,
       loadingUser: true,
+      errorTitle: "",
+      errorParagraph: "",
     };
     this.loggedIn = this.loggedIn.bind(this);
     this.onDpadChange = this.onDpadChange.bind(this);
@@ -122,23 +125,34 @@ export default class App extends React.Component {
     this.onConfirmTxOk = this.onConfirmTxOk.bind(this);
   }
   async componentDidMount(){
-    var response = await fetch(`${context.host}:${context.port}/getPrices`, {
-      method: "GET", // *GET, POST, PUT, DELETE, etc.
-      headers: {
-          //"Content-Type": "application/json; charset=utf-8",
+    try{
+      var response = await fetch(`${context.host}:${context.port}/getPrices`, {
+        method: "GET", // *GET, POST, PUT, DELETE, etc.
+        headers: {
           "Content-Type": "application/x-www-form-urlencoded",
-      },
-    });
-    var resp = await response.json();
-    if(resp.error){
-      alert(resp.error);
-    }else if(resp.prices) {
-      this.setState({prices: resp.prices});
-    } else {
-      alert("error retrieving prices");
+        },
+      });
+      var resp = await response.json();
+      if(resp.error){
+        alert(resp.error);
+      }else if(resp.prices) {
+        this.setState({prices: resp.prices});
+      } else {
+        alert("error retrieving prices");
+      }
+    } catch(err){
+      console.log("there was an error retreiving prices.");
+      console.log(err)
+      this.genericNetworkError();
     }
   }
-
+  genericNetworkError = () =>{
+    this.setState({
+      errorTitle: "Network error",
+      errorParagraph: "There was an error connecting to the server. Please check your internet connection.",
+      overlay: overlays.ERROR,
+    })
+  }
   loadUser = async(jwt) => {
     let prom = async() => {
       return await new Promise((resolve, reject) => {
@@ -161,16 +175,22 @@ export default class App extends React.Component {
             alert(resp.error);
             resolve({loadingUser: false});
           }
-        }).catch(err => {throw err});
-      }).catch(err => {throw err});
+        }).catch(err => {
+          console.log("there was an error retreiving user.");
+          console.log(err)
+          reject(err);
+        });
+      });
     }
     //let state = await makeRetry("getUser!")(1500, prom);
-    let state = await prom();
-    this.setState(state);
-  }
-
-  loadGames = async() => {
-
+    try{
+      let state = await prom();
+      this.setState(state);
+    }catch(err){
+      console.log("there was an error retreiving user.");
+      console.log(err)
+      this.genericNetworkError();
+    }
   }
 
   async loggedIn(jwt) {
@@ -289,7 +309,12 @@ export default class App extends React.Component {
       alert(resp.error);
       await this.setState({overlay: -1});
     }else if(resp.txhash) {
-      await this.setState({offerContract: false, overlay: overlays.CONFIRMTX, lastTxHash: resp.txhash});
+      await this.setState({
+        offerContract: false,
+        overlay: overlays.CONFIRMTX,
+        lastTxHash: resp.txhash,
+        user: resp.user,
+      });
     } else {
       alert("Error sending transaction");
       await this.setState({overlay: -1});
@@ -393,8 +418,7 @@ export default class App extends React.Component {
       );
     }else if(this.state.screen == screens.GAME){
       return (
-
-        <SafeAreaView style={{width: "100%", height: "100%", }}>
+        <ScreenView>
           <Loop>
             <Snek
               pressedButton={this.state.pressedButton}
@@ -446,7 +470,12 @@ export default class App extends React.Component {
           <StartGameOverlay
             show={this.state.overlay == overlays.STARTGAME}
             onStart={this.start}/>
-        </SafeAreaView>
+          <ErrorOverlay
+            closeOverlay={this.closeOverlay}
+            show={this.state.overlay == overlays.ERROR}
+            title={this.state.errorTitle}
+            paragraph={this.state.errorParagraph}/>
+        </ScreenView>
       );
     }
   }

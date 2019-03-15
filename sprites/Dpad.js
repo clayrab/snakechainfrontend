@@ -95,7 +95,7 @@ export default class Dpad extends Sprite {
       </View>);
     }
     return (
-        <ImageBackground source={require('../assets/gameplay/ButtonBackground.png')} resizeMode={'stretch'} style={styles.dpad}>
+        <ImageBackground source={require('../assets/gameplay/ButtonBackground.png')} resizeMode={'cover'} style={styles.dpad}>
           <View style={styles.buttonSpacer}/>
           <View style={styles.buttonsHolder}>
             {lButton}
@@ -136,7 +136,8 @@ let styles = StyleSheet.create({
   dpad: {
     position: 'absolute',
     width: backgroundWidth,
-    height: backgroundWidth*1162/1274,
+    //height: backgroundWidth*1162/1274,
+    height: dpadSize*1.1,
     bottom: -2,
     left: (CONSTANTS.DEVICEWIDTH - backgroundWidth)/2,
     zIndex: 1,
