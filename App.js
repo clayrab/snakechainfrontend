@@ -57,15 +57,6 @@ var overlays = {"PAUSE": 0, "GAMEOVER": 1, "MINE": 2, "AREYOUSURE": 3, "LOADING"
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.socket = SocketIOClient(`${context.host}:${context.socketPort}`);
-    this.socket.on('connect', () => {
-      console.log('connected to server');
-    });
-    this.socket.on("FromAPI", (secs) => {
-      console.log(secs);
-    });
-    console.log("SOCKET CREATED")
-    console.log(`${context.host}:${context.socketPort}`)
     var board = [];
     this.state = {
       user: {
@@ -185,7 +176,24 @@ export default class App extends React.Component {
     //let state = await makeRetry("getUser!")(1500, prom);
     try{
       let state = await prom();
-      this.setState(state);
+      //console.log(state.user.pubkey)
+      await this.setState(state);
+
+      console.log(this.state.user.pubkey)
+      this.socket = SocketIOClient(`${context.host}:${context.socketPort}`, {
+        //path: '/mypath',
+        query: `pubkey=${this.state.user.pubkey}`,
+      });
+      this.socket.on('connect', () => {
+        console.log('connected to server');
+      });
+      this.socket.on("MINED", async(txid) => {
+        console.log("MiNED" + txid);
+        let jwt = await getFromAsyncStore("jwt");
+        this.loadUser(jwt);
+      });
+      console.log("SOCKET CREATED");
+      console.log(`${context.host}:${context.socketPort}`);
     }catch(err){
       console.log("there was an error retreiving user.");
       console.log(err)
@@ -195,6 +203,9 @@ export default class App extends React.Component {
 
   async loggedIn(jwt) {
     //console.log("LoggedIn")
+
+
+
     await asyncStore("jwt", jwt);
     if(this.state.screen == screens.LOGIN){
       this.setState({screen: screens.HOME});
