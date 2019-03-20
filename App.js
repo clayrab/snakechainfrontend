@@ -13,6 +13,7 @@ import Snek from './sprites/Snek.js';
 import AreYouSureOverlay from './components/AreYouSureOverlay.js';
 import ConfirmTxGameOverOverlay from './components/ConfirmTxGameOverOverlay.js';
 import ConfirmTxOverlay from './components/ConfirmTxOverlay.js';
+import CowOverlay from './components/CowOverlay.js';
 import ErrorOverlay from './components/ErrorOverlay.js';
 import GameOverOverlay from './components/GameOverOverlay.js';
 import Homepage from './components/Homepage.js';
@@ -441,7 +442,8 @@ export default class App extends React.Component {
               pause={this.pause}
               powerUps={this.powerUps}
               loading={this.state.loadingUser}
-              user={this.state.user}>
+              user={this.state.user}
+              level={this.state.level}>
             </Snek>
           </Loop>
           <PauseOverlay
@@ -486,6 +488,9 @@ export default class App extends React.Component {
             show={this.state.overlay == overlays.ERROR}
             title={this.state.errorTitle}
             paragraph={this.state.errorParagraph}/>
+          <CowOverlay
+            closeOverlay={this.closeOverlay}
+            show={this.state.running}/>
         </ScreenView>
       );
     }

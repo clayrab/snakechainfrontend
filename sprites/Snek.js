@@ -5,13 +5,13 @@ import PropTypes from 'prop-types';
 import CONSTANTS from '../Constants.js';
 
 import SnekPart from './SnekPart.js'
+import WallPart from './WallPart.js'
 import ScoreBoard from './ScoreBoard.js'
 import Buttons from './Buttons.js';
 import Dpad from './Dpad.js';
 
 let easterEggCount = 0;
 export default class Snek extends Sprite {
-  //
   // static contextTypes = {
   //   loop: PropTypes.object,
   //   pressedButton: PropTypes.number,
@@ -35,8 +35,11 @@ export default class Snek extends Sprite {
       pelletLocation: null,
       pelletRot: new Animated.Value(0),
       alive: true,
-      snakeHead: {transform: [{ rotate: '0deg'}]}
+      snakeHead: {transform: [{ rotate: '0deg'}]},
+      walls: []
     };
+    this.board = [];
+    this.wallComponents = [];
     this.nextID = 0;
     this.state = this.copyDefaultState();
     this.state.toggleReset = this.props.toggleReset;
@@ -69,6 +72,7 @@ export default class Snek extends Sprite {
     return newTail;
   }
   copyDefaultState(){
+    console.log("copyDefaultState")
     var startState = {};
     startState.posX = this.defaultState.posX;
     startState.posY = this.defaultState.posY;
@@ -84,9 +88,13 @@ export default class Snek extends Sprite {
     startState.tail = this.makeTail(3, this.defaultState.boardX, this.defaultState.boardY);
     startState.tailIndex = 2;
     startState.snakeHead = {transform: [{ rotate: '0deg'}]};
+    startState.walls = this.getRandomWalls();
     return startState;
   }
+
   resetBoard(){
+    // Board is false in "safe" spots and true where the snake and walls are
+    console.log("resetBoard")
     var board = [];
     for (var index1 = 0; index1 < CONSTANTS.BOARDHEIGHT; index1++) {
       var row = [];
@@ -98,8 +106,163 @@ export default class Snek extends Sprite {
     for (var index3 = 0; index3 < this.state.tail.length - 1; index3++) {
       board[this.state.tail[index3].props.boardY][this.state.tail[index3].props.boardX] = true;
     }
-    this.board = board.slice(0);
+
+    for (var yIndex = 0; yIndex < CONSTANTS.BOARDHEIGHT; yIndex++) {
+      for (var xIndex = 0; xIndex < CONSTANTS.BOARDWIDTH; xIndex++) {
+        if(this.state.walls[yIndex * 100 + xIndex]){
+          board[yIndex][xIndex] = true;
+        }
+      }
+    }
+    this.board = board.slice(0); //copy board
+    this.setWallComponents();
   }
+
+  hasNeighbor = (x, y, walls) => {
+    console.log("WTF")
+    console.log(x)
+    console.log(y)
+    if(x != 0 && walls[y * 100 + (x-1)]) {
+      return true;
+    } else if(x != CONSTANTS.BOARDSIZEX-1 && walls[y * 100 + (x+1)]) {
+      return true;
+    } else if(y != 0 && walls[((y-1) * 100) + x]) {
+      return true;
+    } else if(y != CONSTANTS.BOARDSIZEY-1 && walls[((y+1) * 100) + x]) {
+      return true;
+    }
+    return false;
+  }
+  makeTetrisBlock = (n, x, y, walls) => {
+    console.log("x and y")
+    console.log(y)
+    console.log(x)
+    walls[y * 100 + x] = true;
+    let minX = x-1;
+    let minY = y-2;
+    let maxX = x+1;
+    let maxY = y+2;
+    let neighbors = [];
+    for(let blockNumber = 0; blockNumber < n; blockNumber++){
+      let randX = Math.floor((Math.random() * (maxX - minX))+minX);
+      let randY = Math.floor((Math.random() * (maxY - minY))+minY);
+      while(!this.hasNeighbor(randY, randX, walls)){
+        console.log("didn't have neighbor")
+        console.log(randY)
+        console.log(randX)
+        console.log(y)
+        console.log(x)
+        randX = Math.floor((Math.random() * (maxX - minX))+minX);
+        randY = Math.floor((Math.random() * (maxY - minY))+minY);
+      }
+      if(randX == minX) {
+        minX = randX - 1;
+      }
+      if(randX == maxX) {
+        maxX = randX - 1;
+      }
+      if(randY == minY) {
+        minY = randY + 1;
+      }
+      if(randY == maxY) {
+        maxY = randY + 1;
+      }
+      walls[randY * 100 + randX] = true;
+    }
+    return walls;
+  }
+  getRandomWalls = () => {
+    let newWalls = [];
+    if(this.props.level === CONSTANTS.LEVELS.BLOCK1) {
+      for(let i = 0; i < 6; i++){
+        let randX = Math.floor(Math.random() * CONSTANTS.BOARDWIDTH);
+        let randY = Math.floor(Math.random() * CONSTANTS.BOARDHEIGHT);
+        // while it's not already a wall and it's not in the middle column where the snek starts
+        while(newWalls[randY * 100 + randX] || randX == CONSTANTS.BOARDSIZEX-1){
+          randX = Math.floor(Math.random() * CONSTANTS.BOARDWIDTH);
+          randY = Math.floor(Math.random() * CONSTANTS.BOARDHEIGHT);
+        }
+        newWalls = this.makeTetrisBlock(4, randX, randY, newWalls);
+      }
+      // for(let i = 0; i < 18; i++){
+      //   let randX = Math.floor(Math.random() * CONSTANTS.BOARDWIDTH);
+      //   let randY = Math.floor(Math.random() * CONSTANTS.BOARDHEIGHT);
+      //   // while it's not already a wall and it's not in the middle column where the snek starts
+      //   while(newWalls[randY * 100 + randX] || randX == CONSTANTS.BOARDSIZEX-1 || !this.hasNeighbor(randX, randY, newWalls)){
+      //     randX = Math.floor(Math.random() * CONSTANTS.BOARDWIDTH);
+      //     randY = Math.floor(Math.random() * CONSTANTS.BOARDHEIGHT);
+      //   }
+      //   newWalls[randY * 100 + randX] = true;
+      // }
+      // let randX = Math.floor(Math.random() * CONSTANTS.BOARDWIDTH);
+      // let randY = Math.floor(Math.random() * CONSTANTS.BOARDHEIGHT);
+      // // while it's not already a wall and it's not in the middle column where the snek starts
+      // while(randX == CONSTANTS.BOARDSIZEX-1){
+      //   randX = Math.floor(Math.random() * CONSTANTS.BOARDWIDTH);
+      //   randY = Math.floor(Math.random() * CONSTANTS.BOARDHEIGHT);
+      // }
+    } else if(this.props.level === CONSTANTS.LEVELS.BLOCK2) {
+      console.log("block2");
+    } else if(this.props.level === CONSTANTS.LEVELS.BLOCK3) {
+      console.log("block3");
+    } else if(this.props.level === CONSTANTS.LEVELS.SCATTER1) {
+      console.log("scatter1")
+      for(let i = 0; i < 12; i++){
+        let randX = Math.floor(Math.random() * CONSTANTS.BOARDWIDTH);
+        let randY = Math.floor(Math.random() * CONSTANTS.BOARDHEIGHT);
+        // while it's not already a wall and it's not in the middle column where the snek starts
+        while(newWalls[randY * 100 + randX] || randX == CONSTANTS.BOARDSIZEX-1){
+          randX = Math.floor(Math.random() * CONSTANTS.BOARDWIDTH);
+          randY = Math.floor(Math.random() * CONSTANTS.BOARDHEIGHT);
+        }
+        newWalls[randY * 100 + randX] = true;
+      }
+    } else if(this.props.level === CONSTANTS.LEVELS.SCATTER2) {
+      console.log("scatter2")
+      for(let i = 0; i < 20; i++){
+        let randX = Math.floor(Math.random() * CONSTANTS.BOARDWIDTH);
+        let randY = Math.floor(Math.random() * CONSTANTS.BOARDHEIGHT);
+        // while it's not already a wall and it's not in the middle column where the snek starts
+        while(newWalls[randY * 100 + randX] || randX == CONSTANTS.BOARDSIZEX-1){
+          randX = Math.floor(Math.random() * CONSTANTS.BOARDWIDTH);
+          randY = Math.floor(Math.random() * CONSTANTS.BOARDHEIGHT);
+        }
+        newWalls[randY * 100 + randX] = true;
+      }
+    } else if(this.props.level === CONSTANTS.LEVELS.SCATTER3) {
+      console.log("scatter3")
+      for(let i = 0; i < 32; i++){
+        let randX = Math.floor(Math.random() * CONSTANTS.BOARDWIDTH);
+        let randY = Math.floor(Math.random() * CONSTANTS.BOARDHEIGHT);
+        // while it's not already a wall and it's not in the middle column where the snek starts
+        while(newWalls[randY * 100 + randX] || randX == CONSTANTS.BOARDSIZEX-1){
+          randX = Math.floor(Math.random() * CONSTANTS.BOARDWIDTH);
+          randY = Math.floor(Math.random() * CONSTANTS.BOARDHEIGHT);
+        }
+        newWalls[randY * 100 + randX] = true;
+      }
+    }
+    return newWalls;
+  }
+
+  setWallComponents = () => {
+    console.log("setWallComponents");
+    this.wallComponents = [];
+    for (var yIndex = 0; yIndex < CONSTANTS.BOARDHEIGHT; yIndex++) {
+      for (var xIndex = 0; xIndex < CONSTANTS.BOARDWIDTH; xIndex++) {
+        if(this.state.walls[yIndex * 100 + xIndex]){
+          this.wallComponents.push(
+            <WallPart
+              key={this.getNextID()}
+              posX={this.boardXtoPosX(xIndex)}
+              posY={this.boardYtoPosY(yIndex)}>
+            </WallPart>
+          );
+        }
+      }
+    }
+  }
+
   boardXtoPosX(boardX) {
     return CONSTANTS.BOARDCENTERX + (CONSTANTS.SNEKSIZE*(boardX - CONSTANTS.BOARDSIZEX + 0.5));
   }
@@ -391,10 +554,15 @@ export default class Snek extends Sprite {
         })}
         {snek}
         {pellet}
+        {this.wallComponents}
         <Dpad onDpadChange={this.props.onDpadChange} pressedButton={this.props.pressedButton}></Dpad>
         <Buttons running={this.props.running} powerUps={this.props.powerUps} pause={this.props.pause}></Buttons>
       </View>
     );
+
+    // {this.wallComponents.map((elem) => {
+    //   return (elem);
+    // })}
   }
 }
 let borderWidth = 5;

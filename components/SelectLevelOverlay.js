@@ -16,7 +16,6 @@ import CONSTANTS from '../Constants.js';
 export default class SelectLevelOverlay extends React.Component {
   constructor(props) {
     super(props);
-    this.makeFnOnSelectLevel = this.makeFnOnSelectLevel.bind(this);
   }
   async componentDidMount(){
     await Font.loadAsync({
@@ -26,17 +25,11 @@ export default class SelectLevelOverlay extends React.Component {
       fontFamily: 'riffic-free-bold'
     }
   }
-  makeFnOnSelectLevel(level) {
-    let that = this;
-    //let theLevel = level;
+  makeFnOnSelectLevel = (level) => {
     let onSelectLevel = () => {
-      console.log(level)
-      that.props.onSelectLevel(level);
+      this.props.onSelectLevel(level);
     }
     return onSelectLevel;
-  //   // return (() => {
-  //   //   this.props.onSelectLevel(level);
-  //   // });
   }
 
   render() {
@@ -81,7 +74,7 @@ export default class SelectLevelOverlay extends React.Component {
                   </ImageBackground>
                 </View>
                 <View style={styles.childRowContent}>
-                  <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.FREE)}>
+                  <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.WILD)}>
                     <ImageBackground source={require('../assets/snakemine/leftBG.png')}
                       style={styles.snakeChainBG} resizeMode={'stretch'}>
                       <Text style={[styles.buttonText, styles.headerSC]}>
@@ -106,18 +99,20 @@ export default class SelectLevelOverlay extends React.Component {
 
               <View style={styles.childContentView}>
                 <View style={styles.childRowContent}>
-                  <ImageBackground source={require('../assets/snakemine/leftBG.png')}
-                    style={styles.snakeChainBG} resizeMode={'stretch'}>
-                    <Text style={[styles.buttonText, styles.headerSC]}>
-                      NO MULTIPLAYER
-                    </Text>
-                    <Image source={require('../assets/snakemine/sc3.png')} style={styles.scImage} resizeMode={'stretch'}/>
-                    <ImageBackground source={require('../assets/snakemine/leftDetails.png')} style={styles.scNameBG} resizeMode={'stretch'}>
-                      <Text style={[styles.buttonText, styles.ethText]}>
-                        0.01 ETH
+                  <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.SCATTER1)}>
+                    <ImageBackground source={require('../assets/snakemine/leftBG.png')}
+                      style={styles.snakeChainBG} resizeMode={'stretch'}>
+                      <Text style={[styles.buttonText, styles.headerSC]}>
+                        NO MULTIPLAYER
                       </Text>
+                      <Image source={require('../assets/snakemine/sc3.png')} style={styles.scImage} resizeMode={'stretch'}/>
+                      <ImageBackground source={require('../assets/snakemine/leftDetails.png')} style={styles.scNameBG} resizeMode={'stretch'}>
+                        <Text style={[styles.buttonText, styles.ethText]}>
+                          0.01 ETH
+                        </Text>
+                      </ImageBackground>
                     </ImageBackground>
-                  </ImageBackground>
+                  </TouchableOpacity>
                   <ImageBackground source={require('../assets/snakemine/textPart.png')}
                     style={styles.scTitleBG} resizeMode={'stretch'}>
                     <Text style={[styles.buttonText, styles.avgTitleText]}>
@@ -126,61 +121,20 @@ export default class SelectLevelOverlay extends React.Component {
                   </ImageBackground>
                 </View>
                 <View style={styles.childRowContent}>
-                  <ImageBackground source={require('../assets/snakemine/leftBG.png')}
-                    style={styles.snakeChainBG} resizeMode={'stretch'}>
-                    <Text style={[styles.buttonText, styles.headerSC]}>
-                      NO MULTIPLAYER
-                    </Text>
-                    <Image source={require('../assets/snakemine/sc4.png')} style={styles.scImage} resizeMode={'stretch'}/>
-                    <ImageBackground source={require('../assets/snakemine/leftDetails.png')} style={styles.scNameBG} resizeMode={'stretch'}>
-                      <Text style={[styles.buttonText, styles.snakeText]}>
-                        100 SNAKE
+                  <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BLOCK1)}>
+                    <ImageBackground source={require('../assets/snakemine/leftBG.png')}
+                      style={styles.snakeChainBG} resizeMode={'stretch'}>
+                      <Text style={[styles.buttonText, styles.headerSC]}>
+                        NO MULTIPLAYER
                       </Text>
+                      <Image source={require('../assets/snakemine/sc4.png')} style={styles.scImage} resizeMode={'stretch'}/>
+                      <ImageBackground source={require('../assets/snakemine/leftDetails.png')} style={styles.scNameBG} resizeMode={'stretch'}>
+                        <Text style={[styles.buttonText, styles.snakeText]}>
+                          100 SNAKE
+                        </Text>
+                      </ImageBackground>
                     </ImageBackground>
-                  </ImageBackground>
-                  <ImageBackground source={require('../assets/snakemine/textPart.png')}
-                    style={styles.scTitleBG} resizeMode={'stretch'}>
-                    <Text style={[styles.buttonText, styles.avgTitleText]}>
-                      AVG. 22 SNAKECHAIN
-                    </Text>
-                  </ImageBackground>
-                </View>
-              </View>
-
-              <View style={styles.childContentView}>
-                <View style={styles.childRowContent}>
-                  <ImageBackground source={require('../assets/snakemine/leftBG.png')}
-                    style={styles.snakeChainBG} resizeMode={'stretch'}>
-                    <Text style={[styles.buttonText, styles.headerSC]}>
-                      NO MULTIPLAYER
-                    </Text>
-                    <Image source={require('../assets/snakemine/sc5.png')} style={styles.scImage} resizeMode={'stretch'}/>
-                    <ImageBackground source={require('../assets/snakemine/leftDetails.png')} style={styles.scNameBG} resizeMode={'stretch'}>
-                      <Text style={[styles.buttonText, styles.ethText]}>
-                        0.1 ETH
-                      </Text>
-                    </ImageBackground>
-                  </ImageBackground>
-                  <ImageBackground source={require('../assets/snakemine/textPart.png')}
-                    style={styles.scTitleBG} resizeMode={'stretch'}>
-                    <Text style={[styles.buttonText, styles.avgTitleText]}>
-                      AVG. 22 SNAKECHAIN
-                    </Text>
-                  </ImageBackground>
-                </View>
-                <View style={styles.childRowContent}>
-                  <ImageBackground source={require('../assets/snakemine/leftBG.png')}
-                    style={styles.snakeChainBG} resizeMode={'stretch'}>
-                    <Text style={[styles.buttonText, styles.headerSC]}>
-                      NO MULTIPLAYER
-                    </Text>
-                    <Image source={require('../assets/snakemine/sc6.png')} style={styles.scImage} resizeMode={'stretch'}/>
-                    <ImageBackground source={require('../assets/snakemine/leftDetails.png')} style={styles.scNameBG} resizeMode={'stretch'}>
-                      <Text style={[styles.buttonText, styles.snakeText]}>
-                        100 SNAKE
-                      </Text>
-                    </ImageBackground>
-                  </ImageBackground>
+                  </TouchableOpacity>
                   <ImageBackground source={require('../assets/snakemine/textPart.png')}
                     style={styles.scTitleBG} resizeMode={'stretch'}>
                     <Text style={[styles.buttonText, styles.avgTitleText]}>
@@ -192,18 +146,20 @@ export default class SelectLevelOverlay extends React.Component {
 
               <View style={styles.childContentView}>
                 <View style={styles.childRowContent}>
-                  <ImageBackground source={require('../assets/snakemine/leftBG.png')}
-                    style={styles.snakeChainBG} resizeMode={'stretch'}>
-                    <Text style={[styles.buttonText, styles.headerSC]}>
-                      NO MULTIPLAYER
-                    </Text>
-                    <Image source={require('../assets/snakemine/sc7.png')} style={styles.scImage} resizeMode={'stretch'}/>
-                    <ImageBackground source={require('../assets/snakemine/leftDetails.png')} style={styles.scNameBG} resizeMode={'stretch'}>
-                      <Text style={[styles.buttonText, styles.ethText]}>
-                        0.001 ETH
+                  <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.SCATTER2)}>
+                    <ImageBackground source={require('../assets/snakemine/leftBG.png')}
+                      style={styles.snakeChainBG} resizeMode={'stretch'}>
+                      <Text style={[styles.buttonText, styles.headerSC]}>
+                        NO MULTIPLAYER
                       </Text>
+                      <Image source={require('../assets/snakemine/sc5.png')} style={styles.scImage} resizeMode={'stretch'}/>
+                      <ImageBackground source={require('../assets/snakemine/leftDetails.png')} style={styles.scNameBG} resizeMode={'stretch'}>
+                        <Text style={[styles.buttonText, styles.ethText]}>
+                          0.1 ETH
+                        </Text>
+                      </ImageBackground>
                     </ImageBackground>
-                  </ImageBackground>
+                  </TouchableOpacity>
                   <ImageBackground source={require('../assets/snakemine/textPart.png')}
                     style={styles.scTitleBG} resizeMode={'stretch'}>
                     <Text style={[styles.buttonText, styles.avgTitleText]}>
@@ -212,18 +168,67 @@ export default class SelectLevelOverlay extends React.Component {
                   </ImageBackground>
                 </View>
                 <View style={styles.childRowContent}>
-                  <ImageBackground source={require('../assets/snakemine/leftBG.png')}
-                    style={styles.snakeChainBG} resizeMode={'stretch'}>
-                    <Text style={[styles.buttonText, styles.headerSC]}>
-                      NO MULTIPLAYER
-                    </Text>
-                    <Image source={require('../assets/snakemine/sc8.png')} style={styles.scImage} resizeMode={'stretch'}/>
-                    <ImageBackground source={require('../assets/snakemine/leftDetails.png')} style={styles.scNameBG} resizeMode={'stretch'}>
-                      <Text style={[styles.buttonText, styles.snakeText]}>
-                        100 SNAKE
+                  <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BLOCK2)}>
+                    <ImageBackground source={require('../assets/snakemine/leftBG.png')}
+                      style={styles.snakeChainBG} resizeMode={'stretch'}>
+                      <Text style={[styles.buttonText, styles.headerSC]}>
+                        NO MULTIPLAYER
                       </Text>
+                      <Image source={require('../assets/snakemine/sc6.png')} style={styles.scImage} resizeMode={'stretch'}/>
+                      <ImageBackground source={require('../assets/snakemine/leftDetails.png')} style={styles.scNameBG} resizeMode={'stretch'}>
+                        <Text style={[styles.buttonText, styles.snakeText]}>
+                          100 SNAKE
+                        </Text>
+                      </ImageBackground>
                     </ImageBackground>
+                  </TouchableOpacity>
+                  <ImageBackground source={require('../assets/snakemine/textPart.png')}
+                    style={styles.scTitleBG} resizeMode={'stretch'}>
+                    <Text style={[styles.buttonText, styles.avgTitleText]}>
+                      AVG. 22 SNAKECHAIN
+                    </Text>
                   </ImageBackground>
+                </View>
+              </View>
+
+              <View style={styles.childContentView}>
+                <View style={styles.childRowContent}>
+                  <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.SCATTER3)}>
+                    <ImageBackground source={require('../assets/snakemine/leftBG.png')}
+                      style={styles.snakeChainBG} resizeMode={'stretch'}>
+                      <Text style={[styles.buttonText, styles.headerSC]}>
+                        NO MULTIPLAYER
+                      </Text>
+                      <Image source={require('../assets/snakemine/sc7.png')} style={styles.scImage} resizeMode={'stretch'}/>
+                      <ImageBackground source={require('../assets/snakemine/leftDetails.png')} style={styles.scNameBG} resizeMode={'stretch'}>
+                        <Text style={[styles.buttonText, styles.ethText]}>
+                          0.001 ETH
+                        </Text>
+                      </ImageBackground>
+                    </ImageBackground>
+                  </TouchableOpacity>
+                  <ImageBackground source={require('../assets/snakemine/textPart.png')}
+                    style={styles.scTitleBG} resizeMode={'stretch'}>
+                    <Text style={[styles.buttonText, styles.avgTitleText]}>
+                      AVG. 22 SNAKECHAIN
+                    </Text>
+                  </ImageBackground>
+                </View>
+                <View style={styles.childRowContent}>
+                  <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BLOCK3)}>
+                    <ImageBackground source={require('../assets/snakemine/leftBG.png')}
+                      style={styles.snakeChainBG} resizeMode={'stretch'}>
+                      <Text style={[styles.buttonText, styles.headerSC]}>
+                        NO MULTIPLAYER
+                      </Text>
+                      <Image source={require('../assets/snakemine/sc8.png')} style={styles.scImage} resizeMode={'stretch'}/>
+                      <ImageBackground source={require('../assets/snakemine/leftDetails.png')} style={styles.scNameBG} resizeMode={'stretch'}>
+                        <Text style={[styles.buttonText, styles.snakeText]}>
+                          100 SNAKE
+                        </Text>
+                      </ImageBackground>
+                    </ImageBackground>
+                  </TouchableOpacity>
                   <ImageBackground source={require('../assets/snakemine/textPart.png')}
                     style={styles.scTitleBG} resizeMode={'stretch'}>
                     <Text style={[styles.buttonText, styles.avgTitleText]}>
