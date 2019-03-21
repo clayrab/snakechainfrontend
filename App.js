@@ -488,9 +488,9 @@ export default class App extends React.Component {
             show={this.state.overlay == overlays.ERROR}
             title={this.state.errorTitle}
             paragraph={this.state.errorParagraph}/>
-          <CowOverlay
+          {/*<CowOverlay
             closeOverlay={this.closeOverlay}
-            show={this.state.running}/>
+            show={this.state.running}/>*/}
         </ScreenView>
       );
     }

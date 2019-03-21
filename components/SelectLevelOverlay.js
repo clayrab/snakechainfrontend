@@ -27,6 +27,9 @@ export default class SelectLevelOverlay extends React.Component {
   }
   makeFnOnSelectLevel = (level) => {
     let onSelectLevel = () => {
+      console.log("onSelectLevel")
+      console.log(CONSTANTS.LEVELS.BLOCK1)
+      console.log(level)
       this.props.onSelectLevel(level);
     }
     return onSelectLevel;
