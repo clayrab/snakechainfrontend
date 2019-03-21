@@ -206,6 +206,10 @@ export default class App extends React.Component {
     }
     this.loadUser(jwt);
   }
+
+  doUpdateUser = async(user) => {
+    this.setState({user: user})
+  }
   onDpadChange = async(direction) => {
     if (direction != CONSTANTS.DPADSTATES.NONE && direction != this.state.pressedButton) {
       await this.setState({pressedButton: direction});
@@ -400,6 +404,7 @@ export default class App extends React.Component {
           onGoToTown={this.onGoToTown}
           onWallet={this.onWallet}
           onProfile={this.onProfile}
+          doUpdateUser={this.doUpdateUser}
           >
         </Homepage>
       );

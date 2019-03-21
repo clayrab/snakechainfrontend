@@ -138,7 +138,6 @@ export default class Homepage extends React.Component {
     }
   }
   onConfirmTicket = async() => {
-    console.log("onConfirmTicket")
     await this.setState({overlay: overlays.LOADING});
     let jwt = await getFromAsyncStore("jwt");
     let price = this.props.prices.mineGamePrice;
@@ -165,6 +164,7 @@ export default class Homepage extends React.Component {
       alert(resp.error);
       await this.setState({overlay: -1});
     }else if(resp.txhash) {
+      await this.props.doUpdateUser(resp.user);
       await this.setState({overlay: overlays.CONFIRMTX, lastTxHash: resp.txhash});
     } else {
       alert("Error sending transaction");
@@ -177,26 +177,107 @@ export default class Homepage extends React.Component {
   goToTown = () => {
     this.props.onGoToTown();
   }
-  buySnkDynamite = () =>{
-    console.log("buyEthDynamite")
-    this.setState({overlay: overlays.CONFIRMSNKDYNAMITE});
+  buyDynamite = async(ticketType) =>{
+    if(ticketType == "ETH" || ticketType == "SNK") {
+      await this.setState({overlay: overlays.LOADING});
+      let jwt = await getFromAsyncStore("jwt");
+      let price = this.props.prices.ethdynamite;
+      if(ticketType == "SNK") {
+        price = this.props.prices.snkdynamite;
+      }
+      let data = {
+        amount: price,
+        type: ticketType,
+      };
+      fetch(`${context.host}:${context.port}/createTransaction`, {
+        method: "POST",
+        body: JSON.stringify(data), // body data type must match "Content-Type" header
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            "Authorization": "JWT " + jwt,
+        },
+      }).then(async(response) => {
+        var resp = await response.json();
+        if(!resp.error){
+          if(resp) {
+            if(resp.transactionKey) {
+              this.setState({
+                overlay: overlays.CONFIRMSNKDYNAMITE,
+                confirmAmount: price,
+                confirmTokenType: ticketType,
+                txKey: resp.transactionKey
+              });
+            } else {
+              alert("There was an error, malformed response.");
+              this.setState({overlay: -1});
+            }
+          } else{
+            alert("There was an error, no response.");
+            this.setState({overlay: -1});
+          }
+        } else {
+          alert(resp.error);
+          this.setState({overlay: -1});
+        }
+      }).catch(err => {throw err});
+    } else {
+      alert("Error. Ticket type must be ETH or SNK.")
+    }
   }
-  buyEthDynamite = () =>{
-    console.log("buyEthDynamite")
-    this.setState({overlay: overlays.CONFIRMETHDYNAMITE});
+  buyEthDynamite = () => {
+    this.buyDynamite("ETH");
   }
-  onConfirmSnkLevels = () =>{
-    // TODO
-    //this.setState({overlay: overlays.CONFIRMSNKDYNAMITE});
+  buySnkDynamite = () => {
+    this.buyDynamite("SNK");
   }
-  onCancelConfirmSnkLevels = () =>{
+  onConfirmDynamite = async() => {
+    await this.setState({overlay: overlays.LOADING});
+    let jwt = await getFromAsyncStore("jwt");
+    let price = this.props.prices.ethdynamite;
+    let url = "/buyUpgradedMine";
+    var data = {
+      txkey: this.state.txKey,
+      type: this.state.confirmTokenType,
+      amount: this.state.confirmAmount,
+    };
+    if(this.state.confirmTokenType == "ETH") {
+        url = "/buySuperGame";
+    }
+    var response = await fetch(`${context.host}:${context.port}${url}`, {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      body: JSON.stringify(data), // body data type must match "Content-Type" header
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Authorization": "JWT " + jwt,
+      },
+    });
+    var resp = await response.json();
+    if(resp.error){
+      alert(resp.error);
+      await this.setState({overlay: -1});
+    }else if(resp.txhash) {
+      await this.props.doUpdateUser(resp.user);
+      this.setState({overlay: overlays.CONFIRMTX, lastTxHash: resp.txhash});
+    } else {
+      alert("Error sending transaction");
+      console.log("transferSnek error")
+      console.log(resp)
+      await this.setState({overlay: -1});
+    }
+  }
+
+  // onConfirmSnkDynamite = () => {
+  //   // TODO
+  //   //this.setState({overlay: overlays.CONFIRMSNKDYNAMITE});
+  // }
+  onCancelConfirmSnkDynamite = () =>{
     this.setState({overlay: overlays.SELECTLEVEL});
   }
-  onConfirmEthLevels = () =>{
-    // TODO
-    //this.setState({overlay: overlays.CONFIRMETHDYNAMITE});
-  }
-  onCancelConfirmEthLevels = () =>{
+  // onConfirmEthDynamite = () =>{
+  //   // TODO
+  //   //this.setState({overlay: overlays.CONFIRMETHDYNAMITE});
+  // }
+  onCancelConfirmEthDynamite = () =>{
     this.setState({overlay: overlays.SELECTLEVEL});
   }
   onPowerups = () => {
@@ -277,6 +358,7 @@ export default class Homepage extends React.Component {
             gototown={this.onMineHaul} />
           <SelectLevelOverlay show={this.state.overlay == overlays.SELECTLEVEL}
             closeOverlay={this.closeOverlay}
+            user={this.props.user}
             onSelectLevel={this.props.onSelectLevel}
             buyEthDynamite={this.buyEthDynamite}
             buySnkDynamite={this.buySnkDynamite}
@@ -295,13 +377,13 @@ export default class Homepage extends React.Component {
           <AreYouSureOverlay
             show={this.state.overlay == overlays.CONFIRMSNKDYNAMITE}
             text={`Pay XXX SNK and XXX ETH gas to open deeper shafts in your mine?`}
-            onYes={this.onConfirmSnkLevels}
-            onNo={this.onCancelConfirmSnkLevels}/>
+            onYes={this.onConfirmDynamite}
+            onNo={this.onCancelConfirmSnkDynamite}/>
           <AreYouSureOverlay
             show={this.state.overlay == overlays.CONFIRMETHDYNAMITE}
             text={`Pay XXX ETH(including XXX for gas) to open deeper shafts in your mine?`}
-            onYes={this.onConfirmEthLevels}
-            onNo={this.onCancelConfirmEthLevels}/>
+            onYes={this.onConfirmDynamite}
+            onNo={this.onCancelConfirmEthDynamite}/>
           <LoadingOverlay show={this.state.overlay == overlays.LOADING}/>
           <ConfirmTxOverlay
             show={this.state.overlay == overlays.CONFIRMTX}

@@ -35,9 +35,17 @@ export default class SelectLevelOverlay extends React.Component {
     return onSelectLevel;
   }
   render() {
-    if (!this.props.show) {
+    if (!this.props.show || !this.props.user) {
       return null;
     } else {
+      let dynamiteStyle1 = {};
+      let dynamiteStyle2 = {};
+      if(this.props.user.mineUpgrades & 1) {
+        dynamiteStyle1 = {display: "none"};
+      }
+      if(this.props.user.mineUpgrades & 2) {
+        dynamiteStyle2 = {display: "none"};
+      }
       return (
         <View style={styles.container}>
           <ImageBackground style={styles.content} source={require('../assets/pauseoverlay/BackgroundBrown.png')} resizeMode={'stretch'}>
@@ -100,7 +108,7 @@ export default class SelectLevelOverlay extends React.Component {
               </View>
 
               <View style={[{zIndex: 100}, styles.childContentView]}>
-                <View style={styles.dynamiteOverlay}>
+                <View style={[styles.dynamiteOverlay, dynamiteStyle1]}>
                   <TouchableOpacity onPress={this.props.buySnkDynamite}>
                     <ImageBackground source={require('../assets/snakemine/textPart.png')}
                       style={styles.dynamiteTextBG} resizeMode={'stretch'}>
@@ -204,7 +212,7 @@ export default class SelectLevelOverlay extends React.Component {
               </View>
 
               <View style={styles.childContentView}>
-                <View style={[styles.dynamiteOverlay, {height: "100%"}]}>
+                <View style={[styles.dynamiteOverlay, {height: "100%"}, dynamiteStyle2]}>
                   <TouchableOpacity onPress={this.props.buyEthDynamite}>
                     <ImageBackground source={require('../assets/snakemine/textPart.png')}
                       style={styles.dynamiteTextBG} resizeMode={'stretch'}>
