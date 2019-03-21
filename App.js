@@ -53,8 +53,11 @@ const connectionConfig = {
   transports: ['websocket'],
  };
 
-var screens = { "GAME": 0, "HOME": 1, "LOADING": 2, "PREFERENCES": 3, "PROFILE": 4, "ACCOUNTHISTORY": 5, "GAMEHISTORY": 6, "LOGIN": 7, "SNAKETOWN": 8, "WALLET": 9, };
-var overlays = {"PAUSE": 0, "GAMEOVER": 1, "MINE": 2, "AREYOUSURE": 3, "LOADING": 4, "CONFIRMTX": 5, "TRANSACTION": 6, "CONFIRMCONTRACT": 7, "POWERUPS": 8, "STARTGAME": 9, "ERROR": 10, };
+var screens = { "GAME": 0, "HOME": 1, "LOADING": 2, "PREFERENCES": 3, "PROFILE": 4,
+    "ACCOUNTHISTORY": 5, "GAMEHISTORY": 6, "LOGIN": 7, "SNAKETOWN": 8, "WALLET": 9, };
+var overlays = {"PAUSE": 0, "GAMEOVER": 1, "MINE": 2, "AREYOUSURE": 3, "LOADING": 4,
+    "CONFIRMTX": 5, "TRANSACTION": 6, "CONFIRMCONTRACT": 7, "POWERUPS": 8, "STARTGAME": 9,
+    "ERROR": 10, "CONFIRMEXIT": 11,};
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -104,15 +107,12 @@ export default class App extends React.Component {
       errorParagraph: "",
     };
     this.loggedIn = this.loggedIn.bind(this);
-    this.onDpadChange = this.onDpadChange.bind(this);
     this.closeOverlay = this.closeOverlay.bind(this);
     this.restart = this.restart.bind(this);
     this.start = this.start.bind(this);
     this.pause = this.pause.bind(this);
     this.onSelectLevelPlayPress = this.onSelectLevelPlayPress.bind(this);
-    //this.onSelectLevel = this.onSelectLevel.bind(this);
     this.onDoContract = this.onDoContract.bind(this);
-    //this.onDontDoContract = this.onDontDoContract.bind(this);
     this.gameOverDoContract = this.gameOverDoContract.bind(this);
     this.onConfirmTxOk = this.onConfirmTxOk.bind(this);
   }
@@ -174,13 +174,9 @@ export default class App extends React.Component {
         });
       });
     }
-    //let state = await makeRetry("getUser!")(1500, prom);
     try{
       let state = await prom();
-      //console.log(state.user.pubkey)
       await this.setState(state);
-
-      console.log(this.state.user.pubkey)
       this.socket = SocketIOClient(`${context.host}:${context.socketPort}`, {
         //path: '/mypath',
         query: `pubkey=${this.state.user.pubkey}`,
@@ -204,19 +200,19 @@ export default class App extends React.Component {
 
   async loggedIn(jwt) {
     //console.log("LoggedIn")
-
-
-
     await asyncStore("jwt", jwt);
     if(this.state.screen == screens.LOGIN){
-      this.setState({screen: screens.HOME});
+      await this.setState({screen: screens.HOME});
     }
     this.loadUser(jwt);
   }
-  onDpadChange(direction) {
+  onDpadChange = async(direction) => {
     if (direction != CONSTANTS.DPADSTATES.NONE && direction != this.state.pressedButton) {
-      this.setState({pressedButton: direction});
+      await this.setState({pressedButton: direction});
     }
+  }
+  doResetDpad = async() => {
+    await this.setState({pressedButton: CONSTANTS.DPADSTATES.NONE});
   }
   onDied = async(score) => {
     await this.setState({running: false, overlay: overlays.LOADING});
@@ -332,6 +328,17 @@ export default class App extends React.Component {
       await this.setState({overlay: -1});
     }
   }
+
+  onCancelConfirmContract = () => {
+    this.setState({overlay: overlays.GAMEOVER});
+  }
+  onConfirmExit = () => {
+    this.exit();
+  }
+  onCancelConfirmExit = () => {
+    this.setState({overlay: overlays.PAUSE});
+  }
+
   start() {
     this.setState({offerContract: true, running: true, overlay: -1});
   }
@@ -347,6 +354,7 @@ export default class App extends React.Component {
   // exitWallet = () => {
   //   this.setState({running: false, screen: screens.HOME, overlay: overlays.STARTGAME});
   // }
+
   powerUps = () => {
     this.setState({running: false, overlay: overlays.POWERUPS});
   }
@@ -354,16 +362,13 @@ export default class App extends React.Component {
     alert("wallet");
   }
   confirmQuit = () => {
-    alert("confirm quit");
+    this.setState({overlay: overlays.CONFIRMEXIT});
   }
   onSelectLevel = (levelNumber) => {
-    this.setState({screen: screens.GAME, level: levelNumber});
+    this.setState({ screen: screens.GAME, level: levelNumber });
   }
   onSelectLevelPlayPress() {
     this.setState({screen: screens.GAME});
-  }
-  onCancelConfirmContract = () => {
-    this.setState({overlay: overlays.GAMEOVER});
   }
   gameOverDoContract() {
     this.setState({overlay: overlays.CONFIRMCONTRACT});
@@ -435,6 +440,7 @@ export default class App extends React.Component {
             <Snek
               pressedButton={this.state.pressedButton}
               onDpadChange={this.onDpadChange}
+              doResetDpad={this.doResetDpad}
               running={this.state.running}
               toggleReset={this.state.toggleReset}
               onDied={this.onDied}
@@ -466,6 +472,11 @@ export default class App extends React.Component {
             text={`Pay ${(this.state.prices.mineGamePrice/CONSTANTS.WEIPERETH).toPrecision(4)} ETH for ${this.state.gameOverInfo.score} Snake Coins.\n\nAre you sure?`}
             onYes={this.onConfirmContract}
             onNo={this.onCancelConfirmContract}/>
+          <AreYouSureOverlay
+            show={this.state.overlay == overlays.CONFIRMEXIT}
+            text={`Are you sure?`}
+            onYes={this.onConfirmExit}
+            onNo={this.onCancelConfirmExit}/>
           <LoadingOverlay
             show={this.state.overlay == overlays.LOADING}/>
           <ConfirmTxOverlay

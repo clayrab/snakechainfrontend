@@ -40,7 +40,7 @@ let mineImages = [
   require('../assets/homepage/mine/mine90.png'),
   require('../assets/homepage/mine/mine100.png'),
 ]
-var overlays = { "MINE": 0, "SELECTLEVEL": 1, "PURCHASETICKET": 2, "CONFIRMTICKET": 3, "LOADING": 4, "CONFIRMTX": 5, "POWERUPS": 6, "MINEEMPTY": 7,};
+var overlays = { "MINE": 0, "SELECTLEVEL": 1, "PURCHASETICKET": 2, "CONFIRMTICKET": 3, "LOADING": 4, "CONFIRMTX": 5, "POWERUPS": 6, "MINEEMPTY": 7, "CONFIRMSNKDYNAMITE": 8, "CONFIRMETHDYNAMITE": 9, };
 export default class Homepage extends React.Component {
   constructor(props) {
     super(props);
@@ -177,12 +177,35 @@ export default class Homepage extends React.Component {
   goToTown = () => {
     this.props.onGoToTown();
   }
+  buySnkDynamite = () =>{
+    console.log("buyEthDynamite")
+    this.setState({overlay: overlays.CONFIRMSNKDYNAMITE});
+  }
+  buyEthDynamite = () =>{
+    console.log("buyEthDynamite")
+    this.setState({overlay: overlays.CONFIRMETHDYNAMITE});
+  }
+  onConfirmSnkLevels = () =>{
+    // TODO
+    //this.setState({overlay: overlays.CONFIRMSNKDYNAMITE});
+  }
+  onCancelConfirmSnkLevels = () =>{
+    this.setState({overlay: overlays.SELECTLEVEL});
+  }
+  onConfirmEthLevels = () =>{
+    // TODO
+    //this.setState({overlay: overlays.CONFIRMETHDYNAMITE});
+  }
+  onCancelConfirmEthLevels = () =>{
+    this.setState({overlay: overlays.SELECTLEVEL});
+  }
   onPowerups = () => {
     this.setState({overlay: overlays.POWERUPS });
   }
   closeOverlay = () => {
     this.setState({overlay: -1});
   }
+
   render() {
     let haul = this.props.user.haul;
     let mineGraphicIndex = 10-Math.floor(10*haul/this.props.user.mineMax);
@@ -254,7 +277,10 @@ export default class Homepage extends React.Component {
             gototown={this.onMineHaul} />
           <SelectLevelOverlay show={this.state.overlay == overlays.SELECTLEVEL}
             closeOverlay={this.closeOverlay}
-            onSelectLevel={this.props.onSelectLevel}/>
+            onSelectLevel={this.props.onSelectLevel}
+            buyEthDynamite={this.buyEthDynamite}
+            buySnkDynamite={this.buySnkDynamite}
+            />
           <PurchaseTicketOverlay show={this.state.overlay == overlays.PURCHASETICKET}
             closeOverlay={this.closeOverlay}
             user={this.props.user}
@@ -266,6 +292,16 @@ export default class Homepage extends React.Component {
             text={`Pay ${this.state.confirmAmount} ${this.state.confirmTokenType} for ${this.props.user.haul} Snake Coins.\n\nAre you sure?`}
             onYes={this.onConfirmTicket}
             onNo={this.onCancelConfirm}/>
+          <AreYouSureOverlay
+            show={this.state.overlay == overlays.CONFIRMSNKDYNAMITE}
+            text={`Pay XXX SNK and XXX ETH gas to open deeper shafts in your mine?`}
+            onYes={this.onConfirmSnkLevels}
+            onNo={this.onCancelConfirmSnkLevels}/>
+          <AreYouSureOverlay
+            show={this.state.overlay == overlays.CONFIRMETHDYNAMITE}
+            text={`Pay XXX ETH(including XXX for gas) to open deeper shafts in your mine?`}
+            onYes={this.onConfirmEthLevels}
+            onNo={this.onCancelConfirmEthLevels}/>
           <LoadingOverlay show={this.state.overlay == overlays.LOADING}/>
           <ConfirmTxOverlay
             show={this.state.overlay == overlays.CONFIRMTX}
