@@ -52,9 +52,9 @@ let mode = 0;
 // 0 == opacity
 // 0 == y-gradient?
 // 1 == time-sin-gradient
-let gradientHeight = 8;
+let gradientHeight = 3;
 let staticData = Array.from({ length: gradientHeight });
-let gradientBackground  = 'purple';
+let gradientBackground  = '#000';
 export default class CowOverlay extends React.Component {
   constructor(props) {
     console.log("Easing")
@@ -86,13 +86,23 @@ export default class CowOverlay extends React.Component {
       if(c%3 == 0 || true){
         for(let i = 0; i < staticData.length; i++) {
           //console.log(easingOutFuncsWave[c%easingOutFuncsWave.length])
-          staticData[i] = EasingFunctions[easingOutFuncsWave[c%easingOutFuncsWave.length]]((c%10)*0.1)
-          * EasingFunctions[easingOutFuncsWave[c%easingOutFuncsWave.length]]((i / gradientHeight));
+          if(c%200 >= 100) {
+            staticData[i] = ((c%25)*0.04)+0.1;
+          } else {
+            staticData[i] = ((0-c%25)*0.04)+0.1;
+          }
+
+          //staticData[i] = EasingFunctions[easingOutFuncsWave[c%easingOutFuncsWave.length]]((c%10)*0.1)
+          //* EasingFunctions[easingOutFuncsWave[c%easingOutFuncsWave.length]]((i / gradientHeight));
+          //staticData[i] = EasingFunctions["linear"]((c%10)*0.1)
+          //staticData[i] = EasingFunctions["linear"]((c%10)*0.1);
+          //staticData[i] = EasingFunctions["linear"](i / gradientHeight);
+          //staticData[i] = EasingFunctions[easingFuncsWave[c%easingFuncsWave.length]]((i / gradientHeight));
         }
       } else if (c%3 == 1){
         for(let i = 0; i < staticData.length; i++) {
           //console.log(easingOutFuncsWave[c%easingOutFuncsWave.length])
-          staticData[i] = EasingFunctions[easingOutFuncsWave[c%easingOutFuncsWave.length]]((c%10)*0.1);
+          staticData[i] = EasingFunctions[easingOutFuncsWave[c%easingOutFuncsWave.length]]((c%100)*0.01);
         }
       } else {
         for(let i = 0; i < staticData.length; i++) {

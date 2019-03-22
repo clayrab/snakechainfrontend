@@ -26,6 +26,7 @@ import PurchaseTicketOverlay from '../components/PurchaseTicketOverlay.js';
 import SelectLevelOverlay from '../components/SelectLevelOverlay.js';
 import ScreenView from '../components/ScreenView.js';
 import SnakeTown from '../components/SnakeTown.js';
+import CowOverlay from '../components/CowOverlay.js';
 
 let mineImages = [
   require('../assets/homepage/mine/mine0.png'),
@@ -40,6 +41,7 @@ let mineImages = [
   require('../assets/homepage/mine/mine90.png'),
   require('../assets/homepage/mine/mine100.png'),
 ]
+
 var overlays = { "MINE": 0, "SELECTLEVEL": 1, "PURCHASETICKET": 2, "CONFIRMTICKET": 3, "LOADING": 4, "CONFIRMTX": 5, "POWERUPS": 6, "MINEEMPTY": 7, "CONFIRMSNKDYNAMITE": 8, "CONFIRMETHDYNAMITE": 9, };
 export default class Homepage extends React.Component {
   constructor(props) {
@@ -345,8 +347,8 @@ export default class Homepage extends React.Component {
                 <TouchableOpacity
                   onPress={this.onMineHaul}>
                   <ImageBackground source={require('../assets/homepage/gototownButton.png')} style={styles.gototownButton}>
-                    <Text style={[styles.gototownText, this.state.riffic]}>MINT HAUL</Text>
-                    <Text style={[styles.gototownText, this.state.riffic]}>{this.props.user.haul} gold (max {this.props.user.mineMax})</Text>
+                    <Text style={[styles.gototownText, this.state.riffic]}>SHIP TO SNAKE BANK</Text>
+                    <Text style={[styles.gototownText, this.state.riffic, {fontSize: normalize(12),}]}>{this.props.user.haul} Haul</Text>
                   </ImageBackground>
                 </TouchableOpacity>
               </View>
@@ -395,6 +397,9 @@ export default class Homepage extends React.Component {
           <MineEmptyOverlay
             closeOverlay={this.closeOverlay}
             show={this.state.overlay == overlays.MINEEMPTY}/>
+            <CowOverlay
+              closeOverlay={this.closeOverlay}
+              show={false}/>
         </ImageBackground>
       </ScreenView>
     );
@@ -500,7 +505,7 @@ let styles = StyleSheet.create({
   },
   gototownText: {
     color: "#fab523",
-    fontSize: normalize(14),
+    fontSize: normalize(13),
     textShadowColor: 'rgba(0, 0, 0, 1.00)',
     textShadowOffset: {width: -1, height: 1},
     textShadowRadius: 1,

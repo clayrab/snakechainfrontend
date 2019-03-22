@@ -35,9 +35,11 @@ export default class Snek extends Sprite {
       score: 0,
       pelletLocation: null,
       pelletRot: new Animated.Value(0),
+      boardShake: new Animated.Value(0),
       alive: true,
       snakeHead: {transform: [{ rotate: '0deg'}]},
-      walls: []
+      walls: [],
+      mushrooms: {},
     };
     this.board = [];
     this.wallComponents = [];
@@ -47,6 +49,10 @@ export default class Snek extends Sprite {
     this.resetBoard();
     this.lastFrameTime = null;
     this.pelletAnim = Animated.timing(this.state.pelletRot, {
+      toValue: 1,
+      duration: 2000,
+    });
+    this.boardShakeAnim = Animated.timing(this.state.boardShake, {
       toValue: 1,
       duration: 2000,
     });
@@ -82,6 +88,7 @@ export default class Snek extends Sprite {
     startState.direction = this.defaultState.direction;
     startState.pelletLocation = this.defaultState.pelletLocation;
     startState.pelletRot = this.defaultState.pelletRot;
+    startState.boardShake = this.defaultState.boardShake;
     //startState.baseScore = this.defaultState.baseScore;
     //startState.multiplier = this.defaultState.multiplier;
     startState.score = this.defaultState.score;
@@ -294,10 +301,13 @@ export default class Snek extends Sprite {
       isHead = this.state.boardX == x && this.state.boardY == y;
     }
     this.setState({pelletLocation: {x: x, y: y}});
-    // if ((this.state.baseScore + 2) % 5 == 0) {
-    //   this.state.pelletRot.setValue(0);
-    //   this.pelletAnim.start();
-    // }
+    if ((this.state.baseScore + 2) % 5 == 0) {
+      //this.state.pelletRot.setValue(0);
+      this.state.shakeBoard.setValue(0);
+      //pelletRot
+      //this.pelletAnim.start();
+      this.boardShakeAnim.start();
+    }
   }
 
   eatPellet(){
@@ -499,9 +509,16 @@ export default class Snek extends Sprite {
   spin() {
     return this.state.pelletRot.interpolate({
       inputRange: [0, 1],
-      outputRange: ['0deg', '1440deg']
+      outputRange: ['0deg', '1440deg'],
     });
   }
+  boardShakeInterpolate() {
+    return this.state.boardShake.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 200],
+    });
+  }
+
   easterEgg = async() => {
     easterEggCount = easterEggCount + 1;
     if(easterEggCount > 6) {
@@ -532,7 +549,7 @@ export default class Snek extends Sprite {
     }
     //let scoreBoardHeight = screenWidth*.757/3.6;
     return (
-      <View style={styles.gameBack}>
+      <View style={[styles.gameBack, {/*transferX: this.boardShakeInterpolate()*/}, ]}>
         <ImageBackground source={require('../assets/gameplay/gameAreaBack.png')} style={styles.fieldBack} resizeMode="stretch">
           <ScoreBoard
             score={this.state.score}
@@ -551,10 +568,6 @@ export default class Snek extends Sprite {
         <Buttons running={this.props.running} powerUps={this.props.powerUps} pause={this.props.pause}></Buttons>
       </View>
     );
-
-    // {this.wallComponents.map((elem) => {
-    //   return (elem);
-    // })}
   }
 }
 let borderWidth = 5;
