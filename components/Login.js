@@ -26,8 +26,6 @@ export default class Login extends React.Component {
       buttonDynamicStyle: {},
       username: "",
       pw: "",
-      // usernameRender: loginPlaceHolder,
-      // passwordRender: passwordPlaceHolder,
       loading: false,
     };
   }
@@ -38,38 +36,13 @@ export default class Login extends React.Component {
     this.setState({buttonDynamicStyle: {
       fontFamily: 'riffic-free-bold',
     }});
-    // styles.buttonText = {
-    //   fontFamily: 'riffic-free-bold'
-    // };
-    //rerender();
   }
 
-  // rerender = () => {
-  //   this.setState({rerender: !this.state.rerender}); // trick react into rerunning render function
-  // }
-  setLoginRenderState = () => {
-    // if(this.state.showLoginPlaceHolder) {
-    //   this.setState({usernameRender: loginPlaceHolder});
-    // } else {
-    //   this.setState({usernameRender: this.state.username});
-    // }
-  }
-  setPasswordRenderState = () => {
-    // if(this.state.showPasswordPlaceHolder) {
-    //   this.setState({passwordRender: passwordPlaceHolder});
-    // } else {
-    //   this.setState({passwordRender: this.state.pw});
-    // }
-  }
   loginFocus = async() => {
     await this.setState({showLoginPlaceHolder: false});
-    this.setLoginRenderState();
-    //this.setState({loginPlaceHolder: ''});
   }
   passwordFocus = async() => {
     await this.setState({showPasswordPlaceHolder: false});
-    this.setPasswordRenderState();
-    //this.setState({loginPlaceHolder: ''});
   }
   loginChange= async(value) => {
     await this.setState({username: value});
@@ -116,25 +89,8 @@ export default class Login extends React.Component {
           showPasswordPlaceHolder: false,
         });
       }
-      this.setLoginRenderState();
-      this.setPasswordRenderState();
     }
   }
-  // loginChangeText = (value) => {
-  //   // not really necessary,
-  //   if(!this.state.showLoginPlaceHolder) {
-  //     this.setState({username: value});
-  //   }
-  // }
-
-  // loginBlur = () => {
-  //   this.setState({loginPlaceHolder: 'Login/Phone'});
-  // }
-
-  // passwordChange = (value) => {
-  //   this.setState({passwordPlaceHolder: value});
-  // }
-
   rememberPress = () => {
     this.setState({ remember: !this.state.remember })
     this.easterEgg();
@@ -190,6 +146,11 @@ export default class Login extends React.Component {
         <ScreenView style={styles.screen}>
           <ImageBackground source={require('../assets/login/background.png')} style={styles.backgroundImage} resizeMode="stretch"
             onClick={this.easterEgg}>
+            <TouchableOpacity
+              onPress={this.easterEgg}
+              style={{height: 100, width: 100,}}
+              >
+            </TouchableOpacity>
             <View style={[styles.halfView, styles.topView]}>
               <ImageBackground source={require('../assets/login/textBox.png')} style={styles.loginInput} resizeMode="stretch">
                 <TextInput style={[styles.textInput, this.state.buttonDynamicStyle]} underlineColorAndroid="transparent"
@@ -213,12 +174,12 @@ export default class Login extends React.Component {
                   <Text style={[styles.loginText, this.state.buttonDynamicStyle]}>LOGIN</Text>
                 </ImageBackground>
               </TouchableOpacity>
-              <View style={styles.rememberView}>
+              {/*<View style={styles.rememberView}>
                 <TouchableOpacity onPress={this.rememberPress}>
                   <Image source={ this.state.remember ? require('../assets/login/checkBox.png') : require('../assets/login/checkBox-1.png')} style={styles.checkBoxImage} resizeMode="stretch"/>
                 </TouchableOpacity>
                 <Text style={[styles.checkboxText, this.state.buttonDynamicStyle]}>Remember me</Text>
-              </View>
+              </View>*/}
             </View>
           </ImageBackground>
         </ScreenView>

@@ -51,7 +51,8 @@ export default class PurchaseTicketOverlay extends React.Component {
             <Image source={require("../assets/ticket/train.png")} style={styles.ticketImage}/>
             <View style={styles.headerText2Holder}>
               <Text style={[styles.headerText2, this.state.buttonDynamicStyle]}>You can purchase transportation for your raw <Image source={require('../assets/wallet/coin.png')} style={[styles.coin]} /> to be minted at the Snake Bank</Text>
-                <Text style={[styles.headerText2, this.state.buttonDynamicStyle]}>Once you ship your raw <Image source={require('../assets/wallet/coin.png')} style={[styles.coin]} />, you will receive your <Image source={require('../assets/wallet/coin.png')} style={[styles.coin]} /> SnakeChain in your Snake Wallet after the courier arrives (~10min)</Text>
+              <Text style={[styles.headerText2, this.state.buttonDynamicStyle]}>Upon shipping your haul, a courier will deposit [CURRENT HAUL AMT] <Image source={require('../assets/wallet/coin.png')} style={[styles.coin]} /> SnakeChain into your Snake Wallet</Text>
+              <Text style={[styles.headerText2small, this.state.buttonDynamicStyle]}>NOTE: It typically takes under 10min to receive courier deposit</Text>
             </View>
             {this.props.user.haul > 0
               ?
@@ -131,7 +132,7 @@ let styles = StyleSheet.create({
   mainView: {
     width: screenWidth * 638/726,
     //aspectRatio: 960/983, THIS IS THE ACTUAL IMAGE SIZE
-    aspectRatio: 960/1383,
+    aspectRatio: 960/1433,
     alignItems: 'center',
   },
   ticketText: {
@@ -157,6 +158,12 @@ let styles = StyleSheet.create({
     color: "#FCB627",
     paddingTop: 4,
   },
+  headerText2small: {
+    fontSize: normalize(12),
+    color: "#FCB627",
+    paddingTop: 4,
+    opacity: 0.8,
+  },
   ticketImage: {
     marginTop: 20,
     width: screenWidth * 232/726,
@@ -178,7 +185,7 @@ let styles = StyleSheet.create({
     alignItems: "center",
   },
   inputBackground: {
-    marginTop: 15,
+    //marginTop: 15,
     width: screenWidth * 574/726,
     height: (156/863)*screenWidth * 574/726,
     flexDirection: "row",
