@@ -10,9 +10,8 @@ import {
   Clipboard
 } from 'react-native';
 import { Keccak } from 'sha3';
-import SafeAreaView from 'react-native-safe-area-view';
 import { Font } from 'expo';
-
+import {normalize} from '../utils/FontNormalizer.js';
 let yellowBackground = require('../assets/wallet/yellowBG.png');
 let brownBackground = require('../assets/wallet/brownBG.png');
 let selectedButton = require('../assets/wallet/selectedButton.png');
@@ -26,11 +25,11 @@ let checkboxEmpty = require('../assets/wallet/checkboxEmpty.png');
 
 let modes = { DEPOSIT: 0, WITHDRAW: 1, };
 let coins = { ETHEREUM: 0, SNAKE: 1, };
+let maxModeOverrider = 0; //wallet.js forces state change by incrementing a counter
 export default class Wallet extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      mode: modes.DEPOSIT,
       coin: -1,
       termsAgreed: false,
       amountText: "",
@@ -45,24 +44,8 @@ export default class Wallet extends React.Component {
       fontFamily: 'riffic-free-bold'
     }
   }
-
-  static getDerivedStateFromProps(props, state) {
-    if(props.isSend && state.mode === modes.DEPOSIT) {
-      return {mode: modes.WITHDRAW};
-    } else if(!props.isSend && state.mode === modes.WITHDRAW) {
-      return {mode: modes.DEPOSIT};
-    }
-    return null;
-  }
-
   onCopyAddress = () => {
     Clipboard.setString(this.props.user.pubkey);
-  }
-  onWithdrawMode = () => {
-    this.setState({mode: modes.WITHDRAW});
-  }
-  onDepositMode = () => {
-    this.setState({mode: modes.DEPOSIT});
   }
   onEthereumCoin = () => {
     this.setState({coin: coins.ETHEREUM});
@@ -131,7 +114,7 @@ export default class Wallet extends React.Component {
       let withdrawIconImg = withdrawIcon;
       let depositIconImg = walletIconYellow;
 
-      if(this.state.mode == modes.WITHDRAW) {
+      if(this.props.mode == modes.WITHDRAW) {
         depositButton = unselectedButton;
         withdrawButton = selectedButton;
         depositStyle = styles.blackText;
@@ -153,10 +136,10 @@ export default class Wallet extends React.Component {
       }
       return (
 
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
           <ImageBackground source={require('../assets/wallet/background.png')} style={styles.content} resizeMode="cover">
             <View style={styles.topButtonView}>
-              <TouchableOpacity style={styles.depositButton} onPress={this.onDepositMode}>
+              <TouchableOpacity style={styles.depositButton} onPress={this.props.onDoReceive}>
                 <ImageBackground source={depositButton} style={styles.depositButtonImage} resizeMode="stretch">
                   <Image source={depositIconImg} style={styles.withdrawIcons} />
                   <Text style={[styles.buttonText, depositStyle]}>
@@ -164,7 +147,7 @@ export default class Wallet extends React.Component {
                   </Text>
                 </ImageBackground>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.withdrawButton} onPress={this.onWithdrawMode}>
+              <TouchableOpacity style={styles.withdrawButton} onPress={this.props.onDoSend}>
                 <ImageBackground source={withdrawButton} style={styles.withButtonImage} resizeMode="stretch">
                   <Image source={withdrawIconImg} style={styles.withdrawIcons} />
                   <Text style={[styles.buttonText, withdrawStyle]}>
@@ -177,7 +160,7 @@ export default class Wallet extends React.Component {
               </TouchableOpacity>
             </View>
             <View style={styles.contentHolder}>
-              { this.state.mode == modes.WITHDRAW
+              { this.props.mode == modes.WITHDRAW
                 ?
                   <View>
                     <TouchableOpacity onPress={this.onEthereumCoin}>
@@ -313,7 +296,7 @@ export default class Wallet extends React.Component {
               }
             </View>
           </ImageBackground>
-        </SafeAreaView>
+        </View>
       )
     }
   }
@@ -477,42 +460,42 @@ let styles = StyleSheet.create({
   },
   blackText: {
     color: "#000",
-    fontSize: 16,
+    fontSize: normalize(14),
   },
   yellowText: {
     color: "#fab523",
-    fontSize: 16
+    fontSize: normalize(14)
   },
   blackEtherText: {
     color: "#000",
-    fontSize: 20
+    fontSize: normalize(18)
   },
   yellowSnakeText: {
     color: "#fab523",
-    fontSize: 20
+    fontSize: normalize(18)
   },
   blackSnakeText: {
     color: "#00001A",
-    fontSize: 20
+    fontSize: normalize(18)
   },
   addressText: {
     color: "#fab523",
-    fontSize: 14,
+    fontSize: normalize(12),
     marginBottom: 3,
   },
   addressPubkeyText: {
     color: "#fab523",
-    fontSize: 12,
+    fontSize: normalize(10),
     marginBottom: 3,
   },
   amountText: {
     color: "#fab523",
-    fontSize: 16,
+    fontSize: normalize(14),
     opacity: 0.5
   },
   addNotesText: {
     color: "#fab523",
-    fontSize: 10,
+    fontSize: normalize(8),
     opacity: 0.5,
     marginTop: 5
   },
@@ -528,7 +511,7 @@ let styles = StyleSheet.create({
   },
   copyText: {
     color: "#fab523",
-    fontSize: 14
+    fontSize: normalize(12)
   },
   qrBG: {
     height: 120,
@@ -546,11 +529,11 @@ let styles = StyleSheet.create({
   },
   selectAmountText: {
     color: "#fab523",
-    fontSize: 14,
+    fontSize: normalize(12),
   },
   comingSoonText: {
     color: "#fab523",
-    fontSize: 14,
+    fontSize: normalize(12),
     marginTop: 2,
     marginBottom: 12,
     textAlign: 'right',
@@ -581,6 +564,6 @@ let styles = StyleSheet.create({
   },
   termsText: {
     color: "#fab523",
-    fontSize: 16,
+    fontSize: normalize(14),
   }
 });

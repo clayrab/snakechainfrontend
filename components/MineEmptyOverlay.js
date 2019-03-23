@@ -9,7 +9,6 @@ import {
   ScrollView,
   ImageBackground
 } from 'react-native';
-import SafeAreaView from 'react-native-safe-area-view';
 import { Font } from 'expo';
 import CONSTANTS from '../Constants.js';
 

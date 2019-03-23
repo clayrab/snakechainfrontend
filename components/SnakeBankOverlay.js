@@ -1,8 +1,7 @@
 import React from 'react';
 import { Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View, } from 'react-native';
 import { Font } from 'expo';
-import SafeAreaView from 'react-native-safe-area-view';
-
+import {normalize} from '../utils/FontNormalizer.js';
 export default class SnakeBankOverlay extends React.Component {
   constructor(props) {
     super(props);
@@ -25,7 +24,7 @@ export default class SnakeBankOverlay extends React.Component {
       return null;
     } else {
       return (
-        <SafeAreaView style={styles.screen}>
+        <View style={styles.screen}>
           <ImageBackground source={require("../assets/BG.png")} style={styles.content} resizeMode={'stretch'}>
             <TouchableOpacity style={styles.closeButton} onPress={this.props.closeOverlay}>
               <Image source={require('../assets/snakebank/closeBG.png')} style={styles.closeButtonImage} resizeMode="stretch" />
@@ -48,13 +47,13 @@ export default class SnakeBankOverlay extends React.Component {
               <View style={styles.tableHolder}>
                 <View style={styles.tableHeader}>
                   <View style={styles.tableView}>
-                    <Text style={[{ color: "#EBAC26", fontSize: 12 }, this.state.buttonDynamicStyle]}>TX ID</Text>
+                    <Text style={[{ color: "#EBAC26", fontSize: normalize(10) }, this.state.buttonDynamicStyle]}>TX ID</Text>
                   </View>
                   <View style={styles.tableView}>
-                    <Text style={[{ color: "#896A66", fontSize: 12 }, this.state.buttonDynamicStyle]}>TX ID</Text>
+                    <Text style={[{ color: "#896A66", fontSize: normalize(10) }, this.state.buttonDynamicStyle]}>TX ID</Text>
                   </View>
                   <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                    <Text style={[{ color: "#896A66", fontSize: 12 }, this.state.buttonDynamicStyle]}>TX ID</Text>
+                    <Text style={[{ color: "#896A66", fontSize: normalize(10) }, this.state.buttonDynamicStyle]}>TX ID</Text>
                   </View>
                 </View>
                 <View style={{ flex: 2, flexDirection: "row", }}>
@@ -74,7 +73,7 @@ export default class SnakeBankOverlay extends React.Component {
               </ImageBackground>
             </TouchableOpacity>
           </ImageBackground>
-        </SafeAreaView>
+        </View>
       );
     }
   }
@@ -102,12 +101,12 @@ let styles = StyleSheet.create({
   },
   inputStyle: {
     color: "#EBAC26",
-    fontSize: 15,
+    fontSize: normalize(13),
     paddingLeft: '2%',
   },
   headingStyle: {
     color: "#EBAC26",
-    fontSize: 36,
+    fontSize: normalize(33),
     textAlign: "center",
     marginTop: 20,
   },
@@ -178,6 +177,6 @@ let styles = StyleSheet.create({
   },
   backToCampButtonText: {
     color: "#EBAC26",
-    fontSize: 18
+    fontSize: normalize(16)
   },
 });

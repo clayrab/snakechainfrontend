@@ -7,9 +7,10 @@ import {
   ImageBackground,
   Image
 } from 'react-native';
-import SafeAreaView from 'react-native-safe-area-view';
+import ScreenView from '../components/ScreenView.js';
 import { Font } from 'expo';
 import Header from '../components/Header.js';
+import {normalize} from '../utils/FontNormalizer.js';
 
 export default class Profile extends React.Component {
   constructor(props) {
@@ -27,9 +28,8 @@ export default class Profile extends React.Component {
     }});
   }
   render() {
-    console.log(this.props.user)
     return (
-      <SafeAreaView style={styles.safeArea}>
+      <ScreenView>
         <Header loading={this.props.loading} user={this.props.user} onProfile={this.props.onProfile} onWallet={this.props.onWallet} hasBackButton={true} exit={this.props.exit} />
         <ImageBackground source={require('../assets/profile/imageHolderBG.png')} style={styles.profileDetailsBG} resizeMode="stretch">
           <ImageBackground source={require('../assets/profile/imageHolder.png')} style={styles.profileImageBG} resizeMode="stretch">
@@ -88,27 +88,27 @@ export default class Profile extends React.Component {
           </ImageBackground>
           {/*<TouchableOpacity style={{marginTop: 10}}>
             <ImageBackground source={require('../assets/profile/button.png')} style={styles.buttonBG} resizeMode="stretch">
-              <Text style={[this.state.buttonDynamicStyle, styles.button]}>
+              <Text style={[this.state.buttonDynamicStyle, styles.buttonBig]}>
                 EDIT PROFILE PAGE
               </Text>
             </ImageBackground>
           </TouchableOpacity>*/}
           <TouchableOpacity>
             <ImageBackground source={require('../assets/profile/button.png')} style={styles.buttonBG} resizeMode="stretch">
-              <Text style={[this.state.buttonDynamicStyle, styles.button]}>
+              <Text style={[this.state.buttonDynamicStyle, styles.buttonBig]}>
                 CHANGE PASSWORD
               </Text>
             </ImageBackground>
           </TouchableOpacity>
           <TouchableOpacity>
             <ImageBackground source={require('../assets/profile/button.png')} style={styles.buttonBG} resizeMode="stretch">
-              <Text style={[this.state.buttonDynamicStyle, styles.button]}>
+              <Text style={[this.state.buttonDynamicStyle, styles.buttonBig]}>
                 LOG OUT
               </Text>
             </ImageBackground>
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
+      </ScreenView>
     )
   }
 }
@@ -121,11 +121,6 @@ let styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center'
    },
-  safeArea: {
-    backgroundColor: '#6B534E',
-    flex: 1,
-    marginTop: 20,
-  },
   profileDetailsBG: {
     width: screenWidth,
     height: screenHeight / 5,
@@ -148,7 +143,7 @@ let styles = StyleSheet.create({
     height: 20
   },
   profileName: {
-    fontSize: 22,
+    fontSize: normalize(20),
     color: '#F0C747',
     marginLeft: 20
   },
@@ -171,7 +166,7 @@ let styles = StyleSheet.create({
     justifyContent: 'space-around'
   },
   numberText: {
-    fontSize: 18,
+    fontSize: normalize(16),
     color: '#F0C747',
   },
   rankBoxBG: {
@@ -190,8 +185,8 @@ let styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center'
   },
-  button: {
-    fontSize: 22,
+  buttonBig: {
+    fontSize: normalize(18),
     color: '#F0C747'
   },
   rankChildView: {
@@ -205,11 +200,11 @@ let styles = StyleSheet.create({
   },
   keyText: {
     color: '#6B534E',
-    fontSize: 18
+    fontSize: normalize(16)
   },
   valueText: {
     color: '#F0C747',
-    fontSize: 22
+    fontSize: normalize(20)
   },
   diamondBG: {
     width: screenWidth / 3,
@@ -220,7 +215,7 @@ let styles = StyleSheet.create({
   },
   headerText: {
     color: '#F0C747',
-    fontSize: 16,
+    fontSize: normalize(14),
     marginLeft: screenWidth / 9
   }
 });

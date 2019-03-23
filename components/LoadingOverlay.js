@@ -5,7 +5,6 @@ import {
   Text,
   View,
 } from 'react-native';
-import SafeAreaView from 'react-native-safe-area-view';
 
 export default class LoadingOverlay extends React.Component {
   constructor(props) {

@@ -269,6 +269,7 @@ export default class Snek extends Sprite {
     return CONSTANTS.BOARDCENTERY + (CONSTANTS.SNEKSIZE*(boardY - CONSTANTS.BOARDSIZEY + 0.5));
   }
   die() {
+    console.log("die")
     this.setState({alive: false});
     this.props.onDied(this.state.score);
   }
@@ -311,8 +312,13 @@ export default class Snek extends Sprite {
   }
 
   eatPellet(){
-    this.growTail();
+    //let growLength = Math.floor(Math.log(this.state.score*2)) + 1;
+    let growLength = 1;
+    for(let i = 0; i < growLength; i++){
+      this.growTail();
+    }
     this.placePellet();
+    //this.placePellet();
     //var mult = this.state.multiplier;
     // if ((this.state.baseScore + 1) % 5 == 0) {
     //   mult++;
@@ -522,7 +528,7 @@ export default class Snek extends Sprite {
   easterEgg = async() => {
     easterEggCount = easterEggCount + 1;
     if(easterEggCount > 6) {
-      this.setState({score: this.state.score + easterEggCount*10})
+      this.setState({score: this.state.score + 1})
     }
   }
   render() {

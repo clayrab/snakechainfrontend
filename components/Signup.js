@@ -8,8 +8,8 @@ import {
   Image,
   TextInput
 } from 'react-native';
-import SafeAreaView from 'react-native-safe-area-view';
 import { Font } from 'expo';
+import {normalize} from '../utils/FontNormalizer.js';
 
 export default class Signup extends React.Component {
   constructor(props) {
@@ -174,12 +174,12 @@ let styles = StyleSheet.create({
     marginTop: 20
   },
   placeHolder: {
-    fontSize: 24,
+    fontSize: normalize(22),
     color: '#fab523'
   },
   titleText: {
     marginTop: 20,
-    fontSize: 24,
+    fontSize: normalize(22),
     color: '#fab523',
     fontWeight: 'bold'
   },
@@ -205,7 +205,7 @@ let styles = StyleSheet.create({
     marginRight: 5
   },
   checkboxText: {
-    fontSize: 16,
+    fontSize: normalize(14),
     color: '#fab523'
   },
   confirmButton: {
@@ -216,7 +216,7 @@ let styles = StyleSheet.create({
     marginTop: 20
   },
   confirmText: {
-    fontSize: 20,
+    fontSize: normalize(18),
     color: '#352927',
     fontWeight: 'bold'
   },

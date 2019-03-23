@@ -8,10 +8,11 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import SafeAreaView from 'react-native-safe-area-view';
+import ScreenView from '../components/ScreenView.js';
 import { Font } from 'expo';
 import {asyncStore, getFromAsyncStore, removeItemValue} from "../utils/AsyncStore.js";
 import {context} from "../utils/Context.js";
+import {normalize} from '../utils/FontNormalizer.js';
 
 import WalletOverlay from '../components/WalletOverlay.js';
 import ConfirmTxOverlay from '../components/ConfirmTxOverlay.js';
@@ -19,14 +20,15 @@ import AreYouSureOverlay from '../components/AreYouSureOverlay.js';
 import LoadingOverlay from '../components/LoadingOverlay.js';
 
 var overlays = {"WALLETOVERLAY": 0, LOADING: 1, "CONFIRMSEND": 2, CONFIRMTX: 3, };
-
+let modes = { DEPOSIT: 0, WITHDRAW: 1, };
+//let overlayModeOverrider = 0; //we force redraw of walletoverlay.js by incrementing this
 export default class AccountHistory extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       overlay: -1,
       riffic: {},
-      isSend: false,
+      overlayMode: null,
       loading: true,
       transactions: null,
     };
@@ -151,10 +153,12 @@ export default class AccountHistory extends React.Component {
     this.setState({overlay: overlays.WALLETOVERLAY });
   }
   onDoReceive = () => {
-    this.setState({overlay: overlays.WALLETOVERLAY, isSend: false, });
+    console.log("onDoReceive")
+    this.setState({overlay: overlays.WALLETOVERLAY, overlayMode: modes.DEPOSIT, });
   }
   onDoSend = () => {
-    this.setState({overlay: overlays.WALLETOVERLAY, isSend: true, });
+    console.log("onDoSend")
+    this.setState({overlay: overlays.WALLETOVERLAY, overlayMode: modes.WITHDRAW, });
   }
   onConfirmTxOk = () => {
     this.setState({overlay: -1 });
@@ -163,7 +167,7 @@ export default class AccountHistory extends React.Component {
   recvTypes = {mineWithSnek: true, mine: true};
   render() {
     return (
-      <SafeAreaView>
+      <ScreenView>
         <ImageBackground source={require('../assets/accounthistory/BG.png')} style={styles.backgroundImage} resizeMode="stretch">
           <View style={styles.headerHolder}>
             <TouchableOpacity onPress={this.props.exit} style={styles.backButtonTouchable}>
@@ -187,17 +191,29 @@ export default class AccountHistory extends React.Component {
             </View>
           </View>
           <ImageBackground style={styles.balancesHolder} source={require('../assets/accounthistory/sendreceiveBG.png')} resizeMode="stretch">
-            <View style={styles.balancesView}>
-              <View style={[styles.balancesNumbersView]}>
-                <Image source={require('../assets/wallet/coin.png')} style={styles.diamondImage} />
-                <Text style={[this.state.riffic, styles.numberText]}>
+            <View style={[styles.balancesView]}>
+              <View style={[styles.balancesNumbersView,]}>
+                <Text style={[this.state.riffic, styles.numberTextTop,{paddingTop: 20, flex: 1}]}>
+                  SnakeChain
+                </Text>
+                <Image source={require('../assets/wallet/coin.png')} style={[styles.diamondImage, {flex: 1}]} />
+                <Text style={[this.state.riffic, styles.numberText,{flex: 1}]}>
                   {this.props.user.snek}
+                </Text>
+                <Text style={[this.state.riffic, styles.numberTextBottom,{paddingBottom: 20, flex: 1}]}>
+                  SNK
                 </Text>
               </View>
               <View style={[styles.balancesNumbersView]}>
-                <Image source={require('../assets/wallet/diamond.png')} style={styles.diamondImage} />
-                <Text style={[this.state.riffic, styles.numberText]}>
+                <Text style={[this.state.riffic, styles.numberTextTop,{paddingTop: 20, flex: 1}]}>
+                  Ethereum
+                </Text>
+                <Image source={require('../assets/wallet/diamond.png')} style={[styles.diamondImage, {flex: 1}]} />
+                <Text style={[this.state.riffic, styles.numberText,{flex: 1}]}>
                   {(this.props.user.eth/CONSTANTS.WEIPERETH).toPrecision(4)}
+                </Text>
+                <Text style={[this.state.riffic, styles.numberTextBottom,{paddingBottom: 20, flex: 1}]}>
+                  ETH
                 </Text>
               </View>
             </View>
@@ -284,7 +300,10 @@ export default class AccountHistory extends React.Component {
           <WalletOverlay
             show={this.state.overlay == overlays.WALLETOVERLAY}
             onSend={this.onSend}
-            isSend={this.state.isSend}
+            onDoReceive={this.onDoReceive}
+            onDoSend={this.onDoSend}
+            mode={this.state.overlayMode}
+            overlayMode={this.state.overlayMode}
             user={this.props.user}
             closeOverlay={this.closeOverlay} />
           <LoadingOverlay show={this.state.overlay == overlays.LOADING}/>
@@ -298,7 +317,7 @@ export default class AccountHistory extends React.Component {
             transactionId={this.state.lastTxHash}
             onOk={this.onConfirmTxOk}/>
         </ImageBackground>
-      </SafeAreaView>
+      </ScreenView>
     )
   }
 }
@@ -355,13 +374,13 @@ let styles = StyleSheet.create({
     flexDirection: 'column',
   },
   balancesView: {
-    paddingTop: screenWidth*175/1080,
-    paddingBottom: screenWidth*175/1080,
+    height: screenHeight * 0.267,
     flexDirection: 'row',
     width: "100%",
   },
   balancesNumbersView: {
     flex: 1,
+    flexDirection: "column",
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -386,7 +405,7 @@ let styles = StyleSheet.create({
   },
   buttonColorText: {
     color: "#000",
-    fontSize: 16
+    fontSize: normalize(14),
   },
   buttonIconImage: {
     width: 20,
@@ -394,7 +413,7 @@ let styles = StyleSheet.create({
     marginRight: 5
   },
   diamondImage: {
-    width: 20,
+    width: 25,
     height: 30,
     resizeMode: 'contain'
   },
@@ -439,37 +458,46 @@ let styles = StyleSheet.create({
   },
   publicAddText: {
     color: "#000",
-    fontSize: 14
+    fontSize: normalize(12)
   },
   profileInfoText: {
     color: "red",
-    fontSize: 10,
+    fontSize: normalize(7),
     opacity: 0.5
   },
   snakeText: {
     color: "#fab523",
-    fontSize: 14
+    fontSize: normalize(12)
   },
   numberText: {
     color: "#fab523",
-    fontSize: 24
+    fontSize: normalize(26),
+    paddingBottom: 20,
+  },
+  numberTextTop: {
+    color: "#6A534F",
+    fontSize: normalize(12),
+  },
+  numberTextBottom: {
+    color: "#6A534F",
+    fontSize: normalize(14),
   },
   historyLabelText: {
     color: "#fab523",
-    fontSize: 14
+    fontSize: normalize(12)
   },
   dateText: {
     color: "#fab523",
-    fontSize: 10,
+    fontSize: normalize(7),
     opacity: 0.5
   },
   historyReceiveText: {
     color: '#10BB1A',
-    fontSize: 14
+    fontSize: normalize(12)
   },
   headerText: {
     color: "#fab523",
-    fontSize: 20
+    fontSize: normalize(18)
   },
   buttonText: {
   },

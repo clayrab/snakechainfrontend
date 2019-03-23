@@ -7,21 +7,23 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import SafeAreaView from 'react-native-safe-area-view';
 import { Font } from 'expo';
 import CONSTANTS from '../Constants.js';
-
+import {normalize} from '../utils/FontNormalizer.js';
 export default class StartGameOverlay extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      riffic: {},
+    }
   }
   async componentDidMount(){
     await Font.loadAsync({
       'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
     });
-    styles.riffic = {
-      fontFamily: 'riffic-free-bold'
-    }
+    this.setState({riffic: {
+      fontFamily: 'riffic-free-bold',
+    }});
   }
   render() {
     if (!this.props.show) {
@@ -30,12 +32,12 @@ export default class StartGameOverlay extends React.Component {
       return (
         <View style={styles.container}>
           <ImageBackground source={require('../assets/areyousure/background.png')} style={styles.backgroundImage} resizeMode="stretch">
-            <Text style={[styles.riffic, styles.largeText]}>
+            <Text style={[this.state.riffic, styles.largeText]}>
               READY?
             </Text>
             <TouchableOpacity style={styles.touchableButton} onPress={this.props.onStart}>
               <ImageBackground source={require('../assets/gameover/greenButton.png')} style={styles.largeButton} resizeMode="stretch">
-                <Text style={[styles.riffic, styles.largeButtonText]}>
+                <Text style={[this.state.riffic, styles.largeButtonText]}>
                   START!
                 </Text>
               </ImageBackground>
@@ -79,10 +81,10 @@ var styles = StyleSheet.create({
     alignItems: 'center',
   },
   largeButtonText: {
-    fontSize: 20,
+    fontSize: normalize(28),
   },
   largeText: {
     color: "#fab523",
-    fontSize: 20,
+    fontSize: normalize(38),
   },
 });

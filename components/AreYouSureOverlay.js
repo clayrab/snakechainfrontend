@@ -7,21 +7,24 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import SafeAreaView from 'react-native-safe-area-view';
 import { Font } from 'expo';
 import CONSTANTS from '../Constants.js';
+import {normalize} from '../utils/FontNormalizer.js';
 
 export default class AreYouSureOverlay extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      riffic: {},
+    }
   }
   async componentDidMount(){
     await Font.loadAsync({
       'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
     });
-    styles.riffic = {
-      fontFamily: 'riffic-free-bold'
-    }
+    this.setState({riffic: {
+      fontFamily: 'riffic-free-bold',
+    }});
   }
   render() {
     if (!this.props.show) {
@@ -30,7 +33,7 @@ export default class AreYouSureOverlay extends React.Component {
       return (
         <View style={styles.container}>
           <ImageBackground source={require('../assets/areyousure/background.png')} style={styles.backgroundImage} resizeMode="stretch">
-            <Text style={[styles.riffic, styles.text]}>{ this.props.text }</Text>
+            <Text style={[this.state.riffic, styles.text]}>{ this.props.text }</Text>
             <View style={styles.buttonsHolder}>
               <TouchableOpacity style={styles.touchableButton} onPress={this.props.onYes}>
                 <ImageBackground source={require('../assets/areyousure/yesButton.png')} style={[styles.largeButton, styles.yesButton]} resizeMode="stretch"/>
@@ -70,7 +73,7 @@ var styles = StyleSheet.create({
     padding: screenWidth*80/724,
     paddingBottom: screenWidth*40/724,
     color: "#fab523",
-    fontSize: 18,
+    fontSize: normalize(16),
   },
   buttonsHolder:{
     flexDirection: "row",

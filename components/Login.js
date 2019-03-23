@@ -8,11 +8,11 @@ import {
   Image,
   TextInput
 } from 'react-native';
-import SafeAreaView from 'react-native-safe-area-view';
+import ScreenView from '../components/ScreenView.js';
 import { Font } from 'expo';
 import {context} from "../utils/Context.js";
 import Loading from './Loading.js';
-
+import {normalize} from '../utils/FontNormalizer.js';
 let loginPlaceHolder = 'Login/Phone';
 let passwordPlaceHolder = 'Password';
 let easterEggCount = 0;
@@ -26,13 +26,12 @@ export default class Login extends React.Component {
       buttonDynamicStyle: {},
       username: "",
       pw: "",
-      usernameRender: loginPlaceHolder,
-      passwordRender: passwordPlaceHolder,
+      // usernameRender: loginPlaceHolder,
+      // passwordRender: passwordPlaceHolder,
       loading: false,
     };
   }
   async componentDidMount(){
-    console.log("component did mount")
     await Font.loadAsync({
       'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
     });
@@ -49,18 +48,18 @@ export default class Login extends React.Component {
   //   this.setState({rerender: !this.state.rerender}); // trick react into rerunning render function
   // }
   setLoginRenderState = () => {
-    if(this.state.showLoginPlaceHolder) {
-      this.setState({usernameRender: loginPlaceHolder});
-    } else {
-      this.setState({usernameRender: this.state.username});
-    }
+    // if(this.state.showLoginPlaceHolder) {
+    //   this.setState({usernameRender: loginPlaceHolder});
+    // } else {
+    //   this.setState({usernameRender: this.state.username});
+    // }
   }
   setPasswordRenderState = () => {
-    if(this.state.showPasswordPlaceHolder) {
-      this.setState({passwordRender: passwordPlaceHolder});
-    } else {
-      this.setState({passwordRender: this.state.pw});
-    }
+    // if(this.state.showPasswordPlaceHolder) {
+    //   this.setState({passwordRender: passwordPlaceHolder});
+    // } else {
+    //   this.setState({passwordRender: this.state.pw});
+    // }
   }
   loginFocus = async() => {
     await this.setState({showLoginPlaceHolder: false});
@@ -80,17 +79,38 @@ export default class Login extends React.Component {
   }
   easterEgg = async() => {
     easterEggCount = easterEggCount + 1;
-    if(easterEggCount > 3) {
-      if(easterEggCount%3 === 1){
+    if(easterEggCount >= 0) {
+      if(easterEggCount%5 === 0){
         await this.setState({
-          username: "clayrab",
+          username: "testuser4",
           pw: "asdf",
           showLoginPlaceHolder: false,
           showPasswordPlaceHolder: false,
         });
-      } else if(easterEggCount%3 === 0){
+      } else if(easterEggCount%5 === 1){
+        await this.setState({
+          username: "testuser3",
+          pw: "asdf",
+          showLoginPlaceHolder: false,
+          showPasswordPlaceHolder: false,
+        });
+      } else if(easterEggCount%5 === 2){
+        await this.setState({
+          username: "testuser2",
+          pw: "asdf",
+          showLoginPlaceHolder: false,
+          showPasswordPlaceHolder: false,
+        });
+      } else if(easterEggCount%5 === 3){
         await this.setState({
           username: "testuser",
+          pw: "asdf",
+          showLoginPlaceHolder: false,
+          showPasswordPlaceHolder: false,
+        });
+      } else if(easterEggCount%5 === 4){
+        await this.setState({
+          username: "clayrab",
           pw: "asdf",
           showLoginPlaceHolder: false,
           showPasswordPlaceHolder: false,
@@ -156,8 +176,18 @@ export default class Login extends React.Component {
         <Loading></Loading>
       );
     } else {
+      console.log(this.state.showPasswordPlaceHolder)
+      let usernameValue = loginPlaceHolder;
+      if(!this.state.showLoginPlaceHolder){
+        usernameValue = this.state.username
+      }
+      let passwordValue = passwordPlaceHolder;
+      if(!this.state.showPasswordPlaceHolder){
+        passwordValue = this.state.pw;
+      }
       return (
-        <SafeAreaView style={styles.screen}>
+
+        <ScreenView style={styles.screen}>
           <ImageBackground source={require('../assets/login/background.png')} style={styles.backgroundImage} resizeMode="stretch"
             onClick={this.easterEgg}>
             <View style={[styles.halfView, styles.topView]}>
@@ -165,7 +195,7 @@ export default class Login extends React.Component {
                 <TextInput style={[styles.textInput, this.state.buttonDynamicStyle]} underlineColorAndroid="transparent"
                   onFocus={this.loginFocus}
                   onChangeText={this.loginChange}
-                  value={this.state.usernameRender}>
+                  value={usernameValue}>
                 </TextInput>
               </ImageBackground>
             </View>
@@ -175,7 +205,7 @@ export default class Login extends React.Component {
                 <TextInput style={[styles.textInput, this.state.buttonDynamicStyle]} underlineColorAndroid="transparent" secureTextEntry={true}
                   onFocus={this.passwordFocus}
                   onChangeText={this.passwordChange}
-                  value={this.state.passwordRender}/>
+                  value={passwordValue}/>
               </ImageBackground>
               <TouchableOpacity
                 onPress={this.sendLoginCreds}>
@@ -191,7 +221,7 @@ export default class Login extends React.Component {
               </View>
             </View>
           </ImageBackground>
-        </SafeAreaView>
+        </ScreenView>
       );
     }
   }
@@ -221,7 +251,7 @@ let styles = StyleSheet.create({
     width: screenWidth - 80,
     height: 40,
     marginLeft: 20,
-    fontSize: 24,
+    fontSize: normalize(22),
     color: '#fab523'
   },
   loginInput: {
@@ -247,7 +277,7 @@ let styles = StyleSheet.create({
     justifyContent: 'center'
   },
   loginText: {
-    fontSize: 20,
+    fontSize: normalize(18),
     color: '#352927'
   },
   rememberView: {
@@ -260,7 +290,7 @@ let styles = StyleSheet.create({
     marginRight: 5
   },
   checkboxText: {
-    fontSize: 16,
+    fontSize: normalize(14),
     color: '#352927'
   },
 });

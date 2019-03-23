@@ -8,11 +8,11 @@ import {
   ImageBackground,
   Image
 } from 'react-native';
-import SafeAreaView from 'react-native-safe-area-view';
 import { Font } from 'expo';
 import {asyncStore, getFromAsyncStore, removeItemValue} from "../utils/AsyncStore.js";
 import {makeRetry} from "../utils/Retry.js";
 import {context} from "../utils/Context.js";
+import {normalize} from '../utils/FontNormalizer.js';
 
 let mineImages = [
   require('../assets/homepage/mine/mine0.png'),
@@ -70,7 +70,7 @@ export default class GameHistoryOverlay extends React.Component {
               alert(resp.error);
               resolve({loading: false});
             }else if(resp) {
-              resolve({games: resp.games.reverse()});
+              resolve({games: resp.games});
             }
           }).catch(
             err => {
@@ -112,15 +112,15 @@ export default class GameHistoryOverlay extends React.Component {
             </TouchableOpacity>
             <View style={styles.topView}>
               <View style={styles.topHalfView1}>
-                <Text style={[this.state.riffic, styles.historyLabelText, ]}>
+                <Text style={[this.state.riffic, styles.superHeaderText, ]}>
                   YOUR SNAKE MINE
                 </Text>
                 <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage} resizeMode="stretch">
                   <Text style={[this.state.riffic, styles.headerLabelText, styles.opacityFont]}>
-                    EXTRA UNMINTED GOLD
+                    CURRENT HAUL
                   </Text>
                   <Text style={[this.state.riffic, styles.headerText]}>
-                    {this.props.user.unredeemed - this.props.user.haul}
+                    {this.props.user.haul}
                   </Text>
                 </ImageBackground>
                 <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage} resizeMode="stretch">
@@ -150,11 +150,12 @@ export default class GameHistoryOverlay extends React.Component {
             </View>
             <ImageBackground source={require('../assets/gamehistory/trackBG.png')} style={styles.trackBGImage} resizeMode="stretch">
               <View style={styles.leftTrackNo}>
-                <Text style={[this.state.riffic, styles.snakeNoText]}>{this.props.user.haul}</Text>
+                {/* this once had text in it, but now it's just for layout. fix me.
+                <Text style={[this.state.riffic, styles.snakeNoText]}></Text>*/}
               </View>
               <TouchableOpacity style={styles.rightTrackContent} onPress={this.props.gototown}>
                 <ImageBackground source={require('../assets/gamehistory/mintbutton.png')} style={styles.buttonImage} resizeMode="stretch">
-                  <Text style={[this.state.riffic, styles.historyLabelText]}>MINT HAUL</Text>
+                  <Text style={[this.state.riffic, styles.mintHaulText]}>MINT HAUL</Text>
                 </ImageBackground>
               </TouchableOpacity>
             </ImageBackground>
@@ -253,7 +254,7 @@ let styles = StyleSheet.create({
     //411 × 945
   },
   mineText: {
-    fontSize: 16,
+    fontSize: normalize(14),
     paddingBottom: 65,
     paddingLeft: 10,
   },
@@ -308,7 +309,7 @@ let styles = StyleSheet.create({
   },
   buttonColorText: {
     color: "#000",
-    fontSize: 16
+    fontSize: normalize(14)
   },
   buttonIconImage: {
     width: 20,
@@ -352,43 +353,30 @@ let styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center'
   },
-  topRightHistoryView: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  publicAddText: {
-    color: "#000",
-    fontSize: 14
-  },
-  profileInfoText: {
-    color: "red",
-    fontSize: 10,
-    opacity: 0.5
-  },
-  snakeText: {
-    color: "#fab523",
-    fontSize: 14
-  },
-  numberText: {
-    color: "#fab523",
-    fontSize: 24
-  },
   historyLabelText: {
     color: "#fab523",
-    fontSize: 14
+    fontSize: normalize(12)
+  },
+  superHeaderText: {
+    color: "#fab523",
+    fontSize: normalize(13)
+  },
+  mintHaulText:{
+    color: "#fab523",
+    fontSize: normalize(14)
   },
   dateText: {
     color: "#fab523",
-    fontSize: 10,
+    fontSize: normalize(9),
     opacity: 0.5
   },
   historyReceiveText: {
     color: '#10BB1A',
-    fontSize: 14
+    fontSize: normalize(12)
   },
   headerText: {
     color: "#fab523",
-    fontSize: 20
+    fontSize: normalize(15)
   },
   leftTrackNo: {
     flex: 475,
@@ -411,15 +399,15 @@ let styles = StyleSheet.create({
   },
   snakeNoText: {
     color: "#fab523",
-    fontSize: 24
+    fontSize: normalize(20)
   },
   headerText: {
     color: "#fab523",
-    fontSize: 20
+    fontSize: normalize(18)
   },
   headerLabelText: {
     color: '#fab523',
-    fontSize: 10
+    fontSize: normalize(8)
   },
   // liquidText: {
   //   marginTop: screenHeight * 0.10,

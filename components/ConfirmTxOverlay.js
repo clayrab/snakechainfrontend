@@ -7,21 +7,23 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import SafeAreaView from 'react-native-safe-area-view';
 import { Font } from 'expo';
 import CONSTANTS from '../Constants.js';
-
+import {normalize} from '../utils/FontNormalizer.js';
 export default class ConfirmTxOverlay extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      riffic: {},
+    }
   }
   async componentDidMount(){
     await Font.loadAsync({
       'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
     });
-    styles.riffic = {
-      fontFamily: 'riffic-free-bold'
-    }
+    this.setState({riffic: {
+      fontFamily: 'riffic-free-bold',
+    }});
   }
   render() {
     if (!this.props.show) {
@@ -30,11 +32,11 @@ export default class ConfirmTxOverlay extends React.Component {
       return (
         <View style={styles.container}>
           <ImageBackground source={require('../assets/areyousure/background.png')} style={styles.backgroundImage} resizeMode="stretch">
-            <Text style={[styles.riffic, styles.text, styles.line1]}>Your transaction has been sent and will be confirmed shortly</Text>
-            <Text style={[styles.riffic, styles.text, styles.line2]}>Transaction ID: {this.props.transactionId}</Text>
+            <Text style={[this.state.riffic, styles.text, styles.line1]}>Your transaction has been sent and will be confirmed shortly</Text>
+            <Text style={[this.state.riffic, styles.text, styles.line2]}>Transaction ID: {this.props.transactionId}</Text>
             <TouchableOpacity style={styles.touchableButton} onPress={this.props.onOk}>
               <ImageBackground source={require('../assets/gameover/greenButton.png')} style={styles.largeButton} resizeMode="stretch">
-                <Text style={[styles.buttonText, styles.largeButtonBText]}>
+                <Text style={[styles.buttonText, styles.largeButtonText]}>
                   OK
                 </Text>
               </ImageBackground>
@@ -65,37 +67,29 @@ var styles = StyleSheet.create({
    height: screenWidth*(748/960)*633/724,
    flexDirection: 'column',
    alignItems: 'center',
+   padding: 32,
   },
   text: {
-    // padding: screenWidth*80/724,
-    // paddingBottom: screenWidth*40/724,
     color: "#fab523",
-    fontSize: 18,
-
+    fontSize: normalize(12),
   },
   line1: {
-    paddingTop: screenWidth*40/724,
-    paddingLeft: screenWidth*40/724,
-    paddingRight: screenWidth*40/724,
   },
   line2: {
-    paddingTop: screenWidth*20/724,
-    paddingLeft: screenWidth*40/724,
-    paddingRight: screenWidth*40/724,
+    paddingTop: 16,
   },
   touchableButton: {
     alignItems: 'center',
     marginTop: 20,
   },
   largeButton: {
-
     width: screenWidth * 0.75,
     height: 60,
     justifyContent: 'center',
     alignItems: 'center',
   },
   largeButtonText: {
-    color: "#fab523",
-    fontSize: 20,
+    color: "#000",
+    fontSize: normalize(18),
   },
 });

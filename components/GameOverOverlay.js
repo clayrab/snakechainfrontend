@@ -7,10 +7,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import SafeAreaView from 'react-native-safe-area-view';
 import { Font } from 'expo';
 import CONSTANTS from '../Constants.js';
-
+import {normalize} from '../utils/FontNormalizer.js';
 export default class GameOverOverlay extends React.Component {
   constructor(props) {
     super(props);
@@ -51,7 +50,7 @@ export default class GameOverOverlay extends React.Component {
                     </Text>
                     <Text style={[styles.buttonText, styles.contractDetails]}>
                       Exchange for minted snek coin now.{"\n"}{"\n"}
-                      <Text style={[styles.buttonText, styles.contractDetails, {fontSize: 20},]}>
+                      <Text style={[styles.buttonText, styles.contractDetails, {fontSize: normalize(18), },]}>
                         {(this.props.miningPrice/CONSTANTS.WEIPERETH).toPrecision(4)} ETH.
                       </Text>
                     </Text>
@@ -166,7 +165,7 @@ var styles = StyleSheet.create({
   },
   signConractText: {
     color: "#000",
-    fontSize: 16,
+    fontSize: normalize(13),
   },
   largeButton: {
     width: screenWidth*708/1080,
@@ -181,38 +180,38 @@ var styles = StyleSheet.create({
   },
   largeButtonText: {
     color: "#fab523",
-    fontSize: 20,
+    fontSize: normalize(18),
   },
   largeButtonBText: {
     color: "#000",
-    fontSize: 20,
+    fontSize: normalize(18),
   },
   gameOverText: {
     color: "#fab523",
-    fontSize: 32,
+    fontSize: normalize(29),
   },
   levelText: {
     color: "#fab523",
-    fontSize: 18,
+    fontSize: normalize(16),
   },
   selectionText: {
     color: "#fab523",
-    fontSize: 14,
+    fontSize: normalize(12),
     marginTop: 10,
     marginBottom: 10
   },
   numberText: {
     color: "#fab523",
-    fontSize: 22,
+    fontSize: normalize(20),
   },
   contractText: {
     color: '#000',
-    fontSize: 16,
+    fontSize: normalize(14),
     marginTop: 5,
   },
   contractDetails: {
     color: '#000',
-    fontSize: 12,
+    fontSize: normalize(10),
     marginLeft: 20,
     marginRight: 15,
     marginTop: 5

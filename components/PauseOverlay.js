@@ -7,9 +7,8 @@ import {
   View,
   ImageBackground
 } from 'react-native';
-import SafeAreaView from 'react-native-safe-area-view';
 import { Font } from 'expo';
-
+import {normalize} from '../utils/FontNormalizer.js';
 export default class PauseOverlay extends React.Component {
   constructor(props) {
     super(props);
@@ -106,7 +105,7 @@ var styles = StyleSheet.create({
   },
   titleText: {
     fontWeight: 'bold',
-    fontSize: 44,
+    fontSize: normalize(34),
     color: '#FAB523',
     position: "absolute",
     marginTop: -70,
@@ -129,12 +128,12 @@ var styles = StyleSheet.create({
     // bottom: -30
   },
   yellowButtonText: {
-    fontSize: 24,
+    fontSize: normalize(21),
     color: '#352927',
     fontWeight: 'bold'
   },
   brownButtonText: {
-    fontSize: 18,
+    fontSize: normalize(15),
     color: '#FAB523',
     fontWeight: 'bold'
   },

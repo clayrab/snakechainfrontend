@@ -9,7 +9,6 @@ import {
   ScrollView,
   ImageBackground
 } from 'react-native';
-import SafeAreaView from 'react-native-safe-area-view';
 import { Font } from 'expo';
 import CONSTANTS from '../Constants.js';
 
@@ -89,7 +88,8 @@ export default class CowOverlay extends React.Component {
           if(c%200 >= 100) {
             staticData[i] = ((c%25)*0.04)+0.1;
           } else {
-            staticData[i] = ((0-c%25)*0.04)+0.1;
+            staticData[i] = ((c%25)*0.04)+0.1;
+            //staticData[i] = ((4-c%25)*0.04)+0.1;
           }
 
           //staticData[i] = EasingFunctions[easingOutFuncsWave[c%easingOutFuncsWave.length]]((c%10)*0.1)

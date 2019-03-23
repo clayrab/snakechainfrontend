@@ -7,8 +7,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Font } from 'expo';
-import SafeAreaView from 'react-native-safe-area-view';
+import ScreenView from '../components/ScreenView.js';
 import TextInputView from './TextInputView'
+import {normalize} from '../utils/FontNormalizer.js';
 export default class EditProfile extends React.Component {
   constructor(props) {
     super(props);
@@ -28,7 +29,7 @@ export default class EditProfile extends React.Component {
   }
   render() {
     return (
-      <SafeAreaView>
+      <ScreenView>
         <ScrollView style={styles.screen}>
           <ImageBackground source={require("../assets/edit/header.png")} resizeMode={"stretch"} style={styles.header}>
             <View style={[styles.headerChild, { flex: 1 }]}>
@@ -107,7 +108,7 @@ export default class EditProfile extends React.Component {
             </ImageBackground>
           </View>
         </ScrollView>
-      </SafeAreaView>
+      </ScreenView>
     );
   }
 }
@@ -148,7 +149,7 @@ let styles = StyleSheet.create({
   socialImagesContainer: { flex: 1, flexDirection: "row" },
   socialImagesView: { flex: 1, alignItems: "center", justifyContent: "center" },
   textBox: {
-    fontSize: 15,
+    fontSize: normalize(13),
     paddingLeft: '10%',
     width: "90%",
     color: "#705756",
@@ -160,7 +161,7 @@ let styles = StyleSheet.create({
     marginTop: '2%',
   },
   switchImageLink: { height: '22%', width: '35%', resizeMode: "stretch", marginTop: '5%' },
-  deleteText: { color: '#fff', fontSize: 18 },
+  deleteText: { color: '#fff', fontSize: normalize(16) },
   deleteIcon: { height: "38%", width: "9%", resizeMode: "stretch", marginHorizontal: "5%" },
   deleteImage: { height: '70%', width: "70%", flexDirection: "row", alignItems: "center", justifyContent: "center" },
   deleteView: { height: screenHeight / 7, marginHorizontal: '5%', justifyContent: "center", alignItems: 'center', },
@@ -174,6 +175,6 @@ let styles = StyleSheet.create({
   authText: { paddingLeft: "14%", color: "#927773" },
   socialImages: { height: "55%", width: "50%", resizeMode: "stretch" },
   settingImage: { height: "70%", width: "70%", resizeMode: "stretch" },
-  privacyText: { textAlign: "center", color: "#FBB323", fontSize: 14, marginVertical: "4%", letterSpacing: 0.8 },
-  linkText: { textAlign: "center", color: "#FBB323", fontSize: 15, marginVertical: "2%", letterSpacing: 0.8 }
+  privacyText: { textAlign: "center", color: "#FBB323", fontSize: normalize(12), marginVertical: "4%", letterSpacing: 0.8 },
+  linkText: { textAlign: "center", color: "#FBB323", fontSize: normalize(13), marginVertical: "2%", letterSpacing: 0.8 }
 });

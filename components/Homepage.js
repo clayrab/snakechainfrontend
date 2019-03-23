@@ -9,7 +9,6 @@ import {
   View
 } from 'react-native';
 import { Font } from 'expo';
-import SafeAreaView from 'react-native-safe-area-view';
 import CONSTANTS from '../Constants.js';
 import {context} from "../utils/Context.js";
 import {normalize} from '../utils/FontNormalizer.js';
@@ -166,6 +165,8 @@ export default class Homepage extends React.Component {
       alert(resp.error);
       await this.setState({overlay: -1});
     }else if(resp.txhash) {
+      console.log(resp.txhash)
+      console.log(resp.user)
       await this.props.doUpdateUser(resp.user);
       await this.setState({overlay: overlays.CONFIRMTX, lastTxHash: resp.txhash});
     } else {
@@ -347,8 +348,10 @@ export default class Homepage extends React.Component {
                 <TouchableOpacity
                   onPress={this.onMineHaul}>
                   <ImageBackground source={require('../assets/homepage/gototownButton.png')} style={styles.gototownButton}>
-                    <Text style={[styles.gototownText, this.state.riffic]}>SHIP TO SNAKE BANK</Text>
-                    <Text style={[styles.gototownText, this.state.riffic, {fontSize: normalize(12),}]}>{this.props.user.haul} Haul</Text>
+                    <Text style={[styles.gototownText, this.state.riffic]}>
+                      {this.props.user.haul} raw <Image source={require('../assets/wallet/coin.png')} style={[{ height: 20, width: 20*168/128, resizeMode: 'stretch', }]} />
+                    </Text>
+                    {/*<Text style={[styles.gototownText, this.state.riffic, {fontSize: normalize(11),}]}>Ship to Snakebank</Text>*/}
                   </ImageBackground>
                 </TouchableOpacity>
               </View>
@@ -464,7 +467,7 @@ let styles = StyleSheet.create({
     alignItems: 'center'
   },
   mineText: {
-    fontSize: 18,
+    fontSize: normalize(16),
     paddingBottom: 90,
     paddingLeft: 20,
     textShadowColor: 'rgba(0, 0, 0, 1.00)',
@@ -505,7 +508,7 @@ let styles = StyleSheet.create({
   },
   gototownText: {
     color: "#fab523",
-    fontSize: normalize(13),
+    fontSize: normalize(18),
     textShadowColor: 'rgba(0, 0, 0, 1.00)',
     textShadowOffset: {width: -1, height: 1},
     textShadowRadius: 1,

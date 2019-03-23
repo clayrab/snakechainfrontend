@@ -1,6 +1,5 @@
 import React from 'react';
 import { Loop, Stage, World, Body, Sprite } from 'react-game-kit/native';
-import SafeAreaView from 'react-native-safe-area-view';
 import SocketIOClient from 'socket.io-client';
 
 import CONSTANTS from './Constants.js';
@@ -488,11 +487,11 @@ export default class App extends React.Component {
             show={this.state.overlay == overlays.CONFIRMTX}
             transactionId={this.state.lastTxHash}
             onOk={this.onConfirmTxOk}/>
-          <ConfirmTxGameOverOverlay
-            show={this.state.overlay == overlays.TRANSACTION}
-            gameOverInfo={this.state.gameOverInfo}
-            restart={this.restart}
-            exit={this.exit} />
+            {/*<ConfirmTxGameOverOverlay
+              show={true}
+              gameOverInfo={this.state.gameOverInfo}
+              restart={this.restart}
+              exit={this.exit} />*/}
           <PowerupOverlay
             closeOverlay={this.closeOverlay}
             show={this.state.overlay == overlays.POWERUPS}/>

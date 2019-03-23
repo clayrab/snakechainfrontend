@@ -7,7 +7,7 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import { Font } from 'expo';
-import SafeAreaView from 'react-native-safe-area-view';
+import {normalize} from '../utils/FontNormalizer.js';
 
 const Box = ((props) =>
     <View style={styles.boxContainer}>
@@ -87,16 +87,16 @@ let screenHeight = require('Dimensions').get('window').height;
 let styles = StyleSheet.create({
     screen: { flex: 1, },
     closeButton: { position: "absolute", top: -6, right: -4, height: screenHeight / 12, width: screenWidth / 10 },
-    coinText: { color: "#FDB525", marginHorizontal: "7%", fontSize: 15 },
+    coinText: { color: "#FDB525", marginHorizontal: "7%", fontSize: normalize(13) },
     ghostTail: { justifyContent: "space-around" },
     plusMinusImage: { height: "45%", width: "15%", resizeMode: "stretch", marginHorizontal: "2%" },
     coinStyle: { height: "42%", width: "17%", resizeMode: "stretch" },
     numberInput: { height: "20%", width: "90%", flexDirection: "row", justifyContent: "center", alignItems: "center" },
     boxContainer: { height: screenHeight / 3, width: '45%', justifyContent: "space-around", padding: "5%" },
     backgroundImage: { flex: 1, marginTop: '2%', marginLeft: '2%', marginRight: '2%', },
-    circleText: { color: "#271E11", fontSize: 18 },
+    circleText: { color: "#271E11", fontSize: normalize(15) },
     circleView: { position: "absolute", top: -10, height: "22%", width: "25%", justifyContent: "center", alignItems: "center" },
-    boxText: { color: "#FBBD3E", marginTop: '10%', textAlign: "center", paddingLeft: '4%', fontSize: 12, marginBottom: "5%" },
+    boxText: { color: "#FBBD3E", marginTop: '10%', textAlign: "center", paddingLeft: '4%', fontSize: normalize(10), marginBottom: "5%" },
     boxImageView: { resizeMode: "stretch", height: "40%", width: "40%" },
     customImage : {resizeMode: "stretch", height: "33%", width: "70%", marginRight:  "12%"},
     custom5Image : {resizeMode: "stretch", height: "30%", width: "40%" },

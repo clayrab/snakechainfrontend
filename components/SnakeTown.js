@@ -7,10 +7,10 @@ import {
   ImageBackground,
   Image
 } from 'react-native';
-import SafeAreaView from 'react-native-safe-area-view';
+import ScreenView from '../components/ScreenView.js';
 import { Font } from 'expo';
 import SnakeBankOverlay from '../components/SnakeBankOverlay.js';
-
+import {normalize} from '../utils/FontNormalizer.js';
 var overlays = { "BANK": 0, };
 export default class SnakeTown extends React.Component {
   constructor(props) {
@@ -37,7 +37,7 @@ export default class SnakeTown extends React.Component {
   }
   render() {
     return (
-      <SafeAreaView>
+      <ScreenView>
         <ImageBackground source={require('../assets/snaketown/snaketown.png')} style={styles.homeTownImage} resizeMode="stretch">
 
         </ImageBackground>
@@ -45,21 +45,25 @@ export default class SnakeTown extends React.Component {
           <TouchableOpacity onPress={this.onBank}>
             <ImageBackground source={require('../assets/snaketown/textBox.png')} style={styles.bottomTextBoxBG} resizeMode="stretch">
               <Image source={require('../assets/snaketown/saloonIcon.png')} style={styles.buttonsIcon}/>
-              <Text style={[this.state.riffic, styles.buttonsText]}>Snake Bank</Text>
+              <Text style={[styles.comingSoon, this.state.riffic, styles.buttonsText]}>Coming Soon</Text>
             </ImageBackground>
           </TouchableOpacity>
-          <ImageBackground source={require('../assets/snaketown/textBox.png')} style={styles.bottomTextBoxBG} resizeMode="stretch">
-            <Image source={require('../assets/snaketown/forumIcon.png')} style={[styles.comingSoon, styles.buttonsIcon]}/>
-            <Text style={[styles.comingSoon, this.state.riffic, styles.buttonsText]}>Coming Soon</Text>
-          </ImageBackground>
-          <ImageBackground source={require('../assets/snaketown/textBox.png')} style={styles.bottomTextBoxBG} resizeMode="stretch">
-            <Image source={require('../assets/snaketown/shopIcon.png')} style={[styles.comingSoon, styles.buttonsIcon]}/>
-            <Text style={[styles.comingSoon, this.state.riffic, styles.buttonsText]}>Coming Soon</Text>
-          </ImageBackground>
+          <TouchableOpacity onPress={null}>
+            <ImageBackground source={require('../assets/snaketown/textBox.png')} style={styles.bottomTextBoxBG} resizeMode="stretch">
+              <Image source={require('../assets/snaketown/forumIcon.png')} style={[styles.comingSoon, styles.buttonsIcon]}/>
+              <Text style={[styles.comingSoon, this.state.riffic, styles.buttonsText]}>Coming Soon</Text>
+            </ImageBackground>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={null}>
+            <ImageBackground source={require('../assets/snaketown/textBox.png')} style={styles.bottomTextBoxBG} resizeMode="stretch">
+              <Image source={require('../assets/snaketown/shopIcon.png')} style={[styles.comingSoon, styles.buttonsIcon]}/>
+              <Text style={[styles.comingSoon, this.state.riffic, styles.buttonsText]}>Coming Soon</Text>
+            </ImageBackground>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.bottomTextBoxBG} onPress={this.props.exit}>
             <ImageBackground source={require('../assets/snaketown/button.png')} style={styles.buttonBG} resizeMode="stretch">
               <Text style={[this.state.riffic, styles.gotoText]}>
-                BACK TO MINE CAMP
+                BACK TO MINE
               </Text>
             </ImageBackground>
           </TouchableOpacity>
@@ -67,7 +71,7 @@ export default class SnakeTown extends React.Component {
         <SnakeBankOverlay
           show={this.state.overlay == overlays.BANK}
           closeOverlay={this.closeOverlay}/>
-      </SafeAreaView>
+      </ScreenView>
     )
   }
 }
@@ -85,7 +89,7 @@ let styles = StyleSheet.create({
     justifyContent: 'center',
   },
   headerText: {
-    fontSize: 24,
+    fontSize: normalize(22),
     fontWeight: 'bold'
   },
   homeTownImage: {
@@ -108,6 +112,7 @@ let styles = StyleSheet.create({
     flexDirection: "row",
   },
   buttonsIcon: {
+    flex: 0.2,
     width: screenWidth*120/1080,
     height: screenWidth*120/1080,
     marginLeft: screenWidth*100/1080,
@@ -116,7 +121,7 @@ let styles = StyleSheet.create({
   buttonsText: {
     flex: 1,
     color: "#fab523",
-    fontSize: 28,
+    fontSize: normalize(24),
   },
   comingSoon: {
     opacity: 0.5,
@@ -129,7 +134,7 @@ let styles = StyleSheet.create({
     alignItems: 'center'
   },
   gotoText: {
-    fontSize: 24,
+    fontSize: normalize(20),
     fontWeight: 'bold'
   }
 });

@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Font } from 'expo';
+import {normalize} from '../utils/FontNormalizer.js';
 
 export default class PurchaseTicketOverlay extends React.Component {
   constructor(props) {
@@ -45,17 +46,19 @@ export default class PurchaseTicketOverlay extends React.Component {
               <Image source={require('../assets/wallet/closeBG.png')} style={styles.closeButtonImage} resizeMode="stretch" />
             </TouchableOpacity>
             <View style={styles.headerView}>
-              <Text style={[styles.headerText, this.state.buttonDynamicStyle]}>Purchase a Train Ticket</Text>
+              <Text style={[styles.headerText, this.state.buttonDynamicStyle]}>Ship to SnakeBank</Text>
             </View>
             <Image source={require("../assets/ticket/train.png")} style={styles.ticketImage}/>
-
-
+            <View style={styles.headerText2Holder}>
+              <Text style={[styles.headerText2, this.state.buttonDynamicStyle]}>You can purchase transportation for your raw <Image source={require('../assets/wallet/coin.png')} style={[styles.coin]} /> to be minted at the Snake Bank</Text>
+                <Text style={[styles.headerText2, this.state.buttonDynamicStyle]}>Once you ship your raw <Image source={require('../assets/wallet/coin.png')} style={[styles.coin]} />, you will receive your <Image source={require('../assets/wallet/coin.png')} style={[styles.coin]} /> SnakeChain in your Snake Wallet after the courier arrives (~10min)</Text>
+            </View>
             {this.props.user.haul > 0
               ?
               <TouchableOpacity onPress={this.purchaseWithETH}>
                 <ImageBackground source={require("../assets/ticket/button.png")} resizeMode='stretch' style={styles.inputBackground}>
                   <View style={styles.textInputStyle}>
-                    <Text style={[styles.ticketDescription, this.state.buttonDynamicStyle]} >1st Class:Any Field </Text>
+                    <Text style={[styles.ticketDescription, this.state.buttonDynamicStyle]} >Daily Tram </Text>
                   </View>
                   <View style={styles.ticketPrice}>
                     <Text style={[styles.ticketText, this.state.buttonDynamicStyle]}>0.01 Eth</Text>
@@ -66,23 +69,23 @@ export default class PurchaseTicketOverlay extends React.Component {
               <TouchableOpacity>
                 <ImageBackground source={require("../assets/ticket/button.png")} resizeMode='stretch' style={styles.inputBackground}>
                   <View style={styles.textInputStyle}>
-                    <Text style={[styles.ticketDescription, this.state.buttonDynamicStyle]}>1st Class:Any Field</Text>
+                    <Text style={[styles.ticketDescription, this.state.buttonDynamicStyle]}>Daily Tram</Text>
                   </View>
-                  <View style={styles.ticketPrice}>
-                    <Text style={[styles.ticketText, this.state.buttonDynamicStyle]}>Unavailable</Text>
+                  <View style={styles.unvalid}>
+                    <Text style={[styles.unvalidText, this.state.buttonDynamicStyle]}>Unavailable</Text>
                   </View>
                 </ImageBackground>
               </TouchableOpacity>
             }
-            {this.props.user.haul >= this.props.user.mineMax
+            {/*this.props.user.haul >= this.props.user.mineMax
               ?
               <TouchableOpacity onPress={this.purchaseWithSNK}>
                 <ImageBackground source={require("../assets/ticket/button.png")} resizeMode='stretch' style={styles.inputBackground}>
                   <View style={styles.textInputStyle}>
-                    <Text style={[styles.ticketDescription, this.state.buttonDynamicStyle]} >2nd Class:Full Field </Text>
+                    <Text style={[styles.ticketDescription, this.state.buttonDynamicStyle]} >Depleted Mine Tram</Text>
                   </View>
-                  <View style={{ flex: 1, justifyContent: "center", alignItems: "flex-start" }}>
-                    <Text style={[styles.unvalidText, this.state.buttonDynamicStyle]} >Unvalid </Text>
+                  <View style={styles.ticketPrice}>
+                    <Text style={[styles.ticketText, this.state.buttonDynamicStyle]}>200 Snk</Text>
                   </View>
                 </ImageBackground>
               </TouchableOpacity>
@@ -90,14 +93,14 @@ export default class PurchaseTicketOverlay extends React.Component {
               <TouchableOpacity>
                 <ImageBackground source={require("../assets/ticket/button.png")} resizeMode='stretch' style={styles.inputBackground}>
                   <View style={styles.textInputStyle}>
-                    <Text style={[styles.ticketDescription, this.state.buttonDynamicStyle]} >2nd Class:Full Field </Text>
+                    <Text style={[styles.ticketDescription, this.state.buttonDynamicStyle]} >Depleted Mine Tram</Text>
                   </View>
-                  <View style={{ flex: 1, justifyContent: "center", alignItems: "flex-start" }}>
-                    <Text style={[styles.unvalidText, this.state.buttonDynamicStyle]}>Unavailable</Text>
+                  <View style={styles.unvalid}>
+                    <Text style={[styles.unvalidText, this.state.buttonDynamicStyle]}>200 Snk</Text>
                   </View>
                 </ImageBackground>
               </TouchableOpacity>
-            }
+            */}
             {/*<View style={styles.proceedView}>
               <Image source={require("../assets/ticket/succeed.png")} resizeMode='stretch' style={styles.succeedButton} />
               <View style = {{position : 'absolute'  , flexDirection : "row" , justifyContent : 'center' , alignItems : 'center'}}>
@@ -127,11 +130,12 @@ let styles = StyleSheet.create({
   },
   mainView: {
     width: screenWidth * 638/726,
-    aspectRatio: 960/983,
+    //aspectRatio: 960/983, THIS IS THE ACTUAL IMAGE SIZE
+    aspectRatio: 960/1383,
     alignItems: 'center',
   },
   ticketText: {
-    fontSize: 18,
+    fontSize: normalize(16),
     color: "#FCB627",
   },
   headerView: {
@@ -140,8 +144,18 @@ let styles = StyleSheet.create({
     alignItems: "center",
   },
   headerText: {
-    fontSize: 26,
+    fontSize: normalize(24),
     color: "#FCB627",
+  },
+  headerText2Holder: {
+    padding: 25,
+    // justifyContent: 'center',
+    // alignItems: "center",
+  },
+  headerText2: {
+    fontSize: normalize(14),
+    color: "#FCB627",
+    paddingTop: 4,
   },
   ticketImage: {
     marginTop: 20,
@@ -151,9 +165,10 @@ let styles = StyleSheet.create({
   succeedButton: { height: screenHeight / 11, width: "45%", },
   arrowImg : {height : "60%" , width : "20%" , resizeMode : 'stretch' ,},
   textInputStyle: { flex: 2, paddingLeft: '7%', justifyContent: "center" },
-  succeedText: { color: "#352526", fontSize: 15,  },
-  textBox: { fontSize: 15, paddingLeft: '10%', width: "90%", color: "#705756", height: "100%" },
-  unvalidText: { fontSize: 15, color: "#7D5B1E" },
+  succeedText: { color: "#352526", fontSize: normalize(13),  },
+  textBox: { fontSize: normalize(13), paddingLeft: '10%', width: "90%", color: "#705756", height: "100%" },
+  unvalid:{ flex: 1, justifyContent: "center", alignItems: "flex-start" },
+  unvalidText: { fontSize: normalize(13), color: "#7D5B1E" },
   proceedView: {
     position: "absolute",
     bottom: -45,
@@ -169,7 +184,7 @@ let styles = StyleSheet.create({
     flexDirection: "row",
   },
   ticketDescription: {
-    fontSize: 14,
+    fontSize: normalize(12),
     color: "#947572",
   },
   ticketPrice: {
@@ -187,4 +202,5 @@ let styles = StyleSheet.create({
     height: 50,
     width: 35,
   },
+  coin: { height: 12, width: 12*168/128, resizeMode: 'stretch', },
 })

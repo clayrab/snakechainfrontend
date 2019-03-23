@@ -9,7 +9,6 @@ import {
   ScrollView,
   ImageBackground
 } from 'react-native';
-import SafeAreaView from 'react-native-safe-area-view';
 import { Font } from 'expo';
 import CONSTANTS from '../Constants.js';
 import {normalize} from '../utils/FontNormalizer.js';
@@ -87,7 +86,7 @@ export default class SelectLevelOverlay extends React.Component {
                     </Text>
                   </ImageBackground>
                 </View>
-                <View style={styles.childRowContent}>
+                {/*<View style={styles.childRowContent}>
                   <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.WILD)}>
                     <ImageBackground source={require('../assets/snakemine/leftBG.png')}
                       style={styles.snakeChainBG} resizeMode={'stretch'}>
@@ -108,7 +107,7 @@ export default class SelectLevelOverlay extends React.Component {
                       AVG. 22 SNAKECHAIN
                     </Text>
                   </ImageBackground>
-                </View>
+                </View>*/}
               </View>
 
               <View style={[{zIndex: 100}, styles.childContentView]}>
@@ -226,7 +225,7 @@ export default class SelectLevelOverlay extends React.Component {
                     </ImageBackground>
                   </TouchableOpacity>
                 </View>*/}
-                <View style={styles.childRowContent}>
+                {/*<View style={styles.childRowContent}>
                   <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.SCATTER3)}>
                     <ImageBackground source={require('../assets/snakemine/leftBG.png')}
                       style={styles.snakeChainBG} resizeMode={'stretch'}>
@@ -269,7 +268,7 @@ export default class SelectLevelOverlay extends React.Component {
                       AVG. 22 SNAKECHAIN
                     </Text>
                   </ImageBackground>
-                </View>
+                </View>*/}
               </View>
             </ScrollView>
           </ImageBackground>
@@ -344,6 +343,7 @@ var styles = StyleSheet.create({
     marginTop: 5
   },
   scNameBG: {
+    //backgroundColor: "#f00",
     width: '80%',
     height: 20,
     marginTop: 5,
@@ -359,32 +359,32 @@ var styles = StyleSheet.create({
   },
   titleText: {
     color: "#fab523",
-    fontSize: 16
+    fontSize: normalize(14),
   },
   avgTitleText: {
     color: "#fab523",
-    fontSize: 10,
+    fontSize: normalize(8),
     fontWeight: 'bold'
   },
   headerSC: {
     color: '#261D1C',
-    fontSize: 14,
+    fontSize: normalize(12),
     fontWeight: 'bold',
     marginTop: 5
   },
   freeText: {
     color: '#51B545',
-    fontSize: 14,
+    fontSize: normalize(12),
     fontWeight: 'bold'
   },
   ethText: {
     color: '#FFF646',
-    fontSize: 14,
+    fontSize: normalize(12),
     fontWeight: 'bold'
   },
   snakeText: {
     color: '#fab523',
-    fontSize: 14,
+    fontSize: normalize(12),
     fontWeight: 'bold'
   },
   dynamiteOverlay: {

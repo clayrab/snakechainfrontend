@@ -8,10 +8,10 @@ import {
   View,
 } from 'react-native';
 import { Font } from 'expo';
-import SafeAreaView from 'react-native-safe-area-view';
 import CONSTANTS from '../Constants.js';
 import {context} from "../utils/Context.js";
 import {asyncStore, getFromAsyncStore, removeItemValue} from "../utils/AsyncStore.js";
+import {normalize} from '../utils/FontNormalizer.js';
 
 export default class Header extends React.Component {
   constructor(props) {
@@ -170,6 +170,6 @@ let styles = StyleSheet.create({
   },
   titleBarText: {
     color: "#fab523",
-    fontSize: 18,
+    fontSize: normalize(16),
   },
 });
