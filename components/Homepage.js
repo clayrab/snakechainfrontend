@@ -349,7 +349,7 @@ export default class Homepage extends React.Component {
                   onPress={this.onMineHaul}>
                   <ImageBackground source={require('../assets/homepage/gototownButton.png')} style={styles.gototownButton}>
                     <Text style={[styles.gototownText, this.state.riffic]}>
-                      {this.props.user.haul} raw <Image source={require('../assets/wallet/coin.png')} style={[{ height: 20, width: 20*168/128, resizeMode: 'stretch', }]} />
+                      <Text style={[styles.gototownText, this.state.riffic, {fontSize: normalize(20)}]}>{this.props.user.haul}</Text> Unminted <Image source={require('../assets/wallet/coin.png')} style={[styles.coin]} />
                     </Text>
                     {/*<Text style={[styles.gototownText, this.state.riffic, {fontSize: normalize(11),}]}>Ship to Snakebank</Text>*/}
                   </ImageBackground>
@@ -508,7 +508,7 @@ let styles = StyleSheet.create({
   },
   gototownText: {
     color: "#fab523",
-    fontSize: normalize(18),
+    fontSize: normalize(14),
     textShadowColor: 'rgba(0, 0, 0, 1.00)',
     textShadowOffset: {width: -1, height: 1},
     textShadowRadius: 1,
@@ -521,4 +521,5 @@ let styles = StyleSheet.create({
     textShadowOffset: {width: -2, height: 2},
     textShadowRadius: 1,
   },
+  coin: { height: 15, width: 15*168/128, resizeMode: 'stretch',}
 });

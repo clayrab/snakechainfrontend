@@ -176,23 +176,7 @@ export default class App extends React.Component {
     try{
       let state = await prom();
       await this.setState(state);
-      this.socket = SocketIOClient(`${context.host}:${context.socketPort}`, {
-        //path: '/mypath',
-        query: `pubkey=${this.state.user.pubkey}`,
-      });
-      this.socket.on('connect', () => {
-        console.log('connected to server');
-      });
-      this.socket.on("MINED", async(txid) => {
-        console.log("MiNED" + txid);
-        let jwt = await getFromAsyncStore("jwt");
-        this.loadUser(jwt);
-      });
-      console.log("SOCKET CREATED");
-      console.log(`${context.host}:${context.socketPort}`);
     }catch(err){
-      console.log("there was an error retreiving user.");
-      console.log(err)
       this.genericNetworkError();
     }
   }
@@ -204,6 +188,21 @@ export default class App extends React.Component {
       await this.setState({screen: screens.HOME});
     }
     this.loadUser(jwt);
+    try{
+      this.socket = SocketIOClient(`${context.host}:${context.socketPort}`, {
+        //path: '/mypath',
+        query: `pubkey=${this.state.user.pubkey}`,
+      });
+      this.socket.on('connect', () => {
+        console.log('connected to server');
+      });
+      this.socket.on("MINED", async(txid) => {
+        let latestJwt = await getFromAsyncStore("jwt");
+        this.loadUser(latestJwt);
+      });
+    }catch(err){
+      this.genericNetworkError();
+    }
   }
 
   doUpdateUser = async(user) => {
