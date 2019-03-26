@@ -1,5 +1,5 @@
 import React from 'react';
-import { Loop, Stage, World, Body, Sprite } from 'react-game-kit/native';
+import {Loop, Stage, World, Body, Sprite} from 'react-game-kit/native';
 import SocketIOClient from 'socket.io-client';
 
 import CONSTANTS from './Constants.js';
@@ -50,13 +50,18 @@ const connectionConfig = {
   reconnectionDelay: 100,
   reconnectionAttempts: 100000,
   transports: ['websocket'],
- };
+};
 
-var screens = { "GAME": 0, "HOME": 1, "LOADING": 2, "PREFERENCES": 3, "PROFILE": 4,
-    "ACCOUNTHISTORY": 5, "GAMEHISTORY": 6, "LOGIN": 7, "SNAKETOWN": 8, "WALLET": 9, };
-var overlays = {"PAUSE": 0, "GAMEOVER": 1, "MINE": 2, "AREYOUSURE": 3, "LOADING": 4,
-    "CONFIRMTX": 5, "TRANSACTION": 6, "CONFIRMCONTRACT": 7, "POWERUPS": 8, "STARTGAME": 9,
-    "ERROR": 10, "CONFIRMEXIT": 11,};
+var screens = {
+  "GAME": 0, "HOME": 1, "LOADING": 2, "PREFERENCES": 3, "PROFILE": 4,
+  "ACCOUNTHISTORY": 5, "GAMEHISTORY": 6, "LOGIN": 7, "SNAKETOWN": 8, "WALLET": 9,
+  "SIGNUP": 10
+};
+var overlays = {
+  "PAUSE": 0, "GAMEOVER": 1, "MINE": 2, "AREYOUSURE": 3, "LOADING": 4,
+  "CONFIRMTX": 5, "TRANSACTION": 6, "CONFIRMCONTRACT": 7, "POWERUPS": 8, "STARTGAME": 9,
+  "ERROR": 10, "CONFIRMEXIT": 11,
+};
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -114,9 +119,13 @@ export default class App extends React.Component {
     this.onDoContract = this.onDoContract.bind(this);
     this.gameOverDoContract = this.gameOverDoContract.bind(this);
     this.onConfirmTxOk = this.onConfirmTxOk.bind(this);
+    this.onSignUp = this.onSignUp.bind(this);
+    this.onLogin = this.onLogin.bind(this);
+    this.signedUp = this.signedUp.bind(this);
   }
-  async componentDidMount(){
-    try{
+
+  async componentDidMount() {
+    try {
       var response = await fetch(`${context.host}:${context.port}/getPrices`, {
         method: "GET", // *GET, POST, PUT, DELETE, etc.
         headers: {
@@ -124,41 +133,42 @@ export default class App extends React.Component {
         },
       });
       var resp = await response.json();
-      if(resp.error){
+      if (resp.error) {
         alert(resp.error);
-      }else if(resp.prices) {
+      } else if (resp.prices) {
         this.setState({prices: resp.prices});
       } else {
         alert("error retrieving prices");
       }
-    } catch(err){
+    } catch (err) {
       console.log("there was an error retreiving prices.");
       console.log(err)
       this.genericNetworkError();
     }
   }
-  genericNetworkError = () =>{
+
+  genericNetworkError = () => {
     this.setState({
       errorTitle: "Network error",
       errorParagraph: "There was an error connecting to the server. Please check your internet connection.",
       overlay: overlays.ERROR,
     })
   }
-  loadUser = async(jwt) => {
-    let prom = async() => {
+  loadUser = async (jwt) => {
+    let prom = async () => {
       return await new Promise((resolve, reject) => {
         fetch(`${context.host}:${context.port}/getUser`, {
           method: "GET",
           headers: {
-              "Content-Type": "application/json; charset=utf-8",
-              "Authorization": "JWT " + jwt,
+            "Content-Type": "application/json; charset=utf-8",
+            "Authorization": "JWT " + jwt,
           },
-        }).then(async(response) => {
+        }).then(async (response) => {
           var resp = await response.json();
-          if(!resp.error){
-            if(resp) {
+          if (!resp.error) {
+            if (resp) {
               resolve({loadingUser: false, user: resp})
-            } else{
+            } else {
               alert("There was an error, no response.");
               resolve({loadingUser: false});
             }
@@ -173,10 +183,10 @@ export default class App extends React.Component {
         });
       });
     }
-    try{
+    try {
       let state = await prom();
       await this.setState(state);
-    }catch(err){
+    } catch (err) {
       this.genericNetworkError();
     }
   }
@@ -184,11 +194,11 @@ export default class App extends React.Component {
   async loggedIn(jwt) {
     //console.log("LoggedIn")
     await asyncStore("jwt", jwt);
-    if(this.state.screen == screens.LOGIN){
+    if (this.state.screen == screens.LOGIN) {
       await this.setState({screen: screens.HOME});
     }
     this.loadUser(jwt);
-    try{
+    try {
       this.socket = SocketIOClient(`${context.host}:${context.socketPort}`, {
         //path: '/mypath',
         query: `pubkey=${this.state.user.pubkey}`,
@@ -196,27 +206,27 @@ export default class App extends React.Component {
       this.socket.on('connect', () => {
         console.log('connected to server');
       });
-      this.socket.on("MINED", async(txid) => {
+      this.socket.on("MINED", async (txid) => {
         let latestJwt = await getFromAsyncStore("jwt");
         this.loadUser(latestJwt);
       });
-    }catch(err){
+    } catch (err) {
       this.genericNetworkError();
     }
   }
 
-  doUpdateUser = async(user) => {
+  doUpdateUser = async (user) => {
     this.setState({user: user})
   }
-  onDpadChange = async(direction) => {
+  onDpadChange = async (direction) => {
     if (direction != CONSTANTS.DPADSTATES.NONE && direction != this.state.pressedButton) {
       await this.setState({pressedButton: direction});
     }
   }
-  doResetDpad = async() => {
+  doResetDpad = async () => {
     await this.setState({pressedButton: CONSTANTS.DPADSTATES.NONE});
   }
-  onDied = async(score) => {
+  onDied = async (score) => {
     await this.setState({running: false, overlay: overlays.LOADING});
     let jwt = await getFromAsyncStore("jwt");
     let data = {
@@ -227,25 +237,31 @@ export default class App extends React.Component {
       method: "POST",
       body: JSON.stringify(data), // body data type must match "Content-Type" header
       headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          "Authorization": "JWT " + jwt,
+        "Content-Type": "application/json; charset=utf-8",
+        "Authorization": "JWT " + jwt,
       },
-    }).then(async(response) => {
+    }).then(async (response) => {
       var resp = await response.json();
-      if(!resp.error){
-        if(resp) {
-          if(resp.status == "OK") {
+      if (!resp.error) {
+        if (resp) {
+          if (resp.status == "OK") {
             let gameOverInfo = {
               score: score,
               level: 1,
-              time: 5*60,
+              time: 5 * 60,
             }
-            this.setState({overlay: overlays.GAMEOVER, gameOverInfo: gameOverInfo, loadingScore: false, user: resp.user, lastScore: resp.score});
+            this.setState({
+              overlay: overlays.GAMEOVER,
+              gameOverInfo: gameOverInfo,
+              loadingScore: false,
+              user: resp.user,
+              lastScore: resp.score
+            });
           } else {
             alert("There was an error, malformed response.");
             this.setState({overlay: -1});
           }
-        } else{
+        } else {
           alert("There was an error, no response.");
           this.setState({overlay: -1});
         }
@@ -253,7 +269,9 @@ export default class App extends React.Component {
         alert("Unknown error: " + resp.error);
         this.setState({overlay: -1});
       }
-    }).catch(err => {throw err});
+    }).catch(err => {
+      throw err
+    });
   }
 
   async onDoContract() {
@@ -269,14 +287,14 @@ export default class App extends React.Component {
       method: "POST",
       body: JSON.stringify(data), // body data type must match "Content-Type" header
       headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          "Authorization": "JWT " + jwt,
+        "Content-Type": "application/json; charset=utf-8",
+        "Authorization": "JWT " + jwt,
       },
-    }).then(async(response) => {
+    }).then(async (response) => {
       var resp = await response.json();
-      if(!resp.error){
-        if(resp) {
-          if(resp.transactionKey) {
+      if (!resp.error) {
+        if (resp) {
+          if (resp.transactionKey) {
             this.setState({
               overlay: overlays.CONFIRMCONTRACT,
               confirmAmount: price,
@@ -287,7 +305,7 @@ export default class App extends React.Component {
             alert("There was an error, malformed response.");
             this.setState({overlay: -1});
           }
-        } else{
+        } else {
           alert("There was an error, no response.");
           this.setState({overlay: -1});
         }
@@ -295,9 +313,12 @@ export default class App extends React.Component {
         alert(resp.error);
         this.setState({overlay: -1});
       }
-    }).catch(err => {throw err});
+    }).catch(err => {
+      throw err
+    });
   }
-  onConfirmContract = async() => {
+
+  onConfirmContract = async () => {
     await this.setState({overlay: overlays.LOADING});
     let jwt = await getFromAsyncStore("jwt");
     let price = this.state.prices.mineGamePrice;
@@ -315,10 +336,10 @@ export default class App extends React.Component {
       },
     });
     var resp = await response.json();
-    if(resp.error){
+    if (resp.error) {
       alert(resp.error);
       await this.setState({overlay: -1});
-    }else if(resp.txhash) {
+    } else if (resp.txhash) {
       await this.setState({
         offerContract: false,
         overlay: overlays.CONFIRMTX,
@@ -344,12 +365,15 @@ export default class App extends React.Component {
   start() {
     this.setState({offerContract: true, running: true, overlay: -1});
   }
+
   restart() {
     this.setState({toggleReset: !this.state.toggleReset, overlay: overlays.STARTGAME});
   }
+
   pause() {
     this.setState({running: false, overlay: overlays.PAUSE});
   }
+
   exit = () => {
     this.setState({running: false, screen: screens.HOME, overlay: overlays.STARTGAME});
   }
@@ -367,18 +391,22 @@ export default class App extends React.Component {
     this.setState({overlay: overlays.CONFIRMEXIT});
   }
   onSelectLevel = (levelNumber) => {
-    this.setState({ screen: screens.GAME, level: levelNumber });
+    this.setState({screen: screens.GAME, level: levelNumber});
   }
+
   onSelectLevelPlayPress() {
     this.setState({screen: screens.GAME});
   }
+
   gameOverDoContract() {
     this.setState({overlay: overlays.CONFIRMCONTRACT});
   }
+
   onConfirmTxOk() {
     this.setState({overlay: overlays.GAMEOVER});
     //this.setState({screen: screens.HOMEoverlay: -1});
   }
+
   onGoToTown = () => {
     this.setState({screen: screens.SNAKETOWN, overlay: -1});
   }
@@ -388,12 +416,23 @@ export default class App extends React.Component {
   onWallet = () => {
     this.setState({screen: screens.WALLET, overlay: -1});
   }
-  closeOverlay() {
+  closeOverlay = () => {
     this.setState({running: true, overlay: -1});
+  }
+  onSignUp = () => {
+    this.setState({screen: screens.SIGNUP, overlay: -1});
+  }
+  onLogin = () => {
+    this.setState({screen: screens.LOGIN, overlay: -1});
+  }
+  signedUp = () => {
+    alert("Signed up ");
+    // TODO: Missing success overlay
+    this.setState({screen: screens.LOGIN, overlays: -1});
   }
 
   render() {
-    if(this.state.screen == screens.HOME){
+    if (this.state.screen == screens.HOME) {
       return (
         <Homepage
           user={this.state.user}
@@ -403,12 +442,12 @@ export default class App extends React.Component {
           onWallet={this.onWallet}
           onProfile={this.onProfile}
           doUpdateUser={this.doUpdateUser}
-          >
+        >
         </Homepage>
       );
-    }else if(this.state.screen == screens.LOGIN){
+    } else if (this.state.screen == screens.LOGIN) {
       return (
-        <Login loggedIn={this.loggedIn}/>
+        <Login loggedIn={this.loggedIn} onSignUpPress={this.onSignUp}/>
         //<AccountHistory />
         //<ViewSponsor />
         //<PurchaseTicket />
@@ -420,23 +459,23 @@ export default class App extends React.Component {
         //<EditProfile/>
         //<ChangePassword/>
       );
-    }else if(this.state.screen == screens.WALLET){
+    } else if (this.state.screen == screens.SIGNUP) {
+      return (
+        <SignUp exit={this.onLogin} signedUp={this.signedUp}/>
+      )
+    } else if (this.state.screen == screens.WALLET) {
       return (
         <Wallet user={this.state.user} exit={this.exit}/>
       );
-    }else if(this.state.screen == screens.SIGNUP){
-      return (
-        <SignUp/>
-      );
-    }else if(this.state.screen == screens.PROFILE){
+    } else if (this.state.screen == screens.PROFILE) {
       return (
         <Profile loading={this.state.loadingUser} user={this.state.user} exit={this.exit}/>
       );
-    }else if(this.state.screen == screens.SNAKETOWN){
+    } else if (this.state.screen == screens.SNAKETOWN) {
       return (
         <SnakeTown exit={this.exit}/>
       );
-    }else if(this.state.screen == screens.GAME){
+    } else if (this.state.screen == screens.GAME) {
       return (
         <ScreenView>
           <Loop>
@@ -469,10 +508,10 @@ export default class App extends React.Component {
             onDoContract={this.onDoContract}
             offerContract={this.state.offerContract}
             restart={this.restart}
-            exit={this.exit} />
+            exit={this.exit}/>
           <AreYouSureOverlay
             show={this.state.overlay == overlays.CONFIRMCONTRACT}
-            text={`Pay ${(this.state.prices.mineGamePrice/CONSTANTS.WEIPERETH).toPrecision(4)} ETH for ${this.state.gameOverInfo.score} Snake Coins.\n\nAre you sure?`}
+            text={`Pay ${(this.state.prices.mineGamePrice / CONSTANTS.WEIPERETH).toPrecision(4)} ETH for ${this.state.gameOverInfo.score} Snake Coins.\n\nAre you sure?`}
             onYes={this.onConfirmContract}
             onNo={this.onCancelConfirmContract}/>
           <AreYouSureOverlay
@@ -486,7 +525,7 @@ export default class App extends React.Component {
             show={this.state.overlay == overlays.CONFIRMTX}
             transactionId={this.state.lastTxHash}
             onOk={this.onConfirmTxOk}/>
-            {/*<ConfirmTxGameOverOverlay
+          {/*<ConfirmTxGameOverOverlay
               show={true}
               gameOverInfo={this.state.gameOverInfo}
               restart={this.restart}
