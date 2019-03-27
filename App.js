@@ -35,6 +35,7 @@ import ViewSponsor from './components/ViewSponsor.js';
 import PurchasedTicket from './components/PurchasedTicket.js';
 import Success from './components/Success.js';
 import Fail from './components/Fail.js';
+import Paused from "./components/Paused";
 
 // components/ChangePassword.js
 // components/EditProfile.js
@@ -416,7 +417,7 @@ export default class App extends React.Component {
         //<Success />
         //<Fail />
         //<GameOverview />
-        //<Paused/>
+        // <Paused/>
         //<EditProfile/>
         //<ChangePassword/>
       );
