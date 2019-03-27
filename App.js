@@ -35,6 +35,7 @@ import ViewSponsor from './components/ViewSponsor.js';
 import PurchasedTicket from './components/PurchasedTicket.js';
 import Success from './components/Success.js';
 import Fail from './components/Fail.js';
+import SuccessOverlay from "./components/SuccessOverlay";
 
 // components/ChangePassword.js
 // components/EditProfile.js
@@ -60,7 +61,7 @@ var screens = {
 var overlays = {
   "PAUSE": 0, "GAMEOVER": 1, "MINE": 2, "AREYOUSURE": 3, "LOADING": 4,
   "CONFIRMTX": 5, "TRANSACTION": 6, "CONFIRMCONTRACT": 7, "POWERUPS": 8, "STARTGAME": 9,
-  "ERROR": 10, "CONFIRMEXIT": 11,
+  "ERROR": 10, "CONFIRMEXIT": 11, "SUCCESS": 12
 };
 export default class App extends React.Component {
   constructor(props) {
@@ -80,7 +81,7 @@ export default class App extends React.Component {
       },
       running: false,
       screen: screens.LOGIN,
-      overlay: overlays.STARTGAME,
+      overlay: overlays.SUCCESS,
       pressedButton: CONSTANTS.DPADSTATES.UP,
       toggleReset: true,
       lastScore: -1,
@@ -426,8 +427,6 @@ export default class App extends React.Component {
     this.setState({screen: screens.LOGIN, overlay: -1});
   }
   signedUp = () => {
-    alert("Signed up ");
-    // TODO: Missing success overlay
     this.setState({screen: screens.LOGIN, overlays: -1});
   }
 

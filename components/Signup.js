@@ -11,12 +11,15 @@ import {
 import {Font} from 'expo';
 import {normalize} from '../utils/FontNormalizer.js';
 import {context} from "../utils/Context";
+import Loading from "./Loading";
+import SuccessOverlay from "./SuccessOverlay";
 
 export default class Signup extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       loading: false,
+      signedUp: false,
       loginPlaceHolder: 'Phone Number',
       passwordPlaceHolder: 'Password',
       repasswordPlaceHolder: 'Re enter password',
@@ -55,8 +58,9 @@ export default class Signup extends React.Component {
       alert("Please accept terms and conditions");
     } else {
       try {
+
         this.setState({loading: true});
-        const data = {phoneNumber: loginPlaceHolder, password: passwordPlaceHolder};
+        const data = {username: loginPlaceHolder, pw: passwordPlaceHolder};
         const response = await fetch(`${context.host}:${context.port}/createLocalUser`, {
           method: "POST", // *GET, POST, PUT, DELETE, etc.
           body: JSON.stringify(data), // body data type must match "Content-Type" header
@@ -65,16 +69,16 @@ export default class Signup extends React.Component {
             //application/x-www-form-urlencoded on Postman...
           },
         });
+
         const resp = await response.json();
-        console.warn("Res: " + resp)
-        if (resp.error) {
-          alert(resp.error)
-          this.setState({loading: false});
-        } else {
-          this.props.signedUp();
-        }
+        this.setState({signedUp: true});
+
       } catch (error) {
+
+        console.log(error);
         alert(error);
+
+      } finally {
         this.setState({loading: false});
       }
 
@@ -135,7 +139,18 @@ export default class Signup extends React.Component {
     this.setState({termCBPress: !this.state.termCBPress});
   }
 
+  goBack = () => {
+    this.setState({signedUp: false});
+    this.props.signedUp();
+  }
+
   render() {
+    if (this.state.loading) {
+      return (
+        <Loading></Loading>
+      );
+    }
+
     return (
       <View style={styles.container}>
         <ImageBackground style={styles.content} source={require('../assets/pauseoverlay/BackgroundBrown.png')}
@@ -206,6 +221,11 @@ export default class Signup extends React.Component {
             </ImageBackground>
           </TouchableOpacity>
         </ImageBackground>
+
+        <SuccessOverlay
+          show={this.state.signedUp}
+          onNext={this.goBack}
+        />
       </View>
     )
   }
