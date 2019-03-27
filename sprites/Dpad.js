@@ -78,16 +78,16 @@ export default class Dpad extends Sprite {
   }
 
   render() {
-    let uButton = (<TouchableOpacity style={[styles.roundButton, styles.ubutton]} onPress={this.onUp.bind(this)}>
+    let uButton = (<TouchableOpacity style={[styles.roundButton, styles.ubutton]} onPress={this.onUp}>
       <Image source={require('../assets/gameplay/up.png')} style={styles.arrowImage} resizeMode="stretch"/>
     </TouchableOpacity>);
-    let dButton = (<TouchableOpacity style={[styles.roundButton, styles.dbutton]} onPress={this.onDown.bind(this)}>
+    let dButton = (<TouchableOpacity style={[styles.roundButton, styles.dbutton]} onPress={this.onDown}>
       <Image source={require('../assets/gameplay/down.png')} style={styles.arrowImage} resizeMode="stretch"/>
     </TouchableOpacity>);
-    let rButton = (<TouchableOpacity style={[styles.roundButton, styles.rbutton]} onPress={this.onRight.bind(this)}>
+    let rButton = (<TouchableOpacity style={[styles.roundButton, styles.rbutton]} onPress={this.onRight}>
       <Image source={require('../assets/gameplay/right.png')} style={styles.arrowImage} resizeMode="stretch"/>
     </TouchableOpacity>);
-    let lButton = (<TouchableOpacity style={[styles.roundButton, styles.lbutton]} onPress={this.onLeft.bind(this)}>
+    let lButton = (<TouchableOpacity style={[styles.roundButton, styles.lbutton]} onPress={this.onLeft}>
       <Image source={require('../assets/gameplay/left.png')} style={styles.arrowImage} resizeMode="stretch"/>
     </TouchableOpacity>);
     if (this.props.pressedButton == CONSTANTS.DPADSTATES.UP) {
