@@ -22,6 +22,7 @@ export default class GameOverOverlay extends React.Component {
       fontFamily: 'riffic-free-bold'
     }
   }
+
   render() {
     if (!this.props.show) {
       return null;
