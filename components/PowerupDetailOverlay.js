@@ -5,7 +5,6 @@ import {
   StyleSheet,
   Text,
   View,
-  ScrollView,
   ImageBackground,
 } from 'react-native';
 import {Font} from 'expo';
@@ -65,7 +64,6 @@ export default class PowerupOverlay extends React.Component {
 
 let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
-const circleSize = screenWidth * 0.06;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -80,12 +78,13 @@ const styles = StyleSheet.create({
   },
   content: {
     width: screenWidth * 0.8,
-    height: screenWidth * 0.9,
+    height: screenWidth * 0.8,
     position: 'relative',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 25
+    paddingTop: 25,
+    paddingBottom: 15
   },
   closeButton: {
     position: 'absolute',
@@ -104,14 +103,13 @@ const styles = StyleSheet.create({
   },
   titleText: {
     color: "#fab523",
-    fontSize: 16
+    fontSize: 16,
+    marginBottom: 10
   },
-  screen: {flex: 1,},
-  backgroundImage: {flex: 1, marginTop: '2%', marginLeft: '2%', marginRight: '2%',},
   descriptionContainer: {
     width: screenWidth * 0.6,
     height: screenWidth * 0.3,
-    paddingHorizontal: screenWidth * 0.02,
+    paddingHorizontal: screenWidth * 0.03,
     alignItems: 'center',
     justifyContent: 'center',
     resizeMode: 'contain'
@@ -120,10 +118,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: normalize(15),
     color: "#d0cfa9"
-  },
-  totalText: {
-    color: "#896a66",
-    fontSize: normalize(16)
   },
   goBackBtn: {
     width: screenWidth * 0.3,

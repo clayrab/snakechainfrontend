@@ -10,12 +10,11 @@ import {
 } from 'react-native';
 import {Font} from 'expo';
 import {normalize} from "../utils/FontNormalizer";
-import StartGameOverlay from "./StartGameOverlay";
 import PowerupDetailOverlay from "./PowerupDetailOverlay";
 
 const CircleComp = (props) => (
   <View style={styles.circleView}>
-    <Text style={[styles.circleText, props.buttonStyle]}>{props.value}</Text>
+    <Text style={[styles.circleText, props.style]}>{props.value}</Text>
   </View>
 );
 
@@ -24,10 +23,10 @@ const Box = ((props) =>
       <TouchableOpacity onPress={() => props.onItemPress(props)} style={styles.boxViewContainer}>
         <ImageBackground source={require('../assets/Paused/partionBackground.png')} resizeMode={"stretch"}
                          style={[styles.boxView, props.customBoxStyle !== undefined ? props.customBoxStyle : null]}>
-          <Text style={[styles.boxText, props.buttonStyle]}>{props.heading}</Text>
+          <Text style={[styles.boxText, props.fontStyle]}>{props.heading}</Text>
           <Image source={props.boxImage}
                  style={[styles.boxImageView, props.customImage !== undefined ? props.customImage : null]}/>
-          <CircleComp value={props.circleText}/>
+          <CircleComp value={props.circleText} style={props.fontStyle}/>
         </ImageBackground>
       </TouchableOpacity>
       {
@@ -74,7 +73,6 @@ export default class PowerupOverlay extends React.Component {
   }
 
   onItemBuyPress = props => {
-    console.warn(props);
   }
 
   onItemPress = (props) => {
@@ -82,11 +80,9 @@ export default class PowerupOverlay extends React.Component {
   }
 
   onItemAddPress = (props) => {
-    console.warn(props);
   }
 
   onItemMinusPress = (props) => {
-    console.warn(props);
   }
 
   closeDetailOverlay = () => {
@@ -108,8 +104,10 @@ export default class PowerupOverlay extends React.Component {
             <View style={styles.buttonView}>
               <ImageBackground style={styles.brownButton} source={require('../assets/snakemine/title.png')}
                                resizeMode={'stretch'}>
+                <Image source={require("../assets/powerupsoverlay/powerup.png")}
+                       style={{width: 14, height: 22, resizeMode: 'contain'}}/>
                 <Text style={[styles.buttonText, styles.titleText]}>
-                  POWERUPS
+                  POWER-UPS
                 </Text>
               </ImageBackground>
             </View>
@@ -125,7 +123,8 @@ export default class PowerupOverlay extends React.Component {
                 paddingHorizontal: 15
               }}>
 
-                <Box buttonStyle={this.state.buttonDynamicStyle}
+                <Box buttonStyle={[this.state.buttonDynamicStyle, styles.buttonText]}
+                     fontStyle={styles.buttonText}
                      bought={false}
                      boxImage={require('../assets/powerupsoverlay/mushroom_yellow.png')}
                      inputNumber={3}
@@ -134,7 +133,8 @@ export default class PowerupOverlay extends React.Component {
                      onBuyPress={this.onItemBuyPress}
                      onItemPress={this.onItemPress}
                 />
-                <Box buttonStyle={this.state.buttonDynamicStyle}
+                <Box buttonStyle={[this.state.buttonDynamicStyle, styles.buttonText]}
+                     fontStyle={styles.buttonText}
                      bought={true}
                      value={2}
                      boxImage={require('../assets/powerupsoverlay/mushroom_blue.png')}
@@ -144,7 +144,8 @@ export default class PowerupOverlay extends React.Component {
                      onMinusPress={this.onItemMinusPress}
                      onItemPress={this.onItemPress}
                 />
-                <Box buttonStyle={this.state.buttonDynamicStyle}
+                <Box buttonStyle={[this.state.buttonDynamicStyle, styles.buttonText]}
+                     fontStyle={styles.buttonText}
                      bought={false}
                      boxImage={require('../assets/powerupsoverlay/mushroom_voilet.png')}
                      inputNumber={5}
@@ -153,7 +154,8 @@ export default class PowerupOverlay extends React.Component {
                      onBuyPress={this.onItemBuyPress}
                      onItemPress={this.onItemPress}
                 />
-                <Box buttonStyle={this.state.buttonDynamicStyle}
+                <Box buttonStyle={[this.state.buttonDynamicStyle, styles.buttonText]}
+                     fontStyle={styles.buttonText}
                      bought={false}
                      boxImage={require('../assets/powerupsoverlay/mushroom_red.png')}
                      inputNumber={10}
@@ -170,21 +172,21 @@ export default class PowerupOverlay extends React.Component {
                                style={styles.bigValueHolder}>
                 <Image source={require("../assets/powerupsoverlay/mushroom_blue.png")}
                        style={[styles.smallMushroom]}/>
-                <Text style={styles.mushroomValue}>{"2.....6,000"}</Text>
+                <Text style={[styles.mushroomValue, styles.buttonText]}>{"2.....6,000"}</Text>
               </ImageBackground>
 
               <ImageBackground source={require("../assets/powerupsoverlay/brownBG.png")}
                                resizeMode={"contain"}
                                style={styles.bigValueHolder}>
-                <Text style={[styles.totalText]}>Total</Text>
-                <Text style={[styles.totalText]}>{"6,000"}</Text>
+                <Text style={[styles.totalText, styles.buttonText]}>Total</Text>
+                <Text style={[styles.totalText, styles.buttonText]}>{"6,000"}</Text>
               </ImageBackground>
 
               <TouchableOpacity style={styles.proceedToAcquireContainer}>
                 <ImageBackground source={require("../assets/powerupsoverlay/yellowBG.png")}
                                  resizeMode={"contain"}
                                  style={styles.proceedToAcquireBtn}>
-                  <Text style={[styles.proceedToAcquireText]}>Proceed to Acquire</Text>
+                  <Text style={[styles.proceedToAcquireText, styles.buttonText]}>Proceed to Acquire</Text>
                 </ImageBackground>
               </TouchableOpacity>
             </ScrollView>
@@ -196,7 +198,7 @@ export default class PowerupOverlay extends React.Component {
             show={this.state.detailVisible}
             powerup={{
               name: "Multiplayer (10x)",
-              image: require("../assets/powerupsoverlay/mushroom_yellow.png"),
+              image: require("../assets/powerupsoverlay/yellow_big.png"),
               description: "This mushroom is the Aurea ovaUs. When eatea 30sec 10x pellet multiplayer"
             }}
           />
@@ -247,11 +249,13 @@ const styles = StyleSheet.create({
     marginTop: -15
   },
   brownButton: {
-    width: screenWidth / 2,
+    width: screenWidth * 0.35,
     height: 40,
     marginTop: 20,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'space-between',
+    paddingHorizontal: 13,
+    flexDirection: 'row'
   },
   titleText: {
     color: "#fab523",
