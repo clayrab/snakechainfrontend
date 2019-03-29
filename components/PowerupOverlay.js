@@ -9,7 +9,6 @@ import {
   ImageBackground,
 } from 'react-native';
 import {Font} from 'expo';
-import CONSTANTS from '../Constants.js';
 import {normalize} from "../utils/FontNormalizer";
 
 const CircleComp = (props) => (
@@ -27,11 +26,25 @@ const Box = ((props) =>
                style={[styles.boxImageView, props.customImage !== undefined ? props.customImage : null]}/>
         <CircleComp value={props.circleText}/>
       </ImageBackground>
-      <ImageBackground source={require("../assets/Paused/inputBackground.png")} resizeMode={"stretch"}
-                       style={styles.numberInput}>
-        <Image source={require("../assets/Paused/coinIcon.png")} style={[styles.coinStyle, props.imageStyle]}/>
-        <Text style={[styles.coinText, props.buttonStyle]}>{props.inputNumber}</Text>
-      </ImageBackground>
+      {
+        props.bought &&
+        <ImageBackground source={require("../assets/Paused/inputBackground.png")} resizeMode={"stretch"}
+                         style={[styles.numberInput, {justifyContent: 'space-between', paddingHorizontal: 20}]}>
+          <TouchableOpacity>
+            <Image source={require("../assets/Paused/minus.png")} style={[styles.coinStyle, props.imageStyle]}/>
+          </TouchableOpacity>
+          <Text style={[styles.coinText, props.buttonStyle]}>{props.value}</Text>
+          <TouchableOpacity>
+            <Image source={require("../assets/Paused/plus.png")} style={[styles.coinStyle, props.imageStyle]}/>
+          </TouchableOpacity>
+        </ImageBackground>
+        ||
+        <ImageBackground source={require("../assets/Paused/inputBackground.png")} resizeMode={"stretch"}
+                         style={styles.numberInput}>
+          <Image source={require("../assets/Paused/coinIcon.png")} style={[styles.coinStyle, props.imageStyle]}/>
+          <Text style={[styles.coinText, props.buttonStyle]}>{props.inputNumber.toFixed(3)}</Text>
+        </ImageBackground>
+      }
     </View>
 )
 
@@ -72,37 +85,86 @@ export default class PowerupOverlay extends React.Component {
                 </Text>
               </ImageBackground>
             </View>
+
             <ScrollView>
-              <View style={{flexDirection: 'row', justifyContent: "center"}}>
+
+              <View style={{
+                flexDirection: 'row',
+                justifyContent: "space-around",
+                flexWrap: 'wrap',
+                paddingTop: 25,
+                paddingBottom: 10,
+                paddingHorizontal: 15,
+                // backgroundColor: 'green'
+              }}>
+
                 <Box buttonStyle={this.state.buttonDynamicStyle}
+                     bought={false}
                      boxImage={require('../assets/powerupsoverlay/mushroom_yellow.png')}
-                     inputNumber={"300"} circleText={'5'} heading={'Multiplayer (10x)'}/>
-                <View style={styles.boxContainer}>
-                  <ImageBackground source={require('../assets/Paused/partionBackground.png')} resizeMode={"stretch"}
-                                   style={styles.boxView}>
-                    <Text style={[styles.boxText, this.state.buttonDynamicStyle]}>Ghost Tail</Text>
-                    <Image source={require('../assets/Paused/ghost.png')} style={styles.boxImageView}/>
-                    <CircleComp value={0}/>
-                  </ImageBackground>
-                  <ImageBackground source={require("../assets/Paused/inputBackground.png")} resizeMode={"stretch"}
-                                   style={[styles.numberInput, styles.ghostTail]}>
-                    <Image source={require("../assets/Paused/minus.png")} style={[styles.plusMinusImage]}/>
-                    <Text style={[styles.coinText, this.state.buttonDynamicStyle]}>2</Text>
-                    <Image source={require("../assets/Paused/plus.png")} style={[styles.plusMinusImage]}/>
-                  </ImageBackground>
-                </View>
+                     inputNumber={3}
+                     circleText={'5'}
+                     heading={'Multiplayer (10x)'}
+                />
+                <Box buttonStyle={this.state.buttonDynamicStyle}
+                     bought={true}
+                     value={2}
+                     onAddPress={() => null}
+                     onMinusPress={() => null}
+                     boxImage={require('../assets/powerupsoverlay/mushroom_blue.png')}
+                     circleText={'0'}
+                     heading={'Shed Tail'}
+                />
+                <Box buttonStyle={this.state.buttonDynamicStyle}
+                     bought={false}
+                     boxImage={require('../assets/powerupsoverlay/mushroom_voilet.png')}
+                     inputNumber={5}
+                     circleText={'5'}
+                     heading={'Wildcard'}
+                />
+                <Box buttonStyle={this.state.buttonDynamicStyle}
+                     bought={false}
+                     boxImage={require('../assets/powerupsoverlay/mushroom_red.png')}
+                     inputNumber={10}
+                     circleText={'5'}
+                     heading={'Nitro Tail'}
+                />
+
               </View>
+
+              <ImageBackground source={require("../assets/powerupsoverlay/brownBG.png")}
+                               resizeMode={"contain"}
+                               style={styles.bigValueHolder}>
+                <Image source={require("../assets/powerupsoverlay/mushroom_blue.png")}
+                       style={[styles.smallMushroom]}/>
+                <Text style={styles.mushroomValue}>{"2.....6,000"}</Text>
+              </ImageBackground>
+
+              <ImageBackground source={require("../assets/powerupsoverlay/brownBG.png")}
+                               resizeMode={"contain"}
+                               style={styles.bigValueHolder}>
+                <Text style={[styles.totalText]}>Total</Text>
+                <Text style={[styles.totalText]}>{"6,000"}</Text>
+              </ImageBackground>
+
+              <ImageBackground source={require("../assets/powerupsoverlay/yellowBG.png")}
+                               resizeMode={"contain"}
+                               style={styles.proceedToAcquireBtn}>
+                <Text style={[styles.proceedToAcquireText]}>Proceed to Acquire</Text>
+              </ImageBackground>
+
             </ScrollView>
+
           </ImageBackground>
         </View>
       );
     }
   }
 }
+
 let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
 const circleSize = screenWidth * 0.06;
-var styles = StyleSheet.create({
+const styles = StyleSheet.create({
   temporaryText: {
     height: "100%",
     justifyContent: 'center',
@@ -154,9 +216,32 @@ var styles = StyleSheet.create({
   coinText: {color: "#FDB525", marginHorizontal: "7%", fontSize: normalize(13)},
   ghostTail: {justifyContent: "space-around"},
   plusMinusImage: {height: "45%", width: "15%", resizeMode: "stretch", marginHorizontal: "2%"},
-  coinStyle: {height: "42%", width: "17%", resizeMode: "stretch"},
-  numberInput: {width: "90%", flexDirection: "row", justifyContent: "center", alignItems: "center"},
-  boxContainer: {height: screenHeight / 3, width: '45%', justifyContent: "space-around", padding: "5%"},
+  smallMushroom: {height: screenWidth * 0.06, width: screenWidth * 0.06, resizeMode: 'contain'},
+  coinStyle: {height: screenWidth * 0.04, width: screenWidth * 0.04, resizeMode: "contain"},
+  bigValueHolder: {
+    marginBottom: 20,
+    width: screenWidth * 0.7,
+    height: screenWidth * 0.1,
+    paddingHorizontal: screenWidth * 0.08,
+    flexDirection: 'row',
+    alignSelf: 'center',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  numberInput: {
+    width: "100%",
+    height: screenWidth * 0.09,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 5
+  },
+  boxContainer: {
+    height: screenWidth * 0.4,
+    width: screenWidth * 0.3,
+    justifyContent: "center",
+    marginBottom: 25
+  },
   backgroundImage: {flex: 1, marginTop: '2%', marginLeft: '2%', marginRight: '2%',},
   circleText: {color: "#271E11", fontSize: normalize(15)},
   circleView: {
@@ -177,14 +262,39 @@ var styles = StyleSheet.create({
     fontSize: normalize(10),
     marginBottom: "5%"
   },
-  boxImageView: {resizeMode: "contain", height: "40%", width: "40%"},
+  boxImageView: {
+    resizeMode: "contain",
+    height: "40%",
+    width: "40%"
+  },
   customImage: {resizeMode: "stretch", height: "33%", width: "70%", marginRight: "12%"},
   custom5Image: {resizeMode: "stretch", height: "30%", width: "40%"},
   customBoxStyle: {alignItems: 'flex-end'},
   customTailImage: {resizeMode: "stretch", height: "42%", width: "50%",},
-  boxView: {height: '70%', width: '92%', justifyContent: "center", alignItems: "center"},
+  boxView: {height: '70%', width: '100%', justifyContent: "center", alignItems: "center"},
   powerUpsView: {height: screenHeight / 7, justifyContent: 'center', alignItems: 'center', flexDirection: 'row',},
   lightningImage: {height: '85%', width: '10%', resizeMode: 'stretch', marginHorizontal: "2%",},
   title: {color: '#FCB623', fontSize: screenHeight / 21, textAlign: "center", marginTop: '1.2%', marginBottom: "3%"},
-  powerText: {color: '#FDCF00', fontSize: screenHeight / 26,}
+  powerText: {color: '#FDCF00', fontSize: screenHeight / 26,},
+  mushroomValue: {
+    fontSize: normalize(16),
+    color: "#fab649"
+  },
+  totalText: {
+    color: "#896a66",
+    fontSize: normalize(16)
+  },
+  proceedToAcquireBtn: {
+    width: screenWidth * 0.6,
+    height: screenWidth * 0.15,
+    resizeMode: 'contain',
+    justifyContent: "center",
+    alignItems: 'center',
+    alignSelf: 'center',
+    marginBottom: 30
+  },
+  proceedToAcquireText: {
+    color: "#352826",
+    fontSize: normalize(16)
+  },
 });
