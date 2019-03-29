@@ -58,6 +58,7 @@ var screens = { "GAME": 0, "HOME": 1, "LOADING": 2, "PREFERENCES": 3, "PROFILE":
 var overlays = {"PAUSE": 0, "GAMEOVER": 1, "MINE": 2, "AREYOUSURE": 3, "LOADING": 4,
     "CONFIRMTX": 5, "TRANSACTION": 6, "CONFIRMCONTRACT": 7, "POWERUPS": 8, "STARTGAME": 9,
     "ERROR": 10, "CONFIRMEXIT": 11,};
+
 export default class App extends React.Component {
   constructor(props) {
     super(props);

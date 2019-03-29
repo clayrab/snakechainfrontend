@@ -6,11 +6,17 @@ import {
   Text,
   View,
   ScrollView,
-  ImageBackground
+  ImageBackground,
 } from 'react-native';
 import {Font} from 'expo';
 import CONSTANTS from '../Constants.js';
 import {normalize} from "../utils/FontNormalizer";
+
+const CircleComp = (props) => (
+  <View style={styles.circleView}>
+    <Text style={[styles.circleText, props.buttonStyle]}>{props.value}</Text>
+  </View>
+);
 
 const Box = ((props) =>
     <View style={styles.boxContainer}>
@@ -19,10 +25,7 @@ const Box = ((props) =>
         <Text style={[styles.boxText, props.buttonStyle]}>{props.heading}</Text>
         <Image source={props.boxImage}
                style={[styles.boxImageView, props.customImage !== undefined ? props.customImage : null]}/>
-        <ImageBackground source={require("../assets/Paused/circle.png")} resizeMode={"stretch"}
-                         style={styles.circleView}>
-          <Text style={[styles.circleText, props.buttonStyle]}>{props.circleText}</Text>
-        </ImageBackground>
+        <CircleComp value={props.circleText}/>
       </ImageBackground>
       <ImageBackground source={require("../assets/Paused/inputBackground.png")} resizeMode={"stretch"}
                        style={styles.numberInput}>
@@ -71,17 +74,15 @@ export default class PowerupOverlay extends React.Component {
             </View>
             <ScrollView>
               <View style={{flexDirection: 'row', justifyContent: "center"}}>
-                <Box buttonStyle={this.state.buttonDynamicStyle} boxImage={require('../assets/Paused/timeslowdown.png')}
-                     inputNumber={"300"} circleText={'5'} heading={'Time Slowdown'}/>
+                <Box buttonStyle={this.state.buttonDynamicStyle}
+                     boxImage={require('../assets/powerupsoverlay/mushroom_yellow.png')}
+                     inputNumber={"300"} circleText={'5'} heading={'Multiplayer (10x)'}/>
                 <View style={styles.boxContainer}>
                   <ImageBackground source={require('../assets/Paused/partionBackground.png')} resizeMode={"stretch"}
                                    style={styles.boxView}>
                     <Text style={[styles.boxText, this.state.buttonDynamicStyle]}>Ghost Tail</Text>
                     <Image source={require('../assets/Paused/ghost.png')} style={styles.boxImageView}/>
-                    <ImageBackground source={require("../assets/Paused/circle.png")} resizeMode={"stretch"}
-                                     style={styles.circleView}>
-                      <Text style={[styles.circleText]}>5</Text>
-                    </ImageBackground>
+                    <CircleComp value={0}/>
                   </ImageBackground>
                   <ImageBackground source={require("../assets/Paused/inputBackground.png")} resizeMode={"stretch"}
                                    style={[styles.numberInput, styles.ghostTail]}>
@@ -90,19 +91,6 @@ export default class PowerupOverlay extends React.Component {
                     <Image source={require("../assets/Paused/plus.png")} style={[styles.plusMinusImage]}/>
                   </ImageBackground>
                 </View>
-              </View>
-              <View style={{flexDirection: 'row', justifyContent: "center"}}>
-                <Box buttonStyle={this.state.buttonDynamicStyle} boxImage={require('../assets/Paused/sizer.png')}
-                     customImage={styles.customImage} inputNumber={"1000"} circleText={'5'} heading={'Drop 5c Tail'}/>
-                <Box buttonStyle={this.state.buttonDynamicStyle} boxImage={require('../assets/Paused/fulltail.png')}
-                     inputNumber={"1000"} customImage={styles.customTailImage} circleText={'5'}
-                     heading={'Shed Full Tail'}/>
-              </View>
-              <View style={{flexDirection: 'row', justifyContent: "center"}}>
-                <Box buttonStyle={this.state.buttonDynamicStyle} boxImage={require('../assets/Paused/5X.png')}
-                     customImage={styles.custom5Image} inputNumber={"1000"} circleText={'5'} heading={'SX Pallets'}/>
-                <Box buttonStyle={this.state.buttonDynamicStyle} boxImage={require('../assets/Paused/questionMark.png')}
-                     inputNumber={"1000"} circleText={'5'} heading={'Random'}/>
               </View>
             </ScrollView>
           </ImageBackground>
@@ -113,6 +101,7 @@ export default class PowerupOverlay extends React.Component {
 }
 let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
+const circleSize = screenWidth * 0.06;
 var styles = StyleSheet.create({
   temporaryText: {
     height: "100%",
@@ -166,17 +155,19 @@ var styles = StyleSheet.create({
   ghostTail: {justifyContent: "space-around"},
   plusMinusImage: {height: "45%", width: "15%", resizeMode: "stretch", marginHorizontal: "2%"},
   coinStyle: {height: "42%", width: "17%", resizeMode: "stretch"},
-  numberInput: {height: "20%", width: "90%", flexDirection: "row", justifyContent: "center", alignItems: "center"},
+  numberInput: {width: "90%", flexDirection: "row", justifyContent: "center", alignItems: "center"},
   boxContainer: {height: screenHeight / 3, width: '45%', justifyContent: "space-around", padding: "5%"},
   backgroundImage: {flex: 1, marginTop: '2%', marginLeft: '2%', marginRight: '2%',},
   circleText: {color: "#271E11", fontSize: normalize(15)},
   circleView: {
     position: "absolute",
     top: -10,
-    height: "22%",
-    width: "25%",
+    borderRadius: (circleSize) / 2,
+    height: circleSize,
+    width: circleSize,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    backgroundColor: "#FAB523"
   },
   boxText: {
     color: "#FBBD3E",
@@ -186,7 +177,7 @@ var styles = StyleSheet.create({
     fontSize: normalize(10),
     marginBottom: "5%"
   },
-  boxImageView: {resizeMode: "stretch", height: "40%", width: "40%"},
+  boxImageView: {resizeMode: "contain", height: "40%", width: "40%"},
   customImage: {resizeMode: "stretch", height: "33%", width: "70%", marginRight: "12%"},
   custom5Image: {resizeMode: "stretch", height: "30%", width: "40%"},
   customBoxStyle: {alignItems: 'flex-end'},
