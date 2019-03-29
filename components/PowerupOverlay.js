@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import {Font} from 'expo';
 import {normalize} from "../utils/FontNormalizer";
+import StartGameOverlay from "./StartGameOverlay";
+import PowerupDetailOverlay from "./PowerupDetailOverlay";
 
 const CircleComp = (props) => (
   <View style={styles.circleView}>
@@ -19,40 +21,46 @@ const CircleComp = (props) => (
 
 const Box = ((props) =>
     <View style={styles.boxContainer}>
-      <ImageBackground source={require('../assets/Paused/partionBackground.png')} resizeMode={"stretch"}
-                       style={[styles.boxView, props.customBoxStyle !== undefined ? props.customBoxStyle : null]}>
-        <Text style={[styles.boxText, props.buttonStyle]}>{props.heading}</Text>
-        <Image source={props.boxImage}
-               style={[styles.boxImageView, props.customImage !== undefined ? props.customImage : null]}/>
-        <CircleComp value={props.circleText}/>
-      </ImageBackground>
+      <TouchableOpacity onPress={() => props.onItemPress(props)} style={styles.boxViewContainer}>
+        <ImageBackground source={require('../assets/Paused/partionBackground.png')} resizeMode={"stretch"}
+                         style={[styles.boxView, props.customBoxStyle !== undefined ? props.customBoxStyle : null]}>
+          <Text style={[styles.boxText, props.buttonStyle]}>{props.heading}</Text>
+          <Image source={props.boxImage}
+                 style={[styles.boxImageView, props.customImage !== undefined ? props.customImage : null]}/>
+          <CircleComp value={props.circleText}/>
+        </ImageBackground>
+      </TouchableOpacity>
       {
         props.bought &&
         <ImageBackground source={require("../assets/Paused/inputBackground.png")} resizeMode={"stretch"}
                          style={[styles.numberInput, {justifyContent: 'space-between', paddingHorizontal: 20}]}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => props.onAddPress(props)}>
             <Image source={require("../assets/Paused/minus.png")} style={[styles.coinStyle, props.imageStyle]}/>
           </TouchableOpacity>
           <Text style={[styles.coinText, props.buttonStyle]}>{props.value}</Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => props.onMinusPress(props)}>
             <Image source={require("../assets/Paused/plus.png")} style={[styles.coinStyle, props.imageStyle]}/>
           </TouchableOpacity>
         </ImageBackground>
         ||
-        <ImageBackground source={require("../assets/Paused/inputBackground.png")} resizeMode={"stretch"}
-                         style={styles.numberInput}>
-          <Image source={require("../assets/Paused/coinIcon.png")} style={[styles.coinStyle, props.imageStyle]}/>
-          <Text style={[styles.coinText, props.buttonStyle]}>{props.inputNumber.toFixed(3)}</Text>
-        </ImageBackground>
+        <TouchableOpacity onPress={() => props.onBuyPress(props)}>
+          <ImageBackground source={require("../assets/Paused/inputBackground.png")} resizeMode={"stretch"}
+                           style={styles.numberInput}>
+            <Image source={require("../assets/Paused/coinIcon.png")} style={[styles.coinStyle, props.imageStyle]}/>
+            <Text style={[styles.coinText, props.buttonStyle]}>{props.inputNumber.toFixed(3)}</Text>
+          </ImageBackground>
+        </TouchableOpacity>
       }
     </View>
-)
+);
 
 export default class PowerupOverlay extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      buttonDyanmicStyle: {}
+      buttonDyanmicStyle: {},
+      selectedPowerup: {},
+      detailVisible: false
     }
   }
 
@@ -63,6 +71,26 @@ export default class PowerupOverlay extends React.Component {
     styles.buttonText = {
       fontFamily: 'riffic-free-bold'
     }
+  }
+
+  onItemBuyPress = props => {
+    console.warn(props);
+  }
+
+  onItemPress = (props) => {
+    this.setState({detailVisible: true, selectedPowerup: props});
+  }
+
+  onItemAddPress = (props) => {
+    console.warn(props);
+  }
+
+  onItemMinusPress = (props) => {
+    console.warn(props);
+  }
+
+  closeDetailOverlay = () => {
+    this.setState({detailVisible: false, selectedPowerup: {}})
   }
 
   render() {
@@ -94,8 +122,7 @@ export default class PowerupOverlay extends React.Component {
                 flexWrap: 'wrap',
                 paddingTop: 25,
                 paddingBottom: 10,
-                paddingHorizontal: 15,
-                // backgroundColor: 'green'
+                paddingHorizontal: 15
               }}>
 
                 <Box buttonStyle={this.state.buttonDynamicStyle}
@@ -104,15 +131,18 @@ export default class PowerupOverlay extends React.Component {
                      inputNumber={3}
                      circleText={'5'}
                      heading={'Multiplayer (10x)'}
+                     onBuyPress={this.onItemBuyPress}
+                     onItemPress={this.onItemPress}
                 />
                 <Box buttonStyle={this.state.buttonDynamicStyle}
                      bought={true}
                      value={2}
-                     onAddPress={() => null}
-                     onMinusPress={() => null}
                      boxImage={require('../assets/powerupsoverlay/mushroom_blue.png')}
                      circleText={'0'}
                      heading={'Shed Tail'}
+                     onAddPress={this.onItemAddPress}
+                     onMinusPress={this.onItemMinusPress}
+                     onItemPress={this.onItemPress}
                 />
                 <Box buttonStyle={this.state.buttonDynamicStyle}
                      bought={false}
@@ -120,6 +150,8 @@ export default class PowerupOverlay extends React.Component {
                      inputNumber={5}
                      circleText={'5'}
                      heading={'Wildcard'}
+                     onBuyPress={this.onItemBuyPress}
+                     onItemPress={this.onItemPress}
                 />
                 <Box buttonStyle={this.state.buttonDynamicStyle}
                      bought={false}
@@ -127,6 +159,8 @@ export default class PowerupOverlay extends React.Component {
                      inputNumber={10}
                      circleText={'5'}
                      heading={'Nitro Tail'}
+                     onBuyPress={this.onItemBuyPress}
+                     onItemPress={this.onItemPress}
                 />
 
               </View>
@@ -146,15 +180,26 @@ export default class PowerupOverlay extends React.Component {
                 <Text style={[styles.totalText]}>{"6,000"}</Text>
               </ImageBackground>
 
-              <ImageBackground source={require("../assets/powerupsoverlay/yellowBG.png")}
-                               resizeMode={"contain"}
-                               style={styles.proceedToAcquireBtn}>
-                <Text style={[styles.proceedToAcquireText]}>Proceed to Acquire</Text>
-              </ImageBackground>
-
+              <TouchableOpacity style={styles.proceedToAcquireContainer}>
+                <ImageBackground source={require("../assets/powerupsoverlay/yellowBG.png")}
+                                 resizeMode={"contain"}
+                                 style={styles.proceedToAcquireBtn}>
+                  <Text style={[styles.proceedToAcquireText]}>Proceed to Acquire</Text>
+                </ImageBackground>
+              </TouchableOpacity>
             </ScrollView>
 
           </ImageBackground>
+          <PowerupDetailOverlay
+            style={{zIndex: 101}}
+            closeOverlay={this.closeDetailOverlay}
+            show={this.state.detailVisible}
+            powerup={{
+              name: "Multiplayer (10x)",
+              image: require("../assets/powerupsoverlay/mushroom_yellow.png"),
+              description: "This mushroom is the Aurea ovaUs. When eatea 30sec 10x pellet multiplayer"
+            }}
+          />
         </View>
       );
     }
@@ -271,7 +316,11 @@ const styles = StyleSheet.create({
   custom5Image: {resizeMode: "stretch", height: "30%", width: "40%"},
   customBoxStyle: {alignItems: 'flex-end'},
   customTailImage: {resizeMode: "stretch", height: "42%", width: "50%",},
-  boxView: {height: '70%', width: '100%', justifyContent: "center", alignItems: "center"},
+  boxViewContainer: {
+    height: "70%",
+    width: '100%'
+  },
+  boxView: {height: '100%', width: '100%', justifyContent: "center", alignItems: "center"},
   powerUpsView: {height: screenHeight / 7, justifyContent: 'center', alignItems: 'center', flexDirection: 'row',},
   lightningImage: {height: '85%', width: '10%', resizeMode: 'stretch', marginHorizontal: "2%",},
   title: {color: '#FCB623', fontSize: screenHeight / 21, textAlign: "center", marginTop: '1.2%', marginBottom: "3%"},
@@ -284,17 +333,21 @@ const styles = StyleSheet.create({
     color: "#896a66",
     fontSize: normalize(16)
   },
-  proceedToAcquireBtn: {
-    width: screenWidth * 0.6,
-    height: screenWidth * 0.15,
-    resizeMode: 'contain',
-    justifyContent: "center",
+  proceedToAcquireContainer: {
+    width: '100%',
+    marginBottom: 30,
     alignItems: 'center',
-    alignSelf: 'center',
-    marginBottom: 30
+    justifyContent: 'center'
+  },
+  proceedToAcquireBtn: {
+    width: screenWidth * 0.5,
+    height: screenWidth * 0.13,
+    resizeMode: 'contain',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   proceedToAcquireText: {
     color: "#352826",
-    fontSize: normalize(16)
+    fontSize: normalize(14)
   },
 });
