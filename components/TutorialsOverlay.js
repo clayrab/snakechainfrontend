@@ -2,12 +2,13 @@ import React from 'react';
 import {Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View,} from 'react-native';
 import {Font} from 'expo';
 import {normalize} from '../utils/FontNormalizer.js';
+import Tab1 from "./Tutorials/Tab1";
 
 export default class TutorialsOverlay extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      buttonDynamicStyle: {}
+      buttonDynamicStyle: {},
     };
   }
 
@@ -29,56 +30,7 @@ export default class TutorialsOverlay extends React.Component {
       return (
         <View style={styles.screen}>
           <ImageBackground source={require("../assets/BG.png")} style={styles.content} resizeMode={'stretch'}>
-            <TouchableOpacity style={styles.closeButton} onPress={this.props.closeOverlay}>
-              <Image source={require('../assets/snakebank/closeBG.png')} style={styles.closeButtonImage}
-                     resizeMode="stretch"/>
-            </TouchableOpacity>
-            <Text style={[styles.headingStyle, this.state.buttonDynamicStyle]}>
-              SNAKE BANK
-            </Text>
-            <ImageBackground source={require("../assets/snakebank/textbox.png")} style={styles.textBox}>
-              <Text style={[styles.inputStyle, this.state.buttonDynamicStyle]}>
-                Text Box
-              </Text>
-            </ImageBackground>
-            <View style={styles.snakeImageView}>
-              <Image source={require("../assets/snakebank/yellowsnakeboard.png")}
-                     style={styles.leftSnake}/>
-              <Image source={require("../assets/snakebank/greensnake.png")}
-                     style={styles.rightSnake}/>
-            </View>
-            <ImageBackground source={require("../assets/snakebank/textbox.png")} style={styles.txBox}>
-              <View style={styles.tableHolder}>
-                <View style={styles.tableHeader}>
-                  <View style={styles.tableView}>
-                    <Text style={[{color: "#EBAC26", fontSize: normalize(10)}, this.state.buttonDynamicStyle]}>TX
-                      ID</Text>
-                  </View>
-                  <View style={styles.tableView}>
-                    <Text style={[{color: "#896A66", fontSize: normalize(10)}, this.state.buttonDynamicStyle]}>TX
-                      ID</Text>
-                  </View>
-                  <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
-                    <Text style={[{color: "#896A66", fontSize: normalize(10)}, this.state.buttonDynamicStyle]}>TX
-                      ID</Text>
-                  </View>
-                </View>
-                <View style={{flex: 2, flexDirection: "row",}}>
-                  <View style={styles.tableViewBottom}>
-                  </View>
-                  <View style={styles.tableViewBottom}>
-                  </View>
-                  <View style={{flex: 1, borderTopColor: "#EBAC26", borderTopWidth: 1}}>
-                    <Text style={[{color: "#EBAC26", textAlign: 'center'}, this.state.buttonDynamicStyle]}>105</Text>
-                  </View>
-                </View>
-              </View>
-            </ImageBackground>
-            <TouchableOpacity>
-              <ImageBackground source={require("../assets/snakebank/button.png")} style={styles.backToCampButton}>
-                <Text style={[styles.backToCampButtonText, this.state.buttonDynamicStyle]}>RETURN TO MING CAMP</Text>
-              </ImageBackground>
-            </TouchableOpacity>
+            <Tab1/>
           </ImageBackground>
         </View>
       );
@@ -100,8 +52,8 @@ let styles = StyleSheet.create({
     alignItems: 'center',
   },
   content: {
-    width: screenWidth * 685 / 724,
-    height: screenHeight * 1180 / 1287,
+    width: screenWidth * 0.95,
+    height: screenHeight * 0.95,
     position: 'relative',
     flexDirection: 'column',
     alignItems: 'center',
