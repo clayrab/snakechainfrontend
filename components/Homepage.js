@@ -27,6 +27,7 @@ import SelectLevelOverlay from '../components/SelectLevelOverlay.js';
 import ScreenView from '../components/ScreenView.js';
 import SnakeTown from '../components/SnakeTown.js';
 import CowOverlay from '../components/CowOverlay.js';
+import TutorialsOverlay from "./TutorialsOverlay";
 
 let mineImages = [
   require('../assets/homepage/mine/mine0.png'),
@@ -444,6 +445,10 @@ export default class Homepage extends React.Component {
           <CowOverlay
             closeOverlay={this.closeOverlay}
             show={false}/>
+          <TutorialsOverlay
+            closeOverlay={this.closeOverlay}
+            show={this.state.overlay == overlays.TUTORIAL}
+          />
         </ImageBackground>
       </ScreenView>
     );
