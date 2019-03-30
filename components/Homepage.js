@@ -6,7 +6,8 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
+  AsyncStorage
 } from 'react-native';
 import {Font} from 'expo';
 import CONSTANTS from '../Constants.js';
@@ -52,7 +53,9 @@ var overlays = {
   "MINEEMPTY": 7,
   "CONFIRMSNKDYNAMITE": 8,
   "CONFIRMETHDYNAMITE": 9,
+  "TUTORIAL": 10
 };
+
 export default class Homepage extends React.Component {
   constructor(props) {
     super(props);
@@ -65,6 +68,14 @@ export default class Homepage extends React.Component {
       txKey: "",
       confirmPubkey: "",
     };
+  }
+
+  async componentWillMount() {
+    const justRegistered = await AsyncStorage.getItem("JUST_REGISTERED");
+    if (justRegistered) {
+      await AsyncStorage.removeItem("JUST_REGISTERED");
+      this.setState({overlay: overlays.TUTORIAL});
+    }
   }
 
   static getDerivedStateFromProps(props, state) {
