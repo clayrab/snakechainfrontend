@@ -70,14 +70,6 @@ export default class Homepage extends React.Component {
     };
   }
 
-  async componentWillMount() {
-    const justRegistered = await AsyncStorage.getItem("JUST_REGISTERED");
-    if (justRegistered) {
-      await AsyncStorage.removeItem("JUST_REGISTERED");
-      this.setState({overlay: overlays.TUTORIAL});
-    }
-  }
-
   static getDerivedStateFromProps(props, state) {
     //let ethBal = (props.user.eth/CONSTANTS.WEIPERETH).toPrecision(4);
     if (props.user.name != "") {
@@ -89,6 +81,9 @@ export default class Homepage extends React.Component {
   }
 
   async componentDidMount() {
+
+    await this.showTutorial();
+
     try {
       await Font.loadAsync({
         'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
@@ -100,6 +95,15 @@ export default class Homepage extends React.Component {
       });
     } catch (error) {
       alert(error);
+    }
+  }
+
+  showTutorial = async () => {
+    const justRegistered = await AsyncStorage.getItem("JUST_REGISTERED");
+    if (justRegistered) {
+      await AsyncStorage.removeItem("JUST_REGISTERED");
+      alert("JUST REGISTERED");
+      this.setState({overlay: overlays.TUTORIAL});
     }
   }
 

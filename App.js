@@ -1,4 +1,5 @@
 import React from 'react';
+import {AsyncStorage} from 'react-native';
 import {Loop, Stage, World, Body, Sprite} from 'react-game-kit/native';
 import SocketIOClient from 'socket.io-client';
 
@@ -427,7 +428,9 @@ export default class App extends React.Component {
     this.setState({screen: screens.LOGIN, overlay: -1});
   }
   signedUp = () => {
-    this.setState({screen: screens.LOGIN, overlays: -1});
+    AsyncStorage.setItem("JUST_REGISTERED", "true").then(res => {
+      this.setState({screen: screens.LOGIN, overlays: -1});
+    });
   }
 
   render() {
