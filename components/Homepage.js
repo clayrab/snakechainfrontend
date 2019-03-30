@@ -61,7 +61,7 @@ export default class Homepage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      overlay: -1,
+      overlay: overlays.TUTORIAL,
       loading: true,
       riffic: {display: "none",},
       confirmAmount: -1,

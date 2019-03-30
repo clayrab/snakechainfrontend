@@ -1,8 +1,16 @@
 import React from 'react';
-import {Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View,} from 'react-native';
+import {ImageBackground, StyleSheet, View,} from 'react-native';
 import {Font} from 'expo';
 import {normalize} from '../utils/FontNormalizer.js';
 import Tab1 from "./Tutorials/Tab1";
+import AppIntroSlider from "react-native-app-intro-slider";
+import Tab2 from "./Tutorials/Tab2";
+import Tab3 from "./Tutorials/Tab3";
+import Tab4 from "./Tutorials/Tab4";
+import Tab5 from "./Tutorials/Tab5";
+
+const tabs = [1, 2, 3, 4, 5];
+const slides = [<Tab1/>, <Tab2/>, <Tab3/>, <Tab4/>, <Tab5/>];
 
 export default class TutorialsOverlay extends React.Component {
   constructor(props) {
@@ -10,6 +18,7 @@ export default class TutorialsOverlay extends React.Component {
     this.state = {
       buttonDynamicStyle: {},
     };
+    this.renderSlide = this.renderSlide.bind(this);
   }
 
   async componentDidMount() {
@@ -23,6 +32,10 @@ export default class TutorialsOverlay extends React.Component {
     },);
   }
 
+  renderSlide(slide) {
+    return slides[slide - 1];
+  }
+
   render() {
     if (!this.props.show) {
       return null;
@@ -30,7 +43,14 @@ export default class TutorialsOverlay extends React.Component {
       return (
         <View style={styles.screen}>
           <ImageBackground source={require("../assets/BG.png")} style={styles.content} resizeMode={'stretch'}>
-            <Tab1/>
+
+            <AppIntroSlider slides={tabs}
+                            renderItem={this.renderSlide}
+                            onDone={this.props.closeOverlay}
+                            showNextButton={false}
+                            showDoneButton={false}
+            />
+
           </ImageBackground>
         </View>
       );
@@ -53,7 +73,7 @@ let styles = StyleSheet.create({
   },
   content: {
     width: screenWidth * 0.95,
-    height: screenHeight * 0.95,
+    height: screenHeight * 0.8,
     position: 'relative',
     flexDirection: 'column',
     alignItems: 'center',
