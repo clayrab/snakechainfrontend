@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { Font } from 'expo';
+import {Font} from 'expo';
 import CONSTANTS from '../Constants.js';
 import {context} from "../utils/Context.js";
 import {normalize} from '../utils/FontNormalizer.js';
@@ -40,31 +40,44 @@ let mineImages = [
   require('../assets/homepage/mine/mine100.png'),
 ]
 
-var overlays = { "MINE": 0, "SELECTLEVEL": 1, "PURCHASETICKET": 2, "CONFIRMTICKET": 3, "LOADING": 4, "CONFIRMTX": 5, "POWERUPS": 6, "MINEEMPTY": 7, "CONFIRMSNKDYNAMITE": 8, "CONFIRMETHDYNAMITE": 9, };
+var overlays = {
+  "MINE": 0,
+  "SELECTLEVEL": 1,
+  "PURCHASETICKET": 2,
+  "CONFIRMTICKET": 3,
+  "LOADING": 4,
+  "CONFIRMTX": 5,
+  "POWERUPS": 6,
+  "MINEEMPTY": 7,
+  "CONFIRMSNKDYNAMITE": 8,
+  "CONFIRMETHDYNAMITE": 9,
+};
 export default class Homepage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       overlay: -1,
       loading: true,
-      riffic: { display: "none",},
+      riffic: {display: "none",},
       confirmAmount: -1,
       confirmTokenType: "ETH",
       txKey: "",
       confirmPubkey: "",
     };
   }
+
   static getDerivedStateFromProps(props, state) {
     //let ethBal = (props.user.eth/CONSTANTS.WEIPERETH).toPrecision(4);
-    if(props.user.name != "") {
+    if (props.user.name != "") {
       return {
         loading: false,
       };
     }
     return null;
   }
-  async componentDidMount(){
-    try{
+
+  async componentDidMount() {
+    try {
       await Font.loadAsync({
         'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
       });
@@ -73,29 +86,30 @@ export default class Homepage extends React.Component {
           fontFamily: 'riffic-free-bold',
         },
       });
-    } catch(error){
+    } catch (error) {
       alert(error);
     }
   }
+
   onMinePress = () => {
-    this.setState({overlay: overlays.MINE });
+    this.setState({overlay: overlays.MINE});
   }
   onMineHaul = () => {
-    this.setState({overlay: overlays.PURCHASETICKET });
+    this.setState({overlay: overlays.PURCHASETICKET});
   }
   onPlayPress = () => {
-    if(this.props.user.haul >= this.props.user.mineMax) {
-      this.setState({overlay: overlays.MINEEMPTY });
+    if (this.props.user.haul >= this.props.user.mineMax) {
+      this.setState({overlay: overlays.MINEEMPTY});
     } else {
-      this.setState({overlay: overlays.SELECTLEVEL });
+      this.setState({overlay: overlays.SELECTLEVEL});
     }
   }
-  onPurchaseTicketSelect = async(ticketType) => {
-    if(ticketType == "ETH" || ticketType == "SNK") {
+  onPurchaseTicketSelect = async (ticketType) => {
+    if (ticketType == "ETH" || ticketType == "SNK") {
       await this.setState({overlay: overlays.LOADING});
       let jwt = await getFromAsyncStore("jwt");
       let price = this.props.prices.mineGamePrice;
-      if(ticketType == "SNK") {
+      if (ticketType == "SNK") {
         price = this.props.prices.mineHaulPrice;
       }
       let data = {
@@ -106,14 +120,14 @@ export default class Homepage extends React.Component {
         method: "POST",
         body: JSON.stringify(data), // body data type must match "Content-Type" header
         headers: {
-            "Content-Type": "application/json; charset=utf-8",
-            "Authorization": "JWT " + jwt,
+          "Content-Type": "application/json; charset=utf-8",
+          "Authorization": "JWT " + jwt,
         },
-      }).then(async(response) => {
+      }).then(async (response) => {
         var resp = await response.json();
-        if(!resp.error){
-          if(resp) {
-            if(resp.transactionKey) {
+        if (!resp.error) {
+          if (resp) {
+            if (resp.transactionKey) {
               this.setState({
                 overlay: overlays.CONFIRMTICKET,
                 confirmAmount: price,
@@ -124,7 +138,7 @@ export default class Homepage extends React.Component {
               alert("There was an error, malformed response.");
               this.setState({overlay: -1});
             }
-          } else{
+          } else {
             alert("There was an error, no response.");
             this.setState({overlay: -1});
           }
@@ -132,17 +146,19 @@ export default class Homepage extends React.Component {
           alert(resp.error);
           this.setState({overlay: -1});
         }
-      }).catch(err => {throw err});
+      }).catch(err => {
+        throw err
+      });
     } else {
       alert("Error. Ticket type must be ETH or SNK.")
     }
   }
-  onConfirmTicket = async() => {
+  onConfirmTicket = async () => {
     await this.setState({overlay: overlays.LOADING});
     let jwt = await getFromAsyncStore("jwt");
     let price = this.props.prices.mineGamePrice;
     let url = "/mine";
-    if(this.state.confirmTokenType == "SNK") {
+    if (this.state.confirmTokenType == "SNK") {
       price = this.props.prices.minehaulPrice;
       url = "/mineWithSnek";
     }
@@ -160,10 +176,10 @@ export default class Homepage extends React.Component {
       },
     });
     var resp = await response.json();
-    if(resp.error){
+    if (resp.error) {
       alert(resp.error);
       await this.setState({overlay: -1});
-    }else if(resp.txhash) {
+    } else if (resp.txhash) {
       console.log(resp.txhash)
       console.log(resp.user)
       await this.props.doUpdateUser(resp.user);
@@ -174,17 +190,17 @@ export default class Homepage extends React.Component {
     }
   }
   onCancelConfirm = () => {
-    this.setState({overlay: overlays.PURCHASETICKET });
+    this.setState({overlay: overlays.PURCHASETICKET});
   }
   goToTown = () => {
     this.props.onGoToTown();
   }
-  buyDynamite = async(ticketType) =>{
-    if(ticketType == "ETH" || ticketType == "SNK") {
+  buyDynamite = async (ticketType) => {
+    if (ticketType == "ETH" || ticketType == "SNK") {
       await this.setState({overlay: overlays.LOADING});
       let jwt = await getFromAsyncStore("jwt");
       let price = this.props.prices.ethdynamite;
-      if(ticketType == "SNK") {
+      if (ticketType == "SNK") {
         price = this.props.prices.snkdynamite;
       }
       let data = {
@@ -195,14 +211,14 @@ export default class Homepage extends React.Component {
         method: "POST",
         body: JSON.stringify(data), // body data type must match "Content-Type" header
         headers: {
-            "Content-Type": "application/json; charset=utf-8",
-            "Authorization": "JWT " + jwt,
+          "Content-Type": "application/json; charset=utf-8",
+          "Authorization": "JWT " + jwt,
         },
-      }).then(async(response) => {
+      }).then(async (response) => {
         var resp = await response.json();
-        if(!resp.error){
-          if(resp) {
-            if(resp.transactionKey) {
+        if (!resp.error) {
+          if (resp) {
+            if (resp.transactionKey) {
               this.setState({
                 overlay: overlays.CONFIRMSNKDYNAMITE,
                 confirmAmount: price,
@@ -213,7 +229,7 @@ export default class Homepage extends React.Component {
               alert("There was an error, malformed response.");
               this.setState({overlay: -1});
             }
-          } else{
+          } else {
             alert("There was an error, no response.");
             this.setState({overlay: -1});
           }
@@ -221,7 +237,9 @@ export default class Homepage extends React.Component {
           alert(resp.error);
           this.setState({overlay: -1});
         }
-      }).catch(err => {throw err});
+      }).catch(err => {
+        throw err
+      });
     } else {
       alert("Error. Ticket type must be ETH or SNK.")
     }
@@ -232,7 +250,7 @@ export default class Homepage extends React.Component {
   buySnkDynamite = () => {
     this.buyDynamite("SNK");
   }
-  onConfirmDynamite = async() => {
+  onConfirmDynamite = async () => {
     await this.setState({overlay: overlays.LOADING});
     let jwt = await getFromAsyncStore("jwt");
     let price = this.props.prices.ethdynamite;
@@ -242,8 +260,8 @@ export default class Homepage extends React.Component {
       type: this.state.confirmTokenType,
       amount: this.state.confirmAmount,
     };
-    if(this.state.confirmTokenType == "ETH") {
-        url = "/buySuperGame";
+    if (this.state.confirmTokenType == "ETH") {
+      url = "/buySuperGame";
     }
     var response = await fetch(`${context.host}:${context.port}${url}`, {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -254,10 +272,10 @@ export default class Homepage extends React.Component {
       },
     });
     var resp = await response.json();
-    if(resp.error){
+    if (resp.error) {
       alert(resp.error);
       await this.setState({overlay: -1});
-    }else if(resp.txhash) {
+    } else if (resp.txhash) {
       await this.props.doUpdateUser(resp.user);
       this.setState({overlay: overlays.CONFIRMTX, lastTxHash: resp.txhash});
     } else {
@@ -272,18 +290,18 @@ export default class Homepage extends React.Component {
   //   // TODO
   //   //this.setState({overlay: overlays.CONFIRMSNKDYNAMITE});
   // }
-  onCancelConfirmSnkDynamite = () =>{
+  onCancelConfirmSnkDynamite = () => {
     this.setState({overlay: overlays.SELECTLEVEL});
   }
   // onConfirmEthDynamite = () =>{
   //   // TODO
   //   //this.setState({overlay: overlays.CONFIRMETHDYNAMITE});
   // }
-  onCancelConfirmEthDynamite = () =>{
+  onCancelConfirmEthDynamite = () => {
     this.setState({overlay: overlays.SELECTLEVEL});
   }
   onPowerups = () => {
-    this.setState({overlay: overlays.POWERUPS });
+    this.setState({overlay: overlays.POWERUPS});
   }
   closeOverlay = () => {
     this.setState({overlay: -1});
@@ -291,18 +309,18 @@ export default class Homepage extends React.Component {
 
   render() {
     let haul = this.props.user.haul;
-    let mineGraphicIndex = 10-Math.floor(10*haul/this.props.user.mineMax);
+    let mineGraphicIndex = 10 - Math.floor(10 * haul / this.props.user.mineMax);
     let mineTextColorStyle = {};
-    if(mineGraphicIndex <= 6){
-      mineTextColorStyle = { color: "#fab523", }
+    if (mineGraphicIndex <= 6) {
+      mineTextColorStyle = {color: "#fab523",}
     } else {
-      mineTextColorStyle = { color: "#352927", }
+      mineTextColorStyle = {color: "#352927",}
     }
     let mineImg = mineImages[mineGraphicIndex];
-    let minePercent = (100-Math.floor((100*haul/this.props.user.mineMax)))
-    if(minePercent >= 100.0){
+    let minePercent = (100 - Math.floor((100 * haul / this.props.user.mineMax)))
+    if (minePercent >= 100.0) {
       minePercent = minePercent.toPrecision(3);
-    } else if(minePercent < 10.0){
+    } else if (minePercent < 10.0) {
       minePercent = minePercent.toPrecision(1);
     } else {
       minePercent = minePercent.toPrecision(2);
@@ -310,23 +328,27 @@ export default class Homepage extends React.Component {
     return (
       <ScreenView>
         <ImageBackground source={require('../assets/homepage/back.png')} style={styles.backgroundImage}>
-          <Header loading={this.props.loading} user={this.props.user} onProfile={this.props.onProfile} onWallet={this.props.onWallet}/>
+          <Header loading={this.props.loading} user={this.props.user} onProfile={this.props.onProfile}
+                  onWallet={this.props.onWallet}/>
           <View style={styles.contentHolder}>
             <View style={styles.contentTopMargin}></View>
             <View style={styles.contentTop}>
-              <ImageBackground source={require('../assets/homepage/snakechain.png')} style={styles.snakechain}></ImageBackground>
+              <ImageBackground source={require('../assets/homepage/snakechain.png')}
+                               style={styles.snakechain}></ImageBackground>
               <View style={styles.iconsHolder}>
                 <TouchableOpacity onPress={this.props.onGoToTown}>
-                  <ImageBackground source={require('../assets/homepage/town.png')} style={styles.town}></ImageBackground>
+                  <ImageBackground source={require('../assets/homepage/town.png')}
+                                   style={styles.town}></ImageBackground>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={this.onPowerups}>
-                  <ImageBackground source={require('../assets/homepage/powerups.png')} style={styles.powerups}></ImageBackground>
+                  <ImageBackground source={require('../assets/homepage/powerups.png')}
+                                   style={styles.powerups}></ImageBackground>
                 </TouchableOpacity>
               </View>
             </View>
             <View style={styles.contentBottom}>
               <TouchableOpacity style={styles.mine}
-                onPress={this.onMinePress}>
+                                onPress={this.onMinePress}>
                 {this.state.loading ? null :
                   <ImageBackground style={styles.mineImage} source={mineImg}>
                     <Text style={[mineTextColorStyle, styles.mineText, this.state.riffic, mineTextColorStyle]}>
@@ -337,17 +359,21 @@ export default class Homepage extends React.Component {
               </TouchableOpacity>
               <View style={styles.bottomIconsHolder}>
                 <TouchableOpacity style={styles.playnow}
-                  onPress={this.onPlayPress}>
+                                  onPress={this.onPlayPress}>
                   <ImageBackground style={styles.playnowImage} source={require('../assets/homepage/playNowButton.png')}>
                     <Text style={[styles.playnowText, this.state.riffic]}>Play Now</Text>
                   </ImageBackground>
                 </TouchableOpacity>
-                <ImageBackground source={require('../assets/homepage/snakeCart.png')} style={styles.snakeCart}></ImageBackground>
+                <ImageBackground source={require('../assets/homepage/snakeCart.png')}
+                                 style={styles.snakeCart}></ImageBackground>
                 <TouchableOpacity
                   onPress={this.onMineHaul}>
-                  <ImageBackground source={require('../assets/homepage/gototownButton.png')} style={styles.gototownButton}>
+                  <ImageBackground source={require('../assets/homepage/gototownButton.png')}
+                                   style={styles.gototownButton}>
                     <Text style={[styles.gototownText, this.state.riffic]}>
-                      <Text style={[styles.gototownText, this.state.riffic, {fontSize: normalize(20)}]}>{this.props.user.haul}</Text> Unminted <Image source={require('../assets/wallet/coin.png')} style={[styles.coin]} />
+                      <Text
+                        style={[styles.gototownText, this.state.riffic, {fontSize: normalize(20)}]}>{this.props.user.haul}</Text> Unminted <Image
+                      source={require('../assets/wallet/coin.png')} style={[styles.coin]}/>
                     </Text>
                     {/*<Text style={[styles.gototownText, this.state.riffic, {fontSize: normalize(11),}]}>Ship to Snakebank</Text>*/}
                   </ImageBackground>
@@ -356,22 +382,22 @@ export default class Homepage extends React.Component {
             </View>
           </View>
           <GameHistoryOverlay show={this.state.overlay == overlays.MINE}
-            closeOverlay={this.closeOverlay}
-            user={this.props.user}
-            gototown={this.onMineHaul} />
+                              closeOverlay={this.closeOverlay}
+                              user={this.props.user}
+                              gototown={this.onMineHaul}/>
           <SelectLevelOverlay show={this.state.overlay == overlays.SELECTLEVEL}
-            closeOverlay={this.closeOverlay}
-            user={this.props.user}
-            onSelectLevel={this.props.onSelectLevel}
-            buyEthDynamite={this.buyEthDynamite}
-            buySnkDynamite={this.buySnkDynamite}
-            />
+                              closeOverlay={this.closeOverlay}
+                              user={this.props.user}
+                              onSelectLevel={this.props.onSelectLevel}
+                              buyEthDynamite={this.buyEthDynamite}
+                              buySnkDynamite={this.buySnkDynamite}
+          />
           <PurchaseTicketOverlay show={this.state.overlay == overlays.PURCHASETICKET}
-            closeOverlay={this.closeOverlay}
-            user={this.props.user}
-            prices={this.props.prices}
-            onSelectTicket={this.onPurchaseTicketSelect}
-            />
+                                 closeOverlay={this.closeOverlay}
+                                 user={this.props.user}
+                                 prices={this.props.prices}
+                                 onSelectTicket={this.onPurchaseTicketSelect}
+          />
           <AreYouSureOverlay
             show={this.state.overlay == overlays.CONFIRMTICKET}
             text={`Pay ${this.state.confirmAmount} ${this.state.confirmTokenType} for ${this.props.user.haul} Snake Coins.\n\nAre you sure?`}
@@ -398,9 +424,9 @@ export default class Homepage extends React.Component {
           <MineEmptyOverlay
             closeOverlay={this.closeOverlay}
             show={this.state.overlay == overlays.MINEEMPTY}/>
-            <CowOverlay
-              closeOverlay={this.closeOverlay}
-              show={false}/>
+          <CowOverlay
+            closeOverlay={this.closeOverlay}
+            show={false}/>
         </ImageBackground>
       </ScreenView>
     );
@@ -408,7 +434,7 @@ export default class Homepage extends React.Component {
 }
 let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
-let titleBarHeight = screenWidth*.757/3.6;
+let titleBarHeight = screenWidth * .757 / 3.6;
 let styles = StyleSheet.create({
   backgroundImage: {
     width: "100%",
@@ -433,34 +459,34 @@ let styles = StyleSheet.create({
     width: "100%",
   },
   snakechain: {
-    width: screenWidth*1.65/3.6,
-    aspectRatio: 1.65/.917,
-    marginLeft: screenWidth*.303/3.6,
+    width: screenWidth * 1.65 / 3.6,
+    aspectRatio: 1.65 / .917,
+    marginLeft: screenWidth * .303 / 3.6,
   },
   iconsHolder: {
-    marginLeft: screenWidth*.577/3.6,
+    marginLeft: screenWidth * .577 / 3.6,
     flexDirection: "column",
   },
   town: {
     // width: screenWidth*.860/3.6,
     // aspectRatio: .860/.750,
-    width: screenWidth*.767/3.6,
-    aspectRatio: .767/.753,
+    width: screenWidth * .767 / 3.6,
+    aspectRatio: .767 / .753,
   },
   powerups: {
-    width: screenWidth*.767/3.6,
-    aspectRatio: .767/.753,
-    marginTop: screenWidth*.117/3.6,
+    width: screenWidth * .767 / 3.6,
+    aspectRatio: .767 / .753,
+    marginTop: screenWidth * .117 / 3.6,
   },
   mine: {
-    width: screenWidth*1.317/3.6,
-    aspectRatio: 1.317/3.047,
-    marginLeft: screenWidth*.150/3.6,
+    width: screenWidth * 1.317 / 3.6,
+    aspectRatio: 1.317 / 3.047,
+    marginLeft: screenWidth * .150 / 3.6,
   },
   mineImage: {
     flex: 1,
-    width: screenWidth*1.317/3.6,
-    aspectRatio: 1.317/3.047,
+    width: screenWidth * 1.317 / 3.6,
+    aspectRatio: 1.317 / 3.047,
     justifyContent: 'center',
     alignItems: 'center'
   },
@@ -476,33 +502,33 @@ let styles = StyleSheet.create({
     flexDirection: "column",
   },
   playnow: {
-    width: screenWidth * 1.787/3.6,
-    aspectRatio: 1.787/.612,
-    marginLeft: screenWidth*.147/3.6,
-    marginTop: screenWidth*.250/3.6,
+    width: screenWidth * 1.787 / 3.6,
+    aspectRatio: 1.787 / .612,
+    marginLeft: screenWidth * .147 / 3.6,
+    marginTop: screenWidth * .250 / 3.6,
   },
   playnowImage: {
     flex: 1,
-    width: screenWidth * 1.787/3.6,
-    aspectRatio: 1.787/.612,
+    width: screenWidth * 1.787 / 3.6,
+    aspectRatio: 1.787 / .612,
     justifyContent: 'center',
     alignItems: 'center'
   },
   snakeCart: {
-    marginTop: screenWidth*.200/3.6,
-    width: screenWidth*1.950/3.6,
-    aspectRatio: 606/702,
+    marginTop: screenWidth * .200 / 3.6,
+    width: screenWidth * 1.950 / 3.6,
+    aspectRatio: 606 / 702,
   },
   gototownButton: {
-    marginTop: -screenWidth*.350/3.6,
-    width: screenWidth*1.950/3.6,
-    aspectRatio: 502/168,
+    marginTop: -screenWidth * .350 / 3.6,
+    width: screenWidth * 1.950 / 3.6,
+    aspectRatio: 502 / 168,
     justifyContent: 'center',
     alignItems: 'center'
   },
   gototown: {
-    width: screenWidth*.950/3.6,
-    aspectRatio: 316/62,
+    width: screenWidth * .950 / 3.6,
+    aspectRatio: 316 / 62,
   },
   gototownText: {
     color: "#fab523",
@@ -519,5 +545,5 @@ let styles = StyleSheet.create({
     textShadowOffset: {width: -2, height: 2},
     textShadowRadius: 1,
   },
-  coin: { height: 15, width: 15*168/128, resizeMode: 'stretch',}
+  coin: {height: 15, width: 15 * 168 / 128, resizeMode: 'stretch',}
 });
