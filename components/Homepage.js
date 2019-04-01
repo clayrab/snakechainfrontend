@@ -419,6 +419,7 @@ export default class Homepage extends React.Component {
             transactionId={this.state.lastTxHash}
             onOk={this.closeOverlay}/>
           <PowerupOverlay
+            user={this.props.user}
             closeOverlay={this.closeOverlay}
             show={this.state.overlay == overlays.POWERUPS}/>
           <MineEmptyOverlay

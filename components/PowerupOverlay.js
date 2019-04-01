@@ -22,7 +22,7 @@ const Box = ((props) =>
     <View style={styles.boxContainer}>
       <TouchableOpacity onPress={() => props.onItemPress(props)} style={styles.boxViewContainer}>
         <ImageBackground source={require('../assets/Paused/partionBackground.png')} resizeMode={"stretch"}
-                         style={[styles.boxView, props.customBoxStyle !== undefined ? props.customBoxStyle : null]}>
+                         style={[styles.boxView]}>
           <Text style={[styles.boxText, props.fontStyle]}>{props.heading}</Text>
           <Image source={props.boxImage}
                  style={[styles.boxImageView, props.customImage !== undefined ? props.customImage : null]}/>
@@ -46,7 +46,7 @@ const Box = ((props) =>
           <ImageBackground source={require("../assets/Paused/inputBackground.png")} resizeMode={"stretch"}
                            style={styles.numberInput}>
             <Image source={require("../assets/Paused/coinIcon.png")} style={[styles.coinStyle, props.imageStyle]}/>
-            <Text style={[styles.coinText, props.buttonStyle]}>{props.inputNumber.toFixed(3)}</Text>
+            <Text style={[styles.coinText, props.buttonStyle]}>{props.price.toFixed(3)}</Text>
           </ImageBackground>
         </TouchableOpacity>
       }
@@ -57,10 +57,10 @@ export default class PowerupOverlay extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      buttonDyanmicStyle: {},
       selectedPowerup: {},
       detailVisible: false
     }
+
   }
 
   async componentDidMount() {
@@ -76,7 +76,11 @@ export default class PowerupOverlay extends React.Component {
   }
 
   onItemPress = (props) => {
-    this.setState({detailVisible: true, selectedPowerup: props});
+    const {name, image, description} = props;
+    this.setState({
+      detailVisible: true,
+      selectedPowerup: {name, image, description}
+    });
   }
 
   onItemAddPress = (props) => {
@@ -123,17 +127,17 @@ export default class PowerupOverlay extends React.Component {
                 paddingHorizontal: 15
               }}>
 
-                <Box buttonStyle={[this.state.buttonDynamicStyle, styles.buttonText]}
+                <Box buttonStyle={[styles.buttonText]}
                      fontStyle={styles.buttonText}
                      bought={false}
                      boxImage={require('../assets/powerupsoverlay/mushroom_yellow.png')}
-                     inputNumber={3}
+                     price={3}
                      circleText={'5'}
                      heading={'Multiplayer (10x)'}
                      onBuyPress={this.onItemBuyPress}
                      onItemPress={this.onItemPress}
                 />
-                <Box buttonStyle={[this.state.buttonDynamicStyle, styles.buttonText]}
+                <Box buttonStyle={[styles.buttonText]}
                      fontStyle={styles.buttonText}
                      bought={true}
                      value={2}
@@ -144,21 +148,21 @@ export default class PowerupOverlay extends React.Component {
                      onMinusPress={this.onItemMinusPress}
                      onItemPress={this.onItemPress}
                 />
-                <Box buttonStyle={[this.state.buttonDynamicStyle, styles.buttonText]}
+                <Box buttonStyle={[styles.buttonText]}
                      fontStyle={styles.buttonText}
                      bought={false}
                      boxImage={require('../assets/powerupsoverlay/mushroom_voilet.png')}
-                     inputNumber={5}
+                     price={5}
                      circleText={'5'}
                      heading={'Wildcard'}
                      onBuyPress={this.onItemBuyPress}
                      onItemPress={this.onItemPress}
                 />
-                <Box buttonStyle={[this.state.buttonDynamicStyle, styles.buttonText]}
+                <Box buttonStyle={[styles.buttonText]}
                      fontStyle={styles.buttonText}
                      bought={false}
                      boxImage={require('../assets/powerupsoverlay/mushroom_red.png')}
-                     inputNumber={10}
+                     price={10}
                      circleText={'5'}
                      heading={'Nitro Tail'}
                      onBuyPress={this.onItemBuyPress}
