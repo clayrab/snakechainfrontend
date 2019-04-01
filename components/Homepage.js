@@ -102,7 +102,6 @@ export default class Homepage extends React.Component {
     const justRegistered = await AsyncStorage.getItem("JUST_REGISTERED");
     if (justRegistered) {
       await AsyncStorage.removeItem("JUST_REGISTERED");
-      alert("JUST REGISTERED");
       this.setState({overlay: overlays.TUTORIAL});
     }
   }
