@@ -9,9 +9,10 @@ import {
   TextInput,
   Clipboard
 } from 'react-native';
-import { Keccak } from 'sha3';
-import { Font } from 'expo';
+import {Keccak} from 'sha3';
+import {Font} from 'expo';
 import {normalize} from '../utils/FontNormalizer.js';
+
 let yellowBackground = require('../assets/wallet/yellowBG.png');
 let brownBackground = require('../assets/wallet/brownBG.png');
 let selectedButton = require('../assets/wallet/selectedButton.png');
@@ -23,8 +24,8 @@ let withdrawIconYellow = require('../assets/wallet/withdrawIconYellow.png');
 let checkboxChecked = require('../assets/wallet/checkboxChecked.png');
 let checkboxEmpty = require('../assets/wallet/checkboxEmpty.png');
 
-let modes = { DEPOSIT: 0, WITHDRAW: 1, };
-let coins = { ETHEREUM: 0, SNAKE: 1, };
+let modes = {DEPOSIT: 0, WITHDRAW: 1,};
+let coins = {ETHEREUM: 0, SNAKE: 1,};
 let maxModeOverrider = 0; //wallet.js forces state change by incrementing a counter
 export default class Wallet extends React.Component {
   constructor(props) {
@@ -36,7 +37,8 @@ export default class Wallet extends React.Component {
       address: "",
     };
   }
-  async componentDidMount(){
+
+  async componentDidMount() {
     await Font.loadAsync({
       'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
     });
@@ -44,6 +46,7 @@ export default class Wallet extends React.Component {
       fontFamily: 'riffic-free-bold'
     }
   }
+
   onCopyAddress = () => {
     Clipboard.setString(this.props.user.pubkey);
   }
@@ -63,11 +66,11 @@ export default class Wallet extends React.Component {
     this.setState({termsAgreed: !this.state.termsAgreed});
   }
   isChecksumAddress = (address) => {
-    address = address.replace('0x','');
+    address = address.replace('0x', '');
     let hasher = new Keccak(256);
     hasher.update(address.toLowerCase());
     let addressHash = hasher.digest('hex');
-    for (var i = 0; i < 40; i++ ) {
+    for (var i = 0; i < 40; i++) {
       if ((parseInt(addressHash[i], 16) > 7 && address[i].toUpperCase() !== address[i]) || (parseInt(addressHash[i], 16) <= 7 && address[i].toLowerCase() !== address[i])) {
         return false;
       }
@@ -84,27 +87,28 @@ export default class Wallet extends React.Component {
     }
   }
   onSend = () => {
-    if(!this.state.termsAgreed){
+    if (!this.state.termsAgreed) {
       alert("You must agree to the terms and conditions")
-    } else if (isNaN(this.state.amountText.replace(".",""))){
+    } else if (isNaN(this.state.amountText.replace(".", ""))) {
       alert("Amount must be a number");
-    } else if (!this.isAddress(this.state.address)){
+    } else if (!this.isAddress(this.state.address)) {
       alert("To address is not a valid address");
     } else {
-      let type = this.state.coin == coins.ETHEREUM?"ETH":"SNK";
+      let type = this.state.coin == coins.ETHEREUM ? "ETH" : "SNK";
       let amt = Number(this.state.amountText);
-      if(type == "ETH") {
+      if (type == "ETH") {
         amt = amt * 1000000000000000000;
       }
       this.props.onSend(amt, this.state.address, type)
     }
   }
+
   render() {
     if (!this.props.show) {
       return null;
     } else {
       let checkboxImg = checkboxEmpty;
-      if(this.state.termsAgreed){
+      if (this.state.termsAgreed) {
         checkboxImg = checkboxChecked;
       }
       let depositButton = selectedButton;
@@ -114,7 +118,7 @@ export default class Wallet extends React.Component {
       let withdrawIconImg = withdrawIcon;
       let depositIconImg = walletIconYellow;
 
-      if(this.props.mode == modes.WITHDRAW) {
+      if (this.props.mode == modes.WITHDRAW) {
         depositButton = unselectedButton;
         withdrawButton = selectedButton;
         depositStyle = styles.blackText;
@@ -127,21 +131,22 @@ export default class Wallet extends React.Component {
       let snakeBackground = brownBackground;
       let ethereumStyle = styles.yellowSnakeText;
       let snakeStyle = styles.yellowSnakeText;
-      if(this.state.coin == coins.ETHEREUM) {
+      if (this.state.coin == coins.ETHEREUM) {
         ethereumBackground = yellowBackground;
         ethereumStyle = styles.blackSnakeText;
-      } else if(this.state.coin == coins.SNAKE) {
+      } else if (this.state.coin == coins.SNAKE) {
         snakeBackground = yellowBackground;
         snakeStyle = styles.blackSnakeText;
       }
       return (
 
         <View style={styles.container}>
-          <ImageBackground source={require('../assets/wallet/background.png')} style={styles.content} resizeMode="cover">
+          <ImageBackground source={require('../assets/wallet/background.png')} style={styles.content}
+                           resizeMode="cover">
             <View style={styles.topButtonView}>
               <TouchableOpacity style={styles.depositButton} onPress={this.props.onDoReceive}>
                 <ImageBackground source={depositButton} style={styles.depositButtonImage} resizeMode="stretch">
-                  <Image source={depositIconImg} style={styles.withdrawIcons} />
+                  <Image source={depositIconImg} style={styles.withdrawIcons}/>
                   <Text style={[styles.buttonText, depositStyle]}>
                     DEPOSIT
                   </Text>
@@ -149,88 +154,94 @@ export default class Wallet extends React.Component {
               </TouchableOpacity>
               <TouchableOpacity style={styles.withdrawButton} onPress={this.props.onDoSend}>
                 <ImageBackground source={withdrawButton} style={styles.withButtonImage} resizeMode="stretch">
-                  <Image source={withdrawIconImg} style={styles.withdrawIcons} />
+                  <Image source={withdrawIconImg} style={styles.withdrawIcons}/>
                   <Text style={[styles.buttonText, withdrawStyle]}>
                     WITHDRAW
                   </Text>
                 </ImageBackground>
               </TouchableOpacity>
               <TouchableOpacity style={styles.closeButton} onPress={this.props.closeOverlay}>
-                <ImageBackground source={require('../assets/wallet/closeBG.png')} style={styles.closeButtonImage} resizeMode="stretch"/>
+                <ImageBackground source={require('../assets/wallet/closeBG.png')} style={styles.closeButtonImage}
+                                 resizeMode="stretch"/>
               </TouchableOpacity>
             </View>
             <View style={styles.contentHolder}>
-              { this.props.mode == modes.WITHDRAW
+              {this.props.mode == modes.WITHDRAW
                 ?
-                  <View>
-                    <TouchableOpacity onPress={this.onEthereumCoin}>
-                      <ImageBackground source={ethereumBackground} style={styles.etherBGImage} resizeMode="stretch">
-                        <View style={styles.coinIconHolder}>
-                          <Image source={require('../assets/wallet/diamond.png')} style={styles.diamondImage} />
-                        </View>
-                        <View style={styles.coinTextHolder}>
-                          <Text style={[styles.buttonText, ethereumStyle]}>Ethereum</Text>
-                        </View>
-                        <Text adjustsFontSizeToFit numberOfLines={1}
-                          style={[styles.buttonText, ethereumStyle]}>
-                          {(this.props.user.eth/CONSTANTS.WEIPERETH).toPrecision(4)}
-                        </Text>
-                      </ImageBackground>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={this.onSnakeCoin}>
-                      <ImageBackground source={snakeBackground} style={styles.etherBGImage} resizeMode="stretch">
-                        <View style={styles.coinIconHolder}>
-                          <Image source={require('../assets/wallet/coin.png')} style={styles.diamondImage} />
-                        </View>
-                        <View style={styles.coinTextHolder}>
-                          <Text style={[styles.buttonText, snakeStyle]}>Snakechain</Text>
-                        </View>
-                        <Text style={[styles.buttonText, snakeStyle]}>
-                          {this.props.user.snek}
-                        </Text>
-                      </ImageBackground>
-                    </TouchableOpacity>
-                    {this.state.coin == -1 ?
-                      <View style={styles.etherBGView}>
-                        <ImageBackground source={require('../assets/wallet/selectEtherBG.png')} style={styles.selectEtherImage} resizeMode="stretch">
-                          <Text style={[styles.buttonText, styles.selectAmountText]}>
-                            Select a coin to send
-                          </Text>
-                        </ImageBackground>
+                <View>
+                  <TouchableOpacity onPress={this.onEthereumCoin}>
+                    <ImageBackground source={ethereumBackground} style={styles.etherBGImage} resizeMode="stretch">
+                      <View style={styles.coinIconHolder}>
+                        <Image source={require('../assets/wallet/diamond.png')} style={styles.diamondImage}/>
                       </View>
-                      :
+                      <View style={styles.coinTextHolder}>
+                        <Text style={[styles.buttonText, ethereumStyle]}>Ethereum</Text>
+                      </View>
+                      <Text adjustsFontSizeToFit numberOfLines={1}
+                            style={[styles.buttonText, ethereumStyle]}>
+                        {(this.props.user.eth / CONSTANTS.WEIPERETH).toPrecision(4)}
+                      </Text>
+                    </ImageBackground>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={this.onSnakeCoin}>
+                    <ImageBackground source={snakeBackground} style={styles.etherBGImage} resizeMode="stretch">
+                      <View style={styles.coinIconHolder}>
+                        <Image source={require('../assets/wallet/coin.png')} style={styles.diamondImage}/>
+                      </View>
+                      <View style={styles.coinTextHolder}>
+                        <Text style={[styles.buttonText, snakeStyle]}>Snakechain</Text>
+                      </View>
+                      <Text style={[styles.buttonText, snakeStyle]}>
+                        {this.props.user.snek}
+                      </Text>
+                    </ImageBackground>
+                  </TouchableOpacity>
+                  {this.state.coin == -1 ?
+                    <View style={styles.etherBGView}>
+                      <ImageBackground source={require('../assets/wallet/selectEtherBG.png')}
+                                       style={styles.selectEtherImage} resizeMode="stretch">
+                        <Text style={[styles.buttonText, styles.selectAmountText]}>
+                          Select a coin to send
+                        </Text>
+                      </ImageBackground>
+                    </View>
+                    :
                     <View>
 
                       <View style={styles.etherBGView}>
-                        <ImageBackground source={require('../assets/wallet/selectEtherBG.png')} style={styles.selectEtherImage} resizeMode="stretch">
+                        <ImageBackground source={require('../assets/wallet/selectEtherBG.png')}
+                                         style={styles.selectEtherImage} resizeMode="stretch">
                           <Text style={[styles.buttonText, styles.selectAmountText]}>
-                            YOU ARE SENDING {this.state.coin == coins.ETHEREUM?"ETHER":"SNAKE"}
+                            YOU ARE SENDING {this.state.coin == coins.ETHEREUM ? "ETHER" : "SNAKE"}
                           </Text>
                           <View style={styles.amountTextView}>
                             <Text style={[styles.buttonText, styles.amountText]}>
                               Amount
                             </Text>
-                            <ImageBackground source={require('../assets/wallet/textInputBG.png')} style={styles.amountInput} resizeMode="contain">
+                            <ImageBackground source={require('../assets/wallet/textInputBG.png')}
+                                             style={styles.amountInput} resizeMode="contain">
                               <TextInput style={styles.textInput} underlineColorAndroid="transparent"
-                                keyboardType = 'numeric'
-                                onChangeText = {(text) => this.onAmountChanged(text)}/>
+                                         keyboardType='numeric'
+                                         onChangeText={(text) => this.onAmountChanged(text)}/>
                               <Image source={require('../assets/wallet/pencil.png')} style={styles.pencilImage}/>
                             </ImageBackground>
                           </View>
                         </ImageBackground>
                       </View>
                       <View style={styles.etherBGView}>
-                        <ImageBackground source={require('../assets/wallet/selectEtherBG.png')} style={styles.selectEtherImage} resizeMode="stretch">
+                        <ImageBackground source={require('../assets/wallet/selectEtherBG.png')}
+                                         style={styles.selectEtherImage} resizeMode="stretch">
                           <View style={styles.sendingTextHolder}>
                             <Text style={[styles.buttonText, styles.selectAmountText]}>
                               SEND TO PUBLIC ADDRESS
                             </Text>
                           </View>
-                          <ImageBackground source={require('../assets/wallet/textInputBG.png')} style={styles.addressInput} resizeMode="stretch">
+                          <ImageBackground source={require('../assets/wallet/textInputBG.png')}
+                                           style={styles.addressInput} resizeMode="stretch">
                             <Image source={require('../assets/wallet/pencil.png')} style={styles.pencilImage}/>
                             <TextInput style={styles.addressTextInput} underlineColorAndroid="transparent"
-                              keyboardType = 'numeric'
-                              onChangeText = {(text) => this.onAddressChanged(text)}/>
+                                       keyboardType='numeric'
+                                       onChangeText={(text) => this.onAddressChanged(text)}/>
                           </ImageBackground>
                           <Text style={[styles.buttonText, styles.addNotesText]}>
                             Enter the receiver's public address
@@ -242,13 +253,14 @@ export default class Wallet extends React.Component {
                       </Text>
                       <View style={styles.sendButtonView}>
                         <TouchableOpacity onPress={this.onSend}>
-                          <ImageBackground source={require('../assets/wallet/sendButtonBG.png')} style={styles.sendButtonImage} resizeMode="contain">
+                          <ImageBackground source={require('../assets/wallet/sendButtonBG.png')}
+                                           style={styles.sendButtonImage} resizeMode="contain">
                             <Text style={[styles.buttonText, styles.depositText]}>SEND</Text>
                           </ImageBackground>
                         </TouchableOpacity>
                         <View style={styles.termsHolder}>
                           <TouchableOpacity onPress={this.onTermsAgreed}>
-                            <Image source={checkboxImg} style={styles.checkedImage} resizeMode="contain" />
+                            <Image source={checkboxImg} style={styles.checkedImage} resizeMode="contain"/>
                           </TouchableOpacity>
                           <Text style={[styles.buttonText, styles.depositText]}>
                             I agree to <Text style={[styles.buttonText, styles.termsText]}>terms</Text>
@@ -256,18 +268,21 @@ export default class Wallet extends React.Component {
                         </View>
                       </View>
                       <View style={styles.etherBGView}>
-                        <ImageBackground source={require('../assets/wallet/noticeBG.png')} style={styles.selectEtherImage} resizeMode="stretch">
+                        <ImageBackground source={require('../assets/wallet/noticeBG.png')}
+                                         style={styles.selectEtherImage} resizeMode="stretch">
                           <Text style={[styles.buttonText, styles.addNotesText, {marginLeft: 5}]}>
-                            Notice: Lorem Ipsum is simply dummy text of the printing and typesetting industry.type and scrambled it to make a type specimen book.
+                            Notice: Lorem Ipsum is simply dummy text of the printing and typesetting industry.type and
+                            scrambled it to make a type specimen book.
                           </Text>
                         </ImageBackground>
                       </View>
                     </View>
-                    }
-                  </View>
+                  }
+                </View>
                 :
                 <View>
-                  <ImageBackground source={require('../assets/wallet/selectEtherBG.png')} style={styles.selectEtherImage} resizeMode="stretch">
+                  <ImageBackground source={require('../assets/wallet/selectEtherBG.png')}
+                                   style={styles.selectEtherImage} resizeMode="stretch">
                     <Text style={[styles.buttonText, styles.addressText]}>
                       YOUR DEPOSIT ADDRESS
                     </Text>
@@ -276,7 +291,8 @@ export default class Wallet extends React.Component {
                     </Text>
                     <View style={styles.noteView}>
                       <TouchableOpacity style={styles.depositButton} onPress={this.onCopyAddress}>
-                        <ImageBackground source={require('../assets/withdraw/CopyButton.png')} style={styles.copyButtonImage}>
+                        <ImageBackground source={require('../assets/withdraw/CopyButton.png')}
+                                         style={styles.copyButtonImage}>
                           <Text style={[styles.buttonText, styles.copyText]}>Copy</Text>
                         </ImageBackground>
                       </TouchableOpacity>
@@ -284,10 +300,13 @@ export default class Wallet extends React.Component {
                   </ImageBackground>
                   <View style={styles.qrView}>
                     <ImageBackground source={require('../assets/withdraw/QRCodeBackground.png')} style={styles.qrBG}>
-                      <Image source={{ uri:`http://chart.googleapis.com/chart?chs=300x300&cht=qr&chl={this.props.user.pubkey}&choe=UTF-8`}} resizeMode="stretch" style={styles.qrCode}/>
+                      <Image
+                        source={{uri: `http://chart.googleapis.com/chart?chs=300x300&cht=qr&chl={this.props.user.pubkey}&choe=UTF-8`}}
+                        resizeMode="stretch" style={styles.qrCode}/>
                     </ImageBackground>
                   </View>
-                  <ImageBackground source={require('../assets/wallet/noticeBG.png')} style={styles.selectEtherImage} resizeMode="stretch">
+                  <ImageBackground source={require('../assets/wallet/noticeBG.png')} style={styles.selectEtherImage}
+                                   resizeMode="stretch">
                     <Text style={[styles.buttonText, styles.addNotesText, {marginLeft: 5}]}>
                       Please send ethereum or snake to the above address
                     </Text>
@@ -312,15 +331,15 @@ let styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     top: 0,
-    backgroundColor:  'rgba(0,0,0,0.6)',
+    backgroundColor: 'rgba(0,0,0,0.6)',
     width: screenWidth,
     height: screenHeight,
     justifyContent: 'center',
     alignItems: 'center',
   },
   content: {
-    width: screenWidth*685/724,
-    height: screenHeight*1238/1287,
+    width: screenWidth * 685 / 724,
+    height: screenHeight * 1238 / 1287,
     position: 'relative',
     flexDirection: 'column',
   },
@@ -339,25 +358,25 @@ let styles = StyleSheet.create({
     alignItems: 'center',
   },
   depositButtonImage: {
-    width: screenWidth*263/724,
-    height: screenWidth*102/724,
-    marginLeft: screenWidth*55/724,
+    width: screenWidth * 263 / 724,
+    height: screenWidth * 102 / 724,
+    marginLeft: screenWidth * 55 / 724,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row'
   },
   withButtonImage: {
-    width: screenWidth*263/724,
-    height: screenWidth*102/724,
-    marginLeft: screenWidth*29/724,
+    width: screenWidth * 263 / 724,
+    height: screenWidth * 102 / 724,
+    marginLeft: screenWidth * 29 / 724,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row'
   },
   closeButton: {
     position: 'absolute',
-    top: -screenWidth*9/724,
-    right: -screenWidth*9/724,
+    top: -screenWidth * 9 / 724,
+    right: -screenWidth * 9 / 724,
     zIndex: 100,
   },
   closeButtonImage: {
@@ -369,14 +388,14 @@ let styles = StyleSheet.create({
     alignItems: 'center',
   },
   etherBGImage: {
-    width: screenWidth*623/724,
-    height: screenWidth*104/724,
+    width: screenWidth * 623 / 724,
+    height: screenWidth * 104 / 724,
     marginTop: 10,
     flexDirection: 'row',
     alignItems: 'center'
   },
   coinIconHolder: {
-    width: screenWidth*130/724,
+    width: screenWidth * 130 / 724,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -386,13 +405,13 @@ let styles = StyleSheet.create({
     resizeMode: 'contain'
   },
   coinTextHolder: {
-    width: screenWidth*290/724,
+    width: screenWidth * 290 / 724,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
   selectEtherImage: {
-    width: screenWidth*623/724,
+    width: screenWidth * 623 / 724,
     height: 100,
     marginTop: 10,
     justifyContent: 'center',
@@ -405,8 +424,8 @@ let styles = StyleSheet.create({
     marginTop: 10
   },
   amountInput: {
-    width: screenWidth * 317/724,
-    height: screenWidth * 73/724,
+    width: screenWidth * 317 / 724,
+    height: screenWidth * 73 / 724,
     marginLeft: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -415,13 +434,13 @@ let styles = StyleSheet.create({
   pencilImage: {
     position: 'absolute',
     right: 10,
-    top: screenWidth * 20/724,
+    top: screenWidth * 20 / 724,
     width: 15,
     height: 15,
   },
   textInput: {
-    width: screenWidth * 317/724,
-    height: screenWidth * 73/724,
+    width: screenWidth * 317 / 724,
+    height: screenWidth * 73 / 724,
     color: "#fab523",
     paddingLeft: 10,
     paddingRight: 25,
@@ -431,8 +450,8 @@ let styles = StyleSheet.create({
     marginBottom: 5,
   },
   addressInput: {
-    width: screenWidth * 515/724,
-    height: screenWidth * 73/724,
+    width: screenWidth * 515 / 724,
+    height: screenWidth * 73 / 724,
     //backgroundColor: 'transparent',
     // width: screenWidth * 2 / 3,
     // height: 30,
@@ -441,8 +460,8 @@ let styles = StyleSheet.create({
 
   },
   addressTextInput: {
-    width: screenWidth * 515/724,
-    height: screenWidth * 73/724,
+    width: screenWidth * 515 / 724,
+    height: screenWidth * 73 / 724,
     color: "#fab523",
     paddingLeft: 10,
     paddingRight: 25,
@@ -544,8 +563,8 @@ let styles = StyleSheet.create({
     alignItems: 'center',
   },
   sendButtonImage: {
-    width: screenWidth * 229/724,
-    height: screenWidth * 95/724,
+    width: screenWidth * 229 / 724,
+    height: screenWidth * 95 / 724,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -557,8 +576,8 @@ let styles = StyleSheet.create({
     alignItems: 'center',
   },
   checkedImage: {
-    marginLeft: screenWidth * 63/724,
-    marginRight: screenWidth * 10/724,
+    marginLeft: screenWidth * 63 / 724,
+    marginRight: screenWidth * 10 / 724,
     width: 30,
     height: 30
   },

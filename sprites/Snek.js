@@ -1,6 +1,6 @@
 import React from 'react';
-import { Animated, View, StyleSheet, TouchableOpacity, Image, ImageBackground, } from 'react-native';
-import { Sprite } from 'react-game-kit/native';
+import {Animated, View, StyleSheet, TouchableOpacity, Image, ImageBackground,} from 'react-native';
+import {Sprite} from 'react-game-kit/native';
 import PropTypes from 'prop-types';
 import CONSTANTS from '../Constants.js';
 
@@ -37,7 +37,7 @@ export default class Snek extends Sprite {
       pelletRot: new Animated.Value(0),
       boardShake: new Animated.Value(0),
       alive: true,
-      snakeHead: {transform: [{ rotate: '0deg'}]},
+      snakeHead: {transform: [{rotate: '0deg'}]},
       walls: [],
       mushrooms: {},
     };
@@ -78,7 +78,8 @@ export default class Snek extends Sprite {
     }
     return newTail;
   }
-  copyDefaultState(){
+
+  copyDefaultState() {
     console.log("copyDefaultState")
     var startState = {};
     startState.posX = this.defaultState.posX;
@@ -95,12 +96,12 @@ export default class Snek extends Sprite {
     startState.alive = this.defaultState.alive;
     startState.tail = this.makeTail(3, this.defaultState.boardX, this.defaultState.boardY);
     startState.tailIndex = 2;
-    startState.snakeHead = {transform: [{ rotate: '0deg'}]};
+    startState.snakeHead = {transform: [{rotate: '0deg'}]};
     startState.walls = this.getRandomWalls();
     return startState;
   }
 
-  resetBoard(){
+  resetBoard() {
     // Board is false in "safe" spots and true where the snake and walls are
     this.props.doResetDpad();
     var board = [];
@@ -117,7 +118,7 @@ export default class Snek extends Sprite {
 
     for (var yIndex = 0; yIndex < CONSTANTS.BOARDHEIGHT; yIndex++) {
       for (var xIndex = 0; xIndex < CONSTANTS.BOARDWIDTH; xIndex++) {
-        if(this.state.walls[yIndex * 100 + xIndex]){
+        if (this.state.walls[yIndex * 100 + xIndex]) {
           board[yIndex][xIndex] = true;
         }
       }
@@ -127,13 +128,13 @@ export default class Snek extends Sprite {
   }
 
   hasNeighbor = (x, y, walls) => {
-    if(x > 0 && walls[y * 100 + (x-1)]) {
+    if (x > 0 && walls[y * 100 + (x - 1)]) {
       return true;
-    } else if(x < CONSTANTS.BOARDWIDTH-1 && walls[y * 100 + (x+1)]) {
+    } else if (x < CONSTANTS.BOARDWIDTH - 1 && walls[y * 100 + (x + 1)]) {
       return true;
-    } else if(y > 0 && walls[((y-1) * 100) + x]) {
+    } else if (y > 0 && walls[((y - 1) * 100) + x]) {
       return true;
-    } else if(y < CONSTANTS.BOARDHEIGHT-1 && walls[((y+1) * 100) + x]) {
+    } else if (y < CONSTANTS.BOARDHEIGHT - 1 && walls[((y + 1) * 100) + x]) {
       return true;
     }
     return false;
@@ -143,7 +144,7 @@ export default class Snek extends Sprite {
     let x = Math.floor(Math.random() * CONSTANTS.BOARDWIDTH);
     let y = Math.floor(Math.random() * CONSTANTS.BOARDHEIGHT);
     // while it's not already a wall and it's not in the middle column where the snek starts
-    while(walls[y * 100 + x] || x == CONSTANTS.BOARDSIZEX-1 || this.hasNeighbor(x, y, walls)){
+    while (walls[y * 100 + x] || x == CONSTANTS.BOARDSIZEX - 1 || this.hasNeighbor(x, y, walls)) {
       //newWalls[randY * 100 + randX] || randX == CONSTANTS.BOARDSIZEX-1 || !this.hasNeighbor(randX, randY, newWalls)
       x = Math.floor(Math.random() * CONSTANTS.BOARDWIDTH);
       y = Math.floor(Math.random() * CONSTANTS.BOARDHEIGHT);
@@ -154,32 +155,32 @@ export default class Snek extends Sprite {
     let maxX = x;
     let maxY = y;
     let neighbors = [];
-    for(let blockNumber = 0; blockNumber < n-1; blockNumber++){
-      let randX = Math.floor((Math.random() * ((maxX+2) - (minX-1))+(minX-1)));
-      let randY = Math.floor((Math.random() * ((maxY+2) - (minY-1))+(minY-1)));
+    for (let blockNumber = 0; blockNumber < n - 1; blockNumber++) {
+      let randX = Math.floor((Math.random() * ((maxX + 2) - (minX - 1)) + (minX - 1)));
+      let randY = Math.floor((Math.random() * ((maxY + 2) - (minY - 1)) + (minY - 1)));
       console.log(maxX + "\t" + maxY + "\t" + randX + "\t" + randY)
       //while(walls[randY * 100 + randX] || randX == CONSTANTS.BOARDSIZEX-1 || !this.hasNeighbor(randX, randY, walls)){
-      while(
-          walls[randY * 100 + randX] ||
-          randX == CONSTANTS.BOARDSIZEX-1 ||
-          !this.hasNeighbor(randX, randY, walls)
-           //  ||
-           // randX <= -1 || randX >= CONSTANTS.BOARDSIZEX-1 || randY <= -1 || randY >= CONSTANTS.BOARDSIZEY-1
-      ) {
-        randX = Math.floor((Math.random() * ((maxX+2) - (minX-1))+(minX-1)));
-        randY = Math.floor((Math.random() * ((maxY+2) - (minY-1))+(minY-1)));
+      while (
+        walls[randY * 100 + randX] ||
+        randX == CONSTANTS.BOARDSIZEX - 1 ||
+        !this.hasNeighbor(randX, randY, walls)
+        //  ||
+        // randX <= -1 || randX >= CONSTANTS.BOARDSIZEX-1 || randY <= -1 || randY >= CONSTANTS.BOARDSIZEY-1
+        ) {
+        randX = Math.floor((Math.random() * ((maxX + 2) - (minX - 1)) + (minX - 1)));
+        randY = Math.floor((Math.random() * ((maxY + 2) - (minY - 1)) + (minY - 1)));
       }
 
-      if(randX < minX) {
+      if (randX < minX) {
         minX = randX;
       }
-      if(randX > maxX) {
+      if (randX > maxX) {
         maxX = randX;
       }
-      if(randY < minY) {
+      if (randY < minY) {
         minY = randY;
       }
-      if(randY > maxY) {
+      if (randY > maxY) {
         maxY = randY;
       }
       walls[randY * 100 + randX] = true;
@@ -190,7 +191,7 @@ export default class Snek extends Sprite {
     let randX = Math.floor(Math.random() * CONSTANTS.BOARDWIDTH);
     let randY = Math.floor(Math.random() * CONSTANTS.BOARDHEIGHT);
     // while it's not already a wall and it's not in the middle column where the snek starts
-    while(walls[randY * 100 + randX] || randX == CONSTANTS.BOARDSIZEX-1){
+    while (walls[randY * 100 + randX] || randX == CONSTANTS.BOARDSIZEX - 1) {
       randX = Math.floor(Math.random() * CONSTANTS.BOARDWIDTH);
       randY = Math.floor(Math.random() * CONSTANTS.BOARDHEIGHT);
     }
@@ -200,44 +201,44 @@ export default class Snek extends Sprite {
   getRandomWalls = () => {
     console.log("getRandomWalls")
     let newWalls = [];
-    if(this.props.level === CONSTANTS.LEVELS.BLOCK1) {
-      for(let i = 0; i < 12; i++){
+    if (this.props.level === CONSTANTS.LEVELS.BLOCK1) {
+      for (let i = 0; i < 12; i++) {
         newWalls = this.makeTetrisBlock(4, newWalls);
       }
-    } else if(this.props.level === CONSTANTS.LEVELS.BLOCK2) {
-      for(let i = 0; i < 12; i++){
+    } else if (this.props.level === CONSTANTS.LEVELS.BLOCK2) {
+      for (let i = 0; i < 12; i++) {
         newWalls = this.makeTetrisBlock(4, newWalls);
       }
-      for(let i = 0; i < 4; i++){
+      for (let i = 0; i < 4; i++) {
         newWalls = this.makeTetrisBlock(5, newWalls);
       }
 
-    } else if(this.props.level === CONSTANTS.LEVELS.BLOCK3) {
-      for(let i = 0; i < 8; i++){
+    } else if (this.props.level === CONSTANTS.LEVELS.BLOCK3) {
+      for (let i = 0; i < 8; i++) {
         newWalls = this.makeTetrisBlock(4, newWalls);
       }
-      for(let i = 0; i < 4; i++){
+      for (let i = 0; i < 4; i++) {
         newWalls = this.makeTetrisBlock(5, newWalls);
       }
-      for(let i = 0; i < 4; i++){
+      for (let i = 0; i < 4; i++) {
         newWalls = this.makeTetrisBlock(6, newWalls);
       }
-    } else if(this.props.level === CONSTANTS.LEVELS.SCATTER1) {
-      for(let i = 0; i < 12; i++){
+    } else if (this.props.level === CONSTANTS.LEVELS.SCATTER1) {
+      for (let i = 0; i < 12; i++) {
         newWalls = this.makeScatterShot(newWalls);
       }
-    } else if(this.props.level === CONSTANTS.LEVELS.SCATTER2) {
-      for(let i = 0; i < 24; i++){
+    } else if (this.props.level === CONSTANTS.LEVELS.SCATTER2) {
+      for (let i = 0; i < 24; i++) {
         newWalls = this.makeScatterShot(newWalls);
       }
-    } else if(this.props.level === CONSTANTS.LEVELS.SCATTER3) {
-      for(let i = 0; i < 30; i++){
+    } else if (this.props.level === CONSTANTS.LEVELS.SCATTER3) {
+      for (let i = 0; i < 30; i++) {
         newWalls = this.makeScatterShot(newWalls);
       }
-      for(let i = 0; i < 2; i++){
+      for (let i = 0; i < 2; i++) {
         newWalls = this.makeTetrisBlock(5, newWalls);
       }
-      for(let i = 0; i < 2; i++){
+      for (let i = 0; i < 2; i++) {
         newWalls = this.makeTetrisBlock(6, newWalls);
       }
     }
@@ -249,7 +250,7 @@ export default class Snek extends Sprite {
     this.wallComponents = [];
     for (var yIndex = 0; yIndex < CONSTANTS.BOARDHEIGHT; yIndex++) {
       for (var xIndex = 0; xIndex < CONSTANTS.BOARDWIDTH; xIndex++) {
-        if(this.state.walls[yIndex * 100 + xIndex]){
+        if (this.state.walls[yIndex * 100 + xIndex]) {
           this.wallComponents.push(
             <WallPart
               key={this.getNextID()}
@@ -263,29 +264,34 @@ export default class Snek extends Sprite {
   }
 
   boardXtoPosX(boardX) {
-    return CONSTANTS.BOARDCENTERX + (CONSTANTS.SNEKSIZE*(boardX - CONSTANTS.BOARDSIZEX + 0.5));
+    return CONSTANTS.BOARDCENTERX + (CONSTANTS.SNEKSIZE * (boardX - CONSTANTS.BOARDSIZEX + 0.5));
   }
+
   boardYtoPosY(boardY) {
-    return CONSTANTS.BOARDCENTERY + (CONSTANTS.SNEKSIZE*(boardY - CONSTANTS.BOARDSIZEY + 0.5));
+    return CONSTANTS.BOARDCENTERY + (CONSTANTS.SNEKSIZE * (boardY - CONSTANTS.BOARDSIZEY + 0.5));
   }
+
   die() {
     console.log("die")
     this.setState({alive: false});
     this.props.onDied(this.state.score);
   }
+
   reset() {
     var startState = this.copyDefaultState();
     startState.toggleReset = this.props.toggleReset;
     this.setState(startState);
     this.resetBoard();
   }
-  onBoardTile(boardX, boardY){
+
+  onBoardTile(boardX, boardY) {
     if (this.state.pelletLocation.x == boardX && this.state.pelletLocation.y == boardY) {
       this.eatPellet();
     }
     this.board[boardY][boardX] = true;
   }
-  onLeaveBoardTile(boardX, boardY){
+
+  onLeaveBoardTile(boardX, boardY) {
     this.board[boardY][boardX] = false;
   }
 
@@ -293,7 +299,7 @@ export default class Snek extends Sprite {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  placePellet(){
+  placePellet() {
     var isTail = true;
     while (isTail || isHead) {
       var x = this.getRandomInt(0, CONSTANTS.BOARDWIDTH - 1);
@@ -311,10 +317,10 @@ export default class Snek extends Sprite {
     }
   }
 
-  eatPellet(){
+  eatPellet() {
     //let growLength = Math.floor(Math.log(this.state.score*2)) + 1;
     let growLength = 1;
-    for(let i = 0; i < growLength; i++){
+    for (let i = 0; i < growLength; i++) {
       this.growTail();
     }
     this.placePellet();
@@ -326,7 +332,8 @@ export default class Snek extends Sprite {
     //var score = (this.state.baseScore + 1) * mult;
     this.setState({score: this.state.score + 1});
   }
-  growTail(){
+
+  growTail() {
     if (this.state.tail.length > 0) {
       var newTailStart = this.state.tail.slice(0, this.state.tailIndex);
       var newTailEnd = this.state.tail.slice(this.state.tailIndex, this.state.tail.length);
@@ -344,7 +351,8 @@ export default class Snek extends Sprite {
         </SnekPart>
       );
       newTailStart = newTailStart.concat(newTailEnd);
-      var newTailIndex = this.state.tailIndex+1;;
+      var newTailIndex = this.state.tailIndex + 1;
+      ;
       this.setState({tail: newTailStart, tailIndex: newTailIndex});
     } else {
       var newTail = [];
@@ -359,86 +367,111 @@ export default class Snek extends Sprite {
           direction={this.state.direction}>
         </SnekPart>
       );
-      var newTailIndex = this.state.tailIndex+1;;
+      var newTailIndex = this.state.tailIndex + 1;
+      ;
       this.setState({tail: newTail, tailIndex: newTailIndex});
     }
   }
+
   moveTail(direction) {
-    if(this.state.tailIndex >= 0){
-      this.onLeaveBoardTile(this.state.tail[this.state.tailIndex].props.boardX,this.state.tail[this.state.tailIndex].props.boardY);
+    if (this.state.tailIndex >= 0) {
+      this.onLeaveBoardTile(this.state.tail[this.state.tailIndex].props.boardX, this.state.tail[this.state.tailIndex].props.boardY);
       this.state.tail[this.state.tailIndex] = React.cloneElement(
-          this.state.tail[this.state.tailIndex],
-          {
-            direction: this.state.direction,
-            boardX: this.state.boardX,
-            boardY: this.state.boardY,
-            posX: this.boardXtoPosX(this.state.boardX),
-            posY: this.boardYtoPosY(this.state.boardY),
-            toggleUpdate: !this.state.tail[this.state.tailIndex].props.toggleUpdate,
-          });
+        this.state.tail[this.state.tailIndex],
+        {
+          direction: this.state.direction,
+          boardX: this.state.boardX,
+          boardY: this.state.boardY,
+          posX: this.boardXtoPosX(this.state.boardX),
+          posY: this.boardYtoPosY(this.state.boardY),
+          toggleUpdate: !this.state.tail[this.state.tailIndex].props.toggleUpdate,
+        });
     } else {
       this.onLeaveBoardTile(this.state.boardX, this.state.boardY);
     }
-    var newTailIndex = this.state.tailIndex-1;
-    if(newTailIndex == -1) {
-      newTailIndex = this.state.tail.length-1;
+    var newTailIndex = this.state.tailIndex - 1;
+    if (newTailIndex == -1) {
+      newTailIndex = this.state.tail.length - 1;
     } else if (newTailIndex == -2) { //no tail
       newTailIndex = -1;
     }
     var newPosX = this.boardXtoPosX(this.state.boardX);
     var newPosY = this.boardYtoPosY(this.state.boardY);
-    this.setState( {tailIndex: newTailIndex, posX: newPosX, posY: newPosY} );
+    this.setState({tailIndex: newTailIndex, posX: newPosX, posY: newPosY});
   }
+
   goUp() {
     this.moveTail(CONSTANTS.DPADSTATES.UP);
     if (this.state.boardY - 1 < 0) {
       this.die();
-    } else if (this.board[this.state.boardY - 1][this.state.boardX]){
+    } else if (this.board[this.state.boardY - 1][this.state.boardX]) {
       this.die();
     } else {
       this.onBoardTile(this.state.boardX, this.state.boardY - 1);
-      this.setState({direction: CONSTANTS.DPADSTATES.UP, boardY: this.state.boardY - 1, snakeHead: {transform: [{ rotate: '0deg'}]}});
+      this.setState({
+        direction: CONSTANTS.DPADSTATES.UP,
+        boardY: this.state.boardY - 1,
+        snakeHead: {transform: [{rotate: '0deg'}]}
+      });
     }
   }
+
   goDown() {
     this.moveTail(CONSTANTS.DPADSTATES.DOWN);
     if (this.state.boardY + 1 > CONSTANTS.BOARDHEIGHT - 1) {
       this.die();
-    } else if (this.board[this.state.boardY + 1][this.state.boardX]){
+    } else if (this.board[this.state.boardY + 1][this.state.boardX]) {
       this.die();
     } else {
       this.onBoardTile(this.state.boardX, this.state.boardY + 1);
-      this.setState({direction: CONSTANTS.DPADSTATES.DOWN, boardY: this.state.boardY + 1,snakeHead: {transform: [{ rotate: '180deg'}]}});
+      this.setState({
+        direction: CONSTANTS.DPADSTATES.DOWN,
+        boardY: this.state.boardY + 1,
+        snakeHead: {transform: [{rotate: '180deg'}]}
+      });
     }
   }
+
   goLeft() {
     this.moveTail(CONSTANTS.DPADSTATES.LEFT);
     if (this.state.boardX - 1 < 0) {
       this.die();
-    } else if (this.board[this.state.boardY][this.state.boardX - 1]){
+    } else if (this.board[this.state.boardY][this.state.boardX - 1]) {
       this.die();
     } else {
       this.onBoardTile(this.state.boardX - 1, this.state.boardY);
-      this.setState({direction: CONSTANTS.DPADSTATES.LEFT, boardX: this.state.boardX - 1,snakeHead: {transform: [{ rotate: '270deg'}]}});
+      this.setState({
+        direction: CONSTANTS.DPADSTATES.LEFT,
+        boardX: this.state.boardX - 1,
+        snakeHead: {transform: [{rotate: '270deg'}]}
+      });
     }
   }
+
   goRight() {
     this.moveTail(CONSTANTS.DPADSTATES.RIGHT);
     if (this.state.boardX + 1 > CONSTANTS.BOARDWIDTH - 1) {
       this.die();
-    } else if (this.board[this.state.boardY][this.state.boardX + 1]){
+    } else if (this.board[this.state.boardY][this.state.boardX + 1]) {
       this.die();
     } else {
       this.onBoardTile(this.state.boardX + 1, this.state.boardY);
-      this.setState({direction: CONSTANTS.DPADSTATES.RIGHT, boardX: this.state.boardX + 1, snakeHead: {transform: [{ rotate: '90deg'}]}});
+      this.setState({
+        direction: CONSTANTS.DPADSTATES.RIGHT,
+        boardX: this.state.boardX + 1,
+        snakeHead: {transform: [{rotate: '90deg'}]}
+      });
     }
   }
+
   componentDidMount() {
     this.context.loop.subscribe(this.update);
   }
+
   componentWillUnmount() {
     this.context.loop.unsubscribe(this.update);
   }
+
   update = () => {
     if (this.state.toggleReset == !this.props.toggleReset) { // player reset game
       this.reset();
@@ -494,7 +527,7 @@ export default class Snek extends Sprite {
       // animate
       if (this.state.alive) {
         var now = new Date().getTime();
-        if(this.lastFrameTime == null) { //first frame
+        if (this.lastFrameTime == null) { //first frame
           var speed = 0;
         } else {
           var speed = CONSTANTS.SNEKSPEED * (now - this.lastFrameTime);
@@ -512,12 +545,14 @@ export default class Snek extends Sprite {
       }
     }
   }
+
   spin() {
     return this.state.pelletRot.interpolate({
       inputRange: [0, 1],
       outputRange: ['0deg', '1440deg'],
     });
   }
+
   boardShakeInterpolate() {
     return this.state.boardShake.interpolate({
       inputRange: [0, 1],
@@ -525,29 +560,31 @@ export default class Snek extends Sprite {
     });
   }
 
-  easterEgg = async() => {
+  easterEgg = async () => {
     easterEggCount = easterEggCount + 1;
-    if(easterEggCount > 6) {
+    if (easterEggCount > 6) {
       this.setState({score: this.state.score + 1})
     }
   }
+
   render() {
     var pellet = null;
     var snek = (<View style={[styles.snek, {
       left: this.state.posX,
       top: this.state.posY,
-    }]}><Image source={require('../assets/gameplay/headUp.png')} style={[styles.snek, this.state.snakeHead]} resizeMode="stretch"/></View>);
-    if(this.state.pelletLocation != null) {
+    }]}><Image source={require('../assets/gameplay/headUp.png')} style={[styles.snek, this.state.snakeHead]}
+               resizeMode="stretch"/></View>);
+    if (this.state.pelletLocation != null) {
       var pellet = (<Animated.View style={[styles.pellet, {
         left: this.boardXtoPosX(this.state.pelletLocation.x),
         top: this.boardYtoPosY(this.state.pelletLocation.y),
-        transform: [{ rotate: this.spin()}],
+        transform: [{rotate: this.spin()}],
       }]}>
         <Image source={require('../assets/gameplay/Diamond.png')} style={styles.pellet} resizeMode="stretch"/>
       </Animated.View>);
     }
-    if(!this.state.alive) {
-      snek = (<View style={[styles.snek,{
+    if (!this.state.alive) {
+      snek = (<View style={[styles.snek, {
         left: this.state.posX,
         top: this.state.posY,
         backgroundColor: "#000",
@@ -555,13 +592,14 @@ export default class Snek extends Sprite {
     }
     //let scoreBoardHeight = screenWidth*.757/3.6;
     return (
-      <View style={[styles.gameBack, {/*transferX: this.boardShakeInterpolate()*/}, ]}>
-        <ImageBackground source={require('../assets/gameplay/gameAreaBack.png')} style={styles.fieldBack} resizeMode="stretch">
+      <View style={[styles.gameBack, {/*transferX: this.boardShakeInterpolate()*/},]}>
+        <ImageBackground source={require('../assets/gameplay/gameAreaBack.png')} style={styles.fieldBack}
+                         resizeMode="stretch">
           <ScoreBoard
             score={this.state.score}
             easterEgg={this.easterEgg}
             loading={this.props.loading}
-            user={this.props.user} />
+            user={this.props.user}/>
         </ImageBackground>
         <ImageBackground source={require('../assets/gameplay/gameArea.png')} style={styles.field} resizeMode="stretch"/>
         {this.state.tail.map((elem) => {
@@ -609,7 +647,7 @@ let styles = StyleSheet.create({
     height: CONSTANTS.GAMEHEIGHT,
     position: "absolute",
     top: CONSTANTS.BOARDCENTERY - (0.5 * CONSTANTS.GAMEHEIGHT),
-    left: (CONSTANTS.DEVICEWIDTH/2) - (0.5 * CONSTANTS.GAMEWIDTH),
+    left: (CONSTANTS.DEVICEWIDTH / 2) - (0.5 * CONSTANTS.GAMEWIDTH),
     zIndex: 2,
   },
 });

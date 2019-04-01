@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   TouchableOpacity,
@@ -9,7 +8,7 @@ import {
   ScrollView,
   ImageBackground
 } from 'react-native';
-import { Font } from 'expo';
+import {Font} from 'expo';
 import CONSTANTS from '../Constants.js';
 
 let screenWidth = require('Dimensions').get('window').width;
@@ -21,39 +20,65 @@ let screenHeight = require('Dimensions').get('window').height;
  */
 EasingFunctions = {
   // no easing, no acceleration
-  linear: function (t) { return t },
+  linear: function (t) {
+    return t
+  },
   // accelerating from zero velocity
-  easeInQuad: function (t) { return t*t },
+  easeInQuad: function (t) {
+    return t * t
+  },
   // decelerating to zero velocity
-  easeOutQuad: function (t) { return t*(2-t) },
+  easeOutQuad: function (t) {
+    return t * (2 - t)
+  },
   // acceleration until halfway, then deceleration
-  easeInOutQuad: function (t) { return t<.5 ? 2*t*t : -1+(4-2*t)*t },
+  easeInOutQuad: function (t) {
+    return t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t
+  },
   // accelerating from zero velocity
-  easeInCubic: function (t) { return t*t*t },
+  easeInCubic: function (t) {
+    return t * t * t
+  },
   // decelerating to zero velocity
-  easeOutCubic: function (t) { return (--t)*t*t+1 },
+  easeOutCubic: function (t) {
+    return (--t) * t * t + 1
+  },
   // acceleration until halfway, then deceleration
-  easeInOutCubic: function (t) { return t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1 },
+  easeInOutCubic: function (t) {
+    return t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1
+  },
   // accelerating from zero velocity
-  easeInQuart: function (t) { return t*t*t*t },
+  easeInQuart: function (t) {
+    return t * t * t * t
+  },
   // decelerating to zero velocity
-  easeOutQuart: function (t) { return 1-(--t)*t*t*t },
+  easeOutQuart: function (t) {
+    return 1 - (--t) * t * t * t
+  },
   // acceleration until halfway, then deceleration
-  easeInOutQuart: function (t) { return t<.5 ? 8*t*t*t*t : 1-8*(--t)*t*t*t },
+  easeInOutQuart: function (t) {
+    return t < .5 ? 8 * t * t * t * t : 1 - 8 * (--t) * t * t * t
+  },
   // accelerating from zero velocity
-  easeInQuint: function (t) { return t*t*t*t*t },
+  easeInQuint: function (t) {
+    return t * t * t * t * t
+  },
   // decelerating to zero velocity
-  easeOutQuint: function (t) { return 1+(--t)*t*t*t*t },
+  easeOutQuint: function (t) {
+    return 1 + (--t) * t * t * t * t
+  },
   // acceleration until halfway, then deceleration
-  easeInOutQuint: function (t) { return t<.5 ? 16*t*t*t*t*t : 1+16*(--t)*t*t*t*t }
+  easeInOutQuint: function (t) {
+    return t < .5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t
+  }
 }
 let mode = 0;
 // 0 == opacity
 // 0 == y-gradient?
 // 1 == time-sin-gradient
 let gradientHeight = 3;
-let staticData = Array.from({ length: gradientHeight });
-let gradientBackground  = '#000';
+let staticData = Array.from({length: gradientHeight});
+let gradientBackground = '#000';
 export default class CowOverlay extends React.Component {
   constructor(props) {
     console.log("Easing")
@@ -64,31 +89,34 @@ export default class CowOverlay extends React.Component {
     }
     //this.gradientBackground  = 'purple';
   }
-  async componentDidMount(){
+
+  async componentDidMount() {
     await Font.loadAsync({
       'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
     });
-    this.setState({riffic: {
-      fontFamily: 'riffic-free-bold',
-    }});
+    this.setState({
+      riffic: {
+        fontFamily: 'riffic-free-bold',
+      }
+    });
     let c = 0;
-    let easingFuncs = ["linear","easeInQuad","easeInCubic","easeInQuart","easeInQuint","easeInQuart","easeInCubic","easeInQuad"];
-    let easingFuncsWave = ["linear","easeInQuad","easeOutQuad","easeInOutQuad","easeInCubic","easeOutCubic","easeInOutCubic","easeInQuart","easeOutQuart","easeInOutQuart","easeInQuint","easeOutQuint"];
-    let easingOutFuncs = ["easeOutQuad","easeOutCubic","easeOutQuart","easeInOutQuart","easeOutQuint"];
-    let easingOutFuncsWave = ["easeOutQuad","easeOutCubic","easeOutQuart","easeInOutQuart","easeOutQuint","easeInOutQuart","easeOutQuart","easeOutCubic","easeOutQuad",];
+    let easingFuncs = ["linear", "easeInQuad", "easeInCubic", "easeInQuart", "easeInQuint", "easeInQuart", "easeInCubic", "easeInQuad"];
+    let easingFuncsWave = ["linear", "easeInQuad", "easeOutQuad", "easeInOutQuad", "easeInCubic", "easeOutCubic", "easeInOutCubic", "easeInQuart", "easeOutQuart", "easeInOutQuart", "easeInQuint", "easeOutQuint"];
+    let easingOutFuncs = ["easeOutQuad", "easeOutCubic", "easeOutQuart", "easeInOutQuart", "easeOutQuint"];
+    let easingOutFuncsWave = ["easeOutQuad", "easeOutCubic", "easeOutQuart", "easeInOutQuart", "easeOutQuint", "easeInOutQuart", "easeOutQuart", "easeOutCubic", "easeOutQuad",];
     //let easingFuncs = ["easeInOutQuad" "easeInOutCubic"];
     //let easingFuncs = ["linear","easeInCubic","easeInQuint","easeInCubic"]//,
 
     this.interval = setInterval(() => {
       // THIS IS A BAD WAY TO DO ANIMATION! THIS CODE IS AN EASTEREGG. IT IS HEAVY TO INCLUDE.
       c++;
-      if(c%3 == 0 || true){
-        for(let i = 0; i < staticData.length; i++) {
+      if (c % 3 == 0 || true) {
+        for (let i = 0; i < staticData.length; i++) {
           //console.log(easingOutFuncsWave[c%easingOutFuncsWave.length])
-          if(c%200 >= 100) {
-            staticData[i] = ((c%25)*0.04)+0.1;
+          if (c % 200 >= 100) {
+            staticData[i] = ((c % 25) * 0.04) + 0.1;
           } else {
-            staticData[i] = ((c%25)*0.04)+0.1;
+            staticData[i] = ((c % 25) * 0.04) + 0.1;
             //staticData[i] = ((4-c%25)*0.04)+0.1;
           }
 
@@ -99,15 +127,15 @@ export default class CowOverlay extends React.Component {
           //staticData[i] = EasingFunctions["linear"](i / gradientHeight);
           //staticData[i] = EasingFunctions[easingFuncsWave[c%easingFuncsWave.length]]((i / gradientHeight));
         }
-      } else if (c%3 == 1){
-        for(let i = 0; i < staticData.length; i++) {
+      } else if (c % 3 == 1) {
+        for (let i = 0; i < staticData.length; i++) {
           //console.log(easingOutFuncsWave[c%easingOutFuncsWave.length])
-          staticData[i] = EasingFunctions[easingOutFuncsWave[c%easingOutFuncsWave.length]]((c%100)*0.01);
+          staticData[i] = EasingFunctions[easingOutFuncsWave[c % easingOutFuncsWave.length]]((c % 100) * 0.01);
         }
       } else {
-        for(let i = 0; i < staticData.length; i++) {
+        for (let i = 0; i < staticData.length; i++) {
           //console.log(easingFuncsWave[c%easingFuncsWave.length])
-          staticData[i] = EasingFunctions[easingFuncsWave[c%easingFuncsWave.length]]((i / gradientHeight));
+          staticData[i] = EasingFunctions[easingFuncsWave[c % easingFuncsWave.length]]((i / gradientHeight));
         }
       }
       this.setState({data: staticData});
@@ -117,9 +145,11 @@ export default class CowOverlay extends React.Component {
   componentWillUnmount() {
     clearInterval(this.interval);
   }
+
   getOpacity = (gradh, i) => {
     return (1 / gradh) * (i + 1);
   }
+
   render() {
     if (!this.props.show) {
       return null;
@@ -129,18 +159,18 @@ export default class CowOverlay extends React.Component {
           {this.state.data.map((item, i) => {
             return (
               <View
-               key={i}
-               style={{
-                   position: 'absolute',
-                   backgroundColor: gradientBackground,
-                   height: (screenHeight/gradientHeight),
-                   width: screenWidth,
-                   top: ((screenHeight/gradientHeight)*i),
-                   left: 0,
-                   zIndex: 2,
-                   opacity: item,
-               }}/>)
-            })}
+                key={i}
+                style={{
+                  position: 'absolute',
+                  backgroundColor: gradientBackground,
+                  height: (screenHeight / gradientHeight),
+                  width: screenWidth,
+                  top: ((screenHeight / gradientHeight) * i),
+                  left: 0,
+                  zIndex: 2,
+                  opacity: item,
+                }}/>)
+          })}
         </View>
       );
       return view;

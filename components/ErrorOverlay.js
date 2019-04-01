@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   TouchableOpacity,
@@ -9,7 +8,7 @@ import {
   ScrollView,
   ImageBackground
 } from 'react-native';
-import { Font } from 'expo';
+import {Font} from 'expo';
 import CONSTANTS from '../Constants.js';
 
 export default class ErrorOverlay extends React.Component {
@@ -19,23 +18,29 @@ export default class ErrorOverlay extends React.Component {
       riffic: {},
     }
   }
-  async componentDidMount(){
+
+  async componentDidMount() {
     await Font.loadAsync({
       'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
     });
-    this.setState({riffic: {
-      fontFamily: 'riffic-free-bold',
-    }});
+    this.setState({
+      riffic: {
+        fontFamily: 'riffic-free-bold',
+      }
+    });
   }
+
   render() {
     if (!this.props.show) {
       return null;
     } else {
       return (
         <View style={styles.container}>
-          <ImageBackground source={require("../assets/ticket/background.png")} resizeMode={"stretch"} style={styles.mainView}>
+          <ImageBackground source={require("../assets/ticket/background.png")} resizeMode={"stretch"}
+                           style={styles.mainView}>
             <TouchableOpacity style={styles.closeButton} onPress={this.props.closeOverlay}>
-              <Image source={require('../assets/wallet/closeBG.png')} style={styles.closeButtonImage} resizeMode="stretch" />
+              <Image source={require('../assets/wallet/closeBG.png')} style={styles.closeButtonImage}
+                     resizeMode="stretch"/>
             </TouchableOpacity>
             <Text style={styles.titleText}>{this.props.title}</Text>
             <Text style={styles.normalText}>{this.props.paragraph}</Text>
@@ -53,15 +58,15 @@ var styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     top: 0,
-    backgroundColor:  'rgba(0,0,0,0.6)',
+    backgroundColor: 'rgba(0,0,0,0.6)',
     width: screenWidth,
     height: screenHeight,
     justifyContent: 'center',
     alignItems: 'center',
   },
   mainView: {
-    width: screenWidth * 638/726,
-    aspectRatio: 960/983,
+    width: screenWidth * 638 / 726,
+    aspectRatio: 960 / 983,
     alignItems: 'center',
   },
   closeButton: {

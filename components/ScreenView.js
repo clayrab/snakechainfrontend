@@ -14,18 +14,24 @@ export default class ScreenView extends React.Component {
     super(props);
     this.state = {statusBarHeight: statusBarHeight};
   }
-  componentDidMount = async() => {
+
+  componentDidMount = async () => {
     //console.log("ScreenView componentDidMount");
     //StatusBarHeight.addEventListener(statusBarListener);
   }
+
   componentWillUnmount() {
     //console.log("ScreenView componentWillUnmount");
     //StatusBarHeight.removeEventListener(statusBarListener);
   }
+
   render() {
     return (
-      <SafeAreaView style={[{marginTop: this.state.statusBarHeight, height: screenHeight - this.state.statusBarHeight, }, styles.screen]}>
-         { this.props.children }
+      <SafeAreaView style={[{
+        marginTop: this.state.statusBarHeight,
+        height: screenHeight - this.state.statusBarHeight,
+      }, styles.screen]}>
+        {this.props.children}
       </SafeAreaView>
     )
   }

@@ -1,4 +1,4 @@
-import { Dimensions, Platform, PixelRatio } from 'react-native';
+import {Dimensions, Platform, PixelRatio} from 'react-native';
 
 const {
   width: SCREEN_WIDTH,
@@ -8,7 +8,7 @@ const {
 // based on iphone 5s's scale
 const scale = SCREEN_WIDTH / 320;
 
-export let normalize  = (size) => {
+export let normalize = (size) => {
   const newSize = size * scale
   if (Platform.OS === 'ios') {
     return Math.round(PixelRatio.roundToNearestPixel(newSize))

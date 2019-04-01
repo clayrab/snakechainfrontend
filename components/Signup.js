@@ -168,6 +168,9 @@ export default class Signup extends React.Component {
             </View>
             <View style={{flex: 1}}/>
           </View>
+          <Text style={[styles.titleText, this.state.buttonDynamicStyle]}>
+            SIGN-UP
+          </Text>
           <ImageBackground source={require('../assets/signup/textBox.png')} style={styles.loginInput}
                            resizeMode="stretch">
             <Image source={require('../assets/signup/phoneIcon.png')} style={styles.lockImage} resizeMode="stretch"/>

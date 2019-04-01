@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
-import { Sprite } from 'react-game-kit/native';
+import {View, StyleSheet, TouchableOpacity, ImageBackground} from 'react-native';
+import {Sprite} from 'react-game-kit/native';
 import PropTypes from 'prop-types';
 import CONSTANTS from '../Constants.js';
 
@@ -15,7 +15,7 @@ export default class Board extends Sprite {
     var borderWidth = 5;
     // var boardWidth = CONSTANTS.BOARDWIDTH * CONSTANTS.SNEKSIZE + 2 * borderWidth + 2;
     // var boardHeight = CONSTANTS.BOARDHEIGHT * CONSTANTS.SNEKSIZE + 2 * borderWidth + 2;
-    
+
     this.shouldUpdate = true;
     this.styles = StyleSheet.create({
       field: {
@@ -24,7 +24,7 @@ export default class Board extends Sprite {
         height: boardHeight,
         position: "absolute",
         top: CONSTANTS.BOARDCENTERY - (0.5 * boardHeight),
-        left: (CONSTANTS.DEVICEWIDTH/2) - (0.5 * boardWidth),
+        left: (CONSTANTS.DEVICEWIDTH / 2) - (0.5 * boardWidth),
         borderWidth: borderWidth,
         borderColor: CONSTANTS.BOARDCOLOR,
       },
@@ -50,10 +50,12 @@ export default class Board extends Sprite {
     }
     return false;
   }
+
   render() {
     return (
       <View style={this.styles.gameBack}>
-        <ImageBackground source={require('../assets/gameplay/Background.png')} style={this.styles.field} resizeMode="stretch">
+        <ImageBackground source={require('../assets/gameplay/Background.png')} style={this.styles.field}
+                         resizeMode="stretch">
         </ImageBackground>
       </View>
     );

@@ -7,9 +7,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Font } from 'expo';
+import {Font} from 'expo';
 import CONSTANTS from '../Constants.js';
 import {normalize} from '../utils/FontNormalizer.js';
+
 export default class ConfirmTxOverlay extends React.Component {
   constructor(props) {
     super(props);
@@ -17,25 +18,33 @@ export default class ConfirmTxOverlay extends React.Component {
       riffic: {},
     }
   }
-  async componentDidMount(){
+
+  async componentDidMount() {
     await Font.loadAsync({
       'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
     });
-    this.setState({riffic: {
-      fontFamily: 'riffic-free-bold',
-    }});
+    this.setState({
+      riffic: {
+        fontFamily: 'riffic-free-bold',
+      }
+    });
   }
+
   render() {
     if (!this.props.show) {
       return null;
     } else {
       return (
         <View style={styles.container}>
-          <ImageBackground source={require('../assets/areyousure/background.png')} style={styles.backgroundImage} resizeMode="stretch">
-            <Text style={[this.state.riffic, styles.text, styles.line1]}>Your transaction has been sent and will be confirmed shortly</Text>
-            <Text style={[this.state.riffic, styles.text, styles.line2]}>Transaction ID: {this.props.transactionId}</Text>
+          <ImageBackground source={require('../assets/areyousure/background.png')} style={styles.backgroundImage}
+                           resizeMode="stretch">
+            <Text style={[this.state.riffic, styles.text, styles.line1]}>Your transaction has been sent and will be
+              confirmed shortly</Text>
+            <Text style={[this.state.riffic, styles.text, styles.line2]}>Transaction
+              ID: {this.props.transactionId}</Text>
             <TouchableOpacity style={styles.touchableButton} onPress={this.props.onOk}>
-              <ImageBackground source={require('../assets/gameover/greenButton.png')} style={styles.largeButton} resizeMode="stretch">
+              <ImageBackground source={require('../assets/gameover/greenButton.png')} style={styles.largeButton}
+                               resizeMode="stretch">
                 <Text style={[styles.buttonText, styles.largeButtonText]}>
                   OK
                 </Text>
@@ -56,25 +65,24 @@ var styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     top: 0,
-    backgroundColor:  'rgba(0,0,0,0.6)',
+    backgroundColor: 'rgba(0,0,0,0.6)',
     width: screenWidth,
     height: screenHeight,
     justifyContent: 'center',
     alignItems: 'center',
   },
   backgroundImage: {
-   width: screenWidth*633/724,
-   height: screenWidth*(748/960)*633/724,
-   flexDirection: 'column',
-   alignItems: 'center',
-   padding: 32,
+    width: screenWidth * 633 / 724,
+    height: screenWidth * (748 / 960) * 633 / 724,
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: 32,
   },
   text: {
     color: "#fab523",
     fontSize: normalize(12),
   },
-  line1: {
-  },
+  line1: {},
   line2: {
     paddingTop: 16,
   },

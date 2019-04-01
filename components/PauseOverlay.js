@@ -7,13 +7,15 @@ import {
   View,
   ImageBackground
 } from 'react-native';
-import { Font } from 'expo';
+import {Font} from 'expo';
 import {normalize} from '../utils/FontNormalizer.js';
+
 export default class PauseOverlay extends React.Component {
   constructor(props) {
     super(props);
   }
-  async componentDidMount(){
+
+  async componentDidMount() {
     await Font.loadAsync({
       'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
     });
@@ -21,20 +23,24 @@ export default class PauseOverlay extends React.Component {
       fontFamily: 'riffic-free-bold'
     }
   }
+
   render() {
     if (!this.props.show) {
       return null;
     } else {
       return (
         <View style={styles.container}>
-          <ImageBackground style={styles.content} source={require('../assets/pauseoverlay/BackgroundBrown.png')} resizeMode={'stretch'}>
+          <ImageBackground style={styles.content} source={require('../assets/pauseoverlay/BackgroundBrown.png')}
+                           resizeMode={'stretch'}>
             <TouchableOpacity style={styles.closeButton} onPress={this.props.closeOverlay}>
-              <Image style={styles.closeButtonImage} source={require('../assets/closebutton_bad.png')} resizeMode={'contain'}/>
+              <Image style={styles.closeButtonImage} source={require('../assets/closebutton_bad.png')}
+                     resizeMode={'contain'}/>
             </TouchableOpacity>
             <Text style={[styles.buttonText, styles.titleText]}>PAUSED</Text>
             <View style={styles.buttonView}>
               <TouchableOpacity onPress={this.props.powerUps}>
-                <ImageBackground style={styles.brownButton} source={require('../assets/pauseoverlay/BrownButton.png')} resizeMode={'stretch'} >
+                <ImageBackground style={styles.brownButton} source={require('../assets/pauseoverlay/BrownButton.png')}
+                                 resizeMode={'stretch'}>
                   <Text style={[styles.buttonText, styles.brownButtonText]}>
                     POWER UP INVENTORY
                   </Text>
@@ -48,7 +54,8 @@ export default class PauseOverlay extends React.Component {
                 </ImageBackground>
               </TouchableOpacity>*/}
               <TouchableOpacity onPress={this.props.quit}>
-                <ImageBackground style={styles.brownButton} source={require('../assets/pauseoverlay/BrownButton.png')} resizeMode={'stretch'} >
+                <ImageBackground style={styles.brownButton} source={require('../assets/pauseoverlay/BrownButton.png')}
+                                 resizeMode={'stretch'}>
                   <Text style={[styles.buttonText, styles.brownButtonText]}>
                     QUIT GAME
                   </Text>
@@ -56,7 +63,8 @@ export default class PauseOverlay extends React.Component {
               </TouchableOpacity>
             </View>
             <TouchableOpacity onPress={this.props.closeOverlay} style={styles.yellowButton}>
-              <ImageBackground style={styles.brownButton} source={require('../assets/pauseoverlay/YellowButton.png')} resizeMode={'stretch'} >
+              <ImageBackground style={styles.brownButton} source={require('../assets/pauseoverlay/YellowButton.png')}
+                               resizeMode={'stretch'}>
                 <Text style={[styles.buttonText, styles.yellowButtonText]}>
                   RESUME THE GAME
                 </Text>
@@ -76,7 +84,7 @@ var styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     top: 0,
-    backgroundColor:  'rgba(0,0,0,0.8)',
+    backgroundColor: 'rgba(0,0,0,0.8)',
     width: screenWidth,
     height: screenHeight,
     justifyContent: 'center',
@@ -85,8 +93,8 @@ var styles = StyleSheet.create({
   content: {
     marginTop: 100,
     paddingTop: 10,
-    width: screenWidth*932/1080,
-    height: (2359/1872)*screenWidth*932/1080,
+    width: screenWidth * 932 / 1080,
+    height: (2359 / 1872) * screenWidth * 932 / 1080,
     position: 'relative',
     flexDirection: 'column',
     //justifyContent: 'center',
@@ -111,8 +119,8 @@ var styles = StyleSheet.create({
     marginTop: -70,
   },
   brownButton: {
-    width: screenWidth*746/1080,
-    height: (330/1494)*screenWidth*746/1080,
+    width: screenWidth * 746 / 1080,
+    height: (330 / 1494) * screenWidth * 746 / 1080,
     marginTop: 10,
     alignItems: 'center',
     justifyContent: 'center'

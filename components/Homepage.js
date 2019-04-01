@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Image,
   ImageBackground,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -344,7 +343,6 @@ export default class Homepage extends React.Component {
     }
     return (
       <ScreenView>
-        <StatusBar translucent={true} backgroundColor={'transparent'} {...this.props} />
         <ImageBackground source={require('../assets/homepage/back.png')} style={styles.backgroundImage}>
           <Header loading={this.props.loading} user={this.props.user} onProfile={this.props.onProfile}
                   onWallet={this.props.onWallet}/>
