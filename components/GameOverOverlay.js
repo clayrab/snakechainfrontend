@@ -7,14 +7,16 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Font } from 'expo';
+import {Font} from 'expo';
 import CONSTANTS from '../Constants.js';
 import {normalize} from '../utils/FontNormalizer.js';
+
 export default class GameOverOverlay extends React.Component {
   constructor(props) {
     super(props);
   }
-  async componentDidMount(){
+
+  async componentDidMount() {
     await Font.loadAsync({
       'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
     });
@@ -22,6 +24,7 @@ export default class GameOverOverlay extends React.Component {
       fontFamily: 'riffic-free-bold'
     }
   }
+
   render() {
     if (!this.props.show) {
       return null;
@@ -37,44 +40,52 @@ export default class GameOverOverlay extends React.Component {
             <Text style={[styles.buttonText, styles.gameOverText]}>
               GAME OVER
             </Text>
-            { this.props.offerContract &&
-              <View style={{alignItems: "center"}}>
-                <Text style={[styles.buttonText, styles.selectionText]}>
-                  You mined <Text style={[styles.buttonText, styles.numberText]}>{this.props.gameOverInfo.score}</Text> gold!
-                </Text>
-                <View style={styles.contractView}>
-                  <Image source={require('../assets/gameover/yellowsnake.png')} style={styles.leftSnakeImage} resizeMode="contain"/>
-                  <ImageBackground source={require('../assets/gameover/contractSigned.png')} style={styles.contractImage} resizeMode="contain">
-                    <Text style={[styles.buttonText, styles.contractText]}>
-                      CONTRACT
+            {this.props.offerContract &&
+            <View style={{alignItems: "center"}}>
+              <Text style={[styles.buttonText, styles.selectionText]}>
+                You mined <Text
+                style={[styles.buttonText, styles.numberText]}>{this.props.gameOverInfo.score}</Text> gold!
+              </Text>
+              <View style={styles.contractView}>
+                <Image source={require('../assets/gameover/yellowsnake.png')} style={styles.leftSnakeImage}
+                       resizeMode="contain"/>
+                <ImageBackground source={require('../assets/gameover/contractSigned.png')} style={styles.contractImage}
+                                 resizeMode="contain">
+                  <Text style={[styles.buttonText, styles.contractText]}>
+                    CONTRACT
+                  </Text>
+                  <Text style={[styles.buttonText, styles.contractDetails]}>
+                    Exchange for minted snek coin now.{"\n"}{"\n"}
+                    <Text style={[styles.buttonText, styles.contractDetails, {fontSize: normalize(18),},]}>
+                      {(this.props.miningPrice / CONSTANTS.WEIPERETH).toPrecision(4)} ETH.
                     </Text>
-                    <Text style={[styles.buttonText, styles.contractDetails]}>
-                      Exchange for minted snek coin now.{"\n"}{"\n"}
-                      <Text style={[styles.buttonText, styles.contractDetails, {fontSize: normalize(18), },]}>
-                        {(this.props.miningPrice/CONSTANTS.WEIPERETH).toPrecision(4)} ETH.
-                      </Text>
-                    </Text>
-                  </ImageBackground>
-                  <Image source={require('../assets/gameover/greensnake.png')} style={styles.rightSnakeImage}  resizeMode="contain"/>
-                </View>
-                <TouchableOpacity style={[styles.touchableButton, styles.smallTouchableButton]} onPress={this.props.onDoContract}>
-                  <ImageBackground source={require('../assets/gameover/yellowButton.png')} style={styles.signConractButton} resizeMode="stretch">
-                    <Text style={[styles.buttonText, styles.signConractText]}>
-                      SIGN CONTRACT
-                    </Text>
-                  </ImageBackground>
-                </TouchableOpacity>
+                  </Text>
+                </ImageBackground>
+                <Image source={require('../assets/gameover/greensnake.png')} style={styles.rightSnakeImage}
+                       resizeMode="contain"/>
               </View>
+              <TouchableOpacity style={[styles.touchableButton, styles.smallTouchableButton]}
+                                onPress={this.props.onDoContract}>
+                <ImageBackground source={require('../assets/gameover/yellowButton.png')}
+                                 style={styles.signConractButton} resizeMode="stretch">
+                  <Text style={[styles.buttonText, styles.signConractText]}>
+                    SIGN CONTRACT
+                  </Text>
+                </ImageBackground>
+              </TouchableOpacity>
+            </View>
             }
             <TouchableOpacity style={styles.touchableButton} onPress={this.props.restart}>
-              <ImageBackground source={require('../assets/gameover/greenButton.png')} style={styles.largeButton} resizeMode="stretch">
+              <ImageBackground source={require('../assets/gameover/greenButton.png')} style={styles.largeButton}
+                               resizeMode="stretch">
                 <Text style={[styles.buttonText, styles.largeButtonBText]}>
                   PLAY AGAIN
                 </Text>
               </ImageBackground>
             </TouchableOpacity>
             <TouchableOpacity style={styles.touchableButton} onPress={this.props.exit}>
-              <ImageBackground source={require('../assets/gameover/darkButton.png')} style={styles.largeButton} resizeMode="stretch">
+              <ImageBackground source={require('../assets/gameover/darkButton.png')} style={styles.largeButton}
+                               resizeMode="stretch">
                 <Text style={[styles.buttonText, styles.largeButtonText]}>
                   GO TO MAIN MENU
                 </Text>
@@ -95,15 +106,15 @@ var styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     top: 0,
-    backgroundColor:  'rgba(0,0,0,0.6)',
+    backgroundColor: 'rgba(0,0,0,0.6)',
     width: screenWidth,
     height: screenHeight,
     justifyContent: 'center',
     alignItems: 'center',
   },
   backgroundImage: {
-    width: screenWidth*685/724,
-    height: screenHeight*1180/1287,
+    width: screenWidth * 685 / 724,
+    height: screenHeight * 1180 / 1287,
     position: 'relative',
     flexDirection: 'column',
     alignItems: 'center',
@@ -132,25 +143,25 @@ var styles = StyleSheet.create({
   },
 
   contractImage: {
-    height: 508/362*screenWidth*359/1080,
-    width: screenWidth*359/1080,
+    height: 508 / 362 * screenWidth * 359 / 1080,
+    width: screenWidth * 359 / 1080,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
   },
   leftSnakeImage: {
-    width: screenWidth*407/1080,
-    height: (950/943)*screenWidth*407/1080,
-    marginRight: -screenWidth*40/1080,
-    marginLeft: -screenWidth*100/1080,
-    marginTop: (950/943)*screenWidth*90/1080,
+    width: screenWidth * 407 / 1080,
+    height: (950 / 943) * screenWidth * 407 / 1080,
+    marginRight: -screenWidth * 40 / 1080,
+    marginLeft: -screenWidth * 100 / 1080,
+    marginTop: (950 / 943) * screenWidth * 90 / 1080,
     zIndex: 100,
   },
   rightSnakeImage: {
-    width: screenWidth*294/1080,
-    height: (994/717)* screenWidth*294/1080,
-    marginLeft: -screenWidth*40/1080,
-    marginTop: (950/943)*screenWidth*90/1080,
+    width: screenWidth * 294 / 1080,
+    height: (994 / 717) * screenWidth * 294 / 1080,
+    marginLeft: -screenWidth * 40 / 1080,
+    marginTop: (950 / 943) * screenWidth * 90 / 1080,
   },
   touchableButton: {
     alignItems: 'center',
@@ -158,8 +169,8 @@ var styles = StyleSheet.create({
   },
   signConractButton: {
     marginTop: 10,
-    width: screenWidth*411/1080,
-    height: (294/1000)*screenWidth*411/1080,
+    width: screenWidth * 411 / 1080,
+    height: (294 / 1000) * screenWidth * 411 / 1080,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -168,10 +179,10 @@ var styles = StyleSheet.create({
     fontSize: normalize(13),
   },
   largeButton: {
-    width: screenWidth*708/1080,
+    width: screenWidth * 708 / 1080,
     //width: screenWidth * 0.75,
     //height: 60,
-    height: (386/1425)*screenWidth*708/1080,
+    height: (386 / 1425) * screenWidth * 708 / 1080,
     justifyContent: 'center',
     alignItems: 'center',
   },

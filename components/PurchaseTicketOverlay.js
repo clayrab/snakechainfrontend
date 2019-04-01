@@ -9,7 +9,7 @@ import {
   ImageBackground,
   TouchableOpacity,
 } from 'react-native';
-import { Font } from 'expo';
+import {Font} from 'expo';
 import {normalize} from '../utils/FontNormalizer.js';
 
 export default class PurchaseTicketOverlay extends React.Component {
@@ -19,6 +19,7 @@ export default class PurchaseTicketOverlay extends React.Component {
       buttonDynamicStyle: {}
     };
   }
+
   async componentDidMount() {
     await Font.loadAsync({
       'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
@@ -29,37 +30,47 @@ export default class PurchaseTicketOverlay extends React.Component {
       }
     });
   }
+
   purchaseWithETH = () => {
     this.props.onSelectTicket("ETH");
   }
   purchaseWithSNK = () => {
     this.props.onSelectTicket("SNK");
   }
+
   render() {
     if (!this.props.show) {
       return null;
     } else {
       return (
         <View style={styles.container}>
-          <ImageBackground source={require("../assets/ticket/background.png")} resizeMode={"stretch"} style={styles.mainView}>
+          <ImageBackground source={require("../assets/ticket/background.png")} resizeMode={"stretch"}
+                           style={styles.mainView}>
             <TouchableOpacity style={styles.closeButton} onPress={this.props.closeOverlay}>
-              <Image source={require('../assets/wallet/closeBG.png')} style={styles.closeButtonImage} resizeMode="stretch" />
+              <Image source={require('../assets/wallet/closeBG.png')} style={styles.closeButtonImage}
+                     resizeMode="stretch"/>
             </TouchableOpacity>
             <View style={styles.headerView}>
               <Text style={[styles.headerText, this.state.buttonDynamicStyle]}>Ship to SnakeBank</Text>
             </View>
             <Image source={require("../assets/ticket/train.png")} style={styles.ticketImage}/>
             <View style={styles.headerText2Holder}>
-              <Text style={[styles.headerText2, this.state.buttonDynamicStyle]}>You can purchase transportation for your raw <Image source={require('../assets/wallet/coin.png')} style={[styles.coin]} /> to be minted at the Snake Bank</Text>
-              <Text style={[styles.headerText2, this.state.buttonDynamicStyle]}>Upon shipping your haul, a courier will deposit [CURRENT HAUL AMT] <Image source={require('../assets/wallet/coin.png')} style={[styles.coin]} /> SnakeChain into your Snake Wallet</Text>
-              <Text style={[styles.headerText2small, this.state.buttonDynamicStyle]}>NOTE: It typically takes under 10min to receive courier deposit</Text>
+              <Text style={[styles.headerText2, this.state.buttonDynamicStyle]}>You can purchase transportation for your
+                raw <Image source={require('../assets/wallet/coin.png')} style={[styles.coin]}/> to be minted at the
+                Snake Bank</Text>
+              <Text style={[styles.headerText2, this.state.buttonDynamicStyle]}>Upon shipping your haul, a courier will
+                deposit [CURRENT HAUL AMT] <Image source={require('../assets/wallet/coin.png')}
+                                                  style={[styles.coin]}/> SnakeChain into your Snake Wallet</Text>
+              <Text style={[styles.headerText2small, this.state.buttonDynamicStyle]}>NOTE: It typically takes under
+                10min to receive courier deposit</Text>
             </View>
             {this.props.user.haul > 0
               ?
               <TouchableOpacity onPress={this.purchaseWithETH}>
-                <ImageBackground source={require("../assets/ticket/button.png")} resizeMode='stretch' style={styles.inputBackground}>
+                <ImageBackground source={require("../assets/ticket/button.png")} resizeMode='stretch'
+                                 style={styles.inputBackground}>
                   <View style={styles.textInputStyle}>
-                    <Text style={[styles.ticketDescription, this.state.buttonDynamicStyle]} >Daily Tram </Text>
+                    <Text style={[styles.ticketDescription, this.state.buttonDynamicStyle]}>Daily Tram </Text>
                   </View>
                   <View style={styles.ticketPrice}>
                     <Text style={[styles.ticketText, this.state.buttonDynamicStyle]}>0.01 Eth</Text>
@@ -68,7 +79,8 @@ export default class PurchaseTicketOverlay extends React.Component {
               </TouchableOpacity>
               :
               <TouchableOpacity>
-                <ImageBackground source={require("../assets/ticket/button.png")} resizeMode='stretch' style={styles.inputBackground}>
+                <ImageBackground source={require("../assets/ticket/button.png")} resizeMode='stretch'
+                                 style={styles.inputBackground}>
                   <View style={styles.textInputStyle}>
                     <Text style={[styles.ticketDescription, this.state.buttonDynamicStyle]}>Daily Tram</Text>
                   </View>
@@ -123,16 +135,16 @@ let styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     top: 0,
-    backgroundColor:  'rgba(0,0,0,0.6)',
+    backgroundColor: 'rgba(0,0,0,0.6)',
     width: screenWidth,
     height: screenHeight,
     justifyContent: 'center',
     alignItems: 'center',
   },
   mainView: {
-    width: screenWidth * 638/726,
+    width: screenWidth * 638 / 726,
     //aspectRatio: 960/983, THIS IS THE ACTUAL IMAGE SIZE
-    aspectRatio: 960/1433,
+    aspectRatio: 960 / 1433,
     alignItems: 'center',
   },
   ticketText: {
@@ -166,16 +178,16 @@ let styles = StyleSheet.create({
   },
   ticketImage: {
     marginTop: 20,
-    width: screenWidth * 232/726,
-    height: (227/342)*screenWidth * 232/726,
+    width: screenWidth * 232 / 726,
+    height: (227 / 342) * screenWidth * 232 / 726,
   },
-  succeedButton: { height: screenHeight / 11, width: "45%", },
-  arrowImg : {height : "60%" , width : "20%" , resizeMode : 'stretch' ,},
-  textInputStyle: { flex: 2, paddingLeft: '7%', justifyContent: "center" },
-  succeedText: { color: "#352526", fontSize: normalize(13),  },
-  textBox: { fontSize: normalize(13), paddingLeft: '10%', width: "90%", color: "#705756", height: "100%" },
-  unvalid:{ flex: 1, justifyContent: "center", alignItems: "flex-start" },
-  unvalidText: { fontSize: normalize(13), color: "#7D5B1E" },
+  succeedButton: {height: screenHeight / 11, width: "45%",},
+  arrowImg: {height: "60%", width: "20%", resizeMode: 'stretch',},
+  textInputStyle: {flex: 2, paddingLeft: '7%', justifyContent: "center"},
+  succeedText: {color: "#352526", fontSize: normalize(13),},
+  textBox: {fontSize: normalize(13), paddingLeft: '10%', width: "90%", color: "#705756", height: "100%"},
+  unvalid: {flex: 1, justifyContent: "center", alignItems: "flex-start"},
+  unvalidText: {fontSize: normalize(13), color: "#7D5B1E"},
   proceedView: {
     position: "absolute",
     bottom: -45,
@@ -186,8 +198,8 @@ let styles = StyleSheet.create({
   },
   inputBackground: {
     //marginTop: 15,
-    width: screenWidth * 574/726,
-    height: (156/863)*screenWidth * 574/726,
+    width: screenWidth * 574 / 726,
+    height: (156 / 863) * screenWidth * 574 / 726,
     flexDirection: "row",
   },
   ticketDescription: {
@@ -209,5 +221,5 @@ let styles = StyleSheet.create({
     height: 50,
     width: 35,
   },
-  coin: { height: 12, width: 12*168/128, resizeMode: 'stretch', },
+  coin: {height: 12, width: 12 * 168 / 128, resizeMode: 'stretch',},
 })

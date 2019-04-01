@@ -8,7 +8,7 @@ import {
   ImageBackground,
   Image
 } from 'react-native';
-import { Font } from 'expo';
+import {Font} from 'expo';
 import {asyncStore, getFromAsyncStore, removeItemValue} from "../utils/AsyncStore.js";
 import {makeRetry} from "../utils/Retry.js";
 import {context} from "../utils/Context.js";
@@ -27,13 +27,13 @@ let mineImages = [
   require('../assets/homepage/mine/mine90.png'),
   require('../assets/homepage/mine/mine100.png'),
 ]
-let levelNames = {1: "Simple Snake", }
+let levelNames = {1: "Simple Snake",}
 export default class GameHistoryOverlay extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       loading: true,
-      textStyle: { display: "none",},
+      textStyle: {display: "none",},
       games: [],
       riffic: {},
     }
@@ -41,87 +41,99 @@ export default class GameHistoryOverlay extends React.Component {
 
   static getDerivedStateFromProps(props, state) {
     //let ethBal = (props.user.eth/CONSTANTS.WEIPERETH).toPrecision(4);
-    if(props.user.name != "") {
+    if (props.user.name != "") {
       return {
         loading: false,
       };
     }
     return null;
   }
-  async componentDidMount(){
+
+  async componentDidMount() {
     this.isComponentMounted = true;
     await Font.loadAsync({
       'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
     });
-    this.setState({riffic: {
-      fontFamily: 'riffic-free-bold',
-    }});
-    let prom = async() => {
+    this.setState({
+      riffic: {
+        fontFamily: 'riffic-free-bold',
+      }
+    });
+    let prom = async () => {
       return await new Promise((resolve, reject) => {
-        getFromAsyncStore("jwt").then((jwt) =>{
+        getFromAsyncStore("jwt").then((jwt) => {
           fetch(`${context.host}:${context.port}/getGames`, {
             method: "GET", // *GET, POST, PUT, DELETE, etc.
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
               "Authorization": "JWT " + jwt,
             },
-          }).then(async(response) => {
+          }).then(async (response) => {
             var resp = await response.json();
-            if(resp.error){
+            if (resp.error) {
               alert(resp.error);
               resolve({loading: false});
-            }else if(resp) {
+            } else if (resp) {
               resolve({games: resp.games});
             }
           }).catch(
             err => {
               throw err
             });
-        }).catch(err => {throw err});
-      }).catch(err => {throw err});
+        }).catch(err => {
+          throw err
+        });
+      }).catch(err => {
+        throw err
+      });
     }
     //let state = await makeRetry()(1500, prom);
     let state = await prom();
-    if(this.isComponentMounted) {
+    if (this.isComponentMounted) {
       this.setState(state);
     }
   }
+
   componentWillUnmount() {
     this.isComponentMounted = false;
   }
+
   render() {
     if (!this.props.show) {
       return null;
     } else {
       let haul = this.props.user.haul
-      let mineGraphicIndex = 10-Math.floor(10*haul/this.props.user.mineMax);
+      let mineGraphicIndex = 10 - Math.floor(10 * haul / this.props.user.mineMax);
       let mineTextColorStyle = {};
-      if(mineGraphicIndex <= 6){
-        mineTextColorStyle = { color: "#fab523", }
+      if (mineGraphicIndex <= 6) {
+        mineTextColorStyle = {color: "#fab523",}
       } else {
-        mineTextColorStyle = { color: "#352927", }
+        mineTextColorStyle = {color: "#352927",}
       }
       let mineImg = mineImages[mineGraphicIndex];
-      let minePercent = (100-Math.floor((100*haul/this.props.user.mineMax)))
-      if(minePercent >= 100.0){
+      let minePercent = (100 - Math.floor((100 * haul / this.props.user.mineMax)))
+      if (minePercent >= 100.0) {
         minePercent = minePercent.toPrecision(3);
-      } else if(minePercent < 10.0){
+      } else if (minePercent < 10.0) {
         minePercent = minePercent.toPrecision(1);
       } else {
         minePercent = minePercent.toPrecision(2);
       }
       return (
         <View style={styles.container}>
-          <ImageBackground style={styles.backgroundImage} source={require('../assets/wallet/background.png')} resizeMode="stretch">
+          <ImageBackground style={styles.backgroundImage} source={require('../assets/wallet/background.png')}
+                           resizeMode="stretch">
             <TouchableOpacity style={styles.closeButton} onPress={this.props.closeOverlay}>
-              <ImageBackground source={require('../assets/wallet/closeBG.png')} style={styles.closeButtonImage} resizeMode="stretch"/>
+              <ImageBackground source={require('../assets/wallet/closeBG.png')} style={styles.closeButtonImage}
+                               resizeMode="stretch"/>
             </TouchableOpacity>
             <View style={styles.topView}>
               <View style={styles.topHalfView1}>
-                <Text style={[this.state.riffic, styles.superHeaderText, ]}>
+                <Text style={[this.state.riffic, styles.superHeaderText,]}>
                   YOUR SNAKE MINE
                 </Text>
-                <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage} resizeMode="stretch">
+                <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage}
+                                 resizeMode="stretch">
                   <Text style={[this.state.riffic, styles.headerLabelText, styles.opacityFont]}>
                     CURRENT HAUL
                   </Text>
@@ -129,7 +141,8 @@ export default class GameHistoryOverlay extends React.Component {
                     {this.props.user.haul}
                   </Text>
                 </ImageBackground>
-                <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage} resizeMode="stretch">
+                <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage}
+                                 resizeMode="stretch">
                   <Text style={[this.state.riffic, styles.headerLabelText, styles.opacityFont]}>
                     REMAINING GOLD
                   </Text>
@@ -137,7 +150,8 @@ export default class GameHistoryOverlay extends React.Component {
                     {this.props.user.mineMax - this.props.user.haul}
                   </Text>
                 </ImageBackground>
-                <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage} resizeMode="stretch">
+                <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage}
+                                 resizeMode="stretch">
                   <Text style={[this.state.riffic, styles.headerLabelText, styles.opacityFont]}>
                     GAMES PLAYED
                   </Text>
@@ -147,37 +161,43 @@ export default class GameHistoryOverlay extends React.Component {
                 </ImageBackground>
               </View>
               <View style={styles.mineView}>
-                <ImageBackground source={mineImg} style={styles.mineImage} resizeMode="contain" >
+                <ImageBackground source={mineImg} style={styles.mineImage} resizeMode="contain">
                   <Text style={[this.state.riffic, styles.mineText, mineTextColorStyle]}>
                     {minePercent}%
                   </Text>
                 </ImageBackground>
               </View>
             </View>
-            <ImageBackground source={require('../assets/gamehistory/trackBG.png')} style={styles.trackBGImage} resizeMode="stretch">
+            <ImageBackground source={require('../assets/gamehistory/trackBG.png')} style={styles.trackBGImage}
+                             resizeMode="stretch">
               <View style={styles.leftTrackNo}>
                 {/* this once had text in it, but now it's just for layout. fix me.
                 <Text style={[this.state.riffic, styles.snakeNoText]}></Text>*/}
               </View>
               <TouchableOpacity style={styles.rightTrackContent} onPress={this.props.gototown}>
-                <ImageBackground source={require('../assets/gamehistory/mintbutton.png')} style={styles.buttonImage} resizeMode="stretch">
+                <ImageBackground source={require('../assets/gamehistory/mintbutton.png')} style={styles.buttonImage}
+                                 resizeMode="stretch">
                   <Text style={[this.state.riffic, styles.mintHaulText]}>MINT HAUL</Text>
                 </ImageBackground>
               </TouchableOpacity>
             </ImageBackground>
-            <ImageBackground source={require('../assets/gamehistory/GHBG.png')} style={[styles.contentImageBG, {flexDirection: 'column'}]} resizeMode="stretch">
+            <ImageBackground source={require('../assets/gamehistory/GHBG.png')}
+                             style={[styles.contentImageBG, {flexDirection: 'column'}]} resizeMode="stretch">
               <ScrollView style={styles.contentView}>
                 {
                   this.state.games.map((game, idx) => {
                     return (
-                      <ImageBackground key={idx} source={require('../assets/gamehistory/ghButtonBG.png')} style={[styles.historyBG]} resizeMode="stretch">
+                      <ImageBackground key={idx} source={require('../assets/gamehistory/ghButtonBG.png')}
+                                       style={[styles.historyBG]} resizeMode="stretch">
                         <View style={styles.historyFirstView}>
                           <Text style={[this.state.riffic, styles.historyLabelText]}>{levelNames[game.level]}</Text>
                         </View>
-                        <Image source={require('../assets/gamehistory/Line.png')} style={styles.historySepImage} resizeMode="contain"/>
+                        <Image source={require('../assets/gamehistory/Line.png')} style={styles.historySepImage}
+                               resizeMode="contain"/>
                         <View style={styles.historyView}>
                           <Text style={[this.state.riffic, styles.historyLabelText]}>0</Text>
-                          <Text style={[this.state.riffic, styles.historyLabelText, styles.opacityFont]}>POWER UPS</Text>
+                          <Text style={[this.state.riffic, styles.historyLabelText, styles.opacityFont]}>POWER
+                            UPS</Text>
                         </View>
                         <View style={styles.historyView}>
                           <Text style={[this.state.riffic, styles.historyLabelText]}>{game.score}</Text>
@@ -203,7 +223,7 @@ let styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     top: 0,
-    backgroundColor:  'rgba(0,0,0,0.6)',
+    backgroundColor: 'rgba(0,0,0,0.6)',
     width: screenWidth,
     height: screenHeight,
     justifyContent: 'center',
@@ -211,8 +231,8 @@ let styles = StyleSheet.create({
   },
   closeButton: {
     position: 'absolute',
-    top: -screenWidth*9/724,
-    right: -screenWidth*9/724,
+    top: -screenWidth * 9 / 724,
+    right: -screenWidth * 9 / 724,
     zIndex: 100,
   },
   closeButtonImage: {
@@ -223,8 +243,8 @@ let styles = StyleSheet.create({
     marginTop: 20
   },
   backgroundImage: {
-    width: screenWidth*685/724,
-    height: screenHeight*1238/1287,
+    width: screenWidth * 685 / 724,
+    height: screenHeight * 1238 / 1287,
     position: 'relative',
     flexDirection: 'column',
     alignItems: 'center',
@@ -245,16 +265,16 @@ let styles = StyleSheet.create({
     justifyContent: 'center',
   },
   numberBGImage: {
-    width: screenWidth*368/1080,
-    height: (297/744)*screenWidth*368/1080,
+    width: screenWidth * 368 / 1080,
+    height: (297 / 744) * screenWidth * 368 / 1080,
     marginTop: 10,
     marginLeft: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
   mineImage: {
-    width: screenWidth*280/1080,
-    height: (945/411)*screenWidth*280/1080,
+    width: screenWidth * 280 / 1080,
+    height: (945 / 411) * screenWidth * 280 / 1080,
     justifyContent: 'center',
     alignItems: 'center',
     //411 × 945
@@ -266,7 +286,7 @@ let styles = StyleSheet.create({
   },
   trackBGImage: {
     width: "100%",
-    aspectRatio: 2058/658,
+    aspectRatio: 2058 / 658,
     marginTop: -55,
     alignItems: 'center',
     flexDirection: 'row',
@@ -275,8 +295,8 @@ let styles = StyleSheet.create({
   buttonImage: {
     paddingTop: 3,
     marginTop: 10,
-    width: screenWidth*493/1080,
-    aspectRatio: 976/369,
+    width: screenWidth * 493 / 1080,
+    aspectRatio: 976 / 369,
     //height: screenHeight * 0.20,
     justifyContent: 'center',
     alignItems: 'center',
@@ -367,7 +387,7 @@ let styles = StyleSheet.create({
     color: "#fab523",
     fontSize: normalize(13)
   },
-  mintHaulText:{
+  mintHaulText: {
     color: "#fab523",
     fontSize: normalize(14)
   },
@@ -386,7 +406,7 @@ let styles = StyleSheet.create({
   },
   leftTrackNo: {
     flex: 475,
-    width: screenWidth*321/1080,
+    width: screenWidth * 321 / 1080,
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: 15,

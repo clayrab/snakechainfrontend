@@ -10,6 +10,7 @@ export default class LoadingOverlay extends React.Component {
   constructor(props) {
     super(props);
   }
+
   render() {
     if (!this.props.show) {
       return null;
@@ -18,7 +19,7 @@ export default class LoadingOverlay extends React.Component {
         <View style={styles.container}>
           <View style={styles.backgroundImage}>
             <Text style={styles.text}>Loading...</Text>
-            <ActivityIndicator size="large" color="#0000ff" />
+            <ActivityIndicator size="large" color="#0000ff"/>
           </View>
         </View>
       )
@@ -34,7 +35,7 @@ let styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     top: 0,
-    backgroundColor:  'rgba(0,0,0,0.6)',
+    backgroundColor: 'rgba(0,0,0,0.6)',
     width: screenWidth,
     height: screenHeight,
     justifyContent: 'center',
@@ -42,14 +43,14 @@ let styles = StyleSheet.create({
   },
   backgroundImage: {
     position: 'relative',
-    width: screenWidth*95/100,
-    height: screenHeight*95/100,
-    backgroundColor:  'rgba(0,0,0,1.0)',
+    width: screenWidth * 95 / 100,
+    height: screenHeight * 95 / 100,
+    backgroundColor: 'rgba(0,0,0,1.0)',
     flexDirection: 'column',
     alignItems: 'center'
-   },
-   text:{
-     color: "#fff",
-     fontSize: 16
-   }
+  },
+  text: {
+    color: "#fff",
+    fontSize: 16
+  }
 });

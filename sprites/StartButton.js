@@ -1,6 +1,6 @@
 import React from 'react';
-import { Text, StyleSheet, View, Button } from 'react-native';
-import { Sprite } from 'react-game-kit/native';
+import {Text, StyleSheet, View, Button} from 'react-native';
+import {Sprite} from 'react-game-kit/native';
 import PropTypes from 'prop-types';
 import CONSTANTS from '../Constants.js';
 
@@ -18,19 +18,19 @@ export default class ResetButton extends Sprite {
     });
   }
 
-  onStartShouldSetResponder = function(e) {
+  onStartShouldSetResponder = function (e) {
     return true;
   };
 
-  onMoveShouldSetResponder = function(e) {
+  onMoveShouldSetResponder = function (e) {
     return true;
   };
 
-  onStartShouldSetResponderCapture =  function(e) {
+  onStartShouldSetResponderCapture = function (e) {
     return true;
   };
 
-  onMoveShouldSetResponderCapture =  function(e) {
+  onMoveShouldSetResponderCapture = function (e) {
     return true;
   };
 
@@ -50,6 +50,6 @@ export default class ResetButton extends Sprite {
           onPress={() => this.props.start()}
         />
       </View>
-   );
+    );
   }
 }

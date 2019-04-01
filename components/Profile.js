@@ -8,7 +8,7 @@ import {
   Image
 } from 'react-native';
 import ScreenView from '../components/ScreenView.js';
-import { Font } from 'expo';
+import {Font} from 'expo';
 import Header from '../components/Header.js';
 import {normalize} from '../utils/FontNormalizer.js';
 
@@ -19,37 +19,48 @@ export default class Profile extends React.Component {
       buttonDynamicStyle: {},
     }
   }
-  async componentDidMount(){
+
+  async componentDidMount() {
     await Font.loadAsync({
       'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
     });
-    this.setState({buttonDynamicStyle: {
-      fontFamily: 'riffic-free-bold',
-    }});
+    this.setState({
+      buttonDynamicStyle: {
+        fontFamily: 'riffic-free-bold',
+      }
+    });
   }
+
   render() {
     return (
       <ScreenView>
-        <Header loading={this.props.loading} user={this.props.user} onProfile={this.props.onProfile} onWallet={this.props.onWallet} hasBackButton={true} exit={this.props.exit} />
-        <ImageBackground source={require('../assets/profile/imageHolderBG.png')} style={styles.profileDetailsBG} resizeMode="stretch">
-          <ImageBackground source={require('../assets/profile/imageHolder.png')} style={styles.profileImageBG} resizeMode="stretch">
+        <Header loading={this.props.loading} user={this.props.user} onProfile={this.props.onProfile}
+                onWallet={this.props.onWallet} hasBackButton={true} exit={this.props.exit}/>
+        <ImageBackground source={require('../assets/profile/imageHolderBG.png')} style={styles.profileDetailsBG}
+                         resizeMode="stretch">
+          <ImageBackground source={require('../assets/profile/imageHolder.png')} style={styles.profileImageBG}
+                           resizeMode="stretch">
           </ImageBackground>
           <View style={styles.profileInfoView}>
             <View style={styles.nameView}>
-              <Image source={require('../assets/profile/greenIcon.png')} style={styles.iconImage} />
+              <Image source={require('../assets/profile/greenIcon.png')} style={styles.iconImage}/>
               <Text style={[styles.profileName, this.state.buttonDynamicStyle]}>
                 {this.props.user.name}
               </Text>
             </View>
             <View style={styles.numbersView}>
-              <ImageBackground source={require('../assets/profile/iconBG.png')} style={styles.iconBG} resizeMode="stretch">
-                <Image source={require('../assets/withdraw/DiamondIcom.png')} style={[styles.iconImage, {height: 25}]} resizeMode="stretch" />
+              <ImageBackground source={require('../assets/profile/iconBG.png')} style={styles.iconBG}
+                               resizeMode="stretch">
+                <Image source={require('../assets/withdraw/DiamondIcom.png')} style={[styles.iconImage, {height: 25}]}
+                       resizeMode="stretch"/>
                 <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.numberText, this.state.titleBarTextStyle]}>
-                  {(this.props.user.eth/CONSTANTS.WEIPERETH).toPrecision(4)}
+                  {(this.props.user.eth / CONSTANTS.WEIPERETH).toPrecision(4)}
                 </Text>
               </ImageBackground>
-              <ImageBackground source={require('../assets/profile/iconBG.png')} style={styles.iconBG} resizeMode="stretch">
-                <Image source={require('../assets/profile/coinIcon.png')} style={styles.iconImage} resizeMode="stretch" />
+              <ImageBackground source={require('../assets/profile/iconBG.png')} style={styles.iconBG}
+                               resizeMode="stretch">
+                <Image source={require('../assets/profile/coinIcon.png')} style={styles.iconImage}
+                       resizeMode="stretch"/>
                 <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.numberText, this.state.titleBarTextStyle]}>
                   {this.props.user.snek}
                 </Text>
@@ -58,7 +69,8 @@ export default class Profile extends React.Component {
           </View>
         </ImageBackground>
         <View style={styles.contentView}>
-          <ImageBackground source={require('../assets/profile/rankBox.png')} style={styles.rankBoxBG} resizeMode="stretch">
+          <ImageBackground source={require('../assets/profile/rankBox.png')} style={styles.rankBoxBG}
+                           resizeMode="stretch">
             <View style={styles.rankChildView}>
               <View style={styles.childView}>
                 <Text style={[this.state.buttonDynamicStyle, styles.keyText]}>
@@ -72,9 +84,10 @@ export default class Profile extends React.Component {
               </View>
             </View>
           </ImageBackground>
-          <ImageBackground source={require('../assets/profile/rankBox.png')} style={styles.rankBoxBG} resizeMode="stretch">
-          <View style={styles.rankChildView}>
-            <View style={styles.childView}>
+          <ImageBackground source={require('../assets/profile/rankBox.png')} style={styles.rankBoxBG}
+                           resizeMode="stretch">
+            <View style={styles.rankChildView}>
+              <View style={styles.childView}>
                 <Text style={[this.state.buttonDynamicStyle, styles.keyText]}>
                   Rank
                 </Text>
@@ -94,14 +107,16 @@ export default class Profile extends React.Component {
             </ImageBackground>
           </TouchableOpacity>*/}
           <TouchableOpacity>
-            <ImageBackground source={require('../assets/profile/button.png')} style={styles.buttonBG} resizeMode="stretch">
+            <ImageBackground source={require('../assets/profile/button.png')} style={styles.buttonBG}
+                             resizeMode="stretch">
               <Text style={[this.state.buttonDynamicStyle, styles.buttonBig]}>
                 CHANGE PASSWORD
               </Text>
             </ImageBackground>
           </TouchableOpacity>
           <TouchableOpacity>
-            <ImageBackground source={require('../assets/profile/button.png')} style={styles.buttonBG} resizeMode="stretch">
+            <ImageBackground source={require('../assets/profile/button.png')} style={styles.buttonBG}
+                             resizeMode="stretch">
               <Text style={[this.state.buttonDynamicStyle, styles.buttonBig]}>
                 LOG OUT
               </Text>
@@ -120,7 +135,7 @@ let styles = StyleSheet.create({
     height: screenHeight / 10,
     flexDirection: 'row',
     alignItems: 'center'
-   },
+  },
   profileDetailsBG: {
     width: screenWidth,
     height: screenHeight / 5,

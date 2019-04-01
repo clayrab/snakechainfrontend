@@ -7,14 +7,16 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Font } from 'expo';
+import {Font} from 'expo';
 import CONSTANTS from '../Constants.js';
 import {normalize} from '../utils/FontNormalizer.js';
+
 export default class ConfirmTxGameOverOverlay extends React.Component {
   constructor(props) {
     super(props);
   }
-  async componentDidMount(){
+
+  async componentDidMount() {
     await Font.loadAsync({
       'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
     });
@@ -22,6 +24,7 @@ export default class ConfirmTxGameOverOverlay extends React.Component {
       fontFamily: 'riffic-free-bold'
     }
   }
+
   render() {
     if (!this.props.show) {
       return null;
@@ -34,21 +37,27 @@ export default class ConfirmTxGameOverOverlay extends React.Component {
               GAME OVER
             </Text>
             <Text style={[styles.buttonText, styles.selectionText]}>
-              You will receive <Text style={[styles.buttonText, styles.numberText]}>{this.props.gameOverInfo.score}</Text> Snake Coin when the transaction is mined!
+              You will receive <Text
+              style={[styles.buttonText, styles.numberText]}>{this.props.gameOverInfo.score}</Text> Snake Coin when the
+              transaction is mined!
             </Text>
             <View style={styles.contractView}>
-              <Image source={require('../assets/gameover/yellowsnake.png')} style={styles.leftSnakeImage} resizeMode="contain"/>
-              <Image source={require('../assets/gameover/greensnake.png')} style={styles.rightSnakeImage}  resizeMode="contain"/>
+              <Image source={require('../assets/gameover/yellowsnake.png')} style={styles.leftSnakeImage}
+                     resizeMode="contain"/>
+              <Image source={require('../assets/gameover/greensnake.png')} style={styles.rightSnakeImage}
+                     resizeMode="contain"/>
             </View>
             <TouchableOpacity style={styles.touchableButton} onPress={this.props.restart}>
-              <ImageBackground source={require('../assets/gameover/greenButton.png')} style={styles.largeButton} resizeMode="stretch">
+              <ImageBackground source={require('../assets/gameover/greenButton.png')} style={styles.largeButton}
+                               resizeMode="stretch">
                 <Text style={[styles.buttonText, styles.largeButtonBText]}>
                   PLAY AGAIN
                 </Text>
               </ImageBackground>
             </TouchableOpacity>
             <TouchableOpacity style={styles.touchableButton} onPress={this.props.exit}>
-              <ImageBackground source={require('../assets/gameover/darkButton.png')} style={styles.largeButton} resizeMode="stretch">
+              <ImageBackground source={require('../assets/gameover/darkButton.png')} style={styles.largeButton}
+                               resizeMode="stretch">
                 <Text style={[styles.buttonText, styles.largeButtonText]}>
                   GO TO MAIN MENU
                 </Text>
@@ -69,17 +78,17 @@ var styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     top: 0,
-    backgroundColor:  'rgba(0,0,0,0.6)',
+    backgroundColor: 'rgba(0,0,0,0.6)',
     width: screenWidth,
     height: screenHeight,
     justifyContent: 'center',
     alignItems: 'center',
   },
   backgroundImage: {
-   width: screenWidth,
-   height: screenHeight,
-   flexDirection: 'column',
-   alignItems: 'center',
+    width: screenWidth,
+    height: screenHeight,
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   topButtonView: {
     width: screenWidth,
@@ -104,17 +113,17 @@ var styles = StyleSheet.create({
   },
   leftSnakeImage: {
     height: 150,
-    width: 150*943/950,
+    width: 150 * 943 / 950,
     marginRight: 0,
   },
   rightSnakeImage: {
     height: 150,
-    width: 150*717/994,
+    width: 150 * 717 / 994,
     marginLeft: 0
   },
   contactImage: {
     height: 150,
-    width: 150*707/992,
+    width: 150 * 707 / 992,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center'

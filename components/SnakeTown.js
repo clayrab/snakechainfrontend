@@ -8,10 +8,11 @@ import {
   Image
 } from 'react-native';
 import ScreenView from '../components/ScreenView.js';
-import { Font } from 'expo';
+import {Font} from 'expo';
 import SnakeBankOverlay from '../components/SnakeBankOverlay.js';
 import {normalize} from '../utils/FontNormalizer.js';
-var overlays = { "BANK": 0, };
+
+var overlays = {"BANK": 0,};
 export default class SnakeTown extends React.Component {
   constructor(props) {
     super(props);
@@ -21,47 +22,60 @@ export default class SnakeTown extends React.Component {
       riffic: {},
     }
   }
-  async componentDidMount(){
+
+  async componentDidMount() {
     await Font.loadAsync({
       'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
     });
-    this.setState({riffic: {
-      fontFamily: 'riffic-free-bold',
-    }});
+    this.setState({
+      riffic: {
+        fontFamily: 'riffic-free-bold',
+      }
+    });
   }
+
   closeOverlay = () => {
     this.setState({overlay: -1});
   }
   onBank = () => {
     this.setState({overlay: overlays.BANK});
   }
+
   render() {
     return (
       <ScreenView>
-        <ImageBackground source={require('../assets/snaketown/snaketown.png')} style={styles.homeTownImage} resizeMode="stretch">
+        <ImageBackground source={require('../assets/snaketown/snaketown.png')} style={styles.homeTownImage}
+                         resizeMode="stretch">
 
         </ImageBackground>
-        <ImageBackground source={require('../assets/snaketown/textBoxBG.png')} style={styles.bottomImageBG} resizeMode="stretch">
+        <ImageBackground source={require('../assets/snaketown/textBoxBG.png')} style={styles.bottomImageBG}
+                         resizeMode="stretch">
           <TouchableOpacity onPress={this.onBank}>
-            <ImageBackground source={require('../assets/snaketown/textBox.png')} style={styles.bottomTextBoxBG} resizeMode="stretch">
+            <ImageBackground source={require('../assets/snaketown/textBox.png')} style={styles.bottomTextBoxBG}
+                             resizeMode="stretch">
               <Image source={require('../assets/snaketown/saloonIcon.png')} style={styles.buttonsIcon}/>
               <Text style={[styles.comingSoon, this.state.riffic, styles.buttonsText]}>Coming Soon</Text>
             </ImageBackground>
           </TouchableOpacity>
           <TouchableOpacity onPress={null}>
-            <ImageBackground source={require('../assets/snaketown/textBox.png')} style={styles.bottomTextBoxBG} resizeMode="stretch">
-              <Image source={require('../assets/snaketown/forumIcon.png')} style={[styles.comingSoon, styles.buttonsIcon]}/>
+            <ImageBackground source={require('../assets/snaketown/textBox.png')} style={styles.bottomTextBoxBG}
+                             resizeMode="stretch">
+              <Image source={require('../assets/snaketown/forumIcon.png')}
+                     style={[styles.comingSoon, styles.buttonsIcon]}/>
               <Text style={[styles.comingSoon, this.state.riffic, styles.buttonsText]}>Coming Soon</Text>
             </ImageBackground>
           </TouchableOpacity>
           <TouchableOpacity onPress={null}>
-            <ImageBackground source={require('../assets/snaketown/textBox.png')} style={styles.bottomTextBoxBG} resizeMode="stretch">
-              <Image source={require('../assets/snaketown/shopIcon.png')} style={[styles.comingSoon, styles.buttonsIcon]}/>
+            <ImageBackground source={require('../assets/snaketown/textBox.png')} style={styles.bottomTextBoxBG}
+                             resizeMode="stretch">
+              <Image source={require('../assets/snaketown/shopIcon.png')}
+                     style={[styles.comingSoon, styles.buttonsIcon]}/>
               <Text style={[styles.comingSoon, this.state.riffic, styles.buttonsText]}>Coming Soon</Text>
             </ImageBackground>
           </TouchableOpacity>
           <TouchableOpacity style={styles.bottomTextBoxBG} onPress={this.props.exit}>
-            <ImageBackground source={require('../assets/snaketown/button.png')} style={styles.buttonBG} resizeMode="stretch">
+            <ImageBackground source={require('../assets/snaketown/button.png')} style={styles.buttonBG}
+                             resizeMode="stretch">
               <Text style={[this.state.riffic, styles.gotoText]}>
                 BACK TO MINE
               </Text>
@@ -104,8 +118,8 @@ let styles = StyleSheet.create({
     alignItems: 'center',
   },
   bottomTextBoxBG: {
-    width: screenWidth*895/1080,
-    height: screenWidth*(446/1784)*895/1080,
+    width: screenWidth * 895 / 1080,
+    height: screenWidth * (446 / 1784) * 895 / 1080,
     marginTop: 20,
     alignItems: 'center',
     justifyContent: 'center',
@@ -113,10 +127,10 @@ let styles = StyleSheet.create({
   },
   buttonsIcon: {
     flex: 0.2,
-    width: screenWidth*120/1080,
-    height: screenWidth*120/1080,
-    marginLeft: screenWidth*100/1080,
-    marginRight: screenWidth*100/1080,
+    width: screenWidth * 120 / 1080,
+    height: screenWidth * 120 / 1080,
+    marginLeft: screenWidth * 100 / 1080,
+    marginRight: screenWidth * 100 / 1080,
   },
   buttonsText: {
     flex: 1,

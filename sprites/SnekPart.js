@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { Sprite } from 'react-game-kit/native';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {Sprite} from 'react-game-kit/native';
 import PropTypes from 'prop-types';
 import CONSTANTS from '../Constants.js';
 
@@ -15,6 +15,7 @@ export default class SnekPart extends Sprite {
     boardY: PropTypes.number,
     toggleUpdate: PropTypes.bool,
   };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -22,6 +23,7 @@ export default class SnekPart extends Sprite {
     };
     this.toggleUpdateInternal = false;
   }
+
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props.toggleUpdate == this.toggleUpdateInternal) {
       this.toggleUpdateInternal = !this.toggleUpdateInternal;
@@ -29,12 +31,15 @@ export default class SnekPart extends Sprite {
     }
     return false;
   }
+
   boardXtoPosX(boardX) {
-    return CONSTANTS.BOARDCENTERX + (CONSTANTS.SNEKSIZE*(boardX - CONSTANTS.BOARDSIZEX - 0.5));
+    return CONSTANTS.BOARDCENTERX + (CONSTANTS.SNEKSIZE * (boardX - CONSTANTS.BOARDSIZEX - 0.5));
   }
+
   boardYtoPosY(boardY) {
-    return CONSTANTS.BOARDCENTERY + (CONSTANTS.SNEKSIZE*(boardY - CONSTANTS.BOARDSIZEY - 0.5));
+    return CONSTANTS.BOARDCENTERY + (CONSTANTS.SNEKSIZE * (boardY - CONSTANTS.BOARDSIZEY - 0.5));
   }
+
   render() {
     return (<View style={[styles.snekPart, {left: this.props.posX, top: this.props.posY,}]}></View>);
   }

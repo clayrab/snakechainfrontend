@@ -9,7 +9,7 @@ import {
   ScrollView,
 } from 'react-native';
 import ScreenView from '../components/ScreenView.js';
-import { Font } from 'expo';
+import {Font} from 'expo';
 import {asyncStore, getFromAsyncStore, removeItemValue} from "../utils/AsyncStore.js";
 import {context} from "../utils/Context.js";
 import {normalize} from '../utils/FontNormalizer.js';
@@ -19,8 +19,8 @@ import ConfirmTxOverlay from '../components/ConfirmTxOverlay.js';
 import AreYouSureOverlay from '../components/AreYouSureOverlay.js';
 import LoadingOverlay from '../components/LoadingOverlay.js';
 
-var overlays = {"WALLETOVERLAY": 0, LOADING: 1, "CONFIRMSEND": 2, CONFIRMTX: 3, };
-let modes = { DEPOSIT: 0, WITHDRAW: 1, };
+var overlays = {"WALLETOVERLAY": 0, LOADING: 1, "CONFIRMSEND": 2, CONFIRMTX: 3,};
+let modes = {DEPOSIT: 0, WITHDRAW: 1,};
 //let overlayModeOverrider = 0; //we force redraw of walletoverlay.js by incrementing this
 export default class AccountHistory extends React.Component {
   constructor(props) {
@@ -33,47 +33,55 @@ export default class AccountHistory extends React.Component {
       transactions: null,
     };
   }
-  async componentDidMount(){
+
+  async componentDidMount() {
     await Font.loadAsync({
       'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
     });
-    this.setState({riffic: {
-      fontFamily: 'riffic-free-bold',
-    }});
-    let prom = async() => {
+    this.setState({
+      riffic: {
+        fontFamily: 'riffic-free-bold',
+      }
+    });
+    let prom = async () => {
       return await new Promise((resolve, reject) => {
-        getFromAsyncStore("jwt").then((jwt) =>{
+        getFromAsyncStore("jwt").then((jwt) => {
           fetch(`${context.host}:${context.port}/getTransactions`, {
             method: "GET", // *GET, POST, PUT, DELETE, etc.
             headers: {
-                //"Content-Type": "application/json; charset=utf-8",
-                "Content-Type": "application/x-www-form-urlencoded",
-                "Authorization": "JWT " + jwt,
+              //"Content-Type": "application/json; charset=utf-8",
+              "Content-Type": "application/x-www-form-urlencoded",
+              "Authorization": "JWT " + jwt,
             },
-          }).then(async(response) => {
+          }).then(async (response) => {
             var resp = await response.json();
-            if(resp.error){
+            if (resp.error) {
               alert(resp.error);
               resolve({loading: false});
-            }else if(resp) {
+            } else if (resp) {
               resolve({loading: false, transactions: resp.transactions});
             }
           }).catch(
             err => {
               throw err
             });
-        }).catch(err => {throw err});
-      }).catch(err => {throw err});
+        }).catch(err => {
+          throw err
+        });
+      }).catch(err => {
+        throw err
+      });
     }
     //let state = await makeRetry()(1500, prom);
     let state = await prom();
     this.setState(state);
 
   }
+
   closeOverlay = () => {
     this.setState({overlay: -1});
   }
-  onSend = async(amount, pubkey, type) => {
+  onSend = async (amount, pubkey, type) => {
     await this.setState({overlay: overlays.LOADING});
     let jwt = await getFromAsyncStore("jwt");
     let data = {
@@ -85,14 +93,14 @@ export default class AccountHistory extends React.Component {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          "Authorization": "JWT " + jwt,
+        "Content-Type": "application/json; charset=utf-8",
+        "Authorization": "JWT " + jwt,
       },
-    }).then(async(response) => {
+    }).then(async (response) => {
       var resp = await response.json();
-      if(!resp.error){
-        if(resp) {
-          if(resp.transactionKey) {
+      if (!resp.error) {
+        if (resp) {
+          if (resp.transactionKey) {
             this.setState({
               overlay: overlays.CONFIRMSEND,
               confirmAmount: amount,
@@ -104,7 +112,7 @@ export default class AccountHistory extends React.Component {
             alert("There was an error, malformed response.");
             this.setState({overlay: -1});
           }
-        } else{
+        } else {
           alert("There was an error, no response.");
           this.setState({overlay: -1});
         }
@@ -112,15 +120,17 @@ export default class AccountHistory extends React.Component {
         alert(resp.error);
         this.setState({overlay: -1});
       }
-    }).catch(err => {throw err});
+    }).catch(err => {
+      throw err
+    });
   }
-  onConfirmSend = async() => {
+  onConfirmSend = async () => {
     await this.setState({overlay: overlays.LOADING});
     let jwt = await getFromAsyncStore("jwt");
     let amount = this.state.confirmAmount;
     let url = "/sendEth";
     let type = "ETH";
-    if(this.state.confirmTokenType == "SNK") {
+    if (this.state.confirmTokenType == "SNK") {
       url = "/sendSnek";
       type = "SNK";
     }
@@ -139,10 +149,10 @@ export default class AccountHistory extends React.Component {
       },
     });
     var resp = await response.json();
-    if(resp.error){
+    if (resp.error) {
       alert(resp.error);
       await this.setState({overlay: -1});
-    }else if(resp.txhash) {
+    } else if (resp.txhash) {
       await this.setState({overlay: overlays.CONFIRMTX, lastTxHash: resp.txhash});
     } else {
       alert("Error sending transaction");
@@ -150,32 +160,36 @@ export default class AccountHistory extends React.Component {
     }
   }
   onCancelConfirmSend = () => {
-    this.setState({overlay: overlays.WALLETOVERLAY });
+    this.setState({overlay: overlays.WALLETOVERLAY});
   }
   onDoReceive = () => {
     console.log("onDoReceive")
-    this.setState({overlay: overlays.WALLETOVERLAY, overlayMode: modes.DEPOSIT, });
+    this.setState({overlay: overlays.WALLETOVERLAY, overlayMode: modes.DEPOSIT,});
   }
   onDoSend = () => {
     console.log("onDoSend")
-    this.setState({overlay: overlays.WALLETOVERLAY, overlayMode: modes.WITHDRAW, });
+    this.setState({overlay: overlays.WALLETOVERLAY, overlayMode: modes.WITHDRAW,});
   }
   onConfirmTxOk = () => {
-    this.setState({overlay: -1 });
+    this.setState({overlay: -1});
   }
-  prettyTxTypes = {mineWithSnek: "Snek", mine: "Snek", eth: "ETH", };
+  prettyTxTypes = {mineWithSnek: "Snek", mine: "Snek", eth: "ETH",};
   recvTypes = {mineWithSnek: true, mine: true};
+
   render() {
     return (
       <ScreenView>
-        <ImageBackground source={require('../assets/accounthistory/BG.png')} style={styles.backgroundImage} resizeMode="stretch">
+        <ImageBackground source={require('../assets/accounthistory/BG.png')} style={styles.backgroundImage}
+                         resizeMode="stretch">
           <View style={styles.headerHolder}>
             <TouchableOpacity onPress={this.props.exit} style={styles.backButtonTouchable}>
               <ImageBackground source={require('../assets/backbutton.png')} style={styles.backButtonIcon}/>
             </TouchableOpacity>
             <View style={styles.profilePicView}>
-              <ImageBackground source={require('../assets/accounthistory/medalBG.png')} style={styles.medalImage} resizeMode="stretch">
-                <Image source={require('../assets/accounthistory/profilepic.png')} style={styles.profileImage} resizeMode="stretch"/>
+              <ImageBackground source={require('../assets/accounthistory/medalBG.png')} style={styles.medalImage}
+                               resizeMode="stretch">
+                <Image source={require('../assets/accounthistory/profilepic.png')} style={styles.profileImage}
+                       resizeMode="stretch"/>
               </ImageBackground>
             </View>
             <View style={styles.profileDetailView}>
@@ -190,29 +204,30 @@ export default class AccountHistory extends React.Component {
               </Text>
             </View>
           </View>
-          <ImageBackground style={styles.balancesHolder} source={require('../assets/accounthistory/sendreceiveBG.png')} resizeMode="stretch">
+          <ImageBackground style={styles.balancesHolder} source={require('../assets/accounthistory/sendreceiveBG.png')}
+                           resizeMode="stretch">
             <View style={[styles.balancesView]}>
               <View style={[styles.balancesNumbersView,]}>
-                <Text style={[this.state.riffic, styles.numberTextTop,{paddingTop: 20, flex: 1}]}>
+                <Text style={[this.state.riffic, styles.numberTextTop, {paddingTop: 20, flex: 1}]}>
                   SnakeChain
                 </Text>
-                <Image source={require('../assets/wallet/coin.png')} style={[styles.diamondImage, {flex: 1}]} />
-                <Text style={[this.state.riffic, styles.numberText,{flex: 1}]}>
+                <Image source={require('../assets/wallet/coin.png')} style={[styles.diamondImage, {flex: 1}]}/>
+                <Text style={[this.state.riffic, styles.numberText, {flex: 1}]}>
                   {this.props.user.snek}
                 </Text>
-                <Text style={[this.state.riffic, styles.numberTextBottom,{paddingBottom: 20, flex: 1}]}>
+                <Text style={[this.state.riffic, styles.numberTextBottom, {paddingBottom: 20, flex: 1}]}>
                   SNK
                 </Text>
               </View>
               <View style={[styles.balancesNumbersView]}>
-                <Text style={[this.state.riffic, styles.numberTextTop,{paddingTop: 20, flex: 1}]}>
+                <Text style={[this.state.riffic, styles.numberTextTop, {paddingTop: 20, flex: 1}]}>
                   Ethereum
                 </Text>
-                <Image source={require('../assets/wallet/diamond.png')} style={[styles.diamondImage, {flex: 1}]} />
-                <Text style={[this.state.riffic, styles.numberText,{flex: 1}]}>
-                  {(this.props.user.eth/CONSTANTS.WEIPERETH).toPrecision(4)}
+                <Image source={require('../assets/wallet/diamond.png')} style={[styles.diamondImage, {flex: 1}]}/>
+                <Text style={[this.state.riffic, styles.numberText, {flex: 1}]}>
+                  {(this.props.user.eth / CONSTANTS.WEIPERETH).toPrecision(4)}
                 </Text>
-                <Text style={[this.state.riffic, styles.numberTextBottom,{paddingBottom: 20, flex: 1}]}>
+                <Text style={[this.state.riffic, styles.numberTextBottom, {paddingBottom: 20, flex: 1}]}>
                   ETH
                 </Text>
               </View>
@@ -220,16 +235,19 @@ export default class AccountHistory extends React.Component {
             <View style={styles.sendRecvView}>
               <View style={styles.sendRecvButtonHolder}>
                 <TouchableOpacity onPress={this.onDoReceive}>
-                  <ImageBackground source={require('../assets/accounthistory/greenbtn.png')} style={styles.sendRecvButton} resizeMode="stretch">
-                    <Image source={require('../assets/accounthistory/receiveblack.png')} style={styles.buttonIconImage} />
+                  <ImageBackground source={require('../assets/accounthistory/greenbtn.png')}
+                                   style={styles.sendRecvButton} resizeMode="stretch">
+                    <Image source={require('../assets/accounthistory/receiveblack.png')}
+                           style={styles.buttonIconImage}/>
                     <Text style={[this.state.riffic, styles.buttonColorText]}>RECEIVE</Text>
                   </ImageBackground>
                 </TouchableOpacity>
               </View>
               <View style={styles.sendRecvButtonHolder}>
                 <TouchableOpacity onPress={this.onDoSend}>
-                  <ImageBackground source={require('../assets/accounthistory/yellowbtn.png')} style={styles.sendRecvButton} resizeMode="stretch">
-                    <Image source={require('../assets/accounthistory/sendblack.png')} style={styles.buttonIconImage} />
+                  <ImageBackground source={require('../assets/accounthistory/yellowbtn.png')}
+                                   style={styles.sendRecvButton} resizeMode="stretch">
+                    <Image source={require('../assets/accounthistory/sendblack.png')} style={styles.buttonIconImage}/>
                     <Text style={[this.state.riffic, styles.buttonColorText]}>SEND</Text>
                   </ImageBackground>
                 </TouchableOpacity>
@@ -237,9 +255,10 @@ export default class AccountHistory extends React.Component {
             </View>
           </ImageBackground>
 
-          <ImageBackground source={require('../assets/accounthistory/accounthistoryBG.png')} style={styles.txHistory} resizeMode="stretch">
+          <ImageBackground source={require('../assets/accounthistory/accounthistoryBG.png')} style={styles.txHistory}
+                           resizeMode="stretch">
             <ScrollView styles={styles.txHistoryScroll}>
-              { this.state.loading? null :
+              {this.state.loading ? null :
                 this.state.transactions.map((transaction, i) => {
                   // "pubkey": "0x0b48797c3d9C0CF15B14f003d6A60B2F94F1F517",
                   // "txhash": "0x66c78149c875543b666a49e93574f95eea20488157781357b0d6b22cead2499d",
@@ -250,41 +269,45 @@ export default class AccountHistory extends React.Component {
                   // "amount": "70000",
                   // "fee": null
                   return (
-                    <ImageBackground key={i} source={require('../assets/accounthistory/historyBG.png')} style={styles.historyBG} resizeMode="contain">
-                        { this.recvTypes[transaction.type]
-                          ?
-                          <View style={styles.historyLeftView}>
-                            <Image source={require('../assets/accounthistory/receiveicon.png')} style={styles.buttonIconImage} />
-                            <Text style={[styles.buttonText, styles.historyReceiveText]}>RECEIVE</Text>
-                            <Text style={[styles.buttonText, styles.dateText]}>15/10/2018</Text>
-                          </View>
-                          :
-                          <View style={styles.historyLeftView}>
-                            <Image source={require('../assets/accounthistory/sendicon.png')} style={styles.buttonIconImage} />
-                            <Text style={[this.state.riffic, styles.historyLabelText]}>SENT</Text>
-                            <Text style={[this.state.riffic, styles.dateText]}>15/10/2018</Text>
-                          </View>
-                        }
-                      <Image source={require('../assets/accounthistory/historyseprate.png')} style={styles.historySepImage} resizeMode="contain"/>
+                    <ImageBackground key={i} source={require('../assets/accounthistory/historyBG.png')}
+                                     style={styles.historyBG} resizeMode="contain">
+                      {this.recvTypes[transaction.type]
+                        ?
+                        <View style={styles.historyLeftView}>
+                          <Image source={require('../assets/accounthistory/receiveicon.png')}
+                                 style={styles.buttonIconImage}/>
+                          <Text style={[styles.buttonText, styles.historyReceiveText]}>RECEIVE</Text>
+                          <Text style={[styles.buttonText, styles.dateText]}>15/10/2018</Text>
+                        </View>
+                        :
+                        <View style={styles.historyLeftView}>
+                          <Image source={require('../assets/accounthistory/sendicon.png')}
+                                 style={styles.buttonIconImage}/>
+                          <Text style={[this.state.riffic, styles.historyLabelText]}>SENT</Text>
+                          <Text style={[this.state.riffic, styles.dateText]}>15/10/2018</Text>
+                        </View>
+                      }
+                      <Image source={require('../assets/accounthistory/historyseprate.png')}
+                             style={styles.historySepImage} resizeMode="contain"/>
                       <View style={styles.historyRightView}>
                         <View style={styles.topRightHistoryView}>
                           <Text style={[this.state.riffic, styles.headerText]}>
                             {transaction.type === "eth"
                               ?
-                              (transaction.amount/CONSTANTS.WEIPERETH).toPrecision(4)
+                              (transaction.amount / CONSTANTS.WEIPERETH).toPrecision(4)
                               :
                               transaction.amount
                             }
                           </Text>
-                          <Image source={require('../assets/wallet/diamond.png')} style={styles.diamondImage} />
+                          <Image source={require('../assets/wallet/diamond.png')} style={styles.diamondImage}/>
                           <Text style={[this.state.riffic, styles.headerText]}>
-                            { this.state.loading ? null :
+                            {this.state.loading ? null :
                               this.prettyTxTypes[transaction.type]
                             }
                           </Text>
                         </View>
                         <View style={styles.topRightHistoryView}>
-                          { !transaction.to ? null :
+                          {!transaction.to ? null :
                             <Text style={[this.state.riffic, styles.historyLabelText]}>
                               to {transaction.to.substring(0, 7)}...{transaction.to.substring(37, 42)}
                             </Text>
@@ -305,7 +328,7 @@ export default class AccountHistory extends React.Component {
             mode={this.state.overlayMode}
             overlayMode={this.state.overlayMode}
             user={this.props.user}
-            closeOverlay={this.closeOverlay} />
+            closeOverlay={this.closeOverlay}/>
           <LoadingOverlay show={this.state.overlay == overlays.LOADING}/>
           <AreYouSureOverlay
             show={this.state.overlay == overlays.CONFIRMSEND}
@@ -336,28 +359,28 @@ let styles = StyleSheet.create({
   },
   backButtonTouchable: {
     flex: 1.76,
-    marginTop: titleBarHeight*.06/.757,
-    marginLeft: screenWidth*.157/3.6,
-    aspectRatio: 512/392,
+    marginTop: titleBarHeight * .06 / .757,
+    marginLeft: screenWidth * .157 / 3.6,
+    aspectRatio: 512 / 392,
   },
   backButtonIcon: {
-    aspectRatio: 512/392,
+    aspectRatio: 512 / 392,
     width: "100%",
   },
   headerHolder: {
-    marginTop: titleBarHeight*.12/.757,
-    marginBottom: titleBarHeight*.18/.757,
+    marginTop: titleBarHeight * .12 / .757,
+    marginBottom: titleBarHeight * .18 / .757,
     flexDirection: 'row',
   },
   medalImage: {
-    width: screenWidth*199/1080,
-    height: (344/393)*screenWidth*199/1080,
+    width: screenWidth * 199 / 1080,
+    height: (344 / 393) * screenWidth * 199 / 1080,
   },
   profileImage: {
-    width: screenWidth*134/1080,
-    height: (272/272)*screenWidth*134/1080,
-    marginLeft: screenWidth*25/1080,
-    marginTop: screenWidth*20/1080,
+    width: screenWidth * 134 / 1080,
+    height: (272 / 272) * screenWidth * 134 / 1080,
+    marginLeft: screenWidth * 25 / 1080,
+    marginTop: screenWidth * 20 / 1080,
   },
   profilePicView: {
     flex: 3,
@@ -369,7 +392,7 @@ let styles = StyleSheet.create({
     marginTop: 10
   },
   balancesHolder: {
-    width: screenWidth*1005/1080,
+    width: screenWidth * 1005 / 1080,
     height: screenHeight * 0.45,
     flexDirection: 'column',
   },
@@ -388,15 +411,15 @@ let styles = StyleSheet.create({
     flexDirection: 'row',
   },
   sendRecvButtonHolder: {
-    paddingTop: screenWidth*60/1080,
+    paddingTop: screenWidth * 60 / 1080,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
 
   },
   sendRecvButton: {
-    width: screenWidth*451/1080,
-    height: (376/904)*screenWidth*451/1080,
+    width: screenWidth * 451 / 1080,
+    height: (376 / 904) * screenWidth * 451 / 1080,
 
     //flex: 1,
     justifyContent: 'center',
@@ -418,7 +441,7 @@ let styles = StyleSheet.create({
     resizeMode: 'contain'
   },
   txHistory: {
-    width: screenWidth*1005/1080,
+    width: screenWidth * 1005 / 1080,
     //height: (1500/2022)*screenWidth*1005/1080,
     flex: 1,
     paddingTop: 60,
@@ -432,8 +455,8 @@ let styles = StyleSheet.create({
     paddingBottom: 100,
   },
   historyBG: {
-    width: screenWidth*890/1080,
-    height: (390/1784)*screenWidth*890/1080,
+    width: screenWidth * 890 / 1080,
+    height: (390 / 1784) * screenWidth * 890 / 1080,
     marginTop: 10,
     flexDirection: 'row',
     alignItems: 'center',
@@ -499,6 +522,5 @@ let styles = StyleSheet.create({
     color: "#fab523",
     fontSize: normalize(18)
   },
-  buttonText: {
-  },
+  buttonText: {},
 });

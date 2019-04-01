@@ -10,15 +10,14 @@ export default class Loading extends React.Component {
   constructor(props) {
     super(props);
   }
+
   render() {
     return (
       <ScreenView style={styles.screen}>
         <Text>Loading...</Text>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#0000ff"/>
       </ScreenView>
     )
   }
 }
-let styles = StyleSheet.create({
-
-});
+let styles = StyleSheet.create({});
