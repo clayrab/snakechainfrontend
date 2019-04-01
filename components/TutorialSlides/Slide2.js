@@ -26,8 +26,7 @@ export default class Slide2 extends React.Component {
         <Text style={[styles.welcomeText, this.state.buttonDynamicStyle]}>How to Play!</Text>
         <Text style={[styles.subText, this.state.buttonDynamicStyle]}>Select your level</Text>
         <Text style={[styles.subText, this.state.buttonDynamicStyle]}>
-          Play, and the pellets your miner snake collects
-          are Snakechain!
+          Play, and the pellets your miner snake collects are Snakechain!
         </Text>
       </View>
     );
