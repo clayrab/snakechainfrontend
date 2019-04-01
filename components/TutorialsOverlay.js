@@ -3,7 +3,7 @@ import {ImageBackground, StyleSheet, View,} from 'react-native';
 import {Font} from 'expo';
 import {normalize} from '../utils/FontNormalizer.js';
 import Tab1 from "./Tutorials/Tab1";
-import AppIntroSlider from "react-native-app-intro-slider";
+import AppIntroSlider from "./AppIntroSlider";
 import Tab2 from "./Tutorials/Tab2";
 import Tab3 from "./Tutorials/Tab3";
 import Tab4 from "./Tutorials/Tab4";
