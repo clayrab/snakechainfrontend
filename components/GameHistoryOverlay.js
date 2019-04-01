@@ -49,6 +49,7 @@ export default class GameHistoryOverlay extends React.Component {
     return null;
   }
   async componentDidMount(){
+    this.isMounted = true;
     await Font.loadAsync({
       'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
     });
@@ -81,7 +82,12 @@ export default class GameHistoryOverlay extends React.Component {
     }
     //let state = await makeRetry()(1500, prom);
     let state = await prom();
-    this.setState(state);
+    if(this.isMounted) {
+      this.setState(state);
+    }
+  }
+  componentWillUnmount() {
+    this.isMounted = false;
   }
   render() {
     if (!this.props.show) {
