@@ -44,22 +44,24 @@ export default class ReceiptOverlay extends React.Component {
               not able to begin a new mining
               expedition
             </Text>
-            <Text style={[styles.textStyle, this.state.buttonDynamicStyle]}>
+            <Text style={[styles.textStyle, styles.mb10, this.state.buttonDynamicStyle]}>
               When you broke ground on your new mine, you discovered a treasure trove of:
             </Text>
-            <ImageBackground source={require("../assets/snakebank/textbox.png")} style={styles.txBox}>
-              <View style={styles.tableHolder}>
-                <View style={{flex: 2, flexDirection: "row",}}>
-                  <View style={styles.tableViewBottom}>
-                  </View>
-                  <View style={styles.tableViewBottom}>
-                  </View>
-                  <View style={{flex: 1, borderTopColor: "#EBAC26", borderTopWidth: 1}}>
-                    <Text style={[{color: "#EBAC26", textAlign: 'center'}, this.state.buttonDynamicStyle]}>105</Text>
+            <View style={{flex: 1}}>
+              <ImageBackground source={require("../assets/snakebank/textbox.png")} style={styles.txBox}>
+                <View style={styles.tableHolder}>
+                  <View style={{flex: 2, flexDirection: "row",}}>
+                    <View style={styles.tableViewBottom}>
+                    </View>
+                    <View style={styles.tableViewBottom}>
+                    </View>
+                    <View style={{flex: 1, borderTopColor: "#EBAC26", borderTopWidth: 1}}>
+                      <Text style={[{color: "#EBAC26", textAlign: 'center'}, this.state.buttonDynamicStyle]}>105</Text>
+                    </View>
                   </View>
                 </View>
-              </View>
-            </ImageBackground>
+              </ImageBackground>
+            </View>
             <TouchableOpacity>
               <ImageBackground source={require("../assets/snakebank/button.png")} style={styles.backToCampButton}>
                 <Text style={[styles.backToCampButtonText, this.state.buttonDynamicStyle]}>START MINING</Text>
@@ -91,32 +93,32 @@ let styles = StyleSheet.create({
     position: 'relative',
     flexDirection: 'column',
     alignItems: 'center',
-  },
-  inputStyle: {
-    color: "#EBAC26",
-    fontSize: normalize(13),
-    paddingLeft: '2%',
+    paddingVertical: 25
   },
   headingStyle: {
     color: "#EBAC26",
-    fontSize: normalize(33),
+    fontSize: normalize(34),
     textAlign: "center",
-    marginTop: 20,
   },
   heading2Style: {
     color: "#EBAC26",
-    fontSize: normalize(28),
+    fontSize: normalize(22),
     textAlign: "center",
-    marginTop: 20,
+    marginTop: 10,
+    marginBottom: 20
   },
   textStyle: {
+    textAlign: 'center',
     color: "#896A66",
-    fontSize: normalize(10),
+    fontSize: normalize(14),
     paddingHorizontal: 15
+  },
+  mb10: {
+    marginBottom: 10
   },
   goldenTextStyle: {
     color: "#EBAC26",
-    fontSize: normalize(10)
+    fontSize: normalize(14)
   },
   closeButton: {
     position: 'absolute',
@@ -128,26 +130,6 @@ let styles = StyleSheet.create({
     height: 50,
     width: 35
   },
-  textBox: {
-    marginTop: 10,
-    padding: 20,
-    width: screenWidth * 872 / 1080,
-    height: (299 / 818) * screenWidth * 872 / 1080,
-  },
-  snakeImageView: {
-    marginTop: 10,
-    flexDirection: 'row',
-  },
-  leftSnake: {
-    width: screenWidth * 467 / 1080,
-    height: (444 / 434) * screenWidth * 467 / 1080,
-    resizeMode: "stretch",
-  },
-  rightSnake: {
-    width: screenWidth * 330 / 1080,
-    height: (994 / 717) * screenWidth * 330 / 1080,
-    resizeMode: "stretch",
-  },
   txBox: {
     marginTop: 10,
     width: screenWidth * 872 / 1080,
@@ -158,16 +140,6 @@ let styles = StyleSheet.create({
   tableHolder: {
     width: screenWidth * 773 / 1080,
     height: "80%",
-  },
-  tableHeader: {
-    flexDirection: "row",
-  },
-  tableView: {
-    flex: 1,
-    borderRightColor: "#EBAC26",
-    borderRightWidth: 1,
-    justifyContent: "center",
-    alignItems: "center"
   },
   tableViewBottom: {
     flex: 1,
