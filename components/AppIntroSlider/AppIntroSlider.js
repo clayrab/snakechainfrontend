@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import DefaultSlide from './DefaultSlide';
 
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 const isIphoneX =
   Platform.OS === 'ios' && !Platform.isPad && !Platform.isTVOS && (height === 812 || width === 812);
@@ -43,7 +43,7 @@ export default class AppIntroSlider extends React.Component {
   };
 
   goToSlide = pageNum => {
-    this.setState({ activeIndex: pageNum });
+    this.setState({activeIndex: pageNum});
     this.flatList.scrollToOffset({
       offset: this._rtlSafeIndex(pageNum) * this.state.width,
     });
@@ -55,19 +55,19 @@ export default class AppIntroSlider extends React.Component {
   _onNextPress = () => {
     this.goToSlide(this.state.activeIndex + 1);
     this.props.onSlideChange &&
-      this.props.onSlideChange(this.state.activeIndex + 1, this.state.activeIndex);
+    this.props.onSlideChange(this.state.activeIndex + 1, this.state.activeIndex);
   };
   _onPrevPress = () => {
     this.goToSlide(this.state.activeIndex - 1);
     this.props.onSlideChange &&
-      this.props.onSlideChange(this.state.activeIndex - 1, this.state.activeIndex);
+    this.props.onSlideChange(this.state.activeIndex - 1, this.state.activeIndex);
   };
 
   _renderItem = item => {
-    const { width, height } = this.state;
-    const props = { ...item.item, width, height };
+    const {width, height} = this.state;
+    const props = {...item.item, width, height};
     return (
-      <View style={{ width: this.state.width, height: this.state.height }}>
+      <View style={{width: this.props.width ? this.props.width : width, height}}>
         {this.props.renderItem ? (
           this.props.renderItem(props)
         ) : (
@@ -148,18 +148,18 @@ export default class AppIntroSlider extends React.Component {
       <View style={[styles.paginationContainer, this.props.paginationStyle]}>
         <View style={styles.paginationDots}>
           {this.props.slides.length > 1 &&
-            this.props.slides.map((_, i) => (
-              <TouchableOpacity
-                key={i}
-                style={[
-                  styles.dot,
-                  this._rtlSafeIndex(i) === this.state.activeIndex
-                    ? this.props.activeDotStyle
-                    : this.props.dotStyle,
-                ]}
-                onPress={() => this.goToSlide(i)}
-              />
-            ))}
+          this.props.slides.map((_, i) => (
+            <TouchableOpacity
+              key={i}
+              style={[
+                styles.dot,
+                this._rtlSafeIndex(i) === this.state.activeIndex
+                  ? this.props.activeDotStyle
+                  : this.props.dotStyle,
+              ]}
+              onPress={() => this.goToSlide(i)}
+            />
+          ))}
         </View>
         {btn}
         {skipBtn}
@@ -181,15 +181,15 @@ export default class AppIntroSlider extends React.Component {
       return;
     }
     const lastIndex = this.state.activeIndex;
-    this.setState({ activeIndex: newIndex });
+    this.setState({activeIndex: newIndex});
     this.props.onSlideChange && this.props.onSlideChange(newIndex, lastIndex);
   };
 
   _onLayout = () => {
-    const { width, height } = Dimensions.get('window');
+    const {width, height} = Dimensions.get('window');
     if (width !== this.state.width || height !== this.state.height) {
       // Set new width to update rendering of pages
-      this.setState({ width, height });
+      this.setState({width, height});
       // Set new scroll position
       const func = () => {
         this.flatList.scrollToOffset({
@@ -242,7 +242,7 @@ export default class AppIntroSlider extends React.Component {
 
 const styles = StyleSheet.create({
   flexOne: {
-    flex: 1,
+    flex: 1
   },
   flatList: {
     flex: 1,

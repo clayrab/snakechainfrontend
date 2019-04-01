@@ -9,9 +9,31 @@ import Tab3 from "./Tutorials/Tab3";
 import Tab4 from "./Tutorials/Tab4";
 import Tab5 from "./Tutorials/Tab5";
 
-const tabs = [1, 2, 3, 4, 5];
-const slides = [<Tab1/>, <Tab2/>, <Tab3/>, <Tab4/>, <Tab5/>];
+const slides = [
+  {
+    id: 1,
+    comp: <Tab1/>
+  },
+  {
+    id: 2,
+    comp: <Tab2/>
+  },
+  {
+    id: 3,
+    comp: <Tab3/>
+  },
+  {
+    id: 4,
+    comp: <Tab4/>
+  },
+  {
+    id: 5,
+    comp: <Tab5/>
+  },
+];
 
+let screenWidth = require('Dimensions').get('window').width;
+let screenHeight = require('Dimensions').get('window').height;
 export default class TutorialsOverlay extends React.Component {
   constructor(props) {
     super(props);
@@ -33,7 +55,7 @@ export default class TutorialsOverlay extends React.Component {
   }
 
   renderSlide(slide) {
-    return slides[slide - 1];
+    return slide.comp;
   }
 
   render() {
@@ -44,11 +66,14 @@ export default class TutorialsOverlay extends React.Component {
         <View style={styles.screen}>
           <ImageBackground source={require("../assets/BG.png")} style={styles.content} resizeMode={'stretch'}>
 
-            <AppIntroSlider slides={tabs}
-                            renderItem={this.renderSlide}
-                            onDone={this.props.closeOverlay}
-                            showNextButton={false}
-                            showDoneButton={false}
+            <AppIntroSlider
+              keyExtractor={(item, index) => `${index}`}
+              slides={slides}
+              renderItem={this.renderSlide}
+              onDone={this.props.closeOverlay}
+              showNextButton={false}
+              showDoneButton={false}
+              width={screenWidth * 0.95}
             />
 
           </ImageBackground>
@@ -57,8 +82,6 @@ export default class TutorialsOverlay extends React.Component {
     }
   }
 }
-let screenWidth = require('Dimensions').get('window').width;
-let screenHeight = require('Dimensions').get('window').height;
 let styles = StyleSheet.create({
   screen: {
     flex: 1,
@@ -77,6 +100,8 @@ let styles = StyleSheet.create({
     position: 'relative',
     flexDirection: 'column',
     alignItems: 'center',
+    paddingTop: 25,
+    // paddingHorizontal: 20,
   },
   inputStyle: {
     color: "#EBAC26",
