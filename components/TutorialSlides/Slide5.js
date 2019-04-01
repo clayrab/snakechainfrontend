@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, Dimensions} from "react-native";
 import {Font} from "expo";
 import {normalize} from "../../utils/FontNormalizer";
 
-export default class Tab2 extends React.Component {
+export default class Slide5 extends React.Component {
 
   state = {
     buttonDynamicStyle: {},
@@ -23,7 +23,9 @@ export default class Tab2 extends React.Component {
   render() {
     return (
       <View style={styles.slide}>
-        <Text style={[styles.welcomeText, this.state.buttonDynamicStyle]}>Welcome 2!</Text>
+        <Text style={[styles.welcomeText, this.state.buttonDynamicStyle]}>Get Started!</Text>
+        <Text style={[styles.subText, this.state.buttonDynamicStyle]}>Begin your journey in </Text>
+        <Text style={[styles.subText, this.state.buttonDynamicStyle]}>in SnakeWorld now!</Text>
       </View>
     );
   }
@@ -33,10 +35,18 @@ const {width, height} = Dimensions.get('window');
 const styles = StyleSheet.create({
   slide: {
     flex: 1,
+    width: '100%',
+    paddingHorizontal: 25,
     alignItems: 'center'
   },
   welcomeText: {
-    fontSize: normalize(20),
-    color: "#EBAC26"
+    fontSize: normalize(24),
+    color: "#EBAC26",
+    marginBottom: 10
+  },
+  subText: {
+    fontSize: normalize(14),
+    color: "#EBAC26",
+    textAlign: 'center'
   }
 });

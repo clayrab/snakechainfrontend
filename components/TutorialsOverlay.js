@@ -1,34 +1,29 @@
 import React from 'react';
 import {ImageBackground, StyleSheet, View,} from 'react-native';
 import {Font} from 'expo';
-import {normalize} from '../utils/FontNormalizer.js';
-import Tab1 from "./Tutorials/Tab1";
 import AppIntroSlider from "./AppIntroSlider";
-import Tab2 from "./Tutorials/Tab2";
-import Tab3 from "./Tutorials/Tab3";
-import Tab4 from "./Tutorials/Tab4";
-import Tab5 from "./Tutorials/Tab5";
+import {Slide1, Slide2, Slide3, Slide4, Slide5} from "./TutorialSlides"
 
 const slides = [
   {
     id: 1,
-    comp: <Tab1/>
+    comp: <Slide1/>
   },
   {
     id: 2,
-    comp: <Tab2/>
+    comp: <Slide2/>
   },
   {
     id: 3,
-    comp: <Tab3/>
+    comp: <Slide3/>
   },
   {
     id: 4,
-    comp: <Tab4/>
+    comp: <Slide4/>
   },
   {
     id: 5,
-    comp: <Tab5/>
+    comp: <Slide5/>
   },
 ];
 
@@ -64,7 +59,9 @@ export default class TutorialsOverlay extends React.Component {
     } else {
       return (
         <View style={styles.screen}>
-          <ImageBackground source={require("../assets/BG.png")} style={styles.content} resizeMode={'stretch'}>
+          <ImageBackground source={require("../assets/BG.png")}
+                           style={styles.content}
+                           resizeMode={'stretch'}>
 
             <AppIntroSlider
               keyExtractor={(item, index) => `${index}`}
@@ -72,7 +69,7 @@ export default class TutorialsOverlay extends React.Component {
               renderItem={this.renderSlide}
               onDone={this.props.closeOverlay}
               showNextButton={false}
-              showDoneButton={false}
+              showDoneButton={true}
               width={screenWidth * 0.95}
             />
 
@@ -102,85 +99,5 @@ let styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 25,
     // paddingHorizontal: 20,
-  },
-  inputStyle: {
-    color: "#EBAC26",
-    fontSize: normalize(13),
-    paddingLeft: '2%',
-  },
-  headingStyle: {
-    color: "#EBAC26",
-    fontSize: normalize(33),
-    textAlign: "center",
-    marginTop: 20,
-  },
-  closeButton: {
-    position: 'absolute',
-    top: -15,
-    right: -10,
-    zIndex: 100,
-  },
-  closeButtonImage: {
-    height: 50,
-    width: 35
-  },
-  textBox: {
-    marginTop: 10,
-    padding: 20,
-    width: screenWidth * 872 / 1080,
-    height: (299 / 818) * screenWidth * 872 / 1080,
-  },
-  snakeImageView: {
-    marginTop: 10,
-    flexDirection: 'row',
-  },
-  leftSnake: {
-    width: screenWidth * 467 / 1080,
-    height: (444 / 434) * screenWidth * 467 / 1080,
-    resizeMode: "stretch",
-  },
-  rightSnake: {
-    width: screenWidth * 330 / 1080,
-    height: (994 / 717) * screenWidth * 330 / 1080,
-    resizeMode: "stretch",
-  },
-  txBox: {
-    marginTop: 10,
-    width: screenWidth * 872 / 1080,
-    height: (299 / 818) * screenWidth * 872 / 1080,
-    justifyContent: "center",
-    alignItems: 'center'
-  },
-  tableHolder: {
-    width: screenWidth * 773 / 1080,
-    height: "80%",
-  },
-  tableHeader: {
-    flexDirection: "row",
-  },
-  tableView: {
-    flex: 1,
-    borderRightColor: "#EBAC26",
-    borderRightWidth: 1,
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  tableViewBottom: {
-    flex: 1,
-    borderRightColor: "#EBAC26",
-    borderRightWidth: 1,
-    borderTopColor: "#EBAC26",
-    borderTopWidth: 1
-  },
-  backToCampButton: {
-    marginTop: 20,
-    width: screenWidth * 709 / 1080,
-    height: (182 / 671) * screenWidth * 709 / 1080,
-    justifyContent: "center",
-    alignItems: 'center'
-  },
-  backToCampButtonText: {
-    color: "#EBAC26",
-    fontSize: normalize(16)
   },
 });
