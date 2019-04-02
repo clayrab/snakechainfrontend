@@ -62,7 +62,7 @@ export default class ReceiptOverlay extends React.Component {
                 </View>
               </ImageBackground>
             </View>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={this.props.closeOverlay}>
               <ImageBackground source={require("../assets/snakebank/button.png")} style={styles.backToCampButton}>
                 <Text style={[styles.backToCampButtonText, this.state.buttonDynamicStyle]}>START MINING</Text>
               </ImageBackground>

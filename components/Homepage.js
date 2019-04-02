@@ -58,7 +58,7 @@ export default class Homepage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      overlay: overlays.RECEIPTOVERLAY,
+      overlay: null,
       loading: true,
       riffic: {display: "none",},
       confirmAmount: -1,
@@ -185,7 +185,7 @@ export default class Homepage extends React.Component {
       console.log(resp.txhash)
       console.log(resp.user)
       await this.props.doUpdateUser(resp.user);
-      await this.setState({overlay: overlays.CONFIRMTX, lastTxHash: resp.txhash});
+      await this.setState({overlay: overlays.RECEIPTOVERLAY, lastTxHash: resp.txhash});
     } else {
       alert("Error sending transaction");
       await this.setState({overlay: -1});
@@ -387,6 +387,7 @@ export default class Homepage extends React.Component {
             show={this.state.overlay == overlays.RECEIPTOVERLAY}
             user={this.props.user}
             closeOverlay={this.closeOverlay}
+            transactionId={this.state.lastTxHash}
           />
           <GameHistoryOverlay show={this.state.overlay == overlays.MINE}
                               closeOverlay={this.closeOverlay}
