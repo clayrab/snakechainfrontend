@@ -25,6 +25,7 @@ import SelectLevelOverlay from '../components/SelectLevelOverlay.js';
 import ScreenView from '../components/ScreenView.js';
 import SnakeTown from '../components/SnakeTown.js';
 import CowOverlay from '../components/CowOverlay.js';
+import ReceiptOverlay from "./ReceiptOverlay";
 
 let mineImages = [
   require('../assets/homepage/mine/mine0.png'),
@@ -51,12 +52,13 @@ var overlays = {
   "MINEEMPTY": 7,
   "CONFIRMSNKDYNAMITE": 8,
   "CONFIRMETHDYNAMITE": 9,
+  "RECEIPTOVERLAY": 10,
 };
 export default class Homepage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      overlay: -1,
+      overlay: overlays.RECEIPTOVERLAY,
       loading: true,
       riffic: {display: "none",},
       confirmAmount: -1,
@@ -381,6 +383,11 @@ export default class Homepage extends React.Component {
               </View>
             </View>
           </View>
+          <ReceiptOverlay
+            show={this.state.overlay == overlays.RECEIPTOVERLAY}
+            user={this.props.user}
+            closeOverlay={this.closeOverlay}
+          />
           <GameHistoryOverlay show={this.state.overlay == overlays.MINE}
                               closeOverlay={this.closeOverlay}
                               user={this.props.user}
