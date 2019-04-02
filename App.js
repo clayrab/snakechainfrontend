@@ -1,5 +1,5 @@
 import React from 'react';
-import {Loop, Stage, World, Body, Sprite} from 'react-game-kit/native';
+import { Loop, Stage, World, Body, Sprite } from 'react-game-kit/native';
 import SocketIOClient from 'socket.io-client';
 
 import CONSTANTS from './Constants.js';
@@ -35,7 +35,6 @@ import ViewSponsor from './components/ViewSponsor.js';
 import PurchasedTicket from './components/PurchasedTicket.js';
 import Success from './components/Success.js';
 import Fail from './components/Fail.js';
-import Paused from "./components/Paused";
 
 // components/ChangePassword.js
 // components/EditProfile.js
@@ -350,28 +349,16 @@ export default class App extends React.Component {
     }
   }
 
-  onCancelConfirmContract = () => {
-    this.setState({overlay: overlays.GAMEOVER});
-  }
-  onConfirmExit = () => {
-    this.exit();
-  }
-  onCancelConfirmExit = () => {
-    this.setState({overlay: overlays.PAUSE});
-  }
 
   start() {
     this.setState({offerContract: true, running: true, overlay: -1});
   }
-
   restart() {
     this.setState({toggleReset: !this.state.toggleReset, overlay: overlays.STARTGAME});
   }
-
   pause() {
     this.setState({running: false, overlay: overlays.PAUSE});
   }
-
   exit = () => {
     this.setState({running: false, screen: screens.HOME, overlay: overlays.STARTGAME});
   }
@@ -388,23 +375,28 @@ export default class App extends React.Component {
   confirmQuit = () => {
     this.setState({overlay: overlays.CONFIRMEXIT});
   }
-  onSelectLevel = (levelNumber) => {
-    this.setState({screen: screens.GAME, level: levelNumber});
+  onConfirmExit = () => {
+    this.exit();
   }
-
+  onCancelConfirmContract = () => {
+    this.setState({overlay: overlays.GAMEOVER});
+  }
+  onCancelConfirmExit = () => {
+    this.setState({overlay: overlays.PAUSE});
+  }
+  onSelectLevel = (levelNumber) => {
+    this.setState({ screen: screens.GAME, level: levelNumber });
+  }
   onSelectLevelPlayPress() {
     this.setState({screen: screens.GAME});
   }
-
   gameOverDoContract() {
     this.setState({overlay: overlays.CONFIRMCONTRACT});
   }
-
   onConfirmTxOk() {
     this.setState({overlay: overlays.GAMEOVER});
     //this.setState({screen: screens.HOMEoverlay: -1});
   }
-
   onGoToTown = () => {
     this.setState({screen: screens.SNAKETOWN, overlay: -1});
   }

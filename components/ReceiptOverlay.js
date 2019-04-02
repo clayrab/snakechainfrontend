@@ -33,24 +33,19 @@ export default class ReceiptOverlay extends React.Component {
               <Image source={require('../assets/snakebank/closeBG.png')} style={styles.closeButtonImage}
                      resizeMode="stretch"/>
             </TouchableOpacity>
-            <Text style={[styles.headingStyle, this.state.buttonDynamicStyle]}>
-              Mining Camp
-            </Text>
             <Text style={[styles.heading2Style, this.state.buttonDynamicStyle]}>
               New Mine Discovered!
             </Text>
-            <Text style={[styles.textStyle, this.state.buttonDynamicStyle]}>
-              You have found a new mine <Text style={styles.goldenTextStyle}>1,200 Snakechain Potential</Text>!! You are
-              not able to begin a new mining
-              expedition
+            <Text style={[styles.textStyle, this.state.buttonDynamicStyle, {paddingLeft: 40, paddingRight: 40, }]}>
+              You have found a new mine with <Text style={styles.goldenTextStyle}>1,200 Snakechain Potential</Text>!! Begin a new mining expedition!
             </Text>
-            <Text style={[styles.textStyle, styles.mb10, this.state.buttonDynamicStyle]}>
+            {/*<Text style={[styles.textStyle, styles.mb10, this.state.buttonDynamicStyle, {paddingLeft: 40, paddingRight: 40, }]}>
               When you broke ground on your new mine, you discovered a treasure trove of:
-            </Text>
+            </Text>*/}
             <View style={{flex: 1}}>
               <ImageBackground source={require("../assets/snakebank/textbox.png")} style={styles.txBox}>
                 <View style={styles.tableHolder}>
-                  <View style={{flex: 2, flexDirection: "row",}}>
+                  {/*<View style={{flex: 2, flexDirection: "row",}}>
                     <View style={styles.tableViewBottom}>
                     </View>
                     <View style={styles.tableViewBottom}>
@@ -58,11 +53,12 @@ export default class ReceiptOverlay extends React.Component {
                     <View style={{flex: 1, borderTopColor: "#EBAC26", borderTopWidth: 1}}>
                       <Text style={[{color: "#EBAC26", textAlign: 'center'}, this.state.buttonDynamicStyle]}>105</Text>
                     </View>
-                  </View>
+                  </View>*/}
+                  <Text style={[styles.textStyle, this.state.buttonDynamicStyle]}>{this.props.transactionId}</Text>
                 </View>
               </ImageBackground>
             </View>
-            <TouchableOpacity onPress={this.props.closeOverlay}>
+            <TouchableOpacity onPress={this.props.startMining}>
               <ImageBackground source={require("../assets/snakebank/button.png")} style={styles.backToCampButton}>
                 <Text style={[styles.backToCampButtonText, this.state.buttonDynamicStyle]}>START MINING</Text>
               </ImageBackground>
@@ -94,11 +90,6 @@ let styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     paddingVertical: 25
-  },
-  headingStyle: {
-    color: "#EBAC26",
-    fontSize: normalize(34),
-    textAlign: "center",
   },
   heading2Style: {
     color: "#EBAC26",

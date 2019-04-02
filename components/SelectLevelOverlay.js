@@ -45,7 +45,7 @@ export default class SelectLevelOverlay extends React.Component {
       let dynamiteStyle1 = {opacity: 0.4,};
       let dynamiteStyle2 = {opacity: 0.4,};
       if (this.props.user.mineUpgrades & 1) {
-        dynamiteStyle1 = {};
+        dynamiteStyle1 = {display: "none", };
       }
       if (this.props.user.mineUpgrades & 2) {
         dynamiteStyle2 = {};
@@ -120,7 +120,7 @@ export default class SelectLevelOverlay extends React.Component {
               </View>
 
               <View style={[{zIndex: 100}, styles.childContentView]}>
-                <View style={styles.dynamiteOverlay}>
+                <View style={styles.dynamiteOverlay, dynamiteStyle1}>
                   <TouchableOpacity onPress={this.props.buySnkDynamite}>
                     <ImageBackground source={require('../assets/snakemine/textPart.png')}
                                      style={styles.dynamiteTextBG} resizeMode={'stretch'}>
@@ -133,7 +133,7 @@ export default class SelectLevelOverlay extends React.Component {
                 <View style={styles.childRowContent}>
                   <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.SCATTER1)}>
                     <ImageBackground source={require('../assets/snakemine/leftBG.png')}
-                                     style={[styles.snakeChainBG, dynamiteStyle1]} resizeMode={'stretch'}>
+                                     style={[styles.snakeChainBG]} resizeMode={'stretch'}>
                       <Text style={[this.state.riffic, styles.headerSC]}>
                         NO MULTIPLAYER
                       </Text>
@@ -148,7 +148,7 @@ export default class SelectLevelOverlay extends React.Component {
                     </ImageBackground>
                   </TouchableOpacity>
                   <ImageBackground source={require('../assets/snakemine/textPart.png')}
-                                   style={[styles.scTitleBG, dynamiteStyle1]} resizeMode={'stretch'}>
+                                   style={[styles.scTitleBG]} resizeMode={'stretch'}>
                     <Text style={[this.state.riffic, styles.avgTitleText]}>
                       AVG. 22 SNAKECHAIN
                     </Text>
@@ -157,7 +157,7 @@ export default class SelectLevelOverlay extends React.Component {
                 <View style={styles.childRowContent}>
                   <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BLOCK1)}>
                     <ImageBackground source={require('../assets/snakemine/leftBG.png')}
-                                     style={[styles.snakeChainBG, dynamiteStyle1]} resizeMode={'stretch'}>
+                                     style={[styles.snakeChainBG]} resizeMode={'stretch'}>
                       <Text style={[this.state.riffic, styles.headerSC]}>
                         NO MULTIPLAYER
                       </Text>
@@ -172,7 +172,7 @@ export default class SelectLevelOverlay extends React.Component {
                     </ImageBackground>
                   </TouchableOpacity>
                   <ImageBackground source={require('../assets/snakemine/textPart.png')}
-                                   style={[styles.scTitleBG, dynamiteStyle1]} resizeMode={'stretch'}>
+                                   style={[styles.scTitleBG]} resizeMode={'stretch'}>
                     <Text style={[this.state.riffic, styles.avgTitleText]}>
                       AVG. 22 SNAKECHAIN
                     </Text>
@@ -184,7 +184,7 @@ export default class SelectLevelOverlay extends React.Component {
                 <View style={styles.childRowContent}>
                   <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.SCATTER2)}>
                     <ImageBackground source={require('../assets/snakemine/leftBG.png')}
-                                     style={[styles.snakeChainBG, dynamiteStyle1]} resizeMode={'stretch'}>
+                                     style={[styles.snakeChainBG]} resizeMode={'stretch'}>
                       <Text style={[this.state.riffic, styles.headerSC]}>
                         NO MULTIPLAYER
                       </Text>
@@ -199,7 +199,7 @@ export default class SelectLevelOverlay extends React.Component {
                     </ImageBackground>
                   </TouchableOpacity>
                   <ImageBackground source={require('../assets/snakemine/textPart.png')}
-                                   style={[styles.scTitleBG, dynamiteStyle1]} resizeMode={'stretch'}>
+                                   style={[styles.scTitleBG]} resizeMode={'stretch'}>
                     <Text style={[this.state.riffic, styles.avgTitleText]}>
                       AVG. 22 SNAKECHAIN
                     </Text>
@@ -208,7 +208,7 @@ export default class SelectLevelOverlay extends React.Component {
                 <View style={styles.childRowContent}>
                   <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BLOCK2)}>
                     <ImageBackground source={require('../assets/snakemine/leftBG.png')}
-                                     style={[styles.snakeChainBG, dynamiteStyle1]} resizeMode={'stretch'}>
+                                     style={[styles.snakeChainBG]} resizeMode={'stretch'}>
                       <Text style={[this.state.riffic, styles.headerSC]}>
                         NO MULTIPLAYER
                       </Text>
@@ -223,7 +223,7 @@ export default class SelectLevelOverlay extends React.Component {
                     </ImageBackground>
                   </TouchableOpacity>
                   <ImageBackground source={require('../assets/snakemine/textPart.png')}
-                                   style={[styles.scTitleBG, dynamiteStyle1]} resizeMode={'stretch'}>
+                                   style={[styles.scTitleBG]} resizeMode={'stretch'}>
                     <Text style={[this.state.riffic, styles.avgTitleText]}>
                       AVG. 22 SNAKECHAIN
                     </Text>

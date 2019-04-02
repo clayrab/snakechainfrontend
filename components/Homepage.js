@@ -197,74 +197,60 @@ export default class Homepage extends React.Component {
   goToTown = () => {
     this.props.onGoToTown();
   }
-  buyDynamite = async (ticketType) => {
-    if (ticketType == "ETH" || ticketType == "SNK") {
-      await this.setState({overlay: overlays.LOADING});
-      let jwt = await getFromAsyncStore("jwt");
-      let price = this.props.prices.ethdynamite;
-      if (ticketType == "SNK") {
-        price = this.props.prices.snkdynamite;
-      }
-      let data = {
-        amount: price,
-        type: ticketType,
-      };
-      fetch(`${context.host}:${context.port}/createTransaction`, {
-        method: "POST",
-        body: JSON.stringify(data), // body data type must match "Content-Type" header
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          "Authorization": "JWT " + jwt,
-        },
-      }).then(async (response) => {
-        var resp = await response.json();
-        if (!resp.error) {
-          if (resp) {
-            if (resp.transactionKey) {
-              this.setState({
-                overlay: overlays.CONFIRMSNKDYNAMITE,
-                confirmAmount: price,
-                confirmTokenType: ticketType,
-                txKey: resp.transactionKey
-              });
-            } else {
-              alert("There was an error, malformed response.");
-              this.setState({overlay: -1});
-            }
+  buySnkDynamite = async () => {
+    let ticketType = "SNK"
+    await this.setState({overlay: overlays.LOADING});
+    let jwt = await getFromAsyncStore("jwt");
+    let price = this.props.prices.tnt;
+    console.log(price)
+    let data = {
+      amount: price,
+      type: ticketType,
+    };
+    fetch(`${context.host}:${context.port}/createTransaction`, {
+      method: "POST",
+      body: JSON.stringify(data), // body data type must match "Content-Type" header
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Authorization": "JWT " + jwt,
+      },
+    }).then(async (response) => {
+      var resp = await response.json();
+      if (!resp.error) {
+        if (resp) {
+          if (resp.transactionKey) {
+            this.setState({
+              overlay: overlays.CONFIRMSNKDYNAMITE,
+              confirmAmount: price,
+              confirmTokenType: ticketType,
+              txKey: resp.transactionKey
+            });
           } else {
-            alert("There was an error, no response.");
+            alert("There was an error, malformed response.");
             this.setState({overlay: -1});
           }
         } else {
-          alert(resp.error);
+          alert("There was an error, no response.");
           this.setState({overlay: -1});
         }
-      }).catch(err => {
-        throw err
-      });
-    } else {
-      alert("Error. Ticket type must be ETH or SNK.")
-    }
-  }
-  buyEthDynamite = () => {
-    this.buyDynamite("ETH");
-  }
-  buySnkDynamite = () => {
-    this.buyDynamite("SNK");
+      } else {
+        alert(resp.error);
+        this.setState({overlay: -1});
+      }
+    }).catch(err => {
+      throw err
+    });
   }
   onConfirmDynamite = async () => {
     await this.setState({overlay: overlays.LOADING});
     let jwt = await getFromAsyncStore("jwt");
-    let price = this.props.prices.ethdynamite;
+    let price = this.props.prices.tnt;
     let url = "/buyUpgradedMine";
-    var data = {
+    let data = {
       txkey: this.state.txKey,
       type: this.state.confirmTokenType,
       amount: this.state.confirmAmount,
     };
-    if (this.state.confirmTokenType == "ETH") {
-      url = "/buySuperGame";
-    }
     var response = await fetch(`${context.host}:${context.port}${url}`, {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       body: JSON.stringify(data), // body data type must match "Content-Type" header
@@ -287,18 +273,12 @@ export default class Homepage extends React.Component {
       await this.setState({overlay: -1});
     }
   }
-
-  // onConfirmSnkDynamite = () => {
-  //   // TODO
-  //   //this.setState({overlay: overlays.CONFIRMSNKDYNAMITE});
-  // }
+  goToSelectLevel = () => {
+    this.setState({overlay: overlays.SELECTLEVEL});
+  }
   onCancelConfirmSnkDynamite = () => {
     this.setState({overlay: overlays.SELECTLEVEL});
   }
-  // onConfirmEthDynamite = () =>{
-  //   // TODO
-  //   //this.setState({overlay: overlays.CONFIRMETHDYNAMITE});
-  // }
   onCancelConfirmEthDynamite = () => {
     this.setState({overlay: overlays.SELECTLEVEL});
   }
@@ -386,8 +366,9 @@ export default class Homepage extends React.Component {
           <ReceiptOverlay
             show={this.state.overlay == overlays.RECEIPTOVERLAY}
             user={this.props.user}
-            closeOverlay={this.closeOverlay}
             transactionId={this.state.lastTxHash}
+            startMining={this.goToSelectLevel}
+            closeOverlay={this.closeOverlay}
           />
           <GameHistoryOverlay show={this.state.overlay == overlays.MINE}
                               closeOverlay={this.closeOverlay}
