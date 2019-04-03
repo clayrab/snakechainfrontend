@@ -59,8 +59,8 @@ export default class Login extends React.Component {
     if (easterEggCount >= 0) {
       if (easterEggCount % 5 === 0) {
         await this.setState({
-          username: "testuser4",
-          pw: "asdf",
+          username: "ZB423",
+          pw: "1234",
           showLoginPlaceHolder: false,
           showPasswordPlaceHolder: false,
         });
