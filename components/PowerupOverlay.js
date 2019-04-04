@@ -12,6 +12,28 @@ import {Font} from 'expo';
 import {normalize} from "../utils/FontNormalizer";
 import PowerupDetailOverlay from "./PowerupDetailOverlay";
 
+const TotalComp = (props) => (
+  <ImageBackground source={require("../assets/powerupsoverlay/brownBG.png")}
+                   resizeMode={"contain"}
+                   style={styles.bigValueHolder}>
+    <Text style={[styles.totalText, props.fontStyle]}>Total</Text>
+    <Text style={[styles.totalText, props.fontStyle]}>{props.total}</Text>
+  </ImageBackground>
+);
+
+const MushroomTotal = (props) => {
+  const total = props.mushroom.count * props.mushroom.price;
+  if (total > 0)
+    return (
+      <ImageBackground source={require("../assets/powerupsoverlay/brownBG.png")}
+                       resizeMode={"contain"} style={styles.bigValueHolder}>
+        <Image source={props.image} style={[styles.smallMushroom]}/>
+        <Text style={[styles.mushroomValue, styles.fontStyle]}>{props.mushroom.count * props.mushroom.price}</Text>
+      </ImageBackground>
+    );
+  return <View/>
+}
+
 const CircleComp = (props) => (
   <View style={styles.circleView}>
     <Text style={[styles.circleText, props.style]}>{props.value}</Text>
@@ -103,8 +125,24 @@ export default class PowerupOverlay extends React.Component {
     this.setState({nitroTail: {...this.state.nitroTail, count}})
   }
 
+  getTotalCount = () => {
+    const {multiPlayer, shedTail, wildcard, nitroTail} = this.state;
+    return (multiPlayer.count * multiPlayer.price) +
+      (shedTail.count * shedTail.price) +
+      (wildcard.count * wildcard.price) +
+      (nitroTail.count * nitroTail.price)
+  }
 
-  onItemBuyPress = props => {
+  proceedToAcquire = () => {
+    // TODO: Show confirmation overlay
+  }
+
+  createTransaction = () => {
+    // TODO: createTransaction API call
+  }
+
+  buyPowerups = () => {
+    // TODO: buyPowerups API call
   }
 
   onItemPress = (props) => {
@@ -115,16 +153,9 @@ export default class PowerupOverlay extends React.Component {
     });
   }
 
-  onItemAddPress = (props) => {
-  }
-
-  onItemMinusPress = (props) => {
-  }
-
   closeDetailOverlay = () => {
     this.setState({detailVisible: false, selectedPowerup: {}})
   }
-
 
   render() {
     if (!this.props.show) {
@@ -203,22 +234,21 @@ export default class PowerupOverlay extends React.Component {
 
               </View>
 
-              <ImageBackground source={require("../assets/powerupsoverlay/brownBG.png")}
-                               resizeMode={"contain"}
-                               style={styles.bigValueHolder}>
-                <Image source={require("../assets/powerupsoverlay/mushroom_blue.png")}
-                       style={[styles.smallMushroom]}/>
-                <Text style={[styles.mushroomValue, styles.buttonText]}>{"2.....6,000"}</Text>
-              </ImageBackground>
+              <MushroomTotal mushroom={this.state.multiPlayer}
+                             image={require("../assets/powerupsoverlay/mushroom_yellow.png")}/>
 
-              <ImageBackground source={require("../assets/powerupsoverlay/brownBG.png")}
-                               resizeMode={"contain"}
-                               style={styles.bigValueHolder}>
-                <Text style={[styles.totalText, styles.buttonText]}>Total</Text>
-                <Text style={[styles.totalText, styles.buttonText]}>{"6,000"}</Text>
-              </ImageBackground>
+              <MushroomTotal mushroom={this.state.shedTail}
+                             image={require("../assets/powerupsoverlay/mushroom_blue.png")}/>
 
-              <TouchableOpacity style={styles.proceedToAcquireContainer}>
+              <MushroomTotal mushroom={this.state.wildcard}
+                             image={require("../assets/powerupsoverlay/mushroom_voilet.png")}/>
+
+              <MushroomTotal mushroom={this.state.nitroTail}
+                             image={require("../assets/powerupsoverlay/mushroom_red.png")}/>
+
+              <TotalComp total={this.getTotalCount()} fontStyle={styles.buttonText}/>
+
+              <TouchableOpacity style={styles.proceedToAcquireContainer} onPress={this.proceedToAcquire}>
                 <ImageBackground source={require("../assets/powerupsoverlay/yellowBG.png")}
                                  resizeMode={"contain"}
                                  style={styles.proceedToAcquireBtn}>
@@ -248,11 +278,6 @@ let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
 const circleSize = screenWidth * 0.06;
 const styles = StyleSheet.create({
-  temporaryText: {
-    height: "100%",
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   container: {
     flex: 1,
     position: 'absolute',
@@ -297,10 +322,7 @@ const styles = StyleSheet.create({
     color: "#fab523",
     fontSize: 16
   },
-  screen: {flex: 1,},
   coinText: {color: "#FDB525", marginHorizontal: "7%", fontSize: normalize(13)},
-  ghostTail: {justifyContent: "space-around"},
-  plusMinusImage: {height: "45%", width: "15%", resizeMode: "stretch", marginHorizontal: "2%"},
   smallMushroom: {height: screenWidth * 0.06, width: screenWidth * 0.06, resizeMode: 'contain'},
   coinStyle: {height: screenWidth * 0.04, width: screenWidth * 0.04, resizeMode: "contain"},
   bigValueHolder: {
@@ -352,19 +374,11 @@ const styles = StyleSheet.create({
     height: "40%",
     width: "40%"
   },
-  customImage: {resizeMode: "stretch", height: "33%", width: "70%", marginRight: "12%"},
-  custom5Image: {resizeMode: "stretch", height: "30%", width: "40%"},
-  customBoxStyle: {alignItems: 'flex-end'},
-  customTailImage: {resizeMode: "stretch", height: "42%", width: "50%",},
   boxViewContainer: {
     height: "70%",
     width: '100%'
   },
   boxView: {height: '100%', width: '100%', justifyContent: "center", alignItems: "center"},
-  powerUpsView: {height: screenHeight / 7, justifyContent: 'center', alignItems: 'center', flexDirection: 'row',},
-  lightningImage: {height: '85%', width: '10%', resizeMode: 'stretch', marginHorizontal: "2%",},
-  title: {color: '#FCB623', fontSize: screenHeight / 21, textAlign: "center", marginTop: '1.2%', marginBottom: "3%"},
-  powerText: {color: '#FDCF00', fontSize: screenHeight / 26,},
   mushroomValue: {
     fontSize: normalize(16),
     color: "#fab649"
