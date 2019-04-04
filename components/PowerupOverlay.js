@@ -30,23 +30,23 @@ const Box = ((props) =>
         </ImageBackground>
       </TouchableOpacity>
       {
-        props.bought &&
+        props.boughtCount > 0 &&
         <ImageBackground source={require("../assets/Paused/inputBackground.png")} resizeMode={"stretch"}
                          style={[styles.numberInput, {justifyContent: 'space-between', paddingHorizontal: 20}]}>
-          <TouchableOpacity onPress={() => props.onAddPress(props)}>
+          <TouchableOpacity onPress={() => props.changeCount(props.boughtCount - 1)}>
             <Image source={require("../assets/Paused/minus.png")} style={[styles.coinStyle, props.imageStyle]}/>
           </TouchableOpacity>
-          <Text style={[styles.coinText, props.buttonStyle]}>{props.value}</Text>
-          <TouchableOpacity onPress={() => props.onMinusPress(props)}>
+          <Text style={[styles.coinText, props.buttonStyle]}>{props.boughtCount}</Text>
+          <TouchableOpacity onPress={() => props.changeCount(props.boughtCount + 1)}>
             <Image source={require("../assets/Paused/plus.png")} style={[styles.coinStyle, props.imageStyle]}/>
           </TouchableOpacity>
         </ImageBackground>
         ||
-        <TouchableOpacity onPress={() => props.onBuyPress(props)}>
+        <TouchableOpacity onPress={() => props.changeCount(props.boughtCount + 1)}>
           <ImageBackground source={require("../assets/Paused/inputBackground.png")} resizeMode={"stretch"}
                            style={styles.numberInput}>
             <Image source={require("../assets/Paused/coinIcon.png")} style={[styles.coinStyle, props.imageStyle]}/>
-            <Text style={[styles.coinText, props.buttonStyle]}>{props.price.toFixed(3)}</Text>
+            <Text style={[styles.coinText, props.fontStyle]}>{props.price}</Text>
           </ImageBackground>
         </TouchableOpacity>
       }
@@ -58,9 +58,24 @@ export default class PowerupOverlay extends React.Component {
     super(props);
     this.state = {
       selectedPowerup: {},
-      detailVisible: false
+      detailVisible: false,
+      multiPlayer: {
+        price: 3000,
+        count: 0
+      },
+      shedTail: {
+        price: 1000,
+        count: 0
+      },
+      wildcard: {
+        price: 5000,
+        count: 0
+      },
+      nitroTail: {
+        price: 10000,
+        count: 0
+      }
     }
-
   }
 
   async componentDidMount() {
@@ -71,6 +86,23 @@ export default class PowerupOverlay extends React.Component {
       fontFamily: 'riffic-free-bold'
     }
   }
+
+  onMultiPlayerCountChange = count => {
+    this.setState({multiPlayer: {...this.state.multiPlayer, count}})
+  }
+
+  onShedTailCountChange = count => {
+    this.setState({shedTail: {...this.state.shedTail, count}})
+  }
+
+  onWildcardCountChange = count => {
+    this.setState({wildcard: {...this.state.wildcard, count}})
+  }
+
+  onNitroTailCountChange = count => {
+    this.setState({nitroTail: {...this.state.nitroTail, count}})
+  }
+
 
   onItemBuyPress = props => {
   }
@@ -92,6 +124,7 @@ export default class PowerupOverlay extends React.Component {
   closeDetailOverlay = () => {
     this.setState({detailVisible: false, selectedPowerup: {}})
   }
+
 
   render() {
     if (!this.props.show) {
@@ -129,43 +162,42 @@ export default class PowerupOverlay extends React.Component {
 
                 <Box buttonStyle={[styles.buttonText]}
                      fontStyle={styles.buttonText}
-                     bought={false}
                      boxImage={require('../assets/powerupsoverlay/mushroom_yellow.png')}
-                     price={3}
+                     boughtCount={this.state.multiPlayer.count}
+                     price={this.state.multiPlayer.price}
                      circleText={'5'}
                      heading={'Multiplayer (10x)'}
-                     onBuyPress={this.onItemBuyPress}
+                     changeCount={this.onMultiPlayerCountChange}
                      onItemPress={this.onItemPress}
                 />
                 <Box buttonStyle={[styles.buttonText]}
                      fontStyle={styles.buttonText}
-                     bought={true}
-                     value={2}
+                     boughtCount={this.state.shedTail.count}
+                     price={this.state.shedTail.price}
                      boxImage={require('../assets/powerupsoverlay/mushroom_blue.png')}
                      circleText={'0'}
                      heading={'Shed Tail'}
-                     onAddPress={this.onItemAddPress}
-                     onMinusPress={this.onItemMinusPress}
+                     changeCount={this.onShedTailCountChange}
                      onItemPress={this.onItemPress}
                 />
                 <Box buttonStyle={[styles.buttonText]}
                      fontStyle={styles.buttonText}
-                     bought={false}
+                     boughtCount={this.state.wildcard.count}
+                     price={this.state.wildcard.price}
                      boxImage={require('../assets/powerupsoverlay/mushroom_voilet.png')}
-                     price={5}
                      circleText={'5'}
                      heading={'Wildcard'}
-                     onBuyPress={this.onItemBuyPress}
+                     changeCount={this.onWildcardCountChange}
                      onItemPress={this.onItemPress}
                 />
                 <Box buttonStyle={[styles.buttonText]}
                      fontStyle={styles.buttonText}
-                     bought={false}
+                     boughtCount={this.state.nitroTail.count}
+                     price={this.state.nitroTail.price}
                      boxImage={require('../assets/powerupsoverlay/mushroom_red.png')}
-                     price={10}
                      circleText={'5'}
                      heading={'Nitro Tail'}
-                     onBuyPress={this.onItemBuyPress}
+                     changeCount={this.onNitroTailCountChange}
                      onItemPress={this.onItemPress}
                 />
 
