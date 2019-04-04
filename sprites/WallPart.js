@@ -34,7 +34,7 @@ let styles = StyleSheet.create({
     position: "absolute",
     width: CONSTANTS.SNEKSIZE,
     height: CONSTANTS.SNEKSIZE,
-    backgroundColor: "#f00",
+    backgroundColor: "#423434",
     zIndex: 3,
   },
 });
