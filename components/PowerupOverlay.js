@@ -11,6 +11,8 @@ import {
 import {Font} from 'expo';
 import {normalize} from "../utils/FontNormalizer";
 import PowerupDetailOverlay from "./PowerupDetailOverlay";
+import {getFromAsyncStore} from "../utils/AsyncStore";
+import {context} from "../utils/Context";
 
 const TotalComp = (props) => (
   <ImageBackground source={require("../assets/powerupsoverlay/brownBG.png")}
@@ -79,21 +81,21 @@ export default class PowerupOverlay extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedPowerup: {},
+      selectedPowerUp: {},
       detailVisible: false,
-      multiPlayer: {
+      goldPowerUp: {
         price: 3000,
         count: 0
       },
-      shedTail: {
+      bluePowerUp: {
         price: 1000,
         count: 0
       },
-      wildcard: {
+      purplePowerUp: {
         price: 5000,
         count: 0
       },
-      nitroTail: {
+      redPowerUp: {
         price: 10000,
         count: 0
       }
@@ -109,52 +111,126 @@ export default class PowerupOverlay extends React.Component {
     }
   }
 
-  onMultiPlayerCountChange = count => {
-    this.setState({multiPlayer: {...this.state.multiPlayer, count}})
+  onGoldCountChange = count => {
+    this.setState({goldPowerUp: {...this.state.goldPowerUp, count}})
   }
 
-  onShedTailCountChange = count => {
-    this.setState({shedTail: {...this.state.shedTail, count}})
+  onBlueCountChange = count => {
+    this.setState({bluePowerUp: {...this.state.bluePowerUp, count}})
   }
 
-  onWildcardCountChange = count => {
-    this.setState({wildcard: {...this.state.wildcard, count}})
+  onPurpleCountChange = count => {
+    this.setState({purplePowerUp: {...this.state.purplePowerUp, count}})
   }
 
-  onNitroTailCountChange = count => {
-    this.setState({nitroTail: {...this.state.nitroTail, count}})
+  onRedCountChange = count => {
+    this.setState({redPowerUp: {...this.state.redPowerUp, count}})
   }
 
   getTotalCount = () => {
-    const {multiPlayer, shedTail, wildcard, nitroTail} = this.state;
-    return (multiPlayer.count * multiPlayer.price) +
-      (shedTail.count * shedTail.price) +
-      (wildcard.count * wildcard.price) +
-      (nitroTail.count * nitroTail.price)
+    const {goldPowerUp, bluePowerUp, purplePowerUp, redPowerUp} = this.state;
+    return (goldPowerUp.count * goldPowerUp.price) +
+      (bluePowerUp.count * bluePowerUp.price) +
+      (purplePowerUp.count * purplePowerUp.price) +
+      (redPowerUp.count * redPowerUp.price)
   }
 
-  proceedToAcquire = () => {
+  proceedToAcquire = async () => {
     // TODO: Show confirmation overlay
+    await this.createTransaction();
   }
 
-  createTransaction = () => {
-    // TODO: createTransaction API call
+  createTransaction = async () => {
+    const amount = this.getTotalCount();
+
+    let jwt = await getFromAsyncStore("jwt");
+    let data = {
+      amount: amount,
+      type: "SNK"
+    };
+    fetch(`${context.host}:${context.port}/createTransaction`, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Authorization": "JWT " + jwt,
+      },
+    }).then(async (response) => {
+      let resp = await response.json();
+      if (!resp.error) {
+        if (resp) {
+          if (resp.transactionKey) {
+
+            await this.buyPowerups(resp.transactionKey);
+
+          } else {
+            alert("There was an error, malformed response.");
+            this.setState({overlay: -1});
+          }
+        } else {
+          alert("There was an error, no response.");
+          this.setState({overlay: -1});
+        }
+      } else {
+        alert(resp.error);
+        this.setState({overlay: -1});
+      }
+    }).catch(err => {
+      throw err
+    });
   }
 
-  buyPowerups = () => {
-    // TODO: buyPowerups API call
+  buyPowerups = async (txkey) => {
+    const amount = this.getTotalCount();
+    const {goldPowerUp, bluePowerUp, purplePowerUp, redPowerUp} = this.state;
+    let jwt = await getFromAsyncStore("jwt");
+    let data = {
+      txkey,
+      type: "SNK",
+      amount: amount,
+      goldpowerup: goldPowerUp.count,
+      bluepowerup: bluePowerUp.count,
+      purplepowerup: purplePowerUp.count,
+      redpowerup: redPowerUp.count
+    };
+    fetch(`${context.host}:${context.port}/buyPowerups`, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Authorization": "JWT " + jwt,
+      },
+    }).then(async (response) => {
+      let resp = await response.json();
+      if (!resp.error) {
+        if (resp) {
+
+          // TODO: Show success modal
+          alert("Success!");
+
+        } else {
+          alert("There was an error, no response.");
+          this.setState({overlay: -1});
+        }
+      } else {
+        alert(resp.error);
+        this.setState({overlay: -1});
+      }
+    }).catch(err => {
+      throw err
+    });
   }
 
   onItemPress = (props) => {
     const {name, image, description} = props;
     this.setState({
       detailVisible: true,
-      selectedPowerup: {name, image, description}
+      selectedPowerUp: {name, image, description}
     });
   }
 
   closeDetailOverlay = () => {
-    this.setState({detailVisible: false, selectedPowerup: {}})
+    this.setState({detailVisible: false, selectedPowerUp: {}})
   }
 
   render() {
@@ -194,56 +270,56 @@ export default class PowerupOverlay extends React.Component {
                 <Box buttonStyle={[styles.buttonText]}
                      fontStyle={styles.buttonText}
                      boxImage={require('../assets/powerupsoverlay/mushroom_yellow.png')}
-                     boughtCount={this.state.multiPlayer.count}
-                     price={this.state.multiPlayer.price}
+                     boughtCount={this.state.goldPowerUp.count}
+                     price={this.state.goldPowerUp.price}
                      circleText={'5'}
                      heading={'Multiplayer (10x)'}
-                     changeCount={this.onMultiPlayerCountChange}
+                     changeCount={this.onGoldCountChange}
                      onItemPress={this.onItemPress}
                 />
                 <Box buttonStyle={[styles.buttonText]}
                      fontStyle={styles.buttonText}
-                     boughtCount={this.state.shedTail.count}
-                     price={this.state.shedTail.price}
+                     boughtCount={this.state.bluePowerUp.count}
+                     price={this.state.bluePowerUp.price}
                      boxImage={require('../assets/powerupsoverlay/mushroom_blue.png')}
                      circleText={'0'}
                      heading={'Shed Tail'}
-                     changeCount={this.onShedTailCountChange}
+                     changeCount={this.onBlueCountChange}
                      onItemPress={this.onItemPress}
                 />
                 <Box buttonStyle={[styles.buttonText]}
                      fontStyle={styles.buttonText}
-                     boughtCount={this.state.wildcard.count}
-                     price={this.state.wildcard.price}
+                     boughtCount={this.state.purplePowerUp.count}
+                     price={this.state.purplePowerUp.price}
                      boxImage={require('../assets/powerupsoverlay/mushroom_voilet.png')}
                      circleText={'5'}
                      heading={'Wildcard'}
-                     changeCount={this.onWildcardCountChange}
+                     changeCount={this.onPurpleCountChange}
                      onItemPress={this.onItemPress}
                 />
                 <Box buttonStyle={[styles.buttonText]}
                      fontStyle={styles.buttonText}
-                     boughtCount={this.state.nitroTail.count}
-                     price={this.state.nitroTail.price}
+                     boughtCount={this.state.redPowerUp.count}
+                     price={this.state.redPowerUp.price}
                      boxImage={require('../assets/powerupsoverlay/mushroom_red.png')}
                      circleText={'5'}
                      heading={'Nitro Tail'}
-                     changeCount={this.onNitroTailCountChange}
+                     changeCount={this.onRedCountChange}
                      onItemPress={this.onItemPress}
                 />
 
               </View>
 
-              <MushroomTotal mushroom={this.state.multiPlayer}
+              <MushroomTotal mushroom={this.state.goldPowerUp}
                              image={require("../assets/powerupsoverlay/mushroom_yellow.png")}/>
 
-              <MushroomTotal mushroom={this.state.shedTail}
+              <MushroomTotal mushroom={this.state.bluePowerUp}
                              image={require("../assets/powerupsoverlay/mushroom_blue.png")}/>
 
-              <MushroomTotal mushroom={this.state.wildcard}
+              <MushroomTotal mushroom={this.state.purplePowerUp}
                              image={require("../assets/powerupsoverlay/mushroom_voilet.png")}/>
 
-              <MushroomTotal mushroom={this.state.nitroTail}
+              <MushroomTotal mushroom={this.state.redPowerUp}
                              image={require("../assets/powerupsoverlay/mushroom_red.png")}/>
 
               <TotalComp total={this.getTotalCount()} fontStyle={styles.buttonText}/>
