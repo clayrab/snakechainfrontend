@@ -11,8 +11,6 @@ import {
 import {Font} from 'expo';
 import {normalize} from "../utils/FontNormalizer";
 import PowerupDetailOverlay from "./PowerupDetailOverlay";
-import {getFromAsyncStore} from "../utils/AsyncStore";
-import {context} from "../utils/Context";
 
 const TotalComp = (props) => (
   <ImageBackground source={require("../assets/powerupsoverlay/brownBG.png")}
@@ -136,89 +134,13 @@ export default class PowerupOverlay extends React.Component {
   }
 
   proceedToAcquire = async () => {
-    // TODO: Show confirmation overlay
-    await this.createTransaction();
-  }
-
-  createTransaction = async () => {
-    const amount = this.getTotalCount();
-
-    let jwt = await getFromAsyncStore("jwt");
-    let data = {
-      amount: amount,
-      type: "SNK"
+    const powerups = {
+      goldpowerup: this.state.goldPowerUp.count,
+      bluepowerup: this.state.bluePowerUp.count,
+      purplepowerup: this.state.purplePowerUp.count,
+      redpowerup: this.state.goldPowerUp.count,
     };
-    fetch(`${context.host}:${context.port}/createTransaction`, {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        "Authorization": "JWT " + jwt,
-      },
-    }).then(async (response) => {
-      let resp = await response.json();
-      if (!resp.error) {
-        if (resp) {
-          if (resp.transactionKey) {
-
-            await this.buyPowerups(resp.transactionKey);
-
-          } else {
-            alert("There was an error, malformed response.");
-            this.setState({overlay: -1});
-          }
-        } else {
-          alert("There was an error, no response.");
-          this.setState({overlay: -1});
-        }
-      } else {
-        alert(resp.error);
-        this.setState({overlay: -1});
-      }
-    }).catch(err => {
-      throw err
-    });
-  }
-
-  buyPowerups = async (txkey) => {
-    const amount = this.getTotalCount();
-    const {goldPowerUp, bluePowerUp, purplePowerUp, redPowerUp} = this.state;
-    let jwt = await getFromAsyncStore("jwt");
-    let data = {
-      txkey,
-      type: "SNK",
-      amount: amount,
-      goldpowerup: goldPowerUp.count,
-      bluepowerup: bluePowerUp.count,
-      purplepowerup: purplePowerUp.count,
-      redpowerup: redPowerUp.count
-    };
-    fetch(`${context.host}:${context.port}/buyPowerups`, {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        "Authorization": "JWT " + jwt,
-      },
-    }).then(async (response) => {
-      let resp = await response.json();
-      if (!resp.error) {
-        if (resp) {
-
-          // TODO: Show success modal
-          alert("Success!");
-
-        } else {
-          alert("There was an error, no response.");
-          this.setState({overlay: -1});
-        }
-      } else {
-        alert(resp.error);
-        this.setState({overlay: -1});
-      }
-    }).catch(err => {
-      throw err
-    });
+    this.props.proceedToAcquire(powerups, this.getTotalCount())
   }
 
   onItemPress = (props) => {
