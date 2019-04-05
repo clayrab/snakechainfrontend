@@ -48,7 +48,11 @@ const Box = ((props) =>
           <Text style={[styles.boxText, props.fontStyle]}>{props.heading}</Text>
           <Image source={props.boxImage}
                  style={[styles.boxImageView, props.customImage !== undefined ? props.customImage : null]}/>
-          <CircleComp value={props.circleText} style={props.fontStyle}/>
+          {
+            props.circleText > -1 &&
+            <CircleComp value={props.circleText} style={props.fontStyle}/>
+          }
+
         </ImageBackground>
       </TouchableOpacity>
       {
@@ -193,7 +197,7 @@ export default class PowerupOverlay extends React.Component {
                      boxImage={require('../assets/powerupsoverlay/mushroom_yellow.png')}
                      boughtCount={this.state.goldPowerUpCount}
                      price={this.props.prices.goldpowerup}
-                     circleText={'5'}
+                     circleText={this.props.user.powerups.goldpowerup}
                      heading={'Multiplayer (10x)'}
                      changeCount={this.onGoldCountChange}
                      onItemPress={this.onItemPress}
@@ -203,7 +207,7 @@ export default class PowerupOverlay extends React.Component {
                      boughtCount={this.state.bluePowerUpCount}
                      price={this.props.prices.goldpowerup}
                      boxImage={require('../assets/powerupsoverlay/mushroom_blue.png')}
-                     circleText={'0'}
+                     circleText={this.props.user.powerups.bluepowerup}
                      heading={'Shed Tail'}
                      changeCount={this.onBlueCountChange}
                      onItemPress={this.onItemPress}
@@ -213,7 +217,7 @@ export default class PowerupOverlay extends React.Component {
                      boughtCount={this.state.purplePowerUpCount}
                      price={this.props.prices.goldpowerup}
                      boxImage={require('../assets/powerupsoverlay/mushroom_voilet.png')}
-                     circleText={'5'}
+                     circleText={this.props.user.powerups.purplepowerup}
                      heading={'Wildcard'}
                      changeCount={this.onPurpleCountChange}
                      onItemPress={this.onItemPress}
@@ -223,7 +227,7 @@ export default class PowerupOverlay extends React.Component {
                      boughtCount={this.state.redPowerUpCount}
                      price={this.props.prices.goldpowerup}
                      boxImage={require('../assets/powerupsoverlay/mushroom_red.png')}
-                     circleText={'5'}
+                     circleText={this.props.user.powerups.redpowerup}
                      heading={'Nitro Tail'}
                      changeCount={this.onRedCountChange}
                      onItemPress={this.onItemPress}

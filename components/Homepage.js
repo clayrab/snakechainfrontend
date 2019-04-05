@@ -79,7 +79,6 @@ export default class Homepage extends React.Component {
   }
 
   async componentDidMount() {
-    // console.warn(this.props.user)
     try {
       await Font.loadAsync({
         'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
@@ -416,6 +415,7 @@ export default class Homepage extends React.Component {
   }
 
   render() {
+    console.warn(this.props.user.powerups)
     let haul = this.props.user.haul;
     let mineGraphicIndex = 10 - Math.floor(10 * haul / this.props.user.mineMax);
     let mineTextColorStyle = {};

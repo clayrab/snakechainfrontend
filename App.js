@@ -78,6 +78,12 @@ export default class App extends React.Component {
         haul: 0,
         gamecount: 0,
         totalhaul: 0,
+        powerups: {
+          bluepowerup: -1,
+          goldpowerup: -1,
+          purplepowerup: -1,
+          redpowerup: -1
+        }
       },
       running: false,
       screen: screens.LOGIN,
@@ -110,6 +116,7 @@ export default class App extends React.Component {
       loadingUser: true,
       errorTitle: "",
       errorParagraph: "",
+      powerups: null
     };
     this.loggedIn = this.loggedIn.bind(this);
     this.closeOverlay = this.closeOverlay.bind(this);
@@ -419,6 +426,8 @@ export default class App extends React.Component {
     this.setState({running: true, overlay: -1});
   }
 
+  updatePowerups = powerups => this.setState({powerups})
+
   render() {
     if (this.state.screen == screens.HOME) {
       return (
@@ -430,6 +439,7 @@ export default class App extends React.Component {
           onWallet={this.onWallet}
           onProfile={this.onProfile}
           doUpdateUser={this.doUpdateUser}
+          updatePowerups={this.updatePowerups}
         >
         </Homepage>
       );
