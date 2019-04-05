@@ -66,6 +66,7 @@ export default class Homepage extends React.Component {
       confirmPubkey: "",
       powerupsData: null
     };
+
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -309,13 +310,11 @@ export default class Homepage extends React.Component {
     this.setState({overlay: -1});
   }
 
-
-  createPowerupsTransaction = async () => {
-    if (!this.state.powerupsData) return null;
-    const {amount, powerups} = this.state.powerupsData;
+  createPowerupsTransaction = async (powerupsData = this.state.powerupsData) => {
+    if (!powerupsData) return null;
     let jwt = await getFromAsyncStore("jwt");
     let data = {
-      amount,
+      amount: powerupsData.amount,
       type: "SNK"
     };
     fetch(`${context.host}:${context.port}/createTransaction`, {
@@ -331,7 +330,10 @@ export default class Homepage extends React.Component {
         if (resp) {
           if (resp.transactionKey) {
 
-            await this.buyPowerups(powerups, amount, resp.transactionKey);
+            this.setState({
+              txKey: resp.transactionKey,
+              overlay: overlays.CONFIRMPOWERUPBUYOVERLAY
+            });
 
           } else {
             alert("There was an error, malformed response.");
@@ -348,16 +350,15 @@ export default class Homepage extends React.Component {
     }).catch(err => {
       throw err
     })
-      .finally(() => {
-        this.setState({powerupsData: null})
-      });
   }
 
-  buyPowerups = async (powerups, amount, txkey) => {
+  buyPowerups = async () => {
+    const {txKey} = this.state;
+    const {amount, powerups} = this.state.powerupsData;
     const jwt = await getFromAsyncStore("jwt");
     const data = {
       type: "SNK",
-      txkey,
+      txkey: txKey,
       amount,
       ...powerups
     };
@@ -392,15 +393,14 @@ export default class Homepage extends React.Component {
   }
 
   proceedToAcquire = (powerups, amount) => {
-    this.setState({
-      overlay: overlays.CONFIRMPOWERUPBUYOVERLAY,
-      powerupsData: {powerups, amount}
-    });
+    const powerupsData = {powerups, amount};
+    this.setState({powerupsData});
+    this.createPowerupsTransaction(powerupsData)
   }
 
   onConfirmBuyPowerups = async () => {
     this.setState({overlay: overlays.LOADING});
-    await this.createPowerupsTransaction()
+    await this.buyPowerups();
   }
 
   onDeclineBuyPowerups = () => {
