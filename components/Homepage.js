@@ -409,13 +409,12 @@ export default class Homepage extends React.Component {
 
   onBuyPowerupsSuccess = (resp) => {
     alert("Success. ");
-    console.warn(resp);
+    this.props.updatePowerups(resp.powerups.powerups)
     this.powerupsOverlay.initializePowerUpsCount();
     this.setState({overlay: -1});
   }
 
   render() {
-    console.warn(this.props.user.powerups)
     let haul = this.props.user.haul;
     let mineGraphicIndex = 10 - Math.floor(10 * haul / this.props.user.mineMax);
     let mineTextColorStyle = {};

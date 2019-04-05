@@ -426,7 +426,14 @@ export default class App extends React.Component {
     this.setState({running: true, overlay: -1});
   }
 
-  updatePowerups = powerups => this.setState({powerups})
+  updatePowerups = powerups => {
+    this.setState({
+      user: {
+        ...this.state.user,
+        powerups
+      }
+    })
+  }
 
   render() {
     if (this.state.screen == screens.HOME) {
