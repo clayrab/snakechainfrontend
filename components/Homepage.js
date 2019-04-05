@@ -79,6 +79,7 @@ export default class Homepage extends React.Component {
   }
 
   async componentDidMount() {
+    // console.warn(this.props.user)
     try {
       await Font.loadAsync({
         'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
@@ -309,7 +310,8 @@ export default class Homepage extends React.Component {
     this.setState({overlay: -1});
   }
 
-  createTransaction = async () => {
+
+  createPowerupsTransaction = async () => {
     if (!this.state.powerupsData) return null;
     const {amount, powerups} = this.state.powerupsData;
     let jwt = await getFromAsyncStore("jwt");
@@ -399,7 +401,7 @@ export default class Homepage extends React.Component {
 
   onConfirmBuyPowerups = async () => {
     this.setState({overlay: overlays.LOADING});
-    await this.createTransaction()
+    await this.createPowerupsTransaction()
   }
 
   onDeclineBuyPowerups = () => {
@@ -409,6 +411,7 @@ export default class Homepage extends React.Component {
   onBuyPowerupsSuccess = (resp) => {
     alert("Success. ");
     console.warn(resp);
+    this.powerupsOverlay.initializePowerUpsCount();
     this.setState({overlay: -1});
   }
 
@@ -525,9 +528,11 @@ export default class Homepage extends React.Component {
             transactionId={this.state.lastTxHash}
             onOk={this.closeOverlay}/>
           <PowerupOverlay
+            ref={ref => this.powerupsOverlay = ref}
             user={this.props.user}
             closeOverlay={this.closeOverlay}
             proceedToAcquire={this.proceedToAcquire}
+            prices={this.props.prices}
             show={this.state.overlay == overlays.POWERUPS}/>
           <MineEmptyOverlay
             closeOverlay={this.closeOverlay}
