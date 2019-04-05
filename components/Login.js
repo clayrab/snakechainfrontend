@@ -6,7 +6,8 @@ import {
   View,
   ImageBackground,
   Image,
-  TextInput
+  TextInput,
+  AsyncStorage
 } from 'react-native';
 import ScreenView from '../components/ScreenView.js';
 import {Font} from 'expo';
@@ -97,7 +98,7 @@ export default class Login extends React.Component {
   }
   rememberPress = () => {
     this.setState({remember: !this.state.remember})
-    this.easterEgg();
+    // this.easterEgg();
   }
   sendLoginCreds = async () => {
     console.log("sendLoginCreds");
@@ -123,6 +124,10 @@ export default class Login extends React.Component {
         }
         this.setState({loading: false});
       } else if (resp.token) {
+
+        await AsyncStorage.setItem("username", this.state.username)
+        await AsyncStorage.setItem("password", this.state.pw)
+
         this.props.loggedIn(resp.token);
       }
     } catch (error) {
@@ -185,12 +190,14 @@ export default class Login extends React.Component {
                   <Text style={[styles.loginText, this.state.buttonDynamicStyle]}>LOGIN</Text>
                 </ImageBackground>
               </TouchableOpacity>
-              {/*<View style={styles.rememberView}>
-                <TouchableOpacity onPress={this.rememberPress}>
-                  <Image source={ this.state.remember ? require('../assets/login/checkBox.png') : require('../assets/login/checkBox-1.png')} style={styles.checkBoxImage} resizeMode="stretch"/>
-                </TouchableOpacity>
-                <Text style={[styles.checkboxText, this.state.buttonDynamicStyle]}>Remember me</Text>
-              </View>*/}
+              <View style={styles.rememberView}>
+              <TouchableOpacity onPress={this.rememberPress}>
+                <Image
+                  source={this.state.remember ? require('../assets/login/checkBox.png') : require('../assets/login/checkBox-1.png')}
+                  style={styles.checkBoxImage} resizeMode="stretch"/>
+              </TouchableOpacity>
+              <Text style={[styles.checkboxText, this.state.buttonDynamicStyle]}>Remember me</Text>
+            </View>
             </View>
           </ImageBackground>
         </ScreenView>
