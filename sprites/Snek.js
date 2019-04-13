@@ -350,7 +350,16 @@ export default class Snek extends Sprite {
   };
 
   eatRedPellet() {
-    this.setState({score: this.state.score + 2, redPelletLocation: null});
+    /** TODO: Random things happen
+     * 1. Just die
+     * 2. Time speeds  up
+     * 3. Lose tail
+     * 4. Tripy screen
+     */
+    this.setState({
+      // score: this.state.score + 2,
+      redPelletLocation: null
+    });
   }
 
   eatPellet() {
