@@ -34,6 +34,7 @@ export default class Snek extends Sprite {
       // multiplier: 1,
       score: 0,
       pelletLocation: null,
+      redPelletLocation: null,
       pelletRot: new Animated.Value(0),
       boardShake: new Animated.Value(0),
       alive: true,
@@ -288,6 +289,13 @@ export default class Snek extends Sprite {
     if (this.state.pelletLocation.x == boardX && this.state.pelletLocation.y == boardY) {
       this.eatPellet();
     }
+    if (this.state.redPelletLocation &&
+      this.state.redPelletLocation.x === boardX &&
+      this.state.redPelletLocation.y === boardY) {
+
+      this.eatRedPellet();
+
+    }
     this.board[boardY][boardX] = true;
   }
 
@@ -300,21 +308,49 @@ export default class Snek extends Sprite {
   }
 
   placePellet() {
-    var isTail = true;
+    let isTail = true;
+    let isHead = undefined;
+    let x, y;
     while (isTail || isHead) {
-      var x = this.getRandomInt(0, CONSTANTS.BOARDWIDTH - 1);
-      var y = this.getRandomInt(0, CONSTANTS.BOARDHEIGHT - 1);
+      x = this.getRandomInt(0, CONSTANTS.BOARDWIDTH - 1);
+      y = this.getRandomInt(0, CONSTANTS.BOARDHEIGHT - 1);
       isTail = this.board[y][x];
-      isHead = this.state.boardX == x && this.state.boardY == y;
+      isHead = this.state.boardX === x && this.state.boardY === y;
     }
-    this.setState({pelletLocation: {x: x, y: y}});
-    if ((this.state.baseScore + 2) % 5 == 0) {
+
+    this.setState({
+      pelletLocation: {x: x, y: y},
+      redPelletLocation: null
+    });
+
+    this.setState({
+      redPelletLocation: this.state.score % 5 ? this.randomRedPelletGenerate() : null
+    });
+
+    if ((this.state.baseScore + 2) % 5 === 0) {
       //this.state.pelletRot.setValue(0);
       this.state.shakeBoard.setValue(0);
       //pelletRot
       //this.pelletAnim.start();
       this.boardShakeAnim.start();
     }
+  }
+
+  randomRedPelletGenerate() {
+    let isTail = true;
+    let isHead = undefined;
+    let x, y;
+    while (isTail || isHead) {
+      x = this.getRandomInt(0, CONSTANTS.BOARDWIDTH - 1);
+      y = this.getRandomInt(0, CONSTANTS.BOARDHEIGHT - 1);
+      isTail = this.board[y][x];
+      isHead = this.state.boardX === x && this.state.boardY === y;
+    }
+    return {x, y}
+  };
+
+  eatRedPellet() {
+    this.setState({score: this.state.score + 2, redPelletLocation: null});
   }
 
   eatPellet() {
@@ -568,19 +604,29 @@ export default class Snek extends Sprite {
   }
 
   render() {
-    var pellet = null;
-    var snek = (<View style={[styles.snek, {
+    let redPellet = null;
+    let pellet = null;
+    let snek = (<View style={[styles.snek, {
       left: this.state.posX,
       top: this.state.posY,
     }]}><Image source={require('../assets/gameplay/headUp.png')} style={[styles.snek, this.state.snakeHead]}
                resizeMode="stretch"/></View>);
     if (this.state.pelletLocation != null) {
-      var pellet = (<Animated.View style={[styles.pellet, {
+      pellet = (<Animated.View style={[styles.pellet, {
         left: this.boardXtoPosX(this.state.pelletLocation.x),
         top: this.boardYtoPosY(this.state.pelletLocation.y),
         transform: [{rotate: this.spin()}],
       }]}>
         <Image source={require('../assets/gameplay/Diamond.png')} style={styles.pellet} resizeMode="stretch"/>
+      </Animated.View>);
+    }
+    if (this.state.redPelletLocation) {
+      redPellet = (<Animated.View style={[styles.redPellet, {
+        left: this.boardXtoPosX(this.state.redPelletLocation.x),
+        top: this.boardYtoPosY(this.state.redPelletLocation.y),
+        transform: [{rotate: this.spin()}],
+      }]}>
+        <Image source={require('../assets/gameplay/Diamond.png')} style={styles.redPellet} resizeMode="stretch"/>
       </Animated.View>);
     }
     if (!this.state.alive) {
@@ -607,6 +653,7 @@ export default class Snek extends Sprite {
         })}
         {snek}
         {pellet}
+        {redPellet}
         {this.wallComponents}
         <Dpad onDpadChange={this.props.onDpadChange} pressedButton={this.props.pressedButton}></Dpad>
         <Buttons running={this.props.running} powerUps={this.props.powerUps} pause={this.props.pause}></Buttons>
@@ -629,6 +676,13 @@ let styles = StyleSheet.create({
     width: CONSTANTS.SNEKSIZE + 2,
     height: CONSTANTS.SNEKSIZE + 2,
     zIndex: 3,
+  },
+  redPellet: {
+    position: "absolute",
+    width: CONSTANTS.SNEKSIZE + 3,
+    height: CONSTANTS.SNEKSIZE + 3,
+    zIndex: 4,
+    tintColor: 'red'
   },
   gameBack: {
     position: 'absolute',
