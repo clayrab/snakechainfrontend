@@ -1,5 +1,5 @@
 import React from 'react';
-import { Loop, Stage, World, Body, Sprite } from 'react-game-kit/native';
+import {Loop, Stage, World, Body, Sprite} from 'react-game-kit/native';
 import SocketIOClient from 'socket.io-client';
 
 import CONSTANTS from './Constants.js';
@@ -59,7 +59,7 @@ var screens = {
 var overlays = {
   "PAUSE": 0, "GAMEOVER": 1, "MINE": 2, "AREYOUSURE": 3, "LOADING": 4,
   "CONFIRMTX": 5, "TRANSACTION": 6, "CONFIRMCONTRACT": 7, "POWERUPS": 8, "STARTGAME": 9,
-  "ERROR": 10, "CONFIRMEXIT": 11,
+  "ERROR": 10, "CONFIRMEXIT": 11, "COWOVERLAY": 12
 };
 
 export default class App extends React.Component {
@@ -353,12 +353,15 @@ export default class App extends React.Component {
   start() {
     this.setState({offerContract: true, running: true, overlay: -1});
   }
+
   restart() {
     this.setState({toggleReset: !this.state.toggleReset, overlay: overlays.STARTGAME});
   }
+
   pause() {
     this.setState({running: false, overlay: overlays.PAUSE});
   }
+
   exit = () => {
     this.setState({running: false, screen: screens.HOME, overlay: overlays.STARTGAME});
   }
@@ -368,6 +371,12 @@ export default class App extends React.Component {
 
   powerUps = () => {
     this.setState({running: false, overlay: overlays.POWERUPS});
+  }
+  showCowOverlay = () => {
+    this.setState({overlay: overlays.COWOVERLAY})
+  }
+  hideCowOverlay = () => {
+    this.setState({overlay: -1})
   }
   wallet = () => {
     alert("wallet");
@@ -385,18 +394,22 @@ export default class App extends React.Component {
     this.setState({overlay: overlays.PAUSE});
   }
   onSelectLevel = (levelNumber) => {
-    this.setState({ screen: screens.GAME, level: levelNumber });
+    this.setState({screen: screens.GAME, level: levelNumber});
   }
+
   onSelectLevelPlayPress() {
     this.setState({screen: screens.GAME});
   }
+
   gameOverDoContract() {
     this.setState({overlay: overlays.CONFIRMCONTRACT});
   }
+
   onConfirmTxOk() {
     this.setState({overlay: overlays.GAMEOVER});
     //this.setState({screen: screens.HOMEoverlay: -1});
   }
+
   onGoToTown = () => {
     this.setState({screen: screens.SNAKETOWN, overlay: -1});
   }
@@ -469,6 +482,8 @@ export default class App extends React.Component {
               start={this.start}
               pause={this.pause}
               powerUps={this.powerUps}
+              showCowOverlay={this.showCowOverlay}
+              hideCowOverlay={this.hideCowOverlay}
               loading={this.state.loadingUser}
               user={this.state.user}
               level={this.state.level}>
@@ -521,9 +536,9 @@ export default class App extends React.Component {
             show={this.state.overlay == overlays.ERROR}
             title={this.state.errorTitle}
             paragraph={this.state.errorParagraph}/>
-          {/*<CowOverlay
+          <CowOverlay
             closeOverlay={this.closeOverlay}
-            show={this.state.running}/>*/}
+            show={this.state.overlay == overlays.COWOVERLAY}/>
         </ScreenView>
       );
     }

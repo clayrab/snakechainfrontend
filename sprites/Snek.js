@@ -20,7 +20,6 @@ export default class Snek extends Sprite {
   //   toggleReset: PropTypes.bool,
   // };
   constructor(props) {
-    console.log("consructor")
     super(props);
     this.defaultState = {
       posX: this.boardXtoPosX(CONSTANTS.BOARDSIZEX - 1),
@@ -41,6 +40,7 @@ export default class Snek extends Sprite {
       snakeHead: {transform: [{rotate: '0deg'}]},
       walls: [],
       mushrooms: {},
+      speedEffector: 1
     };
     this.board = [];
     this.wallComponents = [];
@@ -82,13 +82,14 @@ export default class Snek extends Sprite {
 
   copyDefaultState() {
     console.log("copyDefaultState")
-    var startState = {};
+    let startState = {};
     startState.posX = this.defaultState.posX;
     startState.posY = this.defaultState.posY;
     startState.boardX = this.defaultState.boardX;
     startState.boardY = this.defaultState.boardY;
     startState.direction = this.defaultState.direction;
     startState.pelletLocation = this.defaultState.pelletLocation;
+    startState.redPelletLocation = this.defaultState.redPelletLocation;
     startState.pelletRot = this.defaultState.pelletRot;
     startState.boardShake = this.defaultState.boardShake;
     //startState.baseScore = this.defaultState.baseScore;
@@ -99,6 +100,7 @@ export default class Snek extends Sprite {
     startState.tailIndex = 2;
     startState.snakeHead = {transform: [{rotate: '0deg'}]};
     startState.walls = this.getRandomWalls();
+    startState.speedEffector = this.defaultState.speedEffector;
     return startState;
   }
 
@@ -324,7 +326,7 @@ export default class Snek extends Sprite {
     });
 
     this.setState({
-      redPelletLocation: this.state.score % 5 ? this.randomRedPelletGenerate() : null
+      redPelletLocation: this.state.score % 2 || true ? this.randomRedPelletGenerate() : null
     });
 
     if ((this.state.baseScore + 2) % 5 === 0) {
@@ -350,16 +352,24 @@ export default class Snek extends Sprite {
   };
 
   eatRedPellet() {
-    /** TODO: Random things happen
-     * 1. Just die
-     * 2. Time speeds  up
-     * 3. Lose tail
-     * 4. Tripy screen
-     */
-    this.setState({
-      // score: this.state.score + 2,
-      redPelletLocation: null
-    });
+    this.setState({redPelletLocation: null});
+    const action = Math.floor(Math.random() * Math.floor(4)) + 1;
+    switch (action) {
+      case 1:
+        this.setState({alive: false});
+        break;
+      case 2:
+        this.setState({speedEffector: 2});
+        setTimeout(() => this.setState({speedEffector: 1}), 5000);
+        break;
+      case 3:
+        this.setState({tail: [], tailIndex: -1});
+        break;
+      case 4:
+        this.props.showCowOverlay();
+        setTimeout(this.props.hideCowOverlay, 5000);
+        break;
+    }
   }
 
   eatPellet() {
@@ -397,7 +407,6 @@ export default class Snek extends Sprite {
       );
       newTailStart = newTailStart.concat(newTailEnd);
       var newTailIndex = this.state.tailIndex + 1;
-      ;
       this.setState({tail: newTailStart, tailIndex: newTailIndex});
     } else {
       var newTail = [];
@@ -413,7 +422,6 @@ export default class Snek extends Sprite {
         </SnekPart>
       );
       var newTailIndex = this.state.tailIndex + 1;
-      ;
       this.setState({tail: newTail, tailIndex: newTailIndex});
     }
   }
@@ -575,7 +583,7 @@ export default class Snek extends Sprite {
         if (this.lastFrameTime == null) { //first frame
           var speed = 0;
         } else {
-          var speed = CONSTANTS.SNEKSPEED * (now - this.lastFrameTime);
+          var speed = CONSTANTS.SNEKSPEED * (now - this.lastFrameTime) * this.state.speedEffector;
         }
         this.lastFrameTime = now;
         if (this.state.direction == CONSTANTS.DPADSTATES.UP) {
