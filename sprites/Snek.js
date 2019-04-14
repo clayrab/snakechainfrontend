@@ -1,5 +1,6 @@
 import React from 'react';
 import {Animated, View, StyleSheet, TouchableOpacity, Image, ImageBackground,} from 'react-native';
+import {Audio} from 'expo';
 import {Sprite} from 'react-game-kit/native';
 import PropTypes from 'prop-types';
 import CONSTANTS from '../Constants.js';
@@ -57,7 +58,43 @@ export default class Snek extends Sprite {
       toValue: 1,
       duration: 2000,
     });
+
   }
+
+  async componentWillMount() {
+  }
+
+  async componentDidMount() {
+    await this.setupAudio();
+    this.context.loop.subscribe(this.update);
+  }
+
+  componentWillUnmount() {
+    this.context.loop.unsubscribe(this.update);
+  }
+
+  setupAudio = async () => {
+    this.audio_sources = {
+      RED_PELLET_1: require("../assets/audio/EAT_MUSHROOM.wav"),
+      RED_PELLET_2: require("../assets/audio/EAT_PELLET_B.wav"),
+      PELLET: require("../assets/audio/EAT_PELLET.wav"),
+      DIE: require("../assets/audio/sewageTubeHit.mp3")
+    };
+    this.sounds = {};
+    Object.keys(this.audio_sources).map(async key => {
+      this.sounds[key] = new Audio.Sound();
+      await this.sounds[key].loadAsync(this.audio_sources[key]);
+    });
+  };
+
+  playSound = async sound => {
+    try {
+      await sound.setPositionAsync(0);
+      await sound.playAsync()
+    } catch (err) {
+      console.warn(err)
+    }
+  };
 
   getNextID() {
     this.nextID++;
@@ -274,10 +311,19 @@ export default class Snek extends Sprite {
     return CONSTANTS.BOARDCENTERY + (CONSTANTS.SNEKSIZE * (boardY - CONSTANTS.BOARDSIZEY + 0.5));
   }
 
-  die() {
-    console.log("die")
+  // async playSound(source) {
+  //   try {
+  //     await this.soundObject.loadAsync(source);
+  //     await this.soundObject.playAsync();
+  //   } catch (err) {
+  //     console.warn(err)
+  //   }
+  // }
+
+  die = async () => {
     this.setState({alive: false});
-    this.props.onDied(this.state.score);
+    await this.playSound(this.sounds.DIE);
+    await this.props.onDied(this.state.score);
   }
 
   reset() {
@@ -351,12 +397,17 @@ export default class Snek extends Sprite {
     return {x, y}
   };
 
-  eatRedPellet() {
+  eatRedPellet = async () => {
     this.setState({redPelletLocation: null});
-    const action = Math.floor(Math.random() * Math.floor(4)) + 1;
+
+    const audioSource = this.getRandomInt(1, 2) === 1 ?
+      this.sounds.RED_PELLET_1 : this.sounds.RED_PELLET_2;
+    await this.playSound(audioSource);
+
+    const action = this.getRandomInt(1, 4);
     switch (action) {
       case 1:
-        this.setState({alive: false});
+        this.die();
         break;
       case 2:
         this.setState({speedEffector: 2});
@@ -372,8 +423,9 @@ export default class Snek extends Sprite {
     }
   }
 
-  eatPellet() {
+  eatPellet = async () => {
     //let growLength = Math.floor(Math.log(this.state.score*2)) + 1;
+    await this.playSound(this.sounds.PELLET)
     let growLength = 1;
     for (let i = 0; i < growLength; i++) {
       this.growTail();
@@ -515,14 +567,6 @@ export default class Snek extends Sprite {
         snakeHead: {transform: [{rotate: '90deg'}]}
       });
     }
-  }
-
-  componentDidMount() {
-    this.context.loop.subscribe(this.update);
-  }
-
-  componentWillUnmount() {
-    this.context.loop.unsubscribe(this.update);
   }
 
   update = () => {
