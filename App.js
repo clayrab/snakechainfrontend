@@ -115,7 +115,7 @@ export default class App extends React.Component {
       loadingUser: true,
       errorTitle: "",
       errorParagraph: "",
-      powerups: null
+      //powerups: null
     };
     this.loggedIn = this.loggedIn.bind(this);
     this.closeOverlay = this.closeOverlay.bind(this);
