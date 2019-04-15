@@ -12,6 +12,28 @@ import {Font} from 'expo';
 import {normalize} from "../utils/FontNormalizer";
 import PowerupDetailOverlay from "./PowerupDetailOverlay";
 
+const TotalComp = (props) => (
+  <ImageBackground source={require("../assets/powerupsoverlay/brownBG.png")}
+                   resizeMode={"contain"}
+                   style={styles.bigValueHolder}>
+    <Text style={[styles.totalText, props.fontStyle]}>Total</Text>
+    <Text style={[styles.totalText, props.fontStyle]}>{props.total}</Text>
+  </ImageBackground>
+);
+
+const MushroomTotal = (props) => {
+  const total = props.count * props.price;
+  if (total > 0)
+    return (
+      <ImageBackground source={require("../assets/powerupsoverlay/brownBG.png")}
+                       resizeMode={"contain"} style={styles.bigValueHolder}>
+        <Image source={props.image} style={[styles.smallMushroom]}/>
+        <Text style={[styles.mushroomValue, props.fontStyle]}>{total}</Text>
+      </ImageBackground>
+    );
+  return <View/>
+}
+
 const CircleComp = (props) => (
   <View style={styles.circleView}>
     <Text style={[styles.circleText, props.style]}>{props.value}</Text>
@@ -22,31 +44,35 @@ const Box = ((props) =>
     <View style={styles.boxContainer}>
       <TouchableOpacity onPress={() => props.onItemPress(props)} style={styles.boxViewContainer}>
         <ImageBackground source={require('../assets/Paused/partionBackground.png')} resizeMode={"stretch"}
-                         style={[styles.boxView, props.customBoxStyle !== undefined ? props.customBoxStyle : null]}>
+                         style={[styles.boxView]}>
           <Text style={[styles.boxText, props.fontStyle]}>{props.heading}</Text>
           <Image source={props.boxImage}
                  style={[styles.boxImageView, props.customImage !== undefined ? props.customImage : null]}/>
-          <CircleComp value={props.circleText} style={props.fontStyle}/>
+          {
+            props.circleText > -1 &&
+            <CircleComp value={props.circleText} style={props.fontStyle}/>
+          }
+
         </ImageBackground>
       </TouchableOpacity>
       {
-        props.bought &&
+        props.boughtCount > 0 &&
         <ImageBackground source={require("../assets/Paused/inputBackground.png")} resizeMode={"stretch"}
                          style={[styles.numberInput, {justifyContent: 'space-between', paddingHorizontal: 20}]}>
-          <TouchableOpacity onPress={() => props.onAddPress(props)}>
+          <TouchableOpacity onPress={() => props.changeCount(props.boughtCount - 1)}>
             <Image source={require("../assets/Paused/minus.png")} style={[styles.coinStyle, props.imageStyle]}/>
           </TouchableOpacity>
-          <Text style={[styles.coinText, props.buttonStyle]}>{props.value}</Text>
-          <TouchableOpacity onPress={() => props.onMinusPress(props)}>
+          <Text style={[styles.coinText, props.buttonStyle]}>{props.boughtCount}</Text>
+          <TouchableOpacity onPress={() => props.changeCount(props.boughtCount + 1)}>
             <Image source={require("../assets/Paused/plus.png")} style={[styles.coinStyle, props.imageStyle]}/>
           </TouchableOpacity>
         </ImageBackground>
         ||
-        <TouchableOpacity onPress={() => props.onBuyPress(props)}>
+        <TouchableOpacity onPress={() => props.changeCount(props.boughtCount + 1)}>
           <ImageBackground source={require("../assets/Paused/inputBackground.png")} resizeMode={"stretch"}
                            style={styles.numberInput}>
             <Image source={require("../assets/Paused/coinIcon.png")} style={[styles.coinStyle, props.imageStyle]}/>
-            <Text style={[styles.coinText, props.buttonStyle]}>{props.inputNumber.toFixed(3)}</Text>
+            <Text style={[styles.coinText, props.fontStyle]}>{props.price}</Text>
           </ImageBackground>
         </TouchableOpacity>
       }
@@ -57,9 +83,13 @@ export default class PowerupOverlay extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      buttonDyanmicStyle: {},
-      selectedPowerup: {},
-      detailVisible: false
+      selectedPowerUp: {},
+      detailVisible: false,
+      goldPowerUpCount: 0,
+      bluePowerUpCount: 0,
+      purplePowerUpCount: 0,
+      redPowerUpCount: 0,
+      buttonText: {}
     }
   }
 
@@ -67,26 +97,65 @@ export default class PowerupOverlay extends React.Component {
     await Font.loadAsync({
       'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
     });
-    styles.buttonText = {
-      fontFamily: 'riffic-free-bold'
-    }
+    this.setState({
+      buttonText: {
+        fontFamily: 'riffic-free-bold'
+      }
+    })
   }
 
-  onItemBuyPress = props => {
+  initializePowerUpsCount = () => {
+    this.setState({
+      goldPowerUpCount: 0,
+      bluePowerUpCount: 0,
+      purplePowerUpCount: 0,
+      redPowerUpCount: 0,
+    })
+  }
+
+  onGoldCountChange = count => {
+    this.setState({goldPowerUpCount: count})
+  }
+
+  onBlueCountChange = count => {
+    this.setState({bluePowerUpCount: count})
+  }
+
+  onPurpleCountChange = count => {
+    this.setState({purplePowerUpCount: count})
+  }
+
+  onRedCountChange = count => {
+    this.setState({redPowerUpCount: count})
+  }
+
+  getTotalCount = () => {
+    return (this.state.goldPowerUpCount * this.props.prices.goldpowerup) +
+      (this.state.bluePowerUpCount * this.props.prices.bluepowerup) +
+      (this.state.purplePowerUpCount * this.props.prices.purplepowerup) +
+      (this.state.redPowerUpCount * this.props.prices.redpowerup)
+  }
+
+  proceedToAcquire = async () => {
+    const powerups = {
+      goldpowerup: this.state.goldPowerUpCount,
+      bluepowerup: this.state.bluePowerUpCount,
+      purplepowerup: this.state.purplePowerUpCount,
+      redpowerup: this.state.redPowerUpCount,
+    };
+    this.props.proceedToAcquire(powerups, this.getTotalCount())
   }
 
   onItemPress = (props) => {
-    this.setState({detailVisible: true, selectedPowerup: props});
-  }
-
-  onItemAddPress = (props) => {
-  }
-
-  onItemMinusPress = (props) => {
+    const {name, image, description} = props;
+    this.setState({
+      detailVisible: true,
+      selectedPowerUp: {name, image, description}
+    });
   }
 
   closeDetailOverlay = () => {
-    this.setState({detailVisible: false, selectedPowerup: {}})
+    this.setState({detailVisible: false, selectedPowerUp: {}})
   }
 
   render() {
@@ -106,7 +175,7 @@ export default class PowerupOverlay extends React.Component {
                                resizeMode={'stretch'}>
                 <Image source={require("../assets/powerupsoverlay/powerup.png")}
                        style={{width: 14, height: 22, resizeMode: 'contain'}}/>
-                <Text style={[styles.buttonText, styles.titleText]}>
+                <Text style={[this.state.buttonText, styles.titleText]}>
                   POWER-UPS
                 </Text>
               </ImageBackground>
@@ -123,70 +192,72 @@ export default class PowerupOverlay extends React.Component {
                 paddingHorizontal: 15
               }}>
 
-                <Box buttonStyle={[this.state.buttonDynamicStyle, styles.buttonText]}
-                     fontStyle={styles.buttonText}
-                     bought={false}
+                <Box buttonStyle={[this.state.buttonText]}
+                     fontStyle={this.state.buttonText}
                      boxImage={require('../assets/powerupsoverlay/mushroom_yellow.png')}
-                     inputNumber={3}
-                     circleText={'5'}
+                     boughtCount={this.state.goldPowerUpCount}
+                     price={this.props.prices.goldpowerup}
+                     circleText={this.props.user.powerups.goldpowerup}
                      heading={'Multiplayer (10x)'}
-                     onBuyPress={this.onItemBuyPress}
+                     changeCount={this.onGoldCountChange}
                      onItemPress={this.onItemPress}
                 />
-                <Box buttonStyle={[this.state.buttonDynamicStyle, styles.buttonText]}
-                     fontStyle={styles.buttonText}
-                     bought={true}
-                     value={2}
+                <Box buttonStyle={[this.state.buttonText]}
+                     fontStyle={this.state.buttonText}
+                     boughtCount={this.state.bluePowerUpCount}
+                     price={this.props.prices.goldpowerup}
                      boxImage={require('../assets/powerupsoverlay/mushroom_blue.png')}
-                     circleText={'0'}
+                     circleText={this.props.user.powerups.bluepowerup}
                      heading={'Shed Tail'}
-                     onAddPress={this.onItemAddPress}
-                     onMinusPress={this.onItemMinusPress}
+                     changeCount={this.onBlueCountChange}
                      onItemPress={this.onItemPress}
                 />
-                <Box buttonStyle={[this.state.buttonDynamicStyle, styles.buttonText]}
-                     fontStyle={styles.buttonText}
-                     bought={false}
+                <Box buttonStyle={[this.state.buttonText]}
+                     fontStyle={this.state.buttonText}
+                     boughtCount={this.state.purplePowerUpCount}
+                     price={this.props.prices.goldpowerup}
                      boxImage={require('../assets/powerupsoverlay/mushroom_voilet.png')}
-                     inputNumber={5}
-                     circleText={'5'}
+                     circleText={this.props.user.powerups.purplepowerup}
                      heading={'Wildcard'}
-                     onBuyPress={this.onItemBuyPress}
+                     changeCount={this.onPurpleCountChange}
                      onItemPress={this.onItemPress}
                 />
-                <Box buttonStyle={[this.state.buttonDynamicStyle, styles.buttonText]}
-                     fontStyle={styles.buttonText}
-                     bought={false}
+                <Box buttonStyle={[this.state.buttonText]}
+                     fontStyle={this.state.buttonText}
+                     boughtCount={this.state.redPowerUpCount}
+                     price={this.props.prices.goldpowerup}
                      boxImage={require('../assets/powerupsoverlay/mushroom_red.png')}
-                     inputNumber={10}
-                     circleText={'5'}
+                     circleText={this.props.user.powerups.redpowerup}
                      heading={'Nitro Tail'}
-                     onBuyPress={this.onItemBuyPress}
+                     changeCount={this.onRedCountChange}
                      onItemPress={this.onItemPress}
                 />
 
               </View>
 
-              <ImageBackground source={require("../assets/powerupsoverlay/brownBG.png")}
-                               resizeMode={"contain"}
-                               style={styles.bigValueHolder}>
-                <Image source={require("../assets/powerupsoverlay/mushroom_blue.png")}
-                       style={[styles.smallMushroom]}/>
-                <Text style={[styles.mushroomValue, styles.buttonText]}>{"2.....6,000"}</Text>
-              </ImageBackground>
+              <MushroomTotal count={this.state.goldPowerUpCount} price={this.props.prices.goldpowerup}
+                             image={require("../assets/powerupsoverlay/mushroom_yellow.png")}
+                             fontStyle={this.state.buttonText}/>
 
-              <ImageBackground source={require("../assets/powerupsoverlay/brownBG.png")}
-                               resizeMode={"contain"}
-                               style={styles.bigValueHolder}>
-                <Text style={[styles.totalText, styles.buttonText]}>Total</Text>
-                <Text style={[styles.totalText, styles.buttonText]}>{"6,000"}</Text>
-              </ImageBackground>
+              <MushroomTotal count={this.state.bluePowerUpCount} price={this.props.prices.bluepowerup}
+                             image={require("../assets/powerupsoverlay/mushroom_blue.png")}
+                             fontStyle={this.state.buttonText}/>
 
-              <TouchableOpacity style={styles.proceedToAcquireContainer}>
+              <MushroomTotal count={this.state.purplePowerUpCount} price={this.props.prices.purplepowerup}
+                             image={require("../assets/powerupsoverlay/mushroom_voilet.png")}
+                             fontStyle={this.state.buttonText}/>
+
+              <MushroomTotal count={this.state.redPowerUpCount} price={this.props.prices.redpowerup}
+                             image={require("../assets/powerupsoverlay/mushroom_red.png")}
+                             fontStyle={this.state.buttonText}/>
+
+              <TotalComp total={this.getTotalCount()} fontStyle={this.state.buttonText}/>
+
+              <TouchableOpacity style={styles.proceedToAcquireContainer} onPress={this.proceedToAcquire}>
                 <ImageBackground source={require("../assets/powerupsoverlay/yellowBG.png")}
                                  resizeMode={"contain"}
                                  style={styles.proceedToAcquireBtn}>
-                  <Text style={[styles.proceedToAcquireText, styles.buttonText]}>Proceed to Acquire</Text>
+                  <Text style={[styles.proceedToAcquireText, this.state.buttonText]}>Proceed to Acquire</Text>
                 </ImageBackground>
               </TouchableOpacity>
             </ScrollView>
@@ -212,11 +283,6 @@ let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
 const circleSize = screenWidth * 0.06;
 const styles = StyleSheet.create({
-  temporaryText: {
-    height: "100%",
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   container: {
     flex: 1,
     position: 'absolute',
@@ -261,10 +327,7 @@ const styles = StyleSheet.create({
     color: "#fab523",
     fontSize: 16
   },
-  screen: {flex: 1,},
   coinText: {color: "#FDB525", marginHorizontal: "7%", fontSize: normalize(13)},
-  ghostTail: {justifyContent: "space-around"},
-  plusMinusImage: {height: "45%", width: "15%", resizeMode: "stretch", marginHorizontal: "2%"},
   smallMushroom: {height: screenWidth * 0.06, width: screenWidth * 0.06, resizeMode: 'contain'},
   coinStyle: {height: screenWidth * 0.04, width: screenWidth * 0.04, resizeMode: "contain"},
   bigValueHolder: {
@@ -316,19 +379,11 @@ const styles = StyleSheet.create({
     height: "40%",
     width: "40%"
   },
-  customImage: {resizeMode: "stretch", height: "33%", width: "70%", marginRight: "12%"},
-  custom5Image: {resizeMode: "stretch", height: "30%", width: "40%"},
-  customBoxStyle: {alignItems: 'flex-end'},
-  customTailImage: {resizeMode: "stretch", height: "42%", width: "50%",},
   boxViewContainer: {
     height: "70%",
     width: '100%'
   },
   boxView: {height: '100%', width: '100%', justifyContent: "center", alignItems: "center"},
-  powerUpsView: {height: screenHeight / 7, justifyContent: 'center', alignItems: 'center', flexDirection: 'row',},
-  lightningImage: {height: '85%', width: '10%', resizeMode: 'stretch', marginHorizontal: "2%",},
-  title: {color: '#FCB623', fontSize: screenHeight / 21, textAlign: "center", marginTop: '1.2%', marginBottom: "3%"},
-  powerText: {color: '#FDCF00', fontSize: screenHeight / 26,},
   mushroomValue: {
     fontSize: normalize(16),
     color: "#fab649"

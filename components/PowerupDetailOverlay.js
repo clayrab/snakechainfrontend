@@ -10,14 +10,7 @@ import {
 import {Font} from 'expo';
 import {normalize} from "../utils/FontNormalizer";
 
-export default class PowerupOverlay extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      buttonDyanmicStyle: {}
-    }
-  }
-
+export default class PowerupDetailOverlay extends React.Component {
   async componentDidMount() {
     await Font.loadAsync({
       'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),

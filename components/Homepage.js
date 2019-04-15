@@ -53,6 +53,7 @@ var overlays = {
   "CONFIRMSNKDYNAMITE": 8,
   "CONFIRMETHDYNAMITE": 9,
   "RECEIPTOVERLAY": 10,
+  "CONFIRMPOWERUPBUYOVERLAY": 11,
 };
 export default class Homepage extends React.Component {
   constructor(props) {
@@ -65,7 +66,9 @@ export default class Homepage extends React.Component {
       confirmTokenType: "ETH",
       txKey: "",
       confirmPubkey: "",
+      powerupsData: null
     };
+
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -289,6 +292,110 @@ export default class Homepage extends React.Component {
     this.setState({overlay: -1});
   }
 
+  createPowerupsTransaction = async (powerupsData = this.state.powerupsData) => {
+    if (!powerupsData) return null;
+    let jwt = await getFromAsyncStore("jwt");
+    let data = {
+      amount: powerupsData.amount,
+      type: "SNK"
+    };
+    fetch(`${context.host}:${context.port}/createTransaction`, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Authorization": "JWT " + jwt,
+      },
+    }).then(async (response) => {
+      let resp = await response.json();
+      if (!resp.error) {
+        if (resp) {
+          if (resp.transactionKey) {
+
+            this.setState({
+              txKey: resp.transactionKey,
+              overlay: overlays.CONFIRMPOWERUPBUYOVERLAY
+            });
+
+          } else {
+            alert("There was an error, malformed response.");
+            this.setState({overlay: -1});
+          }
+        } else {
+          alert("There was an error, no response.");
+          this.setState({overlay: -1});
+        }
+      } else {
+        alert(resp.error);
+        this.setState({overlay: -1});
+      }
+    }).catch(err => {
+      throw err
+    })
+  }
+
+  buyPowerups = async () => {
+    const {txKey} = this.state;
+    const {amount, powerups} = this.state.powerupsData;
+    const jwt = await getFromAsyncStore("jwt");
+    const data = {
+      type: "SNK",
+      txkey: txKey,
+      amount,
+      ...powerups
+    };
+    fetch(`${context.host}:${context.port}/buyPowerups`, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Authorization": "JWT " + jwt,
+      },
+    }).then(async (response) => {
+      let resp = await response.json();
+      if (!resp.error) {
+        if (resp) {
+          this.onBuyPowerupsSuccess(resp);
+        } else {
+          alert("There was an error, no response.");
+          this.setState({overlay: -1});
+        }
+      } else {
+        alert(resp.error);
+        this.setState({overlay: -1});
+      }
+    }).catch(err => {
+      throw err
+    })
+      .finally(() => {
+        this.setState({
+          powerupsData: null
+        })
+      });
+  }
+
+  proceedToAcquire = (powerups, amount) => {
+    const powerupsData = {powerups, amount};
+    this.setState({powerupsData});
+    this.createPowerupsTransaction(powerupsData)
+  }
+
+  onConfirmBuyPowerups = async () => {
+    this.setState({overlay: overlays.LOADING});
+    await this.buyPowerups();
+  }
+
+  onDeclineBuyPowerups = () => {
+    this.setState({overlay: overlays.POWERUPS, powerupsData: null})
+  }
+
+  onBuyPowerupsSuccess = (resp) => {
+    alert("Success. ");
+    this.props.updatePowerups(resp.powerups.powerups)
+    this.powerupsOverlay.initializePowerUpsCount();
+    this.setState({overlay: -1});
+  }
+
   render() {
     let haul = this.props.user.haul;
     let mineGraphicIndex = 10 - Math.floor(10 * haul / this.props.user.mineMax);
@@ -392,6 +499,7 @@ export default class Homepage extends React.Component {
             text={`Pay ${this.state.confirmAmount} ${this.state.confirmTokenType} for ${this.props.user.haul} Snake Coins.\n\nAre you sure?`}
             onYes={this.onConfirmTicket}
             onNo={this.onCancelConfirm}/>
+
           <AreYouSureOverlay
             show={this.state.overlay == overlays.CONFIRMSNKDYNAMITE}
             text={`Pay XXX SNK and XXX ETH gas to open deeper shafts in your mine?`}
@@ -408,7 +516,11 @@ export default class Homepage extends React.Component {
             transactionId={this.state.lastTxHash}
             onOk={this.closeOverlay}/>
           <PowerupOverlay
+            ref={ref => this.powerupsOverlay = ref}
+            user={this.props.user}
             closeOverlay={this.closeOverlay}
+            proceedToAcquire={this.proceedToAcquire}
+            prices={this.props.prices}
             show={this.state.overlay == overlays.POWERUPS}/>
           <MineEmptyOverlay
             closeOverlay={this.closeOverlay}
@@ -416,6 +528,11 @@ export default class Homepage extends React.Component {
           <CowOverlay
             closeOverlay={this.closeOverlay}
             show={false}/>
+          <AreYouSureOverlay
+            show={this.state.overlay == overlays.CONFIRMPOWERUPBUYOVERLAY}
+            text={`Are you sure you want to buy these powerups?`}
+            onYes={this.onConfirmBuyPowerups}
+            onNo={this.onDeclineBuyPowerups}/>
         </ImageBackground>
       </ScreenView>
     );
