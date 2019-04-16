@@ -182,76 +182,79 @@ export default class PowerupOverlay extends React.Component {
             </View>
 
             <ScrollView>
+              {this.props.prices == null? null :
+                <View>
+                  <View style={{
+                    flexDirection: 'row',
+                    justifyContent: "space-around",
+                    flexWrap: 'wrap',
+                    paddingTop: 25,
+                    paddingBottom: 10,
+                    paddingHorizontal: 15
+                  }}>
 
-              <View style={{
-                flexDirection: 'row',
-                justifyContent: "space-around",
-                flexWrap: 'wrap',
-                paddingTop: 25,
-                paddingBottom: 10,
-                paddingHorizontal: 15
-              }}>
+                    <Box buttonStyle={[this.state.buttonText]}
+                         fontStyle={this.state.buttonText}
+                         boxImage={require('../assets/powerupsoverlay/mushroom_yellow.png')}
+                         boughtCount={this.state.goldPowerUpCount}
+                         price={this.props.prices.goldpowerup}
+                         circleText={this.props.user.powerups.goldpowerup}
+                         heading={'Multiplayer (10x)'}
+                         changeCount={this.onGoldCountChange}
+                         onItemPress={this.onItemPress}
+                    />
+                    <Box buttonStyle={[this.state.buttonText]}
+                         fontStyle={this.state.buttonText}
+                         boughtCount={this.state.bluePowerUpCount}
+                         price={this.props.prices.goldpowerup}
+                         boxImage={require('../assets/powerupsoverlay/mushroom_blue.png')}
+                         circleText={this.props.user.powerups.bluepowerup}
+                         heading={'Shed Tail'}
+                         changeCount={this.onBlueCountChange}
+                         onItemPress={this.onItemPress}
+                    />
+                    <Box buttonStyle={[this.state.buttonText]}
+                         fontStyle={this.state.buttonText}
+                         boughtCount={this.state.purplePowerUpCount}
+                         price={this.props.prices.goldpowerup}
+                         boxImage={require('../assets/powerupsoverlay/mushroom_voilet.png')}
+                         circleText={this.props.user.powerups.purplepowerup}
+                         heading={'Wildcard'}
+                         changeCount={this.onPurpleCountChange}
+                         onItemPress={this.onItemPress}
+                    />
+                    <Box buttonStyle={[this.state.buttonText]}
+                         fontStyle={this.state.buttonText}
+                         boughtCount={this.state.redPowerUpCount}
+                         price={this.props.prices.goldpowerup}
+                         boxImage={require('../assets/powerupsoverlay/mushroom_red.png')}
+                         circleText={this.props.user.powerups.redpowerup}
+                         heading={'Nitro Tail'}
+                         changeCount={this.onRedCountChange}
+                         onItemPress={this.onItemPress}
+                    />
 
-                <Box buttonStyle={[this.state.buttonText]}
-                     fontStyle={this.state.buttonText}
-                     boxImage={require('../assets/powerupsoverlay/mushroom_yellow.png')}
-                     boughtCount={this.state.goldPowerUpCount}
-                     price={this.props.prices.goldpowerup}
-                     circleText={this.props.user.powerups.goldpowerup}
-                     heading={'Multiplayer (10x)'}
-                     changeCount={this.onGoldCountChange}
-                     onItemPress={this.onItemPress}
-                />
-                <Box buttonStyle={[this.state.buttonText]}
-                     fontStyle={this.state.buttonText}
-                     boughtCount={this.state.bluePowerUpCount}
-                     price={this.props.prices.goldpowerup}
-                     boxImage={require('../assets/powerupsoverlay/mushroom_blue.png')}
-                     circleText={this.props.user.powerups.bluepowerup}
-                     heading={'Shed Tail'}
-                     changeCount={this.onBlueCountChange}
-                     onItemPress={this.onItemPress}
-                />
-                <Box buttonStyle={[this.state.buttonText]}
-                     fontStyle={this.state.buttonText}
-                     boughtCount={this.state.purplePowerUpCount}
-                     price={this.props.prices.goldpowerup}
-                     boxImage={require('../assets/powerupsoverlay/mushroom_voilet.png')}
-                     circleText={this.props.user.powerups.purplepowerup}
-                     heading={'Wildcard'}
-                     changeCount={this.onPurpleCountChange}
-                     onItemPress={this.onItemPress}
-                />
-                <Box buttonStyle={[this.state.buttonText]}
-                     fontStyle={this.state.buttonText}
-                     boughtCount={this.state.redPowerUpCount}
-                     price={this.props.prices.goldpowerup}
-                     boxImage={require('../assets/powerupsoverlay/mushroom_red.png')}
-                     circleText={this.props.user.powerups.redpowerup}
-                     heading={'Nitro Tail'}
-                     changeCount={this.onRedCountChange}
-                     onItemPress={this.onItemPress}
-                />
+                  </View>
 
-              </View>
+                  <MushroomTotal count={this.state.goldPowerUpCount} price={this.props.prices.goldpowerup}
+                                 image={require("../assets/powerupsoverlay/mushroom_yellow.png")}
+                                 fontStyle={this.state.buttonText}/>
 
-              <MushroomTotal count={this.state.goldPowerUpCount} price={this.props.prices.goldpowerup}
-                             image={require("../assets/powerupsoverlay/mushroom_yellow.png")}
-                             fontStyle={this.state.buttonText}/>
+                  <MushroomTotal count={this.state.bluePowerUpCount} price={this.props.prices.bluepowerup}
+                                 image={require("../assets/powerupsoverlay/mushroom_blue.png")}
+                                 fontStyle={this.state.buttonText}/>
 
-              <MushroomTotal count={this.state.bluePowerUpCount} price={this.props.prices.bluepowerup}
-                             image={require("../assets/powerupsoverlay/mushroom_blue.png")}
-                             fontStyle={this.state.buttonText}/>
+                  <MushroomTotal count={this.state.purplePowerUpCount} price={this.props.prices.purplepowerup}
+                                 image={require("../assets/powerupsoverlay/mushroom_voilet.png")}
+                                 fontStyle={this.state.buttonText}/>
 
-              <MushroomTotal count={this.state.purplePowerUpCount} price={this.props.prices.purplepowerup}
-                             image={require("../assets/powerupsoverlay/mushroom_voilet.png")}
-                             fontStyle={this.state.buttonText}/>
+                  <MushroomTotal count={this.state.redPowerUpCount} price={this.props.prices.redpowerup}
+                                 image={require("../assets/powerupsoverlay/mushroom_red.png")}
+                                 fontStyle={this.state.buttonText}/>
+                  <TotalComp total={this.getTotalCount()} fontStyle={this.state.buttonText}/>
+                </View>
+              }
 
-              <MushroomTotal count={this.state.redPowerUpCount} price={this.props.prices.redpowerup}
-                             image={require("../assets/powerupsoverlay/mushroom_red.png")}
-                             fontStyle={this.state.buttonText}/>
-
-              <TotalComp total={this.getTotalCount()} fontStyle={this.state.buttonText}/>
 
               <TouchableOpacity style={styles.proceedToAcquireContainer} onPress={this.proceedToAcquire}>
                 <ImageBackground source={require("../assets/powerupsoverlay/yellowBG.png")}

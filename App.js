@@ -537,13 +537,10 @@ export default class App extends React.Component {
             show={this.state.overlay == overlays.CONFIRMTX}
             transactionId={this.state.lastTxHash}
             onOk={this.onConfirmTxOk}/>
-          {/*<ConfirmTxGameOverOverlay
-              show={true}
-              gameOverInfo={this.state.gameOverInfo}
-              restart={this.restart}
-              exit={this.exit} />*/}
           <PowerupOverlay
             closeOverlay={this.closeOverlay}
+            prices={this.state.prices}
+            user={this.props.user}
             show={this.state.overlay == overlays.POWERUPS}/>
           <StartGameOverlay
             show={this.state.overlay == overlays.STARTGAME}

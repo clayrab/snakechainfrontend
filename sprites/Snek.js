@@ -368,11 +368,12 @@ export default class Snek extends Sprite {
 
     this.setState({
       pelletLocation: {x: x, y: y},
-      redPelletLocation: null
+      redPelletLocation: null,
     });
 
     this.setState({
-      redPelletLocation: this.state.score % 2 || true ? this.randomRedPelletGenerate() : null
+      //redPelletLocation: this.state.score % 2 || true ? this.randomRedPelletGenerate() : null
+      redPelletLocation: this.randomRedPelletGenerate()
     });
 
     if ((this.state.baseScore + 2) % 5 === 0) {
@@ -412,11 +413,20 @@ export default class Snek extends Sprite {
         name: "speedup",
         weight: 33.0
       },{
+        name: "slowdown",
+        weight: 10.0
+      },{
         name: "losetail",
         weight: 10.0
       },{
         name: "sleepy",
         weight: 20.0
+      },{
+        name: "addtail",
+        weight: 3500000000000.0
+      },{
+        name: "addpoints",
+        weight: 10.0
       },
     ];
     const maxWeight = actions
@@ -436,47 +446,39 @@ export default class Snek extends Sprite {
         this.setState({speedEffector: 2});
         setTimeout(() => this.setState({speedEffector: 1}), 5000);
         break;
+      case "slowdown":
+        this.setState({speedEffector: 0.5});
+        setTimeout(() => this.setState({speedEffector: 1}), 5000);
+        break;
       case "losetail":
         this.setState({tail: [], tailIndex: -1});
+        this.growTail();
+        this.growTail();
+        this.growTail();
+        break;
+      case "addtail":
+        this.growTail();
+        this.growTail();
+        this.growTail();
+        break;
+      case "addpoints":
+        this.setState({score: this.state.score + CONSTANTS.REDPELLETSCOREBONUS*CONSTANTS.PELLETMULT});
         break;
       case "sleepy":
         this.props.showCowOverlay();
         setTimeout(this.props.hideCowOverlay, 5000);
         break;
     }
-    // switch (action) {
-    //   case 1:
-    //     this.die();
-    //     break;
-    //   case 2:
-    //     this.setState({speedEffector: 2});
-    //     setTimeout(() => this.setState({speedEffector: 1}), 5000);
-    //     break;
-    //   case 3:
-    //     this.setState({tail: [], tailIndex: -1});
-    //     break;
-    //   case 4:
-    //     this.props.showCowOverlay();
-    //     setTimeout(this.props.hideCowOverlay, 5000);
-    //     break;
-    // }
   }
 
   eatPellet = async () => {
-    //let growLength = Math.floor(Math.log(this.state.score*2)) + 1;
     await this.playSound(this.sounds.PELLET)
     let growLength = 1;
     for (let i = 0; i < growLength; i++) {
       this.growTail();
     }
     this.placePellet();
-    //this.placePellet();
-    //var mult = this.state.multiplier;
-    // if ((this.state.baseScore + 1) % 5 == 0) {
-    //   mult++;
-    // }
-    //var score = (this.state.baseScore + 1) * mult;
-    this.setState({score: this.state.score + 1});
+    this.setState({score: this.state.score + CONSTANTS.PELLETMULT});
   }
 
   growTail() {
@@ -700,7 +702,7 @@ export default class Snek extends Sprite {
   easterEgg = async () => {
     easterEggCount = easterEggCount + 1;
     if (easterEggCount > 6) {
-      this.setState({score: this.state.score + 1})
+      this.setState({score: this.state.score + CONSTANTS.PELLETMULT})
     }
   }
 

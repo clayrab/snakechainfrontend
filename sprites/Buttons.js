@@ -45,13 +45,14 @@ export default class Buttons extends Sprite {
                    resizeMode="stretch"/>
           </TouchableOpacity>
           <View style={styles.buttonsSpacer2}/>
-          <TouchableOpacity
+          {/*<TouchableOpacity
             color={"#fff"}
             style={styles.power}
             onPress={() => this.props.powerUps()}>
             <Image source={require('../assets/gameplay/EnergyButton.png')} style={styles.buttonImage}
                    resizeMode="stretch"/>
           </TouchableOpacity>
+          \*/}
         </View>
       </View>
     );
