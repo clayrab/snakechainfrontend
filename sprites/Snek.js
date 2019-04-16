@@ -1,5 +1,6 @@
 import React from 'react';
 import {Animated, View, StyleSheet, TouchableOpacity, Image, ImageBackground,} from 'react-native';
+import {Audio} from 'expo';
 import {Sprite} from 'react-game-kit/native';
 import PropTypes from 'prop-types';
 import CONSTANTS from '../Constants.js';
@@ -20,7 +21,6 @@ export default class Snek extends Sprite {
   //   toggleReset: PropTypes.bool,
   // };
   constructor(props) {
-    console.log("consructor")
     super(props);
     this.defaultState = {
       posX: this.boardXtoPosX(CONSTANTS.BOARDSIZEX - 1),
@@ -34,12 +34,14 @@ export default class Snek extends Sprite {
       // multiplier: 1,
       score: 0,
       pelletLocation: null,
+      redPelletLocation: null,
       pelletRot: new Animated.Value(0),
       boardShake: new Animated.Value(0),
       alive: true,
       snakeHead: {transform: [{rotate: '0deg'}]},
       walls: [],
       mushrooms: {},
+      speedEffector: 1
     };
     this.board = [];
     this.wallComponents = [];
@@ -56,7 +58,43 @@ export default class Snek extends Sprite {
       toValue: 1,
       duration: 2000,
     });
+
   }
+
+  async componentWillMount() {
+  }
+
+  async componentDidMount() {
+    await this.setupAudio();
+    this.context.loop.subscribe(this.update);
+  }
+
+  componentWillUnmount() {
+    this.context.loop.unsubscribe(this.update);
+  }
+
+  setupAudio = async () => {
+    this.audio_sources = {
+      RED_PELLET_1: require("../assets/audio/EAT_MUSHROOM.wav"),
+      RED_PELLET_2: require("../assets/audio/EAT_PELLET_B.wav"),
+      PELLET: require("../assets/audio/EAT_PELLET.wav"),
+      DIE: require("../assets/audio/sewageTubeHit.mp3")
+    };
+    this.sounds = {};
+    Object.keys(this.audio_sources).map(async key => {
+      this.sounds[key] = new Audio.Sound();
+      await this.sounds[key].loadAsync(this.audio_sources[key]);
+    });
+  };
+
+  playSound = async sound => {
+    try {
+      await sound.setPositionAsync(0);
+      await sound.playAsync()
+    } catch (err) {
+      console.warn(err)
+    }
+  };
 
   getNextID() {
     this.nextID++;
@@ -81,13 +119,14 @@ export default class Snek extends Sprite {
 
   copyDefaultState() {
     console.log("copyDefaultState")
-    var startState = {};
+    let startState = {};
     startState.posX = this.defaultState.posX;
     startState.posY = this.defaultState.posY;
     startState.boardX = this.defaultState.boardX;
     startState.boardY = this.defaultState.boardY;
     startState.direction = this.defaultState.direction;
     startState.pelletLocation = this.defaultState.pelletLocation;
+    startState.redPelletLocation = this.defaultState.redPelletLocation;
     startState.pelletRot = this.defaultState.pelletRot;
     startState.boardShake = this.defaultState.boardShake;
     //startState.baseScore = this.defaultState.baseScore;
@@ -98,6 +137,7 @@ export default class Snek extends Sprite {
     startState.tailIndex = 2;
     startState.snakeHead = {transform: [{rotate: '0deg'}]};
     startState.walls = this.getRandomWalls();
+    startState.speedEffector = this.defaultState.speedEffector;
     return startState;
   }
 
@@ -271,10 +311,19 @@ export default class Snek extends Sprite {
     return CONSTANTS.BOARDCENTERY + (CONSTANTS.SNEKSIZE * (boardY - CONSTANTS.BOARDSIZEY + 0.5));
   }
 
-  die() {
-    console.log("die")
+  // async playSound(source) {
+  //   try {
+  //     await this.soundObject.loadAsync(source);
+  //     await this.soundObject.playAsync();
+  //   } catch (err) {
+  //     console.warn(err)
+  //   }
+  // }
+
+  die = async () => {
     this.setState({alive: false});
-    this.props.onDied(this.state.score);
+    await this.playSound(this.sounds.DIE);
+    await this.props.onDied(this.state.score);
   }
 
   reset() {
@@ -288,6 +337,13 @@ export default class Snek extends Sprite {
     if (this.state.pelletLocation.x == boardX && this.state.pelletLocation.y == boardY) {
       this.eatPellet();
     }
+    if (this.state.redPelletLocation &&
+      this.state.redPelletLocation.x === boardX &&
+      this.state.redPelletLocation.y === boardY) {
+
+      this.eatRedPellet();
+
+    }
     this.board[boardY][boardX] = true;
   }
 
@@ -300,15 +356,26 @@ export default class Snek extends Sprite {
   }
 
   placePellet() {
-    var isTail = true;
+    let isTail = true;
+    let isHead = undefined;
+    let x, y;
     while (isTail || isHead) {
-      var x = this.getRandomInt(0, CONSTANTS.BOARDWIDTH - 1);
-      var y = this.getRandomInt(0, CONSTANTS.BOARDHEIGHT - 1);
+      x = this.getRandomInt(0, CONSTANTS.BOARDWIDTH - 1);
+      y = this.getRandomInt(0, CONSTANTS.BOARDHEIGHT - 1);
       isTail = this.board[y][x];
-      isHead = this.state.boardX == x && this.state.boardY == y;
+      isHead = this.state.boardX === x && this.state.boardY === y;
     }
-    this.setState({pelletLocation: {x: x, y: y}});
-    if ((this.state.baseScore + 2) % 5 == 0) {
+
+    this.setState({
+      pelletLocation: {x: x, y: y},
+      redPelletLocation: null
+    });
+
+    this.setState({
+      redPelletLocation: this.state.score % 2 || true ? this.randomRedPelletGenerate() : null
+    });
+
+    if ((this.state.baseScore + 2) % 5 === 0) {
       //this.state.pelletRot.setValue(0);
       this.state.shakeBoard.setValue(0);
       //pelletRot
@@ -317,8 +384,87 @@ export default class Snek extends Sprite {
     }
   }
 
-  eatPellet() {
+  randomRedPelletGenerate() {
+    let isTail = true;
+    let isHead = undefined;
+    let x, y;
+    while (isTail || isHead) {
+      x = this.getRandomInt(0, CONSTANTS.BOARDWIDTH - 1);
+      y = this.getRandomInt(0, CONSTANTS.BOARDHEIGHT - 1);
+      isTail = this.board[y][x];
+      isHead = this.state.boardX === x && this.state.boardY === y;
+    }
+    return {x, y}
+  };
+
+  eatRedPellet = async () => {
+    this.setState({redPelletLocation: null});
+
+    const audioSource = this.getRandomInt(1, 2) === 1 ?
+      this.sounds.RED_PELLET_1 : this.sounds.RED_PELLET_2;
+    await this.playSound(audioSource);
+
+    var actions = [
+      {
+        name: "die",
+        weight: 1.0
+      },{
+        name: "speedup",
+        weight: 33.0
+      },{
+        name: "losetail",
+        weight: 10.0
+      },{
+        name: "sleepy",
+        weight: 20.0
+      },
+    ];
+    const maxWeight = actions
+      .map((obj) => { return obj.weight;})
+      .reduce((total, weight) => { return total + weight;}); // sum of all weights
+    let action = this.getRandomInt(1, maxWeight);
+    let nextAction = 0;
+    while(action >= 0){
+      action-=actions[nextAction].weight;
+      nextAction++;
+    }
+    switch(actions[nextAction-1].name){
+      case "die":
+        this.die();
+        break;
+      case "speedup":
+        this.setState({speedEffector: 2});
+        setTimeout(() => this.setState({speedEffector: 1}), 5000);
+        break;
+      case "losetail":
+        this.setState({tail: [], tailIndex: -1});
+        break;
+      case "sleepy":
+        this.props.showCowOverlay();
+        setTimeout(this.props.hideCowOverlay, 5000);
+        break;
+    }
+    // switch (action) {
+    //   case 1:
+    //     this.die();
+    //     break;
+    //   case 2:
+    //     this.setState({speedEffector: 2});
+    //     setTimeout(() => this.setState({speedEffector: 1}), 5000);
+    //     break;
+    //   case 3:
+    //     this.setState({tail: [], tailIndex: -1});
+    //     break;
+    //   case 4:
+    //     this.props.showCowOverlay();
+    //     setTimeout(this.props.hideCowOverlay, 5000);
+    //     break;
+    // }
+  }
+
+  eatPellet = async () => {
     //let growLength = Math.floor(Math.log(this.state.score*2)) + 1;
+    await this.playSound(this.sounds.PELLET)
     let growLength = 1;
     for (let i = 0; i < growLength; i++) {
       this.growTail();
@@ -352,12 +498,12 @@ export default class Snek extends Sprite {
       );
       newTailStart = newTailStart.concat(newTailEnd);
       var newTailIndex = this.state.tailIndex + 1;
-      ;
       this.setState({tail: newTailStart, tailIndex: newTailIndex});
     } else {
       var newTail = [];
       newTail.push(
         <SnekPart
+          key={this.getNextID()}
           running={this.props.running}
           posX={this.boardXtoPosX(this.state.boardX)}
           posY={this.boardYtoPosY(this.state.boardY)}
@@ -368,7 +514,6 @@ export default class Snek extends Sprite {
         </SnekPart>
       );
       var newTailIndex = this.state.tailIndex + 1;
-      ;
       this.setState({tail: newTail, tailIndex: newTailIndex});
     }
   }
@@ -464,14 +609,6 @@ export default class Snek extends Sprite {
     }
   }
 
-  componentDidMount() {
-    this.context.loop.subscribe(this.update);
-  }
-
-  componentWillUnmount() {
-    this.context.loop.unsubscribe(this.update);
-  }
-
   update = () => {
     if (this.state.toggleReset == !this.props.toggleReset) { // player reset game
       this.reset();
@@ -530,7 +667,7 @@ export default class Snek extends Sprite {
         if (this.lastFrameTime == null) { //first frame
           var speed = 0;
         } else {
-          var speed = CONSTANTS.SNEKSPEED * (now - this.lastFrameTime);
+          var speed = CONSTANTS.SNEKSPEED * (now - this.lastFrameTime) * this.state.speedEffector;
         }
         this.lastFrameTime = now;
         if (this.state.direction == CONSTANTS.DPADSTATES.UP) {
@@ -568,19 +705,30 @@ export default class Snek extends Sprite {
   }
 
   render() {
-    var pellet = null;
-    var snek = (<View style={[styles.snek, {
+    //console.log(this.state.tail)
+    let redPellet = null;
+    let pellet = null;
+    let snek = (<View style={[styles.snek, {
       left: this.state.posX,
       top: this.state.posY,
     }]}><Image source={require('../assets/gameplay/headUp.png')} style={[styles.snek, this.state.snakeHead]}
                resizeMode="stretch"/></View>);
     if (this.state.pelletLocation != null) {
-      var pellet = (<Animated.View style={[styles.pellet, {
+      pellet = (<Animated.View style={[styles.pellet, {
         left: this.boardXtoPosX(this.state.pelletLocation.x),
         top: this.boardYtoPosY(this.state.pelletLocation.y),
         transform: [{rotate: this.spin()}],
       }]}>
         <Image source={require('../assets/gameplay/Diamond.png')} style={styles.pellet} resizeMode="stretch"/>
+      </Animated.View>);
+    }
+    if (this.state.redPelletLocation) {
+      redPellet = (<Animated.View style={[styles.redPellet, {
+        left: this.boardXtoPosX(this.state.redPelletLocation.x),
+        top: this.boardYtoPosY(this.state.redPelletLocation.y),
+        transform: [{rotate: this.spin()}],
+      }]}>
+        <Image source={require('../assets/gameplay/Diamond.png')} style={styles.redPellet} resizeMode="stretch"/>
       </Animated.View>);
     }
     if (!this.state.alive) {
@@ -607,6 +755,7 @@ export default class Snek extends Sprite {
         })}
         {snek}
         {pellet}
+        {redPellet}
         {this.wallComponents}
         <Dpad onDpadChange={this.props.onDpadChange} pressedButton={this.props.pressedButton}></Dpad>
         <Buttons running={this.props.running} powerUps={this.props.powerUps} pause={this.props.pause}></Buttons>
@@ -629,6 +778,13 @@ let styles = StyleSheet.create({
     width: CONSTANTS.SNEKSIZE + 2,
     height: CONSTANTS.SNEKSIZE + 2,
     zIndex: 3,
+  },
+  redPellet: {
+    position: "absolute",
+    width: CONSTANTS.SNEKSIZE + 3,
+    height: CONSTANTS.SNEKSIZE + 3,
+    zIndex: 4,
+    tintColor: 'red'
   },
   gameBack: {
     position: 'absolute',
