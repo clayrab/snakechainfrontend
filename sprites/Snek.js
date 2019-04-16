@@ -404,23 +404,62 @@ export default class Snek extends Sprite {
       this.sounds.RED_PELLET_1 : this.sounds.RED_PELLET_2;
     await this.playSound(audioSource);
 
-    const action = this.getRandomInt(1, 4);
-    switch (action) {
-      case 1:
+    var actions = [
+      {
+        name: "die",
+        weight: 1.0
+      },{
+        name: "speedup",
+        weight: 33.0
+      },{
+        name: "losetail",
+        weight: 10.0
+      },{
+        name: "sleepy",
+        weight: 20.0
+      },
+    ];
+    const maxWeight = actions
+      .map((obj) => { return obj.weight;})
+      .reduce((total, weight) => { return total + weight;}); // sum of all weights
+    let action = this.getRandomInt(1, maxWeight);
+    let nextAction = 0;
+    while(action >= 0){
+      action-=actions[nextAction].weight;
+      nextAction++;
+    }
+    switch(actions[nextAction-1].name){
+      case "die":
         this.die();
         break;
-      case 2:
+      case "speedup":
         this.setState({speedEffector: 2});
         setTimeout(() => this.setState({speedEffector: 1}), 5000);
         break;
-      case 3:
+      case "losetail":
         this.setState({tail: [], tailIndex: -1});
         break;
-      case 4:
+      case "sleepy":
         this.props.showCowOverlay();
         setTimeout(this.props.hideCowOverlay, 5000);
         break;
     }
+    // switch (action) {
+    //   case 1:
+    //     this.die();
+    //     break;
+    //   case 2:
+    //     this.setState({speedEffector: 2});
+    //     setTimeout(() => this.setState({speedEffector: 1}), 5000);
+    //     break;
+    //   case 3:
+    //     this.setState({tail: [], tailIndex: -1});
+    //     break;
+    //   case 4:
+    //     this.props.showCowOverlay();
+    //     setTimeout(this.props.hideCowOverlay, 5000);
+    //     break;
+    // }
   }
 
   eatPellet = async () => {
@@ -464,6 +503,7 @@ export default class Snek extends Sprite {
       var newTail = [];
       newTail.push(
         <SnekPart
+          key={this.getNextID()}
           running={this.props.running}
           posX={this.boardXtoPosX(this.state.boardX)}
           posY={this.boardYtoPosY(this.state.boardY)}
@@ -665,6 +705,7 @@ export default class Snek extends Sprite {
   }
 
   render() {
+    //console.log(this.state.tail)
     let redPellet = null;
     let pellet = null;
     let snek = (<View style={[styles.snek, {
