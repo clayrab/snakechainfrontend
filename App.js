@@ -6,6 +6,7 @@ import CONSTANTS from './Constants.js';
 import {asyncStore, getFromAsyncStore, removeItemValue} from "./utils/AsyncStore.js";
 import {context} from "./utils/Context.js";
 import {makeRetry} from "./utils/Retry.js";
+import {formatToken} from './utils/uiHelperFunctions.js';
 
 import Snek from './sprites/Snek.js';
 
@@ -523,7 +524,7 @@ export default class App extends React.Component {
             exit={this.exit}/>
           <AreYouSureOverlay
             show={this.state.overlay == overlays.CONFIRMCONTRACT}
-            text={`Pay ${(this.state.prices.mineGamePrice / CONSTANTS.WEIPERETH).toPrecision(4)} ETH for ${this.state.gameOverInfo.score} Snake Coins.\n\nAre you sure?`}
+            text={`Pay ${formatToken(this.state.prices.mineGamePrice, "ETH")} ETH for ${this.state.gameOverInfo.score} Snake Coins.\n\nAre you sure?`}
             onYes={this.onConfirmContract}
             onNo={this.onCancelConfirmContract}/>
           <AreYouSureOverlay

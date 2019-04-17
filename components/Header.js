@@ -12,6 +12,7 @@ import CONSTANTS from '../Constants.js';
 import {context} from "../utils/Context.js";
 import {asyncStore, getFromAsyncStore, removeItemValue} from "../utils/AsyncStore.js";
 import {normalize} from '../utils/FontNormalizer.js';
+import {formatToken} from '../utils/uiHelperFunctions.js';
 
 export default class Header extends React.Component {
   constructor(props) {
@@ -88,7 +89,7 @@ export default class Header extends React.Component {
               {this.props.loading ? null :
                 <Text adjustsFontSizeToFit numberOfLines={1}
                       style={[styles.titleBarText, this.state.titleBarTextStyle]}>
-                  {(this.props.user.eth / CONSTANTS.WEIPERETH).toPrecision(4)}
+                  {formatToken(this.props.user.eth, "ETH")}
                 </Text>
               }
             </View>

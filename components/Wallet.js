@@ -13,6 +13,7 @@ import {Font} from 'expo';
 import {asyncStore, getFromAsyncStore, removeItemValue} from "../utils/AsyncStore.js";
 import {context} from "../utils/Context.js";
 import {normalize} from '../utils/FontNormalizer.js';
+import {formatToken} from '../utils/uiHelperFunctions.js';
 
 import WalletOverlay from '../components/WalletOverlay.js';
 import ConfirmTxOverlay from '../components/ConfirmTxOverlay.js';
@@ -225,7 +226,7 @@ export default class AccountHistory extends React.Component {
                 </Text>
                 <Image source={require('../assets/wallet/diamond.png')} style={[styles.diamondImage, {flex: 1}]}/>
                 <Text style={[this.state.riffic, styles.numberText, {flex: 1}]}>
-                  {(this.props.user.eth / CONSTANTS.WEIPERETH).toPrecision(4)}
+                  {formatToken(this.props.user.eth, "ETH")}
                 </Text>
                 <Text style={[this.state.riffic, styles.numberTextBottom, {paddingBottom: 20, flex: 1}]}>
                   ETH
@@ -292,12 +293,7 @@ export default class AccountHistory extends React.Component {
                       <View style={styles.historyRightView}>
                         <View style={styles.topRightHistoryView}>
                           <Text style={[this.state.riffic, styles.headerText]}>
-                            {transaction.type === "eth"
-                              ?
-                              (transaction.amount / CONSTANTS.WEIPERETH).toPrecision(4)
-                              :
-                              transaction.amount
-                            }
+                            {formatToken(this.props.user.eth, transaction.type.toUpperCase())}
                           </Text>
                           <Image source={require('../assets/wallet/diamond.png')} style={styles.diamondImage}/>
                           <Text style={[this.state.riffic, styles.headerText]}>

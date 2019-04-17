@@ -3,6 +3,7 @@ import {Text, StyleSheet, View, ImageBackground, TouchableOpacity} from 'react-n
 import {Sprite} from 'react-game-kit/native';
 import PropTypes from 'prop-types';
 import CONSTANTS from '../Constants.js';
+import {formatToken} from '../utils/uiHelperFunctions.js';
 
 export default class ScoreBoard extends Sprite {
   // https://facebook.github.io/react-native/docs/gesture-responder-system
@@ -46,7 +47,7 @@ export default class ScoreBoard extends Sprite {
               {this.props.loading ? null :
                 <Text adjustsFontSizeToFit numberOfLines={1}
                       style={[styles.titleBarText, this.state.titleBarTextStyle]}>
-                  {(this.props.user.eth / CONSTANTS.WEIPERETH).toPrecision(4)}
+                  {formatToken(this.props.user.eth, "ETH")}
                 </Text>
               }
             </Text>

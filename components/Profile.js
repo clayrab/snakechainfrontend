@@ -11,6 +11,7 @@ import ScreenView from '../components/ScreenView.js';
 import {Font} from 'expo';
 import Header from '../components/Header.js';
 import {normalize} from '../utils/FontNormalizer.js';
+import {formatToken} from '../utils/uiHelperFunctions.js';
 
 export default class Profile extends React.Component {
   constructor(props) {
@@ -54,7 +55,7 @@ export default class Profile extends React.Component {
                 <Image source={require('../assets/withdraw/DiamondIcom.png')} style={[styles.iconImage, {height: 25}]}
                        resizeMode="stretch"/>
                 <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.numberText, this.state.titleBarTextStyle]}>
-                  {(this.props.user.eth / CONSTANTS.WEIPERETH).toPrecision(4)}
+                  {formatToken(this.props.user.eth, "ETH")}
                 </Text>
               </ImageBackground>
               <ImageBackground source={require('../assets/profile/iconBG.png')} style={styles.iconBG}

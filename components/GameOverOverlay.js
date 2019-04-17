@@ -10,6 +10,7 @@ import {
 import {Font} from 'expo';
 import CONSTANTS from '../Constants.js';
 import {normalize} from '../utils/FontNormalizer.js';
+import {formatToken} from '../utils/uiHelperFunctions.js';
 
 export default class GameOverOverlay extends React.Component {
   constructor(props) {
@@ -57,7 +58,7 @@ export default class GameOverOverlay extends React.Component {
                   <Text style={[styles.buttonText, styles.contractDetails]}>
                     Exchange for minted snek coin now.{"\n"}{"\n"}
                     <Text style={[styles.buttonText, styles.contractDetails, {fontSize: normalize(18),},]}>
-                      {(this.props.miningPrice / CONSTANTS.WEIPERETH).toPrecision(4)} ETH.
+                      {formatToken(this.props.miningPrice,"ETH")} ETH.
                     </Text>
                   </Text>
                 </ImageBackground>

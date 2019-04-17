@@ -11,6 +11,7 @@ import {Font} from 'expo';
 import CONSTANTS from '../Constants.js';
 import {context} from "../utils/Context.js";
 import {normalize} from '../utils/FontNormalizer.js';
+import {formatToken} from '../utils/uiHelperFunctions.js';
 import {asyncStore, getFromAsyncStore, removeItemValue} from "../utils/AsyncStore.js";
 
 import AreYouSureOverlay from '../components/AreYouSureOverlay.js';
@@ -72,7 +73,6 @@ export default class Homepage extends React.Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    //let ethBal = (props.user.eth/CONSTANTS.WEIPERETH).toPrecision(4);
     if (props.user.name != "") {
       return {
         loading: false,
@@ -496,7 +496,7 @@ export default class Homepage extends React.Component {
           />
           <AreYouSureOverlay
             show={this.state.overlay == overlays.CONFIRMTICKET}
-            text={`Pay ${this.state.confirmAmount} ${this.state.confirmTokenType} for ${this.props.user.haul} Snake Coins.\n\nAre you sure?`}
+            text={`Pay ${formatToken(this.state.confirmAmount,this.state.confirmTokenType)} ${this.state.confirmTokenType} for ${this.props.user.haul} Snake Coins.\n\nAre you sure?`}
             onYes={this.onConfirmTicket}
             onNo={this.onCancelConfirm}/>
 

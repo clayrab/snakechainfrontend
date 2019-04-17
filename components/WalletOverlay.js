@@ -12,6 +12,7 @@ import {
 import {Keccak} from 'sha3';
 import {Font} from 'expo';
 import {normalize} from '../utils/FontNormalizer.js';
+import {formatToken} from '../utils/uiHelperFunctions.js';
 
 let yellowBackground = require('../assets/wallet/yellowBG.png');
 let brownBackground = require('../assets/wallet/brownBG.png');
@@ -179,7 +180,7 @@ export default class Wallet extends React.Component {
                       </View>
                       <Text adjustsFontSizeToFit numberOfLines={1}
                             style={[styles.buttonText, ethereumStyle]}>
-                        {(this.props.user.eth / CONSTANTS.WEIPERETH).toPrecision(4)}
+                        {formatToken(this.props.user.eth, "ETH")}
                       </Text>
                     </ImageBackground>
                   </TouchableOpacity>

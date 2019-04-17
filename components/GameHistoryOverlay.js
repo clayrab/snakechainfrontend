@@ -40,7 +40,6 @@ export default class GameHistoryOverlay extends React.Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    //let ethBal = (props.user.eth/CONSTANTS.WEIPERETH).toPrecision(4);
     if (props.user.name != "") {
       return {
         loading: false,
