@@ -36,8 +36,11 @@ export default class ReceiptOverlay extends React.Component {
             <Text style={[styles.heading2Style, this.state.buttonDynamicStyle]}>
               New Mine Discovered!
             </Text>
-            <Text style={[styles.textStyle, this.state.buttonDynamicStyle, {paddingLeft: 40, paddingRight: 40, }]}>
-              You have found a new mine with <Text style={styles.goldenTextStyle}>1,200 Snakechain Potential</Text>!! Begin a new mining expedition!
+            <Text style={[styles.goldenTextStyle, this.state.buttonDynamicStyle, {paddingLeft: 40, paddingRight: 40, }]}>
+              You have found a new mine with {this.props.user.mineMax} Snakechain Potential!
+            </Text>
+            <Text style={[styles.goldenTextStyle, this.state.buttonDynamicStyle, {paddingTop: 20, paddingLeft: 40, paddingRight: 40, }]}>
+              Begin a new mining expedition!
             </Text>
             {/*<Text style={[styles.textStyle, styles.mb10, this.state.buttonDynamicStyle, {paddingLeft: 40, paddingRight: 40, }]}>
               When you broke ground on your new mine, you discovered a treasure trove of:
@@ -54,7 +57,8 @@ export default class ReceiptOverlay extends React.Component {
                       <Text style={[{color: "#EBAC26", textAlign: 'center'}, this.state.buttonDynamicStyle]}>105</Text>
                     </View>
                   </View>*/}
-                  <Text style={[styles.textStyle, this.state.buttonDynamicStyle]}>{this.props.transactionId}</Text>
+                  <Text style={[styles.textStyle, this.state.buttonDynamicStyle]}>Your courier from the old haul is on the way.</Text>
+                  <Text style={[styles.textStyle, this.state.buttonDynamicStyle, {paddingTop: 15, }]}>Transaction ID: {this.props.transactionId}</Text>
                 </View>
               </ImageBackground>
             </View>
@@ -124,7 +128,7 @@ let styles = StyleSheet.create({
   txBox: {
     marginTop: 10,
     width: screenWidth * 872 / 1080,
-    height: (299 / 818) * screenWidth * 872 / 1080,
+    height: (500 / 818) * screenWidth * 872 / 1080, //This is badly stretched. Needs design.
     justifyContent: "center",
     alignItems: 'center'
   },
