@@ -408,25 +408,28 @@ export default class Snek extends Sprite {
     var actions = [
       {
         name: "die",
-        weight: 1.0
+        weight: 2.0
       },{
         name: "speedup",
-        weight: 33.0
-      },{
-        name: "slowdown",
-        weight: 10.0
-      },{
-        name: "losetail",
-        weight: 10.0
-      },{
-        name: "sleepy",
         weight: 20.0
       },{
+        name: "slowdown",
+        weight: 30.0
+      },{
+        name: "removetail",
+        weight: 5.0
+      },{
+        name: "sleepy",
+        weight: 50.0
+      },{
         name: "addtail",
-        weight: 3500000000000.0
+        weight: 30.0
+      },{
+        name: "losetail",
+        weight: 0.0
       },{
         name: "addpoints",
-        weight: 10.0
+        weight: 30.0
       },
     ];
     const maxWeight = actions
@@ -448,18 +451,24 @@ export default class Snek extends Sprite {
         break;
       case "slowdown":
         this.setState({speedEffector: 0.5});
-        setTimeout(() => this.setState({speedEffector: 1}), 5000);
+        setTimeout(() => this.setState({speedEffector: 1}), 8666);
         break;
-      case "losetail":
+      case "removetail":
         this.setState({tail: [], tailIndex: -1});
         this.growTail();
         this.growTail();
         this.growTail();
         break;
+      case "losetail":
+        break;
       case "addtail":
-        this.growTail();
-        this.growTail();
-        this.growTail();
+        //let howLong = 3;
+        let howLong = this.getRandomInt(3, 10);
+        console.log(howLong)
+        //getRandomInt
+        for(var i = 0; i < howLong; i++){
+          this.growTail();
+        }
         break;
       case "addpoints":
         this.setState({score: this.state.score + CONSTANTS.REDPELLETSCOREBONUS*CONSTANTS.PELLETMULT});
@@ -769,6 +778,27 @@ let borderWidth = 5;
 let boardWidth = CONSTANTS.BOARDWIDTH * CONSTANTS.SNEKSIZE + 2 * borderWidth + 2;
 let boardHeight = CONSTANTS.BOARDHEIGHT * CONSTANTS.SNEKSIZE + 2 * borderWidth + 2;
 let styles = StyleSheet.create({
+  gameBack: {
+    position: 'absolute',
+    width: CONSTANTS.DEVICEWIDTH,
+    height: CONSTANTS.DEVICEHEIGHT - CONSTANTS.STATUSBARHEIGHT,
+    backgroundColor: "#FAB523",
+  },
+  fieldBack: {
+    width: CONSTANTS.DEVICEWIDTH,
+    //height: CONSTANTS.GAMEHEIGHT + CONSTANTS.SCOREBOARDHEIGHT + 6,
+    height: CONSTANTS.DEVICEHEIGHT - CONSTANTS.DPADHEIGHT + 6
+  },
+  field: {
+    width: CONSTANTS.GAMEWIDTH,
+    backgroundColor: 'transparent',
+    height: CONSTANTS.GAMEHEIGHT,
+    position: "absolute",
+    top: CONSTANTS.BOARDCENTERY - (0.5 * CONSTANTS.GAMEHEIGHT),
+    //bottom: CONSTANTS.DPADMULT,
+    left: (CONSTANTS.DEVICEWIDTH / 2) - (0.5 * CONSTANTS.GAMEWIDTH),
+    zIndex: 2,
+  },
   snek: {
     position: "absolute",
     width: CONSTANTS.SNEKSIZE,
@@ -787,25 +817,5 @@ let styles = StyleSheet.create({
     height: CONSTANTS.SNEKSIZE + 3,
     zIndex: 4,
     tintColor: 'red'
-  },
-  gameBack: {
-    position: 'absolute',
-    width: CONSTANTS.DEVICEWIDTH,
-    height: CONSTANTS.DEVICEHEIGHT - CONSTANTS.STATUSBARHEIGHT,
-    backgroundColor: "#FAB523",
-    //backgroundColor: "#00F",
-  },
-  fieldBack: {
-    width: CONSTANTS.DEVICEWIDTH,
-    height: CONSTANTS.GAMEHEIGHT + CONSTANTS.SCOREBOARDHEIGHT + 6,
-  },
-  field: {
-    width: CONSTANTS.GAMEWIDTH,
-    backgroundColor: 'transparent',
-    height: CONSTANTS.GAMEHEIGHT,
-    position: "absolute",
-    top: CONSTANTS.BOARDCENTERY - (0.5 * CONSTANTS.GAMEHEIGHT),
-    left: (CONSTANTS.DEVICEWIDTH / 2) - (0.5 * CONSTANTS.GAMEWIDTH),
-    zIndex: 2,
   },
 });

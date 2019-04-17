@@ -1,10 +1,10 @@
 import {StatusBar, Platform, Dimensions} from 'react-native';
 
 //var statusBarHeight = Platform.OS === 'ios' ? 20 : StatusBar.currentHeight;
-var dpadButtonSize = 60;
-var dpadSize = dpadButtonSize * 2.414;
-var dpadAreaHeight = dpadSize + 20;
-let screenWidth = require('Dimensions').get('window').width;
+//var dpadButtonSize = 60;
+//var dpadSize = dpadButtonSize * 2.414;
+//var dpadAreaHeight = dpadSize + 20;
+//let screenWidth = require('Dimensions').get('window').width;
 //var scoreBoardHeight = screenWidth*.757/3.6;
 //var gameAreaHeight = Dimensions.get('window').height - dpadAreaHeight  - scoreBoardHeight + statusBarHeight;
 
@@ -13,12 +13,10 @@ export default CONSTANTS = {
   STATUSBARHEIGHT: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight,
   DEVICEWIDTH: Dimensions.get('window').width,
   DEVICEHEIGHT: Dimensions.get('window').height,
-  DPADAREAHEIGHT: dpadAreaHeight,
-  //GAMEHEIGHT: gameAreaHeight,
   BOARDCENTERX: Dimensions.get('window').width / 2,
-  //BOARDCENTERY: scoreBoardHeight + (gameAreaHeight)/2,
-  DPADBUTTONSIZE: dpadButtonSize,
-  DPADSIZE: dpadButtonSize * 2.414,
+  DPADBUTTONSIZE: 60,
+  //DPADAREAHEIGHT: dpadAreaHeight,
+  DPADMULT: 2.414,
   //SNEKSIZE: 16,
   BOARDSIZEX: 16,
   BOARDWIDTH: 31, // 2*BOARDSIZEX - 1
@@ -36,8 +34,12 @@ export default CONSTANTS = {
   //SCOREBOARDHEIGHT: scoreBoardHeight,
 };
 
+//let dpadSize = CONSTANTS.DPADBUTTONSIZE * CONSTANTS.DPADMULT;
+
 CONSTANTS.SNEKSIZE = (CONSTANTS.DEVICEWIDTH * 0.96) / CONSTANTS.BOARDWIDTH;
 CONSTANTS.SCOREBOARDHEIGHT = CONSTANTS.DEVICEWIDTH * .757 / 3.6;
 CONSTANTS.GAMEWIDTH = CONSTANTS.SNEKSIZE * CONSTANTS.BOARDWIDTH;
 CONSTANTS.GAMEHEIGHT = CONSTANTS.SNEKSIZE * CONSTANTS.BOARDHEIGHT;
-CONSTANTS.BOARDCENTERY = CONSTANTS.SCOREBOARDHEIGHT + (CONSTANTS.GAMEHEIGHT) / 2;
+CONSTANTS.DPADSIZE = CONSTANTS.DPADBUTTONSIZE * CONSTANTS.DPADMULT;
+CONSTANTS.DPADHEIGHT = CONSTANTS.DPADSIZE * 1.3; //includes padding
+CONSTANTS.BOARDCENTERY = CONSTANTS.DEVICEHEIGHT - (CONSTANTS.GAMEHEIGHT / 2) - CONSTANTS.DPADHEIGHT;//(CONSTANTS.DEVICEHEIGHT - CONSTANTS.DPADSIZE) - (CONSTANTS.GAMEHEIGHT / 2); // INSANE HEIGHT EQUATION FOR DPAD HEIGHT. SORRY.

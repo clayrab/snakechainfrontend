@@ -3,7 +3,6 @@ import {View, StyleSheet, TouchableOpacity, ImageBackground} from 'react-native'
 import {Sprite} from 'react-game-kit/native';
 import PropTypes from 'prop-types';
 import CONSTANTS from '../Constants.js';
-
 export default class Board extends Sprite {
 
   static contextTypes = {
@@ -13,8 +12,8 @@ export default class Board extends Sprite {
   constructor(props) {
     super(props);
     var borderWidth = 5;
-    // var boardWidth = CONSTANTS.BOARDWIDTH * CONSTANTS.SNEKSIZE + 2 * borderWidth + 2;
-    // var boardHeight = CONSTANTS.BOARDHEIGHT * CONSTANTS.SNEKSIZE + 2 * borderWidth + 2;
+    var boardWidth = CONSTANTS.BOARDWIDTH;
+    var boardHeight = CONSTANTS.BOARDHEIGHT;
 
     this.shouldUpdate = true;
     this.styles = StyleSheet.create({
@@ -37,7 +36,7 @@ export default class Board extends Sprite {
       gameBack: {
         position: 'absolute',
         width: CONSTANTS.DEVICEWIDTH,
-        height: CONSTANTS.GAMEHEIGHT + CONSTANTS.DPADAREAHEIGHT,
+        height: CONSTANTS.GAMEHEIGHT + dpadAreaHeight,
         backgroundColor: "#FAB523",
       },
     });

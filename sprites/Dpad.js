@@ -138,10 +138,11 @@ export default class Dpad extends Sprite {
 //     *  O  *
 //        *
 // Assuming O height = 1 implies large circle height = 1+0.5^0.5 ~= 2.414
-let dpadButtonSize = 60;
-let dpadButtonSizeHalf = dpadButtonSize / 2;
-let dpadSize = dpadButtonSize * 2.414;
-let dpadSizeHalf = dpadButtonSize * 1.207;
+let dpadButtonSize = CONSTANTS.DPADBUTTONSIZE;
+let dpadButtonSizeHalf = CONSTANTS.DPADBUTTONSIZE / 2;
+let dpadSize = CONSTANTS.DPADBUTTONSIZE * CONSTANTS.DPADMULT;
+
+let dpadSizeHalf = CONSTANTS.DPADBUTTONSIZE * 1.207;
 let padding = 0;
 let backgroundWidth = CONSTANTS.DEVICEWIDTH * 424 / 724;
 let shouldUpdate = true;
@@ -151,7 +152,7 @@ let styles = StyleSheet.create({
     position: 'absolute',
     width: backgroundWidth,
     //height: backgroundWidth*1162/1274,
-    height: dpadSize * 1.1,
+    height: dpadSize * 1.5, //make it plenty big so graphics tuck under gameplay
     bottom: -2,
     left: (CONSTANTS.DEVICEWIDTH - backgroundWidth) / 2,
     zIndex: 1,
