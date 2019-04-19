@@ -751,7 +751,9 @@ export default class Snek extends Sprite {
     }
     //let scoreBoardHeight = screenWidth*.757/3.6;
     return (
-      <View style={[styles.gameBack, {/*transferX: this.boardShakeInterpolate()*/},]}>
+      <View
+      //renderToHardwareTextureAndroid={true}
+      style={[styles.gameBack, {/*transferX: this.boardShakeInterpolate()*/},]}>
         <ImageBackground source={require('../assets/gameplay/gameAreaBack.png')} style={styles.fieldBack}
                          resizeMode="stretch">
           <ScoreBoard

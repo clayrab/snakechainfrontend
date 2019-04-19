@@ -10,18 +10,21 @@ export default class Dpad extends Sprite {
     super(props);
     this.state.direction = CONSTANTS.DPADSTATES.NONE;
     this.dpadButtonSizeHalf = dpadButtonSize / 2;
-    this.dpadSizeHalf = dpadButtonSize * 1.207;
+    this.dpadSizeHalf = dpadButtonSize * 1.207 * 2;
   }
 
   checkDpad = function (event) {
+    //console.log("checkDpad")
     var evt = event.nativeEvent;
     if (evt.locationX != undefined) {
+      // console.log(evt.locationX)
+      // console.log(evt.locationY)
       var xDiff = evt.locationX - this.dpadSizeHalf;
       var yDiff = evt.locationY - this.dpadSizeHalf;
       var xDiffSquared = xDiff * xDiff;
       var xDiffSquared = yDiff * yDiff;
       // makes sure the input is within a circle of radius dpadSizeHalf
-      if (xDiffSquared + xDiffSquared < this.dpadSizeHalf * this.dpadSizeHalf) {
+      //if (xDiffSquared + xDiffSquared < this.dpadSizeHalf * this.dpadSizeHalf) {
         if (xDiff * xDiff > yDiff * yDiff) {
           if (xDiff < 0) {
             this.props.onDpadChange(CONSTANTS.DPADSTATES.LEFT);
@@ -39,10 +42,10 @@ export default class Dpad extends Sprite {
             this.setState({direction: CONSTANTS.DPADSTATES.DOWN});
           }
         }
-      } else {
-        this.props.onDpadChange(CONSTANTS.DPADSTATES.NONE);
-        this.setState({direction: CONSTANTS.DPADSTATES.NONE});
-      }
+      // } else {
+      //   this.props.onDpadChange(CONSTANTS.DPADSTATES.NONE);
+      //   this.setState({direction: CONSTANTS.DPADSTATES.NONE});
+      // }
     }
   }
   onStartShouldSetResponder = function (e) {
@@ -58,12 +61,23 @@ export default class Dpad extends Sprite {
     return true;
   };
   onResponderMove = (event) => {
+    console.log("onResponderMove")
     this.checkDpad(event);
   };
   onResponderRelease = (event) => {
+    console.log("onResponderRelease")
     this.checkDpad(event);
   };
+  onResponderGrant = (event) => {
+    console.log("onResponderGrant")
+    //this.checkDpad(event);
+  };
+  // The View is now responding for touch events. This is the time to highlight and show the user what is happening.
 
+  onResponderReject = (event) => {
+    console.log("onResponderReject")
+  };
+  //View.props.onResponderReject: (event) => {}
   onLeft = () => {
     this.props.onDpadChange(CONSTANTS.DPADSTATES.LEFT);
   }
@@ -119,10 +133,13 @@ export default class Dpad extends Sprite {
           <View style={styles.inputCapture}
                 onStartShouldSetResponder={this.onStartShouldSetResponder}
                 onMoveShouldSetResponder={this.onMoveShouldSetResponder}
-                onStartShouldSetResponder={this.onStartShouldSetResponderCapture}
-                onMoveShouldSetResponder={this.onMoveShouldSetResponderCapture}
+                onStartShouldSetResponderCapture={this.onStartShouldSetResponderCapture}
+                onMoveShouldSetResponderCapture={this.onMoveShouldSetResponderCapture}
                 onResponderMove={this.onResponderMove}
-                onResponderRelease={this.onResponderRelease}></View>
+                onResponderRelease={this.onResponderRelease}
+                onResponderMove={this.onResponderGrant}
+                onResponderMove={this.onResponderReject}
+              ></View>
         </View>
       </ImageBackground>
     );
@@ -165,12 +182,21 @@ let styles = StyleSheet.create({
   buttonsHolder: {
     width: dpadSize,
     height: dpadSize,
+    // paddingLeft: "#00f",
+    // paddingRight: "#00f",
     marginBottom: 6,
+    backgroundColor: "#00f",
   },
   inputCapture: {
-    width: dpadSize,
-    height: dpadSize,
+    position: "relative",
+    top: -dpadSize/2,
+    left: -dpadSize/2,
+    width: dpadSize*2,
+    height: dpadSize*2,
+    //paddingLeft: 0-dpadSize,
     borderRadius: dpadSize,
+    opacity: 0.5,
+    backgroundColor: "#f00",
   },
   roundButton: {
     backgroundColor: '#FAB523',
