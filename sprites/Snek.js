@@ -28,8 +28,8 @@ export default class Snek extends Sprite {
       boardX: CONSTANTS.BOARDSIZEX - 1,
       boardY: CONSTANTS.BOARDHEIGHT - 6,
       direction: CONSTANTS.DPADSTATES.UP,
-      tailIndex: -1,
-      tail: [],
+      tailIndex: -1, //TAILINDEX ALWAYS POINTS TO THE END OF THE TAIL. THE ARRAY IS NOT IN THE SAME ORDER AS THE TAIL.
+      tail: [], //DO NOT SET THE TAIL OR TAILINDEX WITHOUT FIXING THE BOARD. USE EXISTING FUNCTIONS.
       // baseScore: 0,
       // multiplier: 1,
       score: 0,
@@ -76,8 +76,9 @@ export default class Snek extends Sprite {
   setupAudio = async () => {
     this.audio_sources = {
       RED_PELLET_1: require("../assets/audio/EAT_MUSHROOM.wav"),
-      RED_PELLET_2: require("../assets/audio/EAT_PELLET_B.wav"),
-      PELLET: require("../assets/audio/EAT_PELLET.wav"),
+      //RED_PELLET_2: require("../assets/audio/EAT_PELLET.wav"),
+      EAT_PELLET_1: require("../assets/audio/EAT_PELLET_B.wav"),
+      EAT_PELLET_2: require("../assets/audio/EAT_PELLET.wav"),
       DIE: require("../assets/audio/sewageTubeHit.mp3")
     };
     this.sounds = {};
@@ -118,7 +119,6 @@ export default class Snek extends Sprite {
   }
 
   copyDefaultState() {
-    console.log("copyDefaultState")
     let startState = {};
     startState.posX = this.defaultState.posX;
     startState.posY = this.defaultState.posY;
@@ -133,8 +133,8 @@ export default class Snek extends Sprite {
     //startState.multiplier = this.defaultState.multiplier;
     startState.score = this.defaultState.score;
     startState.alive = this.defaultState.alive;
-    startState.tail = this.makeTail(3, this.defaultState.boardX, this.defaultState.boardY);
-    startState.tailIndex = 2;
+    startState.tail = this.makeTail(5, this.defaultState.boardX, this.defaultState.boardY);
+    startState.tailIndex = 4;
     startState.snakeHead = {transform: [{rotate: '0deg'}]};
     startState.walls = this.getRandomWalls();
     startState.speedEffector = this.defaultState.speedEffector;
@@ -144,14 +144,7 @@ export default class Snek extends Sprite {
   resetBoard() {
     // Board is false in "safe" spots and true where the snake and walls are
     this.props.doResetDpad();
-    var board = [];
-    for (var index1 = 0; index1 < CONSTANTS.BOARDHEIGHT; index1++) {
-      var row = [];
-      for (var index2 = 0; index2 < CONSTANTS.BOARDWIDTH; index2++) {
-        row.push(false);
-      }
-      board.push(row);
-    }
+    let board = this.makeNewBoard();
     for (var index3 = 0; index3 < this.state.tail.length - 1; index3++) {
       board[this.state.tail[index3].props.boardY][this.state.tail[index3].props.boardX] = true;
     }
@@ -180,7 +173,6 @@ export default class Snek extends Sprite {
     return false;
   }
   makeTetrisBlock = (n, walls) => {
-    console.log("makeTetrisBlock x and y")
     let x = Math.floor(Math.random() * CONSTANTS.BOARDWIDTH);
     let y = Math.floor(Math.random() * CONSTANTS.BOARDHEIGHT);
     // while it's not already a wall and it's not in the middle column where the snek starts
@@ -198,15 +190,11 @@ export default class Snek extends Sprite {
     for (let blockNumber = 0; blockNumber < n - 1; blockNumber++) {
       let randX = Math.floor((Math.random() * ((maxX + 2) - (minX - 1)) + (minX - 1)));
       let randY = Math.floor((Math.random() * ((maxY + 2) - (minY - 1)) + (minY - 1)));
-      console.log(maxX + "\t" + maxY + "\t" + randX + "\t" + randY)
-      //while(walls[randY * 100 + randX] || randX == CONSTANTS.BOARDSIZEX-1 || !this.hasNeighbor(randX, randY, walls)){
       while (
         walls[randY * 100 + randX] ||
         randX == CONSTANTS.BOARDSIZEX - 1 ||
         !this.hasNeighbor(randX, randY, walls)
-        //  ||
-        // randX <= -1 || randX >= CONSTANTS.BOARDSIZEX-1 || randY <= -1 || randY >= CONSTANTS.BOARDSIZEY-1
-        ) {
+      ) {
         randX = Math.floor((Math.random() * ((maxX + 2) - (minX - 1)) + (minX - 1)));
         randY = Math.floor((Math.random() * ((maxY + 2) - (minY - 1)) + (minY - 1)));
       }
@@ -239,7 +227,6 @@ export default class Snek extends Sprite {
     return walls;
   }
   getRandomWalls = () => {
-    console.log("getRandomWalls")
     let newWalls = [];
     if (this.props.level === CONSTANTS.LEVELS.BLOCK1) {
       for (let i = 0; i < 12; i++) {
@@ -286,7 +273,6 @@ export default class Snek extends Sprite {
   }
 
   setWallComponents = () => {
-    console.log("setWallComponents");
     this.wallComponents = [];
     for (var yIndex = 0; yIndex < CONSTANTS.BOARDHEIGHT; yIndex++) {
       for (var xIndex = 0; xIndex < CONSTANTS.BOARDWIDTH; xIndex++) {
@@ -340,9 +326,7 @@ export default class Snek extends Sprite {
     if (this.state.redPelletLocation &&
       this.state.redPelletLocation.x === boardX &&
       this.state.redPelletLocation.y === boardY) {
-
       this.eatRedPellet();
-
     }
     this.board[boardY][boardX] = true;
   }
@@ -365,14 +349,14 @@ export default class Snek extends Sprite {
       isTail = this.board[y][x];
       isHead = this.state.boardX === x && this.state.boardY === y;
     }
+    //
+    // this.setState({
+    //   pelletLocation: {x: x, y: y},
+    //   redPelletLocation: null,
+    // });
 
     this.setState({
       pelletLocation: {x: x, y: y},
-      redPelletLocation: null,
-    });
-
-    this.setState({
-      //redPelletLocation: this.state.score % 2 || true ? this.randomRedPelletGenerate() : null
       redPelletLocation: this.randomRedPelletGenerate()
     });
 
@@ -401,9 +385,7 @@ export default class Snek extends Sprite {
   eatRedPellet = async () => {
     this.setState({redPelletLocation: null});
 
-    const audioSource = this.getRandomInt(1, 2) === 1 ?
-      this.sounds.RED_PELLET_1 : this.sounds.RED_PELLET_2;
-    await this.playSound(audioSource);
+    await this.playSound(this.sounds.RED_PELLET_1);
 
     var actions = [
       {
@@ -417,16 +399,13 @@ export default class Snek extends Sprite {
         weight: 30.0
       },{
         name: "removetail",
-        weight: 5.0
+        weight: 30.0
       },{
         name: "sleepy",
         weight: 50.0
       },{
         name: "addtail",
         weight: 30.0
-      },{
-        name: "losetail",
-        weight: 0.0
       },{
         name: "addpoints",
         weight: 30.0
@@ -454,19 +433,12 @@ export default class Snek extends Sprite {
         setTimeout(() => this.setState({speedEffector: 1}), 8666);
         break;
       case "removetail":
-        this.setState({tail: [], tailIndex: -1});
-        this.growTail();
-        this.growTail();
-        this.growTail();
-        break;
-      case "losetail":
+        let howLong = this.getRandomInt(3, 10);
+        this.reduceTail(howLong);
         break;
       case "addtail":
-        //let howLong = 3;
-        let howLong = this.getRandomInt(3, 10);
-        console.log(howLong)
-        //getRandomInt
-        for(var i = 0; i < howLong; i++){
+        let howLong2 = this.getRandomInt(3, 10);
+        for(var i = 0; i < howLong2; i++){
           this.growTail();
         }
         break;
@@ -481,37 +453,84 @@ export default class Snek extends Sprite {
   }
 
   eatPellet = async () => {
-    await this.playSound(this.sounds.PELLET)
-    let growLength = 1;
+    await this.playSound(this.sounds.EAT_PELLET_1);
+    let growLength = 0;
+    let score = this.state.score;
+    while(score >= 0 && growLength < 5){
+      growLength++;
+      score = score - (10 * CONSTANTS.PELLETMULT);
+    }
     for (let i = 0; i < growLength; i++) {
       this.growTail();
     }
     this.placePellet();
-    this.setState({score: this.state.score + CONSTANTS.PELLETMULT});
+    this.setState({score: this.state.score + (CONSTANTS.PELLETMULT * growLength)});
+  }
+  makeNewBoard = () => {
+    let board = [];
+    for (var index1 = 0; index1 < CONSTANTS.BOARDHEIGHT; index1++) {
+      let row = [];
+      for (var index2 = 0; index2 < CONSTANTS.BOARDWIDTH; index2++) {
+        row.push(false);
+      }
+      board.push(row);
+    }
+    return board;
   }
 
-  growTail() {
+  reduceTail = async(howMuch) => {
     if (this.state.tail.length > 0) {
-      var newTailStart = this.state.tail.slice(0, this.state.tailIndex);
-      var newTailEnd = this.state.tail.slice(this.state.tailIndex, this.state.tail.length);
-      var lastPart = this.state.tail[this.state.tailIndex];
+      howMuch = howMuch > this.state.tail.length - 1 ? this.state.tail.length - 1 : howMuch;
+      let newTailStart = this.state.tail.slice(0, this.state.tailIndex + 1);
+      let newTailEnd = this.state.tail.slice(this.state.tailIndex + 1, this.state.tail.length);
+      //let lastTailPart = this.state.tail[this.state.tailIndex];
+      while(howMuch > 0) {
+        if(newTailStart.length > 0) {
+          let lastPart = newTailStart[newTailStart.length - 1];
+          this.board[lastPart.props.boardY][lastPart.props.boardX] = false;
+          newTailStart = newTailStart.slice(0, -1);
+        } else {
+          let lastPart = newTailEnd[newTailEnd.length - 1];
+          this.board[lastPart.props.boardY][lastPart.props.boardX] = false;
+          newTailEnd = newTailEnd.slice(0, -1);
+        }
+        howMuch--;
+      }
+      let newTailIndex = 0;
+      if(newTailStart.length > 0){
+        newTailIndex = newTailStart.length - 1;
+      } else {
+        newTailIndex = newTailEnd.length - 1;
+      }
+      let newTail = newTailStart.concat(newTailEnd);
+      await this.setState({tail: newTail, tailIndex: newTailIndex});
+    }
+  }
+  growTail() {
+    // TailIndex is the last part of the tail. We snip the tail TailIndex,
+    // push a new part into the middle of the array(the end of the tail),
+    // and then concan the arrays back together.
+    if (this.state.tail.length > 0) {
+      let newTailStart = this.state.tail.slice(0, this.state.tailIndex + 1);
+      let newTailEnd = this.state.tail.slice(this.state.tailIndex + 1, this.state.tail.length);
+      let lastTailPart = this.state.tail[this.state.tailIndex];
       newTailStart.push(
         <SnekPart
           key={this.getNextID()}
           running={this.props.running}
-          posX={this.boardXtoPosX(lastPart.props.boardX)}
-          posY={this.boardYtoPosY(lastPart.props.boardY)}
-          boardX={lastPart.props.boardX}
-          boardY={lastPart.props.boardY}
+          posX={this.boardXtoPosX(lastTailPart.props.boardX)}
+          posY={this.boardYtoPosY(lastTailPart.props.boardY)}
+          boardX={lastTailPart.props.boardX}
+          boardY={lastTailPart.props.boardY}
           toggleUpdate={true}
-          direction={lastPart.props.direction}>
+          direction={lastTailPart.props.direction}>
         </SnekPart>
       );
       newTailStart = newTailStart.concat(newTailEnd);
-      var newTailIndex = this.state.tailIndex + 1;
+      let newTailIndex = this.state.tailIndex + 1;
       this.setState({tail: newTailStart, tailIndex: newTailIndex});
     } else {
-      var newTail = [];
+      let newTail = [];
       newTail.push(
         <SnekPart
           key={this.getNextID()}
@@ -524,14 +543,15 @@ export default class Snek extends Sprite {
           direction={this.state.direction}>
         </SnekPart>
       );
-      var newTailIndex = this.state.tailIndex + 1;
+      let newTailIndex = this.state.tailIndex + 1;
       this.setState({tail: newTail, tailIndex: newTailIndex});
     }
   }
 
-  moveTail(direction) {
+  moveTail = async(direction) => {
     if (this.state.tailIndex >= 0) {
       this.onLeaveBoardTile(this.state.tail[this.state.tailIndex].props.boardX, this.state.tail[this.state.tailIndex].props.boardY);
+      //cheating here and not using setState. it will be fired below.
       this.state.tail[this.state.tailIndex] = React.cloneElement(
         this.state.tail[this.state.tailIndex],
         {
@@ -543,6 +563,7 @@ export default class Snek extends Sprite {
           toggleUpdate: !this.state.tail[this.state.tailIndex].props.toggleUpdate,
         });
     } else {
+      console.log("empty tail problem")
       this.onLeaveBoardTile(this.state.boardX, this.state.boardY);
     }
     var newTailIndex = this.state.tailIndex - 1;
@@ -553,7 +574,8 @@ export default class Snek extends Sprite {
     }
     var newPosX = this.boardXtoPosX(this.state.boardX);
     var newPosY = this.boardYtoPosY(this.state.boardY);
-    this.setState({tailIndex: newTailIndex, posX: newPosX, posY: newPosY});
+    //await this call so that onBoardTile is in the right state
+    await this.setState({tailIndex: newTailIndex, posX: newPosX, posY: newPosY});
   }
 
   goUp() {
@@ -716,7 +738,6 @@ export default class Snek extends Sprite {
   }
 
   render() {
-    //console.log(this.state.tail)
     let redPellet = null;
     let pellet = null;
     let snek = (<View style={[styles.snek, {
