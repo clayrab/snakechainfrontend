@@ -10,7 +10,7 @@ export default class Dpad extends Sprite {
     super(props);
     this.state.direction = CONSTANTS.DPADSTATES.NONE;
     this.dpadButtonSizeHalf = dpadButtonSize / 2;
-    this.dpadSizeHalf = dpadButtonSize * 1.207 * 2;
+    this.dpadSizeHalf = dpadButtonSize * 1.207 * 1.5;
   }
 
   checkDpad = function (event) {
@@ -61,34 +61,34 @@ export default class Dpad extends Sprite {
     return true;
   };
   onResponderMove = (event) => {
-    console.log("onResponderMove")
+    //console.log("onResponderMove")
     this.checkDpad(event);
   };
   onResponderRelease = (event) => {
-    console.log("onResponderRelease")
+    //console.log("onResponderRelease")
     this.checkDpad(event);
   };
   onResponderGrant = (event) => {
-    console.log("onResponderGrant")
+    //console.log("onResponderGrant")
     //this.checkDpad(event);
   };
   // The View is now responding for touch events. This is the time to highlight and show the user what is happening.
 
   onResponderReject = (event) => {
-    console.log("onResponderReject")
+    //console.log("onResponderReject")
   };
   //View.props.onResponderReject: (event) => {}
   onLeft = () => {
-    this.props.onDpadChange(CONSTANTS.DPADSTATES.LEFT);
+  //  this.props.onDpadChange(CONSTANTS.DPADSTATES.LEFT);
   }
   onRight = () => {
-    this.props.onDpadChange(CONSTANTS.DPADSTATES.RIGHT);
+  //  this.props.onDpadChange(CONSTANTS.DPADSTATES.RIGHT);
   }
   onUp = () => {
-    this.props.onDpadChange(CONSTANTS.DPADSTATES.UP);
+  //  this.props.onDpadChange(CONSTANTS.DPADSTATES.UP);
   }
   onDown = () => {
-    this.props.onDpadChange(CONSTANTS.DPADSTATES.DOWN);
+  //  this.props.onDpadChange(CONSTANTS.DPADSTATES.DOWN);
   }
 
   render() {
@@ -137,8 +137,8 @@ export default class Dpad extends Sprite {
                 onMoveShouldSetResponderCapture={this.onMoveShouldSetResponderCapture}
                 onResponderMove={this.onResponderMove}
                 onResponderRelease={this.onResponderRelease}
-                onResponderMove={this.onResponderGrant}
-                onResponderMove={this.onResponderReject}
+                onResponderGrant={this.onResponderGrant}
+                onResponderReject={this.onResponderReject}
               ></View>
         </View>
       </ImageBackground>
@@ -185,18 +185,16 @@ let styles = StyleSheet.create({
     // paddingLeft: "#00f",
     // paddingRight: "#00f",
     marginBottom: 6,
-    backgroundColor: "#00f",
   },
   inputCapture: {
     position: "relative",
-    top: -dpadSize/2,
-    left: -dpadSize/2,
-    width: dpadSize*2,
-    height: dpadSize*2,
-    //paddingLeft: 0-dpadSize,
-    borderRadius: dpadSize,
-    opacity: 0.5,
-    backgroundColor: "#f00",
+    top: -dpadSize / 4,
+    left: -dpadSize / 4,
+    width: dpadSize * 1.5,
+    height: dpadSize * 1.5,
+    borderRadius: dpadSize * 1.5,
+    // opacity: 0.5,
+    // backgroundColor: "#f00",
   },
   roundButton: {
     backgroundColor: '#FAB523',
