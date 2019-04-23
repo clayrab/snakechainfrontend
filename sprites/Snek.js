@@ -447,7 +447,7 @@ export default class Snek extends Sprite {
         break;
       case "sleepy":
         this.props.showCowOverlay();
-        setTimeout(this.props.hideCowOverlay, 5000);
+        setTimeout(this.props.hideCowOverlay, 8000);
         break;
     }
   }
@@ -740,11 +740,33 @@ export default class Snek extends Sprite {
   render() {
     let redPellet = null;
     let pellet = null;
-    let snek = (<View style={[styles.snek, {
-      left: this.state.posX,
-      top: this.state.posY,
-    }]}><Image source={require('../assets/gameplay/headUp.png')} style={[styles.snek, this.state.snakeHead]}
-               resizeMode="stretch"/></View>);
+    let snek = (<View style={[styles.snek, { left: this.state.posX, top: this.state.posY,}]}>
+      <Image source={require('../assets/gameplay/headUp.png')} style={[styles.snek, this.state.snakeHead]} resizeMode="stretch"/>
+    </View>);
+
+    let snekHeadBack = null;
+    if (this.state.direction == CONSTANTS.DPADSTATES.UP) {
+      snekHeadBack = (<View style={[styles.snekHeadBack, {
+        left: this.boardXtoPosX(this.state.boardX),
+        top: this.boardYtoPosY(this.state.boardY + 1),
+      }]}></View>);
+    } else if (this.state.direction == CONSTANTS.DPADSTATES.DOWN) {
+      snekHeadBack = (<View style={[styles.snekHeadBack, {
+        left: this.boardXtoPosX(this.state.boardX),
+        top: this.boardYtoPosY(this.state.boardY - 1),
+      }]}></View>);
+    } else if (this.state.direction == CONSTANTS.DPADSTATES.RIGHT) {
+      snekHeadBack = (<View style={[styles.snekHeadBack, {
+        left: this.boardXtoPosX(this.state.boardX - 1),
+        top: this.boardYtoPosY(this.state.boardY),
+      }]}></View>);
+    } else if (this.state.direction == CONSTANTS.DPADSTATES.LEFT) {
+      snekHeadBack = (<View style={[styles.snekHeadBack, {
+        left: this.boardXtoPosX(this.state.boardX + 1),
+        top: this.boardYtoPosY(this.state.boardY),
+      }]}></View>);
+    }
+
     if (this.state.pelletLocation != null) {
       pellet = (<Animated.View style={[styles.pellet, {
         left: this.boardXtoPosX(this.state.pelletLocation.x),
@@ -787,6 +809,7 @@ export default class Snek extends Sprite {
         {this.state.tail.map((elem) => {
           return (elem);
         })}
+        {snekHeadBack}
         {snek}
         {pellet}
         {redPellet}
@@ -827,6 +850,13 @@ let styles = StyleSheet.create({
     width: CONSTANTS.SNEKSIZE,
     height: CONSTANTS.SNEKSIZE,
     zIndex: 3,
+  },
+  snekHeadBack: {
+    position: "absolute",
+    width: CONSTANTS.SNEKSIZE,
+    height: CONSTANTS.SNEKSIZE,
+    zIndex: 3,
+    backgroundColor: CONSTANTS.SNEKPARTCOLOR,
   },
   pellet: {
     position: "absolute",

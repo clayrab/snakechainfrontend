@@ -34,7 +34,6 @@ export default class Buttons extends Sprite {
   render() {
     return (
       <View style={styles.buttonsBackground}>
-        <View style={styles.buttonsSpacer}/>
         <View style={styles.buttonsHolder}>
 
           <TouchableOpacity
@@ -44,8 +43,10 @@ export default class Buttons extends Sprite {
             <Image source={require('../assets/gameplay/PauseButton.png')} style={styles.buttonImage}
                    resizeMode="stretch"/>
           </TouchableOpacity>
-          <View style={styles.buttonsSpacer2}/>
-          {/*<TouchableOpacity
+
+          {/*
+            <View style={styles.buttonsSpacer2}/>
+            <TouchableOpacity
             color={"#fff"}
             style={styles.power}
             onPress={() => this.props.powerUps()}>
@@ -62,19 +63,13 @@ export default class Buttons extends Sprite {
 let styles = StyleSheet.create({
   buttonsBackground: {
     width: CONSTANTS.DEVICEWIDTH,
-    height: CONSTANTS.DEVICEHEIGHT - CONSTANTS.SCOREBOARDHEIGHT - CONSTANTS.GAMEHEIGHT - CONSTANTS.STATUSBARHEIGHT - 4,
-  },
-  buttonsSpacer: {
-    flex: 1,
   },
   buttonsHolder: {
     flexDirection: "row",
     flex: 0,
   },
-  buttonsSpacer2: {
-    flex: 1,
-  },
   buttonImage: {
+    marginTop: CONSTANTS.DEVICEWIDTH * 156 / 1080,
     width: CONSTANTS.DEVICEWIDTH * 156 / 1080,
     height: CONSTANTS.DEVICEWIDTH * 156 / 1080,
   },
