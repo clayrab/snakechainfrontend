@@ -17,8 +17,6 @@ export default class Dpad extends Sprite {
     //console.log("checkDpad")
     var evt = event.nativeEvent;
     if (evt.locationX != undefined) {
-      // console.log(evt.locationX)
-      // console.log(evt.locationY)
       var xDiff = evt.locationX - this.dpadSizeHalf;
       var yDiff = evt.locationY - this.dpadSizeHalf;
       var xDiffSquared = xDiff * xDiff;

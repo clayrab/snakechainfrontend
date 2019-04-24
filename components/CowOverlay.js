@@ -81,7 +81,6 @@ let staticData = Array.from({length: gradientHeight});
 let gradientBackground = '#000';
 export default class CowOverlay extends React.Component {
   constructor(props) {
-    console.log("Easing")
     super(props);
     this.state = {
       riffic: {},

@@ -185,8 +185,6 @@ export default class Homepage extends React.Component {
       alert(resp.error);
       await this.setState({overlay: -1});
     } else if (resp.txhash) {
-      console.log(resp.txhash)
-      console.log(resp.user)
       await this.props.doUpdateUser(resp.user);
       await this.setState({overlay: overlays.RECEIPTOVERLAY, lastTxHash: resp.txhash});
     } else {
@@ -205,7 +203,6 @@ export default class Homepage extends React.Component {
     await this.setState({overlay: overlays.LOADING});
     let jwt = await getFromAsyncStore("jwt");
     let price = this.props.prices.tnt;
-    console.log(price)
     let data = {
       amount: price,
       type: ticketType,
