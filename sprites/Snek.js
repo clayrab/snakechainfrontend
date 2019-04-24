@@ -793,7 +793,7 @@ export default class Snek extends Sprite {
         top: this.boardYtoPosY(this.state.redPelletLocation.y),
         transform: [{rotate: this.spin()}],
       }]}>
-        <Image source={require('../assets/gameplay/Diamond.png')} style={styles.redPellet} resizeMode="stretch"/>
+        <Image source={require('../assets/powerupsoverlay/mushroom_voilet.png')} style={styles.redPellet} resizeMode="stretch"/>
       </Animated.View>);
     }
     if (!this.state.alive) {
@@ -881,6 +881,6 @@ let styles = StyleSheet.create({
     width: CONSTANTS.SNEKSIZE + 3,
     height: CONSTANTS.SNEKSIZE + 3,
     zIndex: 4,
-    tintColor: 'red'
+    //tintColor: 'red'
   },
 });
