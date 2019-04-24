@@ -379,12 +379,22 @@ export default class Snek extends Sprite {
       isTail = this.board[y][x];
       isHead = this.state.boardX === x && this.state.boardY === y;
     }
-    return {x, y}
-  };
+    return {x, y};
+  }
 
   eatRedPellet = async () => {
     this.setState({redPelletLocation: null});
-
+    let addPointsPelletSound = async(howMany) => {
+      setTimeout(async() => {
+        await this.playSound(this.sounds.EAT_PELLET_1);
+        setTimeout(async() => {
+          await this.playSound(this.sounds.EAT_PELLET_1);
+          setTimeout(async() => {
+            await this.playSound(this.sounds.EAT_PELLET_1);
+          }, 500);
+        }, 500);
+      }, 500);
+    }
     await this.playSound(this.sounds.RED_PELLET_1);
 
     var actions = [
@@ -443,6 +453,7 @@ export default class Snek extends Sprite {
         }
         break;
       case "addpoints":
+        addPointsPelletSound(3);
         this.setState({score: this.state.score + CONSTANTS.REDPELLETSCOREBONUS*CONSTANTS.PELLETMULT});
         break;
       case "sleepy":
@@ -863,6 +874,7 @@ let styles = StyleSheet.create({
     width: CONSTANTS.SNEKSIZE + 2,
     height: CONSTANTS.SNEKSIZE + 2,
     zIndex: 3,
+    transform: [{rotate: '45deg'}],
   },
   redPellet: {
     position: "absolute",
