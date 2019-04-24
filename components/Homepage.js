@@ -474,7 +474,7 @@ export default class Homepage extends React.Component {
             show={this.state.overlay == overlays.RECEIPTOVERLAY}
             user={this.props.user}
             transactionId={this.state.lastTxHash}
-            startMining={this.goToSelectLevel}
+            //startMining={this.goToSelectLevel}
             closeOverlay={this.closeOverlay}
           />
           <GameHistoryOverlay show={this.state.overlay == overlays.MINE}
