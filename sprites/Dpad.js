@@ -68,25 +68,23 @@ export default class Dpad extends Sprite {
   };
   onResponderGrant = (event) => {
     //console.log("onResponderGrant")
-    //this.checkDpad(event);
   };
   // The View is now responding for touch events. This is the time to highlight and show the user what is happening.
-
   onResponderReject = (event) => {
     //console.log("onResponderReject")
   };
-  //View.props.onResponderReject: (event) => {}
+  // View.props.onResponderReject: (event) => {}
   onLeft = () => {
-  //  this.props.onDpadChange(CONSTANTS.DPADSTATES.LEFT);
+    //this.props.onDpadChange(CONSTANTS.DPADSTATES.LEFT);
   }
   onRight = () => {
-  //  this.props.onDpadChange(CONSTANTS.DPADSTATES.RIGHT);
+    //this.props.onDpadChange(CONSTANTS.DPADSTATES.RIGHT);
   }
   onUp = () => {
-  //  this.props.onDpadChange(CONSTANTS.DPADSTATES.UP);
+    //this.props.onDpadChange(CONSTANTS.DPADSTATES.UP);
   }
   onDown = () => {
-  //  this.props.onDpadChange(CONSTANTS.DPADSTATES.DOWN);
+    //this.props.onDpadChange(CONSTANTS.DPADSTATES.DOWN);
   }
 
   render() {
@@ -191,8 +189,8 @@ let styles = StyleSheet.create({
     width: dpadSize * 1.5,
     height: dpadSize * 1.5,
     borderRadius: dpadSize * 1.5,
-    // opacity: 0.5,
-    // backgroundColor: "#f00",
+    opacity: 0.01, //needed for android.
+    backgroundColor: "#000",
   },
   roundButton: {
     backgroundColor: '#FAB523',
