@@ -106,7 +106,7 @@ export default class Homepage extends React.Component {
     if (this.props.user.haul >= this.props.user.mineMax) {
       this.setState({overlay: overlays.MINEEMPTY});
     } else {
-      this.setState({overlay: overlays.SELECTLEVEL});
+      this.props.onPlayPress();
     }
   }
   onPurchaseTicketSelect = async (ticketType) => {
@@ -479,6 +479,7 @@ export default class Homepage extends React.Component {
                               user={this.props.user}
                               gototown={this.onMineHaul}/>
           <SelectLevelOverlay show={this.state.overlay == overlays.SELECTLEVEL}
+                              rushMode={true}
                               closeOverlay={this.closeOverlay}
                               user={this.props.user}
                               onSelectLevel={this.props.onSelectLevel}
@@ -493,7 +494,7 @@ export default class Homepage extends React.Component {
           />
           <AreYouSureOverlay
             show={this.state.overlay == overlays.CONFIRMTICKET}
-            text={`Pay ${formatToken(this.state.confirmAmount,this.state.confirmTokenType)} ${this.state.confirmTokenType} for ${this.props.user.haul} Snake Coins.\n\nAre you sure?`}
+            text={`Pay ${formatToken(this.state.confirmAmount, this.state.confirmTokenType)} ${this.state.confirmTokenType} for ${this.props.user.haul} Snake Coins.\n\nAre you sure?`}
             onYes={this.onConfirmTicket}
             onNo={this.onCancelConfirm}/>
 

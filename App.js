@@ -36,6 +36,7 @@ import ViewSponsor from './components/ViewSponsor.js';
 import PurchasedTicket from './components/PurchasedTicket.js';
 import Success from './components/Success.js';
 import Fail from './components/Fail.js';
+import SelectLevel from "./components/SelectLevel";
 
 // components/ChangePassword.js
 // components/EditProfile.js
@@ -56,6 +57,7 @@ const connectionConfig = {
 var screens = {
   "GAME": 0, "HOME": 1, "LOADING": 2, "PREFERENCES": 3, "PROFILE": 4,
   "ACCOUNTHISTORY": 5, "GAMEHISTORY": 6, "LOGIN": 7, "SNAKETOWN": 8, "WALLET": 9,
+  "SELECTLEVEL": 10
 };
 var overlays = {
   "PAUSE": 0, "GAMEOVER": 1, "MINE": 2, "AREYOUSURE": 3, "LOADING": 4,
@@ -441,12 +443,21 @@ export default class App extends React.Component {
     })
   }
 
+  onPlayPress = () => {
+    this.setState({screen: screens.SELECTLEVEL});
+  };
+
+  backToHomepage = () => {
+    this.setState({screen: screens.HOME})
+  };
+
   render() {
     if (this.state.screen == screens.HOME) {
       return (
         <Homepage
           user={this.state.user}
           prices={this.state.prices}
+          onPlayPress={this.onPlayPress}
           onSelectLevel={this.onSelectLevel}
           onGoToTown={this.onGoToTown}
           onWallet={this.onWallet}
@@ -455,6 +466,14 @@ export default class App extends React.Component {
           updatePowerups={this.updatePowerups}
         >
         </Homepage>
+      );
+    } else if (this.state.screen == screens.SELECTLEVEL) {
+      return (
+        <SelectLevel
+          user={this.state.user}
+          onWallet={this.onWallet}
+          exit={this.backToHomepage}
+        />
       );
     } else if (this.state.screen == screens.LOGIN) {
       return (

@@ -30,7 +30,7 @@ export default class ScreenView extends React.Component {
       <SafeAreaView style={[{
         marginTop: this.state.statusBarHeight,
         height: screenHeight - this.state.statusBarHeight,
-      }, styles.screen]}>
+      }, styles.screen, this.props.styles]}>
         {this.props.children}
       </SafeAreaView>
     )
