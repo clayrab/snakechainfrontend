@@ -240,7 +240,16 @@ export default class SelectLevel extends React.Component {
                     title={"NO MULTIPLAYER"}
                     value={"0.01 ETH"}/>
                 </View>
-
+                <View style={styles.gameTypeRow}>
+                  <GameTypeItem
+                    fontStyle={this.state.riffic}
+                    title={"NO MULTIPLAYER"}
+                    value={"0.01 ETH"}/>
+                  <GameTypeItem
+                    fontStyle={this.state.riffic}
+                    title={"NO MULTIPLAYER"}
+                    value={"0.01 ETH"}/>
+                </View>
               </ScrollView>
             </ImageBackground>
 
