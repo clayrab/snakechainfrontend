@@ -535,9 +535,13 @@ export default class Homepage extends React.Component {
     );
   }
 }
+
 let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
+
 let titleBarHeight = screenWidth * .757 / 3.6;
+
+
 let styles = StyleSheet.create({
   backgroundImage: {
     width: "100%",
@@ -549,46 +553,48 @@ let styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   contentTopMargin: {
-    flex: 0.263,
+    // flex: 0.263,
+    height: screenHeight * .250 / 8,
   },
   contentTop: {
-    flex: 1.610,
+    // flex: 1.610,
     flexDirection: "row",
     width: "100%",
   },
   contentBottom: {
-    flex: 3.783,
+    // flex: 3.783,
     flexDirection: "row",
     width: "100%",
   },
   snakechain: {
-    width: screenWidth * 1.65 / 3.6,
+    width: screenWidth * 1.65 / 4.6,
     aspectRatio: 1.65 / .917,
-    marginLeft: screenWidth * .303 / 3.6,
+    marginLeft: screenWidth * .303 / 4.6,
   },
   iconsHolder: {
-    marginLeft: screenWidth * .577 / 3.6,
+    marginLeft: screenWidth * .577 / 1.6,
     flexDirection: "column",
   },
   town: {
-    // width: screenWidth*.860/3.6,
+    // width: screenWidth*.860/4.6,
     // aspectRatio: .860/.750,
-    width: screenWidth * .767 / 3.6,
+    width: screenWidth * .767 / 4.6,
     aspectRatio: .767 / .753,
   },
   powerups: {
-    width: screenWidth * .767 / 3.6,
+    width: screenWidth * .767 / 4.6,
     aspectRatio: .767 / .753,
-    marginTop: screenWidth * .117 / 3.6,
+    marginTop: screenWidth * .117 / 4.6,
   },
   mine: {
-    width: screenWidth * 1.317 / 3.6,
+    width: screenWidth * 1.317 / 4.6,
     aspectRatio: 1.317 / 3.047,
-    marginLeft: screenWidth * .150 / 3.6,
+    marginLeft: screenWidth * .150 / 4.6,
+    marginTop: screenHeight - 550,
   },
   mineImage: {
     flex: 1,
-    width: screenWidth * 1.317 / 3.6,
+    width: screenWidth * 1.317 / 4.6,
     aspectRatio: 1.317 / 3.047,
     justifyContent: 'center',
     alignItems: 'center'
@@ -605,37 +611,42 @@ let styles = StyleSheet.create({
     flexDirection: "column",
   },
   playnow: {
-    width: screenWidth * 1.787 / 3.6,
+    width: screenWidth * 1.787 / 4.6,
     aspectRatio: 1.787 / .612,
-    marginLeft: screenWidth * .147 / 3.6,
-    marginTop: screenWidth * .250 / 3.6,
+    marginLeft: screenWidth * .147 / 0.63,
+    marginTop: screenHeight * .250 / 10,
+    // position: 'absolute',
+    // top: 0,
+    // right: -70,
   },
   playnowImage: {
     flex: 1,
-    width: screenWidth * 1.787 / 3.6,
+    width: screenWidth * 1.787 / 4.6,
     aspectRatio: 1.787 / .612,
     justifyContent: 'center',
     alignItems: 'center'
   },
   snakeCart: {
-    marginTop: screenWidth * .200 / 3.6,
-    width: screenWidth * 1.950 / 3.6,
+    marginTop: screenHeight - 580,
+    marginLeft: screenHeight * .200 / 2,
+    width: screenWidth * 1.950 / 4.6,
     aspectRatio: 606 / 702,
   },
   gototownButton: {
-    marginTop: -screenWidth * .350 / 3.6,
-    width: screenWidth * 1.950 / 3.6,
+    marginTop: -screenWidth * .350 / 4.6,
+    marginLeft: screenHeight * .200 / 2,
+    width: screenWidth * 1.950 / 4.6,
     aspectRatio: 502 / 168,
     justifyContent: 'center',
     alignItems: 'center'
   },
   gototown: {
-    width: screenWidth * .950 / 3.6,
+    width: screenWidth * .950 / 4.6,
     aspectRatio: 316 / 62,
   },
   gototownText: {
     color: "#fab523",
-    fontSize: normalize(14),
+    fontSize: normalize(12),
     textShadowColor: 'rgba(0, 0, 0, 1.00)',
     textShadowOffset: {width: -1, height: 1},
     textShadowRadius: 1,
@@ -643,7 +654,7 @@ let styles = StyleSheet.create({
   playnowText: {
     //color: "#fab523",
     color: "#FEF75D",
-    fontSize: normalize(24),
+    fontSize: normalize(20),
     textShadowColor: 'rgba(0, 0, 0, 1.00)',
     textShadowOffset: {width: -2, height: 2},
     textShadowRadius: 1,
