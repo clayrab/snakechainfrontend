@@ -16,15 +16,22 @@ const GameTypeItem = props => (
 
       <Text style={[styles.gameTypeTitle, props.fontStyle]}>{props.title}</Text>
 
-      <Image source={require("../assets/selectlevel/gameTypePreview.png")}
+      <Image source={props.preview}
              style={styles.gameTypePreview}
              resizeMode={'contain'}/>
 
       <ImageBackground source={require("../assets/selectlevel/gameTypeValue.png")}
                        style={styles.gameTypeValueContainer} resizeMode={'contain'}>
-        <Text style={[styles.gameTypeValueText, props.fontStyle]}>0.01 ETH</Text>
+        <Text style={[styles.gameTypeValueText, props.fontStyle, props.valueStyle]}>{props.value}</Text>
       </ImageBackground>
 
+    </ImageBackground>
+
+    <ImageBackground source={require('../assets/snakemine/textPart.png')}
+                     style={[styles.scTitleBG]} resizeMode={'stretch'}>
+      <Text style={[props.fontStyle, styles.avgTitleText]}>
+        AVG. 22 SNAKECHAIN
+      </Text>
     </ImageBackground>
   </TouchableOpacity>
 );
@@ -221,34 +228,48 @@ export default class SelectLevel extends React.Component {
 
                 <View style={styles.gameTypeRow}>
                   <GameTypeItem
+                    preview={require('../assets/snakemine/sc1.png')}
                     fontStyle={this.state.riffic}
                     title={"NO MULTIPLAYER"}
-                    value={"0.01 ETH"}/>
-                  <GameTypeItem
-
-                    fontStyle={this.state.riffic}
-                    title={"NO MULTIPLAYER"}
-                    value={"0.01 ETH"}/>
+                    value={"FREE"}
+                    valueStyle={{color: "#51B545"}}
+                  />
                 </View>
-                <View style={styles.gameTypeRow}>
-                  <GameTypeItem
-                    fontStyle={this.state.riffic}
-                    title={"NO MULTIPLAYER"}
-                    value={"0.01 ETH"}/>
-                  <GameTypeItem
-                    fontStyle={this.state.riffic}
-                    title={"NO MULTIPLAYER"}
-                    value={"0.01 ETH"}/>
-                </View>
-                <View style={styles.gameTypeRow}>
-                  <GameTypeItem
-                    fontStyle={this.state.riffic}
-                    title={"NO MULTIPLAYER"}
-                    value={"0.01 ETH"}/>
-                  <GameTypeItem
-                    fontStyle={this.state.riffic}
-                    title={"NO MULTIPLAYER"}
-                    value={"0.01 ETH"}/>
+                <View style={{position: 'relative'}}>
+                  <View style={styles.tntToUnlockContainer}>
+                    <TouchableOpacity onPress={() => null}>
+                      <ImageBackground source={require('../assets/snakemine/textPart.png')}
+                                       style={styles.dynamiteTextBG} resizeMode={'stretch'}>
+                        <Text style={[this.state.riffic, styles.dynamiteText]}>
+                          USE <Text style={[this.state.riffic, styles.dynamiteText2]}>TNT</Text> TO UNLOCK
+                        </Text>
+                      </ImageBackground>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={styles.gameTypeRow}>
+                    <GameTypeItem
+                      preview={require('../assets/snakemine/sc2.png')}
+                      fontStyle={this.state.riffic}
+                      title={"NO MULTIPLAYER"}
+                      value={"0.01 ETH"}/>
+                    <GameTypeItem
+                      preview={require('../assets/snakemine/sc3.png')}
+                      fontStyle={this.state.riffic}
+                      title={"NO MULTIPLAYER"}
+                      value={"100 SNAKE"}/>
+                  </View>
+                  <View style={styles.gameTypeRow}>
+                    <GameTypeItem
+                      preview={require('../assets/snakemine/sc4.png')}
+                      fontStyle={this.state.riffic}
+                      title={"NO MULTIPLAYER"}
+                      value={"0.1 ETH"}/>
+                    <GameTypeItem
+                      preview={require('../assets/snakemine/sc5.png')}
+                      fontStyle={this.state.riffic}
+                      title={"NO MULTIPLAYER"}
+                      value={"100 SNAKE"}/>
+                  </View>
                 </View>
               </ScrollView>
             </ImageBackground>
@@ -362,6 +383,7 @@ let styles = StyleSheet.create({
   gameTypePreview: {
     width: screenWidth * 0.3,
     height: screenWidth * 0.3,
+    resizeMode: 'contain',
   },
   gameTypeTitle: {
     marginBottom: 2,
@@ -413,5 +435,45 @@ let styles = StyleSheet.create({
   weaponCount: {
     fontSize: normalize(18)
   },
+  scTitleBG: {
+    width: '100%',
+    height: 30,
+    marginTop: 2,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  avgTitleText: {
+    color: "#FAB523",
+    fontSize: normalize(10),
+    fontWeight: 'bold'
+  },
 
+  tntToUnlockContainer: {
+    position: 'absolute',
+    zIndex: 100,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  dynamiteTextBG: {
+    //width: "80%",
+    //aspectRatio: 590/164,
+
+    padding: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  dynamiteText: {
+    color: "#fab523",
+    fontSize: normalize(14),
+    fontWeight: 'bold'
+  },
+  dynamiteText2: {
+    color: "#C22126",
+    fontSize: normalize(14),
+    fontWeight: 'bold'
+  }
 });
