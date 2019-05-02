@@ -57,7 +57,7 @@ const Description = props => (
   </View>
 );
 
-const LevelNavigator = props => (
+const SnakeNavigator = props => (
   <ImageBackground source={require('../assets/selectlevel/transparent_bg.png')}
                    style={styles.transparentImage}>
 
@@ -76,77 +76,11 @@ const LevelNavigator = props => (
   </ImageBackground>
 );
 
-const levels = ["TRADITIONAL", "SUPER_SNAKE", "SNAKE_RUSH"];
-const levelsData = {
-  "TRADITIONAL": {
-    name: "TRADITIONAL",
-    description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod",
-    background: {
-      top: require("../assets/selectlevel/levels/traditional/background_top.png"),
-      bottom: require("../assets/selectlevel/levels/traditional/bottom.png"),
-    },
-    snake: require('../assets/selectlevel/levels/traditional/snake.png'),
-    style: {
-      snakeImageView: {
-        left: screenWidth * 0.07,
-        bottom: screenWidth * 0.32
-      },
-      snakeImage: {
-        width: screenWidth * 0.52,
-        height: screenWidth * 0.36,
-      }
-    },
-    weapon: require('../assets/selectlevel/levels/traditional/weapon.png'),
-  },
-  "SUPER_SNAKE": {
-    name: "SUPER SNAKE",
-    description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod",
-    background: {
-      top: require("../assets/selectlevel/levels/super_snake/background_top.png"),
-      bottom: require("../assets/selectlevel/levels/super_snake/bottom.png"),
-    },
-    style: {
-      snakeImageView: {
-        left: screenWidth * 0.2,
-        bottom: screenWidth * 0.27
-      },
-      snakeImage: {
-        width: screenWidth * 0.38,
-        height: screenWidth * 0.5
-      }
-    },
-    snake: require('../assets/selectlevel/levels/super_snake/snake.png'),
-    weapon: require('../assets/selectlevel/levels/super_snake/weapon.png'),
-  },
-  "SNAKE_RUSH": {
-    name: "SNAKE RUSH",
-    description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod",
-    background: {
-      top: require("../assets/selectlevel/levels/snake_rush/background_top.png"),
-      bottom: require("../assets/selectlevel/levels/snake_rush/bottom.png"),
-    },
-    style: {
-      snakeImageView: {
-        left: screenWidth * 0.1,
-        bottom: screenWidth * 0.36
-      },
-      snakeImage: {
-        width: screenWidth * 0.4,
-        height: screenWidth * 0.45
-      }
-    },
-    snake: require('../assets/selectlevel/levels/snake_rush/snake.png'),
-    weapon: require('../assets/selectlevel/levels/snake_rush/weapon.png'),
-  },
-};
-
 export default class SelectLevel extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       riffic: {},
-      levelIndex: 0,
-      level: levelsData[levels[0]]
     };
   }
 
@@ -161,26 +95,8 @@ export default class SelectLevel extends React.Component {
     });
   }
 
-  previousLevel = () => {
-    let {levelIndex} = this.state;
-    levelIndex--;
-    this.setState({
-      levelIndex,
-      level: levelsData[levels[levelIndex]]
-    })
-  };
-
-  nextLevel = () => {
-    let {levelIndex} = this.state;
-    levelIndex++;
-    this.setState({
-      levelIndex,
-      level: levelsData[levels[levelIndex]]
-    })
-  };
-
   render() {
-    const {levelIndex, level} = this.state;
+    const {snakes, snakeIndex, currentSnake, onPreviousSnake, onNextSnake} = this.props;
     return (
       <ScreenView style={styles.container}>
 
@@ -191,36 +107,36 @@ export default class SelectLevel extends React.Component {
                 style={styles.header}
                 onWallet={this.props.onWallet}/>
 
-        <LevelNavigator
+        <SnakeNavigator
           fontStyle={this.state.riffic}
-          level={level}
-          onPrevious={this.previousLevel}
-          onNext={this.nextLevel}
-          hasNext={levelIndex !== levels.length - 1}
-          hasPrevious={levelIndex !== 0}
+          level={currentSnake}
+          onPrevious={onPreviousSnake}
+          onNext={onNextSnake}
+          hasNext={snakeIndex !== snakes.length - 1}
+          hasPrevious={snakeIndex !== 0}
         />
 
         <ScrollView style={styles.scrollView}>
 
-          <ImageBackground source={level.background.top}
+          <ImageBackground source={currentSnake.background.top}
                            resizeMode={'cover'}
                            style={styles.backgroundImage}>
 
-            <View style={[styles.snakeImageView, level.style.snakeImageView]}>
-              <Image source={level.snake}
-                     style={[styles.snakeImage, level.style.snakeImage]}/>
+            <View style={[styles.snakeImageView, currentSnake.style.snakeImageView]}>
+              <Image source={currentSnake.snake}
+                     style={[styles.snakeImage, currentSnake.style.snakeImage]}/>
             </View>
 
             <Description fontStyle={this.state.riffic}
-                         text={level.description}/>
+                         text={currentSnake.description}/>
 
-            <Weapon fontStyle={this.state.riffic} weapon={level.weapon}/>
+            <Weapon fontStyle={this.state.riffic} weapon={currentSnake.weapon}/>
 
           </ImageBackground>
 
           <View style={styles.gameTypes}>
 
-            <ImageBackground source={level.background.bottom}
+            <ImageBackground source={currentSnake.background.bottom}
                              resizeMode={'cover'}
                              style={styles.gameTypesBackground}>
 
