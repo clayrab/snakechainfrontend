@@ -438,7 +438,7 @@ export default class Homepage extends React.Component {
                 {this.state.loading ? null :
                   <ImageBackground style={styles.mineImage} source={mineImg}>
                     <Text style={[mineTextColorStyle, styles.mineText, this.state.riffic, mineTextColorStyle]}>
-                      {minePercent}%
+                      {minePercent}% 
                     </Text>
                   </ImageBackground>
                 }
@@ -538,7 +538,8 @@ export default class Homepage extends React.Component {
 
 let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
-
+let diff = screenHeight/screenWidth;
+let test = screenWidth * .200 / 1;
 let titleBarHeight = screenWidth * .757 / 3.6;
 
 
@@ -567,34 +568,34 @@ let styles = StyleSheet.create({
     width: "100%",
   },
   snakechain: {
-    width: screenWidth * 1.65 / 4.6,
+    width: (diff > 1.8 ) ? (screenWidth * 1.65 / 3.6) : (screenWidth * 1.65/3.6),
     aspectRatio: 1.65 / .917,
-    marginLeft: screenWidth * .303 / 4.6,
+    marginLeft: (diff > 1.8 ) ? (screenWidth * .303 / 3.6) : (screenWidth * .303 / 4.6),
   },
   iconsHolder: {
-    marginLeft: screenWidth * .577 / 1.6,
+    marginLeft: (diff > 1.8 ) ? (screenWidth * .577 / 3.6) : (screenWidth * .577 / 2.6),
     flexDirection: "column",
   },
   town: {
-    // width: screenWidth*.860/4.6,
+    // width: screenWidth*.860/3.6,
     // aspectRatio: .860/.750,
-    width: screenWidth * .767 / 4.6,
+    width: (diff > 1.8 ) ? (screenWidth * .767 / 3.6) : (screenWidth * .767 / 4.6),
     aspectRatio: .767 / .753,
   },
   powerups: {
-    width: screenWidth * .767 / 4.6,
+    width: (diff > 1.8 ) ? (screenWidth * .767 / 3.6) : (screenWidth * .767 / 4.6),
     aspectRatio: .767 / .753,
-    marginTop: screenWidth * .117 / 4.6,
+    marginTop: (diff > 1.8 ) ? (screenWidth * .117 / 3.6) : (screenWidth * .117 / 4.6),
   },
   mine: {
-    width: screenWidth * 1.317 / 4.6,
+    width: (diff > 1.8 ) ? (screenWidth * 1.317 / 3.6) : (screenWidth * 1.317 / 3.6),
     aspectRatio: 1.317 / 3.047,
-    marginLeft: screenWidth * .150 / 4.6,
-    marginTop: screenHeight - 550,
+    marginLeft: (diff > 1.8 ) ? (screenWidth * .150 / 3.6) : (screenWidth * .150 / 4.6),
+    marginTop: (diff > 1.8 ) ? (screenHeight - 650) : (screenHeight - 600),
   },
   mineImage: {
     flex: 1,
-    width: screenWidth * 1.317 / 4.6,
+    width: (diff > 1.8 ) ? (screenWidth * 1.317 / 3.6) : (screenWidth * 1.317 / 3.6),
     aspectRatio: 1.317 / 3.047,
     justifyContent: 'center',
     alignItems: 'center'
@@ -611,9 +612,9 @@ let styles = StyleSheet.create({
     flexDirection: "column",
   },
   playnow: {
-    width: screenWidth * 1.787 / 4.6,
+    width: (diff > 1.8 ) ? (screenWidth * 1.787 / 3.6) : (screenWidth * 1.787 / 4.2),
     aspectRatio: 1.787 / .612,
-    marginLeft: screenWidth * .147 / 0.63,
+    marginLeft: (diff > 1.8 ) ? (screenWidth * .147 / 3.6) : (screenWidth * .147 / 1.6),
     marginTop: screenHeight * .250 / 10,
     // position: 'absolute',
     // top: 0,
@@ -621,27 +622,27 @@ let styles = StyleSheet.create({
   },
   playnowImage: {
     flex: 1,
-    width: screenWidth * 1.787 / 4.6,
+    width: (diff > 1.8 ) ? (screenWidth * 1.787 / 3.6) : (screenWidth * 1.787 / 4.2),
     aspectRatio: 1.787 / .612,
     justifyContent: 'center',
     alignItems: 'center'
   },
   snakeCart: {
-    marginTop: screenHeight - 580,
-    marginLeft: screenHeight * .200 / 2,
-    width: screenWidth * 1.950 / 4.6,
+    marginTop: (diff > 1.8 ) ? (screenHeight - 700) : (screenHeight - 600),
+    marginLeft: (diff > 1.8 ) ? (screenWidth * .200 / 5) : (screenWidth * .200 / 3),
+    width: (diff > 1.8 ) ? (screenWidth * 1.950 / 3.6) : (screenWidth * 1.950 / 4.2),
     aspectRatio: 606 / 702,
   },
   gototownButton: {
-    marginTop: -screenWidth * .350 / 4.6,
-    marginLeft: screenHeight * .200 / 2,
-    width: screenWidth * 1.950 / 4.6,
+    marginTop: (diff > 1.8 ) ? (-screenWidth * .350 / 3.6) : (-screenWidth * .350 / 4.6),
+    marginLeft: (diff > 1.8 ) ? (screenWidth * .200 / 5) : (screenWidth * .200 / 3),
+    width: (diff > 1.8 ) ? (screenWidth * 1.950 / 3.6) : (screenWidth * 1.950 / 4.2),
     aspectRatio: 502 / 168,
     justifyContent: 'center',
     alignItems: 'center'
   },
   gototown: {
-    width: screenWidth * .950 / 4.6,
+    width: (diff > 1.8 ) ? (screenWidth * .950 / 3.6) : (screenWidth * .950 / 4.2),
     aspectRatio: 316 / 62,
   },
   gototownText: {
