@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "snek",
+    "scheme": "snakechain",
     "description": "The Crypto Game",
     "slug": "snek",
     "privacy": "unlisted",

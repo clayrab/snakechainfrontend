@@ -1,4 +1,5 @@
 import React from 'react';
+import {Linking} from 'react-native';
 import {Loop, Stage, World, Body, Sprite} from 'react-game-kit/native';
 import SocketIOClient from 'socket.io-client';
 
@@ -150,6 +151,19 @@ export default class App extends React.Component {
       console.log(err)
       this.genericNetworkError();
     }
+    Linking.addEventListener('url', (event) => {
+      console.log("Linking.addEventListener");
+      console.log(event.url);
+      // alert("Linking.addEventListener")
+      // alert(event.url)
+    });
+    Linking.getInitialURL().then((url) => {
+      // alert("getInitialURL")
+      // alert(url)
+      if (url) {
+        console.log('Initial url is: ' + url);
+      }
+    }).catch(err => console.error('An error occurred', err));
   }
 
   genericNetworkError = () => {
