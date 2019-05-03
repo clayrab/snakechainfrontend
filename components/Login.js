@@ -6,7 +6,8 @@ import {
   View,
   ImageBackground,
   Image,
-  TextInput
+  TextInput,
+  Platform
 } from 'react-native';
 import ScreenView from '../components/ScreenView.js';
 import {Font} from 'expo';
