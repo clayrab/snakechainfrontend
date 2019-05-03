@@ -37,6 +37,7 @@ import PurchasedTicket from './components/PurchasedTicket.js';
 import Success from './components/Success.js';
 import Fail from './components/Fail.js';
 import SelectLevel from "./components/SelectLevel";
+import SelectLevelOverlay from "./components/Homepage";
 
 // components/ChangePassword.js
 // components/EditProfile.js
@@ -564,6 +565,7 @@ export default class App extends React.Component {
           onPreviousSnake={this.onPreviousSnake}
           onNextSnake={this.onNextSnake}
 
+          onSelectLevel={this.onSelectLevel}
           user={this.state.user}
           onWallet={this.onWallet}
           exit={this.backToHomepage}

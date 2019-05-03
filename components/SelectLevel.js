@@ -10,7 +10,7 @@ let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
 
 const GameTypeItem = props => (
-  <TouchableOpacity style={styles.gameTypeItem}>
+  <TouchableOpacity style={styles.gameTypeItem} onPress={props.onPress}>
     <ImageBackground source={require('../assets/selectlevel/gameTypeItemBackground.png')}
                      style={styles.gameTypeImage} resizeMode={'contain'}>
 
@@ -148,30 +148,33 @@ export default class SelectLevel extends React.Component {
                     fontStyle={this.state.riffic}
                     title={"NO MULTIPLAYER"}
                     value={"FREE"}
+                    onPress={this.props.onSelectLevel}
                     valueStyle={{color: "#51B545"}}
                   />
                 </View>
                 <View style={{position: 'relative'}}>
-                  <View style={styles.tntToUnlockContainer}>
-                    <TouchableOpacity onPress={() => null}>
-                      <ImageBackground source={require('../assets/snakemine/textPart.png')}
-                                       style={styles.dynamiteTextBG} resizeMode={'stretch'}>
-                        <Text style={[this.state.riffic, styles.dynamiteText]}>
-                          USE <Text style={[this.state.riffic, styles.dynamiteText2]}>TNT</Text> TO UNLOCK
-                        </Text>
-                      </ImageBackground>
-                    </TouchableOpacity>
-                  </View>
+                  {/*<View style={styles.tntToUnlockContainer}>*/}
+                    {/*<TouchableOpacity onPress={() => null}>*/}
+                      {/*<ImageBackground source={require('../assets/snakemine/textPart.png')}*/}
+                                       {/*style={styles.dynamiteTextBG} resizeMode={'stretch'}>*/}
+                        {/*<Text style={[this.state.riffic, styles.dynamiteText]}>*/}
+                          {/*USE <Text style={[this.state.riffic, styles.dynamiteText2]}>TNT</Text> TO UNLOCK*/}
+                        {/*</Text>*/}
+                      {/*</ImageBackground>*/}
+                    {/*</TouchableOpacity>*/}
+                  {/*</View>*/}
                   <View style={styles.gameTypeRow}>
                     <GameTypeItem
                       preview={require('../assets/snakemine/sc2.png')}
                       fontStyle={this.state.riffic}
                       title={"NO MULTIPLAYER"}
+                      onPress={this.props.onSelectLevel}
                       value={"0.01 ETH"}/>
                     <GameTypeItem
                       preview={require('../assets/snakemine/sc3.png')}
                       fontStyle={this.state.riffic}
                       title={"NO MULTIPLAYER"}
+                      onPress={this.props.onSelectLevel}
                       value={"100 SNAKE"}/>
                   </View>
                   <View style={styles.gameTypeRow}>
@@ -179,11 +182,13 @@ export default class SelectLevel extends React.Component {
                       preview={require('../assets/snakemine/sc4.png')}
                       fontStyle={this.state.riffic}
                       title={"NO MULTIPLAYER"}
+                      onPress={this.props.onSelectLevel}
                       value={"0.1 ETH"}/>
                     <GameTypeItem
                       preview={require('../assets/snakemine/sc5.png')}
                       fontStyle={this.state.riffic}
                       title={"NO MULTIPLAYER"}
+                      onPress={this.props.onSelectLevel}
                       value={"100 SNAKE"}/>
                   </View>
                 </View>
