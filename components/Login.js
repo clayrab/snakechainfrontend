@@ -140,7 +140,37 @@ export default class Login extends React.Component {
       this.setState({loading: false});
     }
   }
-
+  doGoogleOauth = async() => {
+    // iOS Client ID:620503403501-k6v8ghht8dr639uhhjr8gpk4p9iogbq2.apps.googleusercontent.com
+    // Web Client ID:620503403501-5a09pm3ih5l3o6s6o4vecj6ftg9teh2p.apps.googleusercontent.com
+    // Android Client ID:620503403501-os62lfr7up8q48cpklcvlihd1annvpoi.apps.googleusercontent.com
+    console.log("doGoogleOauth")
+    const config = {
+      issuer: 'https://accounts.google.com',
+      //clientId: '620503403501-os62lfr7up8q48cpklcvlihd1annvpoi.apps.googleusercontent.com',
+      scopes: ['profile', 'email', 'openid'],
+    };
+    if(Platform.OS === 'android'){
+      config.clientId = '620503403501-os62lfr7up8q48cpklcvlihd1annvpoi.apps.googleusercontent.com';
+    } else if(Platform.OS === 'ios'){
+      config.clientId = '620503403501-k6v8ghht8dr639uhhjr8gpk4p9iogbq2.apps.googleusercontent.com';
+    } else {
+      alert("Unsupported platform");
+      return;
+    }
+    console.log(config)
+    const tokenResponse = await AppAuth.authAsync(config);
+  }
+  doFacebookOauth = async() => {
+    console.log("doFacebookOauth")
+    const config = {
+      issuer: 'https://accounts.google.com',
+      clientId: '????',
+      scopes: ['openid'],
+    };
+    console.log(config)
+    const tokenResponse = await AppAuth.authAsync(config);
+  }
   render() {
     if (this.state.loading) {
       return (
@@ -193,6 +223,13 @@ export default class Login extends React.Component {
                 <ImageBackground source={require('../assets/login/button.png')}
                                  style={[styles.loginButton, styles.passwordInput]} resizeMode="stretch">
                   <Text style={[styles.loginText, this.state.buttonDynamicStyle]}>LOGIN</Text>
+                </ImageBackground>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={this.doGoogleOauth}>
+                <ImageBackground source={require('../assets/login/button.png')}
+                                 style={[styles.loginButton, styles.passwordInput]} resizeMode="stretch">
+                  <Text style={[styles.loginText, this.state.buttonDynamicStyle]}>GOOGLE LOGIN</Text>
                 </ImageBackground>
               </TouchableOpacity>
               {/*<View style={styles.rememberView}>
