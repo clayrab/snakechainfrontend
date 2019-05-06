@@ -94,6 +94,12 @@ export default class SelectLevel extends React.Component {
       }
     });
   }
+  makeFnOnSelectLevel = (level) => {
+    let onSelectLevel = () => {
+      this.props.onSelectLevel(level, this.props.currentSnake.name);
+    }
+    return onSelectLevel;
+  }
 
   render() {
     const {snakes, snakeIndex, currentSnake, onPreviousSnake, onNextSnake} = this.props;
@@ -148,7 +154,7 @@ export default class SelectLevel extends React.Component {
                     fontStyle={this.state.riffic}
                     title={"NO MULTIPLAYER"}
                     value={"FREE"}
-                    onPress={this.props.onSelectLevel}
+                    onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.FREE)}
                     valueStyle={{color: "#51B545"}}
                   />
                 </View>
@@ -168,13 +174,13 @@ export default class SelectLevel extends React.Component {
                       preview={require('../assets/snakemine/sc2.png')}
                       fontStyle={this.state.riffic}
                       title={"NO MULTIPLAYER"}
-                      onPress={this.props.onSelectLevel}
+                      onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.SCATTER1)}
                       value={"0.01 ETH"}/>
                     <GameTypeItem
                       preview={require('../assets/snakemine/sc3.png')}
                       fontStyle={this.state.riffic}
                       title={"NO MULTIPLAYER"}
-                      onPress={this.props.onSelectLevel}
+                      onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BLOCK1)}
                       value={"100 SNAKE"}/>
                   </View>
                   <View style={styles.gameTypeRow}>
@@ -182,13 +188,13 @@ export default class SelectLevel extends React.Component {
                       preview={require('../assets/snakemine/sc4.png')}
                       fontStyle={this.state.riffic}
                       title={"NO MULTIPLAYER"}
-                      onPress={this.props.onSelectLevel}
+                      onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.SCATTER2)}
                       value={"0.1 ETH"}/>
                     <GameTypeItem
                       preview={require('../assets/snakemine/sc5.png')}
                       fontStyle={this.state.riffic}
                       title={"NO MULTIPLAYER"}
-                      onPress={this.props.onSelectLevel}
+                      onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BLOCK2)}
                       value={"100 SNAKE"}/>
                   </View>
                 </View>

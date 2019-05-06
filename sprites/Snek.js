@@ -33,6 +33,7 @@ export default class Snek extends Sprite {
       // baseScore: 0,
       // multiplier: 1,
       score: 0,
+      pelletCount: 0,
       pelletLocation: null,
       redPelletLocation: null,
       pelletRot: new Animated.Value(0),
@@ -58,7 +59,6 @@ export default class Snek extends Sprite {
       toValue: 1,
       duration: 2000,
     });
-
   }
 
   async componentWillMount() {
@@ -132,6 +132,7 @@ export default class Snek extends Sprite {
     //startState.baseScore = this.defaultState.baseScore;
     //startState.multiplier = this.defaultState.multiplier;
     startState.score = this.defaultState.score;
+    startState.pelletCount = this.defaultState.pelletCount;
     startState.alive = this.defaultState.alive;
     startState.tail = this.makeTail(5, this.defaultState.boardX, this.defaultState.boardY);
     startState.tailIndex = 4;
@@ -475,7 +476,7 @@ export default class Snek extends Sprite {
       this.growTail();
     }
     this.placePellet();
-    this.setState({score: this.state.score + (CONSTANTS.PELLETMULT * growLength)});
+    this.setState({score: this.state.score + (CONSTANTS.PELLETMULT * growLength), pelletCount: this.state.pelletCount + 1});
   }
   makeNewBoard = () => {
     let board = [];
@@ -711,7 +712,11 @@ export default class Snek extends Sprite {
         if (this.lastFrameTime == null) { //first frame
           var speed = 0;
         } else {
-          var speed = CONSTANTS.SNEKSPEED * (now - this.lastFrameTime) * this.state.speedEffector;
+          let rushEffect = 1.0;
+          if(this.props.mode === "SNAKE RUSH"){
+            rushEffect += this.state.pelletCount/10.0;
+          }
+          var speed = CONSTANTS.SNEKSPEED * (now - this.lastFrameTime) * this.state.speedEffector * rushEffect;
         }
         this.lastFrameTime = now;
         if (this.state.direction == CONSTANTS.DPADSTATES.UP) {

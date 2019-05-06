@@ -156,6 +156,8 @@ export default class App extends React.Component {
       running: false,
       screen: screens.LOGIN,
       overlay: overlays.STARTGAME,
+      level: 0,
+      mode: "",
       pressedButton: CONSTANTS.DPADSTATES.UP,
       toggleReset: true,
       lastScore: -1,
@@ -184,7 +186,6 @@ export default class App extends React.Component {
       loadingUser: true,
       errorTitle: "",
       errorParagraph: "",
-
       currentSnakeIndex: 0,
       currentSnake: snakesData[snakes[0]],
 
@@ -473,8 +474,8 @@ export default class App extends React.Component {
   onCancelConfirmExit = () => {
     this.setState({overlay: overlays.PAUSE});
   }
-  onSelectLevel = (levelNumber) => {
-    this.setState({screen: screens.GAME, level: levelNumber});
+  onSelectLevel = (levelNumber, mode) => {
+    this.setState({screen: screens.GAME, level: levelNumber, mode: mode});
   }
 
   onSelectLevelPlayPress() {
@@ -619,7 +620,8 @@ export default class App extends React.Component {
               hideCowOverlay={this.hideCowOverlay}
               loading={this.state.loadingUser}
               user={this.state.user}
-              level={this.state.level}>
+              level={this.state.level}
+              mode={this.state.mode}>
             </Snek>
           </Loop>
           <PauseOverlay
