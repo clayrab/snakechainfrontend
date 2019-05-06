@@ -57,7 +57,8 @@ export default class Header extends React.Component {
       }
     }
     return (
-      <ImageBackground source={require('../assets/homepage/titleback.png')} style={styles.titleBar}>
+      <ImageBackground source={require('../assets/homepage/titleback.png')}
+                       style={[styles.titleBar, this.props.style]}>
         {this.props.hasBackButton ?
           <TouchableOpacity onPress={this.props.exit} style={styles.backButtonTouchable}>
             <ImageBackground source={require('../assets/backbutton.png')} style={styles.backButtonIcon}/>

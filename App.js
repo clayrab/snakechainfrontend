@@ -36,6 +36,8 @@ import ViewSponsor from './components/ViewSponsor.js';
 import PurchasedTicket from './components/PurchasedTicket.js';
 import Success from './components/Success.js';
 import Fail from './components/Fail.js';
+import SelectLevel from "./components/SelectLevel";
+import SelectLevelOverlay from "./components/Homepage";
 
 // components/ChangePassword.js
 // components/EditProfile.js
@@ -44,6 +46,9 @@ import Fail from './components/Fail.js';
 // components/GameOverview.js
 // components/Paused.js
 // components/ViewSponsor.js
+
+let screenWidth = require('Dimensions').get('window').width;
+let screenHeight = require('Dimensions').get('window').height;
 
 const connectionConfig = {
   jsonp: false,
@@ -56,13 +61,76 @@ const connectionConfig = {
 var screens = {
   "GAME": 0, "HOME": 1, "LOADING": 2, "PREFERENCES": 3, "PROFILE": 4,
   "ACCOUNTHISTORY": 5, "GAMEHISTORY": 6, "LOGIN": 7, "SNAKETOWN": 8, "WALLET": 9,
+  "SELECTLEVEL": 10
 };
 var overlays = {
   "PAUSE": 0, "GAMEOVER": 1, "MINE": 2, "AREYOUSURE": 3, "LOADING": 4,
   "CONFIRMTX": 5, "TRANSACTION": 6, "CONFIRMCONTRACT": 7, "POWERUPS": 8, "STARTGAME": 9,
   "ERROR": 10, "CONFIRMEXIT": 11, "COWOVERLAY": 12
 };
-
+const snakes = ["TRADITIONAL", "SUPER_SNAKE", "SNAKE_RUSH"];
+const snakesData = {
+  "TRADITIONAL": {
+    name: "TRADITIONAL",
+    description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod",
+    background: {
+      top: require("./assets/selectlevel/levels/traditional/background_top.png"),
+      bottom: require("./assets/selectlevel/levels/traditional/bottom.png"),
+    },
+    snake: require('./assets/selectlevel/levels/traditional/snake.png'),
+    style: {
+      snakeImageView: {
+        left: screenWidth * 0.07,
+        bottom: screenWidth * 0.32
+      },
+      snakeImage: {
+        width: screenWidth * 0.52,
+        height: screenWidth * 0.36,
+      }
+    },
+    weapon: require('./assets/selectlevel/levels/traditional/weapon.png'),
+  },
+  "SUPER_SNAKE": {
+    name: "SUPER SNAKE",
+    description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod",
+    background: {
+      top: require("./assets/selectlevel/levels/super_snake/background_top.png"),
+      bottom: require("./assets/selectlevel/levels/super_snake/bottom.png"),
+    },
+    style: {
+      snakeImageView: {
+        left: screenWidth * 0.2,
+        bottom: screenWidth * 0.27
+      },
+      snakeImage: {
+        width: screenWidth * 0.38,
+        height: screenWidth * 0.5
+      }
+    },
+    snake: require('./assets/selectlevel/levels/super_snake/snake.png'),
+    weapon: require('./assets/selectlevel/levels/super_snake/weapon.png'),
+  },
+  "SNAKE_RUSH": {
+    name: "SNAKE RUSH",
+    description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod",
+    background: {
+      top: require("./assets/selectlevel/levels/snake_rush/background_top.png"),
+      bottom: require("./assets/selectlevel/levels/snake_rush/bottom.png"),
+    },
+    style: {
+      snakeImageView: {
+        left: screenWidth * 0.1,
+        bottom: screenWidth * 0.36
+      },
+      snakeImage: {
+        width: screenWidth * 0.4,
+        height: screenWidth * 0.45
+      }
+    },
+    snake: require('./assets/selectlevel/levels/snake_rush/snake.png'),
+    weapon: require('./assets/selectlevel/levels/snake_rush/weapon.png'),
+  },
+};
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -116,6 +184,10 @@ export default class App extends React.Component {
       loadingUser: true,
       errorTitle: "",
       errorParagraph: "",
+
+      currentSnakeIndex: 0,
+      currentSnake: snakesData[snakes[0]],
+
       //powerups: null
     };
     this.loggedIn = this.loggedIn.bind(this);
@@ -441,12 +513,39 @@ export default class App extends React.Component {
     })
   }
 
+  onPlayPress = () => {
+    this.setState({screen: screens.SELECTLEVEL});
+  };
+
+  backToHomepage = () => {
+    this.setState({screen: screens.HOME})
+  };
+
+  onPreviousSnake = () => {
+    let {currentSnakeIndex} = this.state;
+    currentSnakeIndex--;
+    this.setState({
+      currentSnakeIndex,
+      currentSnake: snakesData[snakes[currentSnakeIndex]]
+    })
+  };
+
+  onNextSnake = () => {
+    let {currentSnakeIndex} = this.state;
+    currentSnakeIndex++;
+    this.setState({
+      currentSnakeIndex,
+      currentSnake: snakesData[snakes[currentSnakeIndex]]
+    })
+  };
+
   render() {
     if (this.state.screen == screens.HOME) {
       return (
         <Homepage
           user={this.state.user}
           prices={this.state.prices}
+          onPlayPress={this.onPlayPress}
           onSelectLevel={this.onSelectLevel}
           onGoToTown={this.onGoToTown}
           onWallet={this.onWallet}
@@ -455,6 +554,22 @@ export default class App extends React.Component {
           updatePowerups={this.updatePowerups}
         >
         </Homepage>
+      );
+    } else if (this.state.screen == screens.SELECTLEVEL) {
+      return (
+        <SelectLevel
+          snakes={snakes}
+          snakesData={snakesData}
+          currentSnake={this.state.currentSnake}
+          snakeIndex={this.state.currentSnakeIndex}
+          onPreviousSnake={this.onPreviousSnake}
+          onNextSnake={this.onNextSnake}
+
+          onSelectLevel={this.onSelectLevel}
+          user={this.state.user}
+          onWallet={this.onWallet}
+          exit={this.backToHomepage}
+        />
       );
     } else if (this.state.screen == screens.LOGIN) {
       return (
