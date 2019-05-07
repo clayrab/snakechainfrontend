@@ -467,10 +467,10 @@ export default class Snek extends Sprite {
   eatPellet = async () => {
     await this.playSound(this.sounds.EAT_PELLET_1);
     let growLength = 0;
-    let score = this.state.score;
-    while(score >= 0 && growLength < 5){
+    let scoreCountdown = this.state.score;
+    while(scoreCountdown >= 0 && growLength < 5){
       growLength++;
-      score = score - (10 * CONSTANTS.PELLETMULT);
+      scoreCountdown = scoreCountdown - (10 * CONSTANTS.PELLETMULT);
     }
     for (let i = 0; i < growLength; i++) {
       this.growTail();

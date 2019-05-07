@@ -94,8 +94,8 @@ const snakesData = {
     name: "SUPER SNAKE",
     description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod",
     background: {
-      top: require("./assets/selectlevel/levels/super_snake/background_top.png"),
-      bottom: require("./assets/selectlevel/levels/super_snake/bottom.png"),
+      top: require("./assets/selectlevel/levels/snake_rush/background_top.png"),
+      bottom: require("./assets/selectlevel/levels/snake_rush/bottom.png"),
     },
     style: {
       snakeImageView: {
@@ -114,8 +114,8 @@ const snakesData = {
     name: "SNAKE RUSH",
     description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod",
     background: {
-      top: require("./assets/selectlevel/levels/snake_rush/background_top.png"),
-      bottom: require("./assets/selectlevel/levels/snake_rush/bottom.png"),
+      top: require("./assets/selectlevel/levels/super_snake/background_top.png"),
+      bottom: require("./assets/selectlevel/levels/super_snake/bottom.png"),
     },
     style: {
       snakeImageView: {
