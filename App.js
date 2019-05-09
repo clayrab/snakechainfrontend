@@ -36,8 +36,12 @@ import ViewSponsor from './components/ViewSponsor.js';
 import PurchasedTicket from './components/PurchasedTicket.js';
 import Success from './components/Success.js';
 import Fail from './components/Fail.js';
+<<<<<<< HEAD
 import SelectLevel from "./components/SelectLevel";
 import SelectLevelOverlay from "./components/Homepage";
+=======
+import SuccessOverlay from "./components/SuccessOverlay";
+>>>>>>> signupBranch
 
 // components/ChangePassword.js
 // components/EditProfile.js
@@ -61,11 +65,16 @@ const connectionConfig = {
 var screens = {
   "GAME": 0, "HOME": 1, "LOADING": 2, "PREFERENCES": 3, "PROFILE": 4,
   "ACCOUNTHISTORY": 5, "GAMEHISTORY": 6, "LOGIN": 7, "SNAKETOWN": 8, "WALLET": 9,
+<<<<<<< HEAD
   "SELECTLEVEL": 10
+=======
+  "SIGNUP": 10
+>>>>>>> signupBranch
 };
 var overlays = {
   "PAUSE": 0, "GAMEOVER": 1, "MINE": 2, "AREYOUSURE": 3, "LOADING": 4,
   "CONFIRMTX": 5, "TRANSACTION": 6, "CONFIRMCONTRACT": 7, "POWERUPS": 8, "STARTGAME": 9,
+<<<<<<< HEAD
   "ERROR": 10, "CONFIRMEXIT": 11, "COWOVERLAY": 12
 };
 const snakes = ["TRADITIONAL", "SUPER_SNAKE", "SNAKE_RUSH"];
@@ -130,6 +139,9 @@ const snakesData = {
     snake: require('./assets/selectlevel/levels/snake_rush/snake.png'),
     weapon: require('./assets/selectlevel/levels/snake_rush/weapon.png'),
   },
+=======
+  "ERROR": 10, "CONFIRMEXIT": 11, "SUCCESS": 12
+>>>>>>> signupBranch
 };
 export default class App extends React.Component {
   constructor(props) {
@@ -155,9 +167,13 @@ export default class App extends React.Component {
       },
       running: false,
       screen: screens.LOGIN,
+<<<<<<< HEAD
       overlay: overlays.STARTGAME,
       level: 0,
       mode: "",
+=======
+      overlay: overlays.SUCCESS,
+>>>>>>> signupBranch
       pressedButton: CONSTANTS.DPADSTATES.UP,
       toggleReset: true,
       lastScore: -1,
@@ -200,6 +216,9 @@ export default class App extends React.Component {
     this.onDoContract = this.onDoContract.bind(this);
     this.gameOverDoContract = this.gameOverDoContract.bind(this);
     this.onConfirmTxOk = this.onConfirmTxOk.bind(this);
+    this.onSignUp = this.onSignUp.bind(this);
+    this.onLogin = this.onLogin.bind(this);
+    this.signedUp = this.signedUp.bind(this);
   }
 
   async componentDidMount() {
@@ -477,7 +496,7 @@ export default class App extends React.Component {
   onSelectLevel = (levelNumber, mode) => {
     this.setState({screen: screens.GAME, level: levelNumber, mode: mode});
   }
-
+  
   onSelectLevelPlayPress() {
     this.setState({screen: screens.GAME});
   }
@@ -500,9 +519,22 @@ export default class App extends React.Component {
   onWallet = () => {
     this.setState({screen: screens.WALLET, overlay: -1});
   }
+<<<<<<< HEAD
 
   closeOverlay() {
+=======
+  closeOverlay = () => {
+>>>>>>> signupBranch
     this.setState({running: true, overlay: -1});
+  }
+  onSignUp = () => {
+    this.setState({screen: screens.SIGNUP, overlay: -1});
+  }
+  onLogin = () => {
+    this.setState({screen: screens.LOGIN, overlay: -1});
+  }
+  signedUp = () => {
+    this.setState({screen: screens.LOGIN, overlays: -1});
   }
 
   updatePowerups = powerups => {
@@ -555,6 +587,7 @@ export default class App extends React.Component {
           onWallet={this.onWallet}
           onProfile={this.onProfile}
           doUpdateUser={this.doUpdateUser}
+<<<<<<< HEAD
           updatePowerups={this.updatePowerups}
         >
         </Homepage>
@@ -575,9 +608,14 @@ export default class App extends React.Component {
           exit={this.backToHomepage}
         />
       );
+=======
+        >
+        </Homepage>
+      );
+>>>>>>> signupBranch
     } else if (this.state.screen == screens.LOGIN) {
       return (
-        <Login loggedIn={this.loggedIn}/>
+        <Login loggedIn={this.loggedIn} onSignUpPress={this.onSignUp}/>
         //<AccountHistory />
         //<ViewSponsor />
         //<PurchaseTicket />
@@ -589,13 +627,21 @@ export default class App extends React.Component {
         //<EditProfile/>
         //<ChangePassword/>
       );
+<<<<<<< HEAD
     } else if (this.state.screen == screens.WALLET) {
       return (
         <Wallet user={this.state.user} exit={this.exit}/>
       );
     } else if (this.state.screen == screens.SIGNUP) {
+=======
+    } else if (this.state.screen == screens.SIGNUP) {
       return (
-        <SignUp/>
+        <SignUp exit={this.onLogin} signedUp={this.signedUp}/>
+      )
+    } else if (this.state.screen == screens.WALLET) {
+>>>>>>> signupBranch
+      return (
+        <Wallet user={this.state.user} exit={this.exit}/>
       );
     } else if (this.state.screen == screens.PROFILE) {
       return (
@@ -648,7 +694,11 @@ export default class App extends React.Component {
             exit={this.exit}/>
           <AreYouSureOverlay
             show={this.state.overlay == overlays.CONFIRMCONTRACT}
+<<<<<<< HEAD
             text={`Pay ${formatToken(this.state.prices.mineGamePrice, "ETH")} ETH for ${this.state.gameOverInfo.score} Snake Coins.\n\nAre you sure?`}
+=======
+            text={`Pay ${(this.state.prices.mineGamePrice / CONSTANTS.WEIPERETH).toPrecision(4)} ETH for ${this.state.gameOverInfo.score} Snake Coins.\n\nAre you sure?`}
+>>>>>>> signupBranch
             onYes={this.onConfirmContract}
             onNo={this.onCancelConfirmContract}/>
           <AreYouSureOverlay
@@ -662,6 +712,14 @@ export default class App extends React.Component {
             show={this.state.overlay == overlays.CONFIRMTX}
             transactionId={this.state.lastTxHash}
             onOk={this.onConfirmTxOk}/>
+<<<<<<< HEAD
+=======
+          {/*<ConfirmTxGameOverOverlay
+              show={true}
+              gameOverInfo={this.state.gameOverInfo}
+              restart={this.restart}
+              exit={this.exit} />*/}
+>>>>>>> signupBranch
           <PowerupOverlay
             closeOverlay={this.closeOverlay}
             prices={this.state.prices}
