@@ -10,7 +10,7 @@ import {
 import {Font} from 'expo';
 import CONSTANTS from '../Constants.js';
 import {context} from "../utils/Context.js";
-import {asyncStore, getFromAsyncStore, removeItemValue} from "../utils/AsyncStore.js";
+import {asyncStore, getFromAsyncStore, removeItem} from "../utils/AsyncStore.js";
 import {normalize} from '../utils/FontNormalizer.js';
 import {formatToken} from '../utils/uiHelperFunctions.js';
 

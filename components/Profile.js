@@ -115,7 +115,7 @@ export default class Profile extends React.Component {
               </Text>
             </ImageBackground>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={this.props.logOut}>
             <ImageBackground source={require('../assets/profile/button.png')} style={styles.buttonBG}
                              resizeMode="stretch">
               <Text style={[this.state.buttonDynamicStyle, styles.buttonBig]}>

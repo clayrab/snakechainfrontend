@@ -9,7 +9,7 @@ import {
   Image
 } from 'react-native';
 import {Font} from 'expo';
-import {asyncStore, getFromAsyncStore, removeItemValue} from "../utils/AsyncStore.js";
+import {asyncStore, getFromAsyncStore, removeItem} from "../utils/AsyncStore.js";
 import {makeRetry} from "../utils/Retry.js";
 import {context} from "../utils/Context.js";
 import {normalize} from '../utils/FontNormalizer.js';

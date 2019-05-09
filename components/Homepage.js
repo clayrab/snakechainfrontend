@@ -12,7 +12,7 @@ import CONSTANTS from '../Constants.js';
 import {context} from "../utils/Context.js";
 import {normalize} from '../utils/FontNormalizer.js';
 import {formatToken} from '../utils/uiHelperFunctions.js';
-import {asyncStore, getFromAsyncStore, removeItemValue} from "../utils/AsyncStore.js";
+import {asyncStore, getFromAsyncStore, removeItem} from "../utils/AsyncStore.js";
 
 import AreYouSureOverlay from '../components/AreYouSureOverlay.js';
 import ConfirmTxOverlay from '../components/ConfirmTxOverlay.js';

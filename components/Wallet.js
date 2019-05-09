@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import ScreenView from '../components/ScreenView.js';
 import {Font} from 'expo';
-import {asyncStore, getFromAsyncStore, removeItemValue} from "../utils/AsyncStore.js";
+import {asyncStore, getFromAsyncStore, removeItem} from "../utils/AsyncStore.js";
 import {context} from "../utils/Context.js";
 import {normalize} from '../utils/FontNormalizer.js';
 import {formatToken} from '../utils/uiHelperFunctions.js';

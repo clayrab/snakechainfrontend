@@ -3,7 +3,7 @@ import {Loop, Stage, World, Body, Sprite} from 'react-game-kit/native';
 import SocketIOClient from 'socket.io-client';
 
 import CONSTANTS from './Constants.js';
-import {asyncStore, getFromAsyncStore, removeItemValue} from "./utils/AsyncStore.js";
+import {asyncStore, getFromAsyncStore, removeItem} from "./utils/AsyncStore.js";
 import {context} from "./utils/Context.js";
 import {makeRetry} from "./utils/Retry.js";
 import {formatToken} from './utils/uiHelperFunctions.js';
@@ -539,7 +539,10 @@ export default class App extends React.Component {
       currentSnake: snakesData[snakes[currentSnakeIndex]]
     })
   };
-
+  logOut = async() => {
+    await removeItem("jwt");
+    this.setState({screen: screens.LOGIN});
+  }
   render() {
     if (this.state.screen == screens.HOME) {
       return (
@@ -596,7 +599,11 @@ export default class App extends React.Component {
       );
     } else if (this.state.screen == screens.PROFILE) {
       return (
-        <Profile loading={this.state.loadingUser} user={this.state.user} exit={this.exit}/>
+        <Profile
+          loading={this.state.loadingUser}
+          user={this.state.user}
+          exit={this.exit}
+          logOut={this.logOut}/>
       );
     } else if (this.state.screen == screens.SNAKETOWN) {
       return (

@@ -16,7 +16,7 @@ export let getFromAsyncStore = async (key) => {
   }
 }
 
-export let removeItemValue = async (key) => {
+export let removeItem = async (key) => {
   try {
     await AsyncStorage.removeItem(key);
   } catch (exception) {
