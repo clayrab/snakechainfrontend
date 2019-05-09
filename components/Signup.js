@@ -139,14 +139,11 @@ export default class Signup extends React.Component {
     this.setState({termCBPress: !this.state.termCBPress});
   }
 
-<<<<<<< HEAD
-=======
   goBack = () => {
     this.setState({signedUp: false});
     this.props.signedUp();
   }
 
->>>>>>> signupBranch
   render() {
     if (this.state.loading) {
       return (
@@ -158,11 +155,6 @@ export default class Signup extends React.Component {
       <View style={styles.container}>
         <ImageBackground style={styles.content} source={require('../assets/pauseoverlay/BackgroundBrown.png')}
                          resizeMode={'stretch'}>
-<<<<<<< HEAD
-          <Text style={[styles.titleText, this.state.buttonDynamicStyle]}>
-            SIGN-UP
-          </Text>
-=======
           <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10}}>
             <View style={{flex: 1}}>
               <TouchableOpacity onPress={this.props.exit} style={styles.backButtonTouchable}>
@@ -176,7 +168,6 @@ export default class Signup extends React.Component {
             </View>
             <View style={{flex: 1}}/>
           </View>
->>>>>>> signupBranch
           <ImageBackground source={require('../assets/signup/textBox.png')} style={styles.loginInput}
                            resizeMode="stretch">
             <Image source={require('../assets/signup/phoneIcon.png')} style={styles.lockImage} resizeMode="stretch"/>
