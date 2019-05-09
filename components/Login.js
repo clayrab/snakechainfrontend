@@ -24,7 +24,7 @@ export default class Login extends React.Component {
     this.state = {
       showLoginPlaceHolder: true,
       showPasswordPlaceHolder: true,
-      remember: true,
+      remember: false,
       buttonDynamicStyle: {},
       username: "",
       pw: "",
@@ -41,6 +41,17 @@ export default class Login extends React.Component {
         fontFamily: 'riffic-free-bold',
       }
     });
+    let username = await AsyncStorage.getItem("username");
+    let password = await AsyncStorage.getItem("password");
+    if(username && password) {
+      this.setState({
+        "username": username,
+        showLoginPlaceHolder: false,
+        "pw": password,
+        showPasswordPlaceHolder: false,
+        remember: true,
+      });
+    }
   }
 
   loginFocus = async () => {
@@ -96,9 +107,12 @@ export default class Login extends React.Component {
       }
     }
   }
-  rememberPress = () => {
-    this.setState({remember: !this.state.remember})
-    // this.easterEgg();
+  rememberPress = async() => {
+    await this.setState({remember: !this.state.remember});
+    if(!this.state.remember) {
+      await AsyncStorage.removeItem("username");
+      await AsyncStorage.removeItem("password");
+    }
   }
   sendLoginCreds = async () => {
     console.log("sendLoginCreds");
@@ -124,10 +138,10 @@ export default class Login extends React.Component {
         }
         this.setState({loading: false});
       } else if (resp.token) {
-
-        await AsyncStorage.setItem("username", this.state.username)
-        await AsyncStorage.setItem("password", this.state.pw)
-
+        if(this.state.remember) {
+          await AsyncStorage.setItem("username", this.state.username)
+          await AsyncStorage.setItem("password", this.state.pw)
+        }
         this.props.loggedIn(resp.token);
       }
     } catch (error) {
@@ -142,7 +156,6 @@ export default class Login extends React.Component {
         <Loading></Loading>
       );
     } else {
-      console.log(this.state.showPasswordPlaceHolder)
       let usernameValue = loginPlaceHolder;
       if (!this.state.showLoginPlaceHolder) {
         usernameValue = this.state.username
@@ -193,7 +206,7 @@ export default class Login extends React.Component {
               <View style={styles.rememberView}>
               <TouchableOpacity onPress={this.rememberPress}>
                 <Image
-                  source={this.state.remember ? require('../assets/login/checkBox.png') : require('../assets/login/checkBox-1.png')}
+                  source={!this.state.remember ? require('../assets/login/checkBox.png') : require('../assets/login/checkBox-1.png')}
                   style={styles.checkBoxImage} resizeMode="stretch"/>
               </TouchableOpacity>
               <Text style={[styles.checkboxText, this.state.buttonDynamicStyle]}>Remember me</Text>
