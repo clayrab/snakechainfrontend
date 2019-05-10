@@ -539,15 +539,25 @@ export default class Homepage extends React.Component {
 let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
 let titleBarHeight = screenWidth * .757 / 3.6;
+let diff = screenHeight/screenWidth;
+if(diff < 1.8) {
+  // 16:9, 17:9, 21:9 are common.
+  // 16/9 = 1.77777
+  // 17/9 = 1.898888
+  // 21/9 = 2.33333333333
+  screenWidth = screenHeight * 9/17; // treat everything fatter than 17:9 as 17:9
+}
+
 let styles = StyleSheet.create({
   backgroundImage: {
     width: "100%",
     height: "100%",
+    alignItems: "center",
+    justifyContent: "space-around",
   },
   contentHolder: {
     flex: 1,
-    width: "100%",
-    alignItems: "flex-start",
+    width: screenWidth,
   },
   contentTopMargin: {
     flex: 0.263,
