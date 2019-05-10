@@ -106,8 +106,10 @@ let styles = StyleSheet.create({
   titleBar: {
     flex: 0,
     width: screenWidth,
-    height: titleBarHeight,
+    height: titleBarHeight + 35,
     flexDirection: "row",
+    marginTop: -titleBarHeight * .32,
+    paddingTop: titleBarHeight * .40,
   },
   backButtonTouchable: {
     flex: 0,
