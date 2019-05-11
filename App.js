@@ -558,6 +558,10 @@ export default class App extends React.Component {
     this.setState({screen: screens.LOGIN});
   }
 
+  onHomePage = () => {
+    this.setState({screen: screens.HOME});
+  }
+
   render() {
     if (this.state.screen == screens.HOME) {
       return (
@@ -577,7 +581,7 @@ export default class App extends React.Component {
     } else if (this.state.screen == screens.TUTORIALS) {
       return (
         <Tutorials
-          onDone={() => null}
+          onDone={this.onHomePage}
         />
       )
     } else if (this.state.screen == screens.SELECTLEVEL) {

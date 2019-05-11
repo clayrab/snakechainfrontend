@@ -83,7 +83,7 @@ export default class Tutorials extends React.Component {
         />
       </ScrollView>
       <View style={styles.bottomHighlight}>
-        <ContinueButton onPress={() => null} fontFamily={this.state.riffic} style={{ marginBottom: 10 }} />
+        <ContinueButton onPress={() => this.setState({page: 2})} fontFamily={this.state.riffic} style={{ marginBottom: 10 }} />
         <TabContainer page={this.state.page} />
       </View>
     </View>
@@ -91,19 +91,66 @@ export default class Tutorials extends React.Component {
 
   howToPlayPage = () => (
     <View style={styles.content}>
-      <Text>How to Play</Text>
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        <ImageBackground source={require('../assets/tutorials/TitleBG.png')}
+          resizeMode={'contain'}
+          style={styles.titleBackground}>
+          <Text style={[styles.title, this.state.riffic]}>HOW TO PLAY</Text>
+        </ImageBackground>
+        <Text style={[styles.description, this.state.riffic]}>Choose your tunnel, and collect each SNakeGold to add to your haul!</Text>
+        <Image
+          source={require("../assets/tutorials/welcome.png")}
+          style={styles.welcomeImage}
+          resizeMode={'contain'}
+        />
+      </ScrollView>
+      <View style={styles.bottomHighlight}>
+        <ContinueButton onPress={() => this.setState({page: 3})} fontFamily={this.state.riffic} style={{ marginBottom: 10 }} />
+        <TabContainer page={this.state.page} />
+      </View>
     </View>
   );
 
   shipToWalletPage = () => (
     <View style={styles.content}>
-      <Text>Shit to Wallet</Text>
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        <ImageBackground source={require('../assets/tutorials/TitleBG.png')}
+          resizeMode={'contain'}
+          style={styles.titleBackground}>
+          <Text style={[styles.title, this.state.riffic]}>SHIT TO WALLET</Text>
+        </ImageBackground>
+        <Text style={[styles.description, this.state.riffic]}>Purchase a Trolly Rentel ticket, and ship your SnakeGold to your SnakeBank Wallet</Text>
+        <Image
+          source={require("../assets/tutorials/welcome.png")}
+          style={styles.welcomeImage}
+          resizeMode={'contain'}
+        />
+      </ScrollView>
+      <View style={styles.bottomHighlight}>
+        <ContinueButton onPress={() => this.setState({page: 4})} fontFamily={this.state.riffic} style={{ marginBottom: 10 }} />
+        <TabContainer page={this.state.page} />
+      </View>
     </View>
   );
 
   getStarted = () => (
     <View style={styles.content}>
-      <Text>Get Started</Text>
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        <ImageBackground source={require('../assets/tutorials/TitleBG.png')}
+          resizeMode={'contain'}
+          style={styles.titleBackground}>
+          <Text style={[styles.title, this.state.riffic]}>GET STARTED!</Text>
+        </ImageBackground>
+        <Image
+          source={require("../assets/tutorials/welcome.png")}
+          style={styles.welcomeImage}
+          resizeMode={'contain'}
+        />
+      </ScrollView>
+      <View style={styles.bottomHighlight}>
+        <ContinueButton onPress={this.props.onDone} fontFamily={this.state.riffic} style={{ marginBottom: 10 }} />
+        <TabContainer page={this.state.page} />
+      </View>
     </View>
   );
 
