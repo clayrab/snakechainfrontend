@@ -37,6 +37,7 @@ import PurchasedTicket from './components/PurchasedTicket.js';
 import Success from './components/Success.js';
 import Fail from './components/Fail.js';
 import SelectLevel from "./components/SelectLevel";
+import Tutorials from "./components/Tutorials";
 
 // components/ChangePassword.js
 // components/EditProfile.js
@@ -60,7 +61,7 @@ const connectionConfig = {
 var screens = {
   "GAME": 0, "HOME": 1, "LOADING": 2, "PREFERENCES": 3, "PROFILE": 4,
   "ACCOUNTHISTORY": 5, "GAMEHISTORY": 6, "LOGIN": 7, "SNAKETOWN": 8, "WALLET": 9,
-  "SELECTLEVEL": 10, "SIGNUP": 11,
+  "SELECTLEVEL": 10, "SIGNUP": 11, "TUTORIALS": 12,
 };
 var overlays = {
   "PAUSE": 0, "GAMEOVER": 1, "MINE": 2, "AREYOUSURE": 3, "LOADING": 4,
@@ -276,7 +277,8 @@ export default class App extends React.Component {
     //console.log("LoggedIn")
     await asyncStore("jwt", jwt);
     if (this.state.screen == screens.LOGIN) {
-      await this.setState({screen: screens.HOME});
+      // await this.setState({screen: screens.HOME});
+      await this.setState({screen: screens.TUTORIALS});
     }
     this.loadUser(jwt);
     try {
@@ -551,10 +553,11 @@ export default class App extends React.Component {
       currentSnake: snakesData[snakes[currentSnakeIndex]]
     })
   };
-  logOut = async() => {
+  logOut = async () => {
     await removeItem("jwt");
     this.setState({screen: screens.LOGIN});
   }
+
   render() {
     if (this.state.screen == screens.HOME) {
       return (
@@ -571,6 +574,12 @@ export default class App extends React.Component {
         >
         </Homepage>
       );
+    } else if (this.state.screen == screens.TUTORIALS) {
+      return (
+        <Tutorials
+          onDone={() => null}
+        />
+      )
     } else if (this.state.screen == screens.SELECTLEVEL) {
       return (
         <SelectLevel
