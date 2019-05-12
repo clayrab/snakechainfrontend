@@ -1,4 +1,5 @@
 .idea/vcs.xml
+.vscode/
 .idea/*
 docs
 node_modules/**/*

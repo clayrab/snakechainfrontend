@@ -1,16 +1,16 @@
 import React from "react";
-import { Image, SafeAreaView, ImageBackground, ScrollView, View, Text, TouchableOpacity } from 'react-native';
-import { Font } from "expo";
-import { normalize } from "../utils/FontNormalizer";
+import {Image, SafeAreaView, ImageBackground, ScrollView, View, Text, TouchableOpacity} from 'react-native';
+import {Font} from "expo";
+import {normalize} from "../utils/FontNormalizer";
 
 let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
 
 const ContinueButton = (props) => (
-  <TouchableOpacity onPress={props.onPress} style={{ marginBottom: 25 }}>
+  <TouchableOpacity onPress={props.onPress} style={{marginBottom: 25}}>
     <ImageBackground source={require('../assets/tutorials/ContinueBtn.png')}
-      resizeMode={'contain'}
-      style={styles.continueButton}>
+                     resizeMode={'contain'}
+                     style={styles.continueButton}>
       <Text style={[styles.continueText, props.fontFamily]}>CONTINUE</Text>
     </ImageBackground>
   </TouchableOpacity>
@@ -21,15 +21,15 @@ const TabIcon = (props) => {
     require('../assets/tutorials/ActiveTab.png') :
     require('../assets/tutorials/InActiveBtn.png');
 
-  return <Image source={imageSource} style={styles.tabIcon} />
+  return <Image source={imageSource} style={styles.tabIcon}/>
 };
 
 const TabContainer = (props) => (
   <View style={styles.tabContainer}>
-    <TabIcon isActive={props.page === 1} />
-    <TabIcon isActive={props.page === 2} />
-    <TabIcon isActive={props.page === 3} />
-    <TabIcon isActive={props.page === 4} />
+    <TabIcon isActive={props.page === 1}/>
+    <TabIcon isActive={props.page === 2}/>
+    <TabIcon isActive={props.page === 3}/>
+    <TabIcon isActive={props.page === 4}/>
   </View>
 );
 
@@ -54,7 +54,7 @@ export default class Tutorials extends React.Component {
   }
 
   getPage() {
-    const { page } = this.state;
+    const {page} = this.state;
     switch (page) {
       case 1:
         return this.welcomePage();
@@ -71,8 +71,8 @@ export default class Tutorials extends React.Component {
     <View style={styles.content}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <ImageBackground source={require('../assets/tutorials/TitleBG.png')}
-          resizeMode={'contain'}
-          style={styles.titleBackground}>
+                         resizeMode={'contain'}
+                         style={styles.titleBackground}>
           <Text style={[styles.title, this.state.riffic]}>Welcome</Text>
         </ImageBackground>
         <Text style={[styles.description, this.state.riffic]}>Mine Snakechain by {'\n'}playing Snake!</Text>
@@ -83,8 +83,9 @@ export default class Tutorials extends React.Component {
         />
       </ScrollView>
       <View style={styles.bottomHighlight}>
-        <ContinueButton onPress={() => this.setState({page: 2})} fontFamily={this.state.riffic} style={{ marginBottom: 10 }} />
-        <TabContainer page={this.state.page} />
+        <ContinueButton onPress={() => this.setState({page: 2})} fontFamily={this.state.riffic}
+                        style={{marginBottom: 10}}/>
+        <TabContainer page={this.state.page}/>
       </View>
     </View>
   );
@@ -93,11 +94,12 @@ export default class Tutorials extends React.Component {
     <View style={styles.content}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <ImageBackground source={require('../assets/tutorials/TitleBG.png')}
-          resizeMode={'contain'}
-          style={styles.titleBackground}>
+                         resizeMode={'contain'}
+                         style={styles.titleBackground}>
           <Text style={[styles.title, this.state.riffic]}>HOW TO PLAY</Text>
         </ImageBackground>
-        <Text style={[styles.description, this.state.riffic]}>Choose your tunnel, and collect each SNakeGold to add to your haul!</Text>
+        <Text style={[styles.description, this.state.riffic]}>Choose your tunnel, and collect each SNakeGold to add to
+          your haul!</Text>
         <Image
           source={require("../assets/tutorials/welcome.png")}
           style={styles.welcomeImage}
@@ -105,8 +107,9 @@ export default class Tutorials extends React.Component {
         />
       </ScrollView>
       <View style={styles.bottomHighlight}>
-        <ContinueButton onPress={() => this.setState({page: 3})} fontFamily={this.state.riffic} style={{ marginBottom: 10 }} />
-        <TabContainer page={this.state.page} />
+        <ContinueButton onPress={() => this.setState({page: 3})} fontFamily={this.state.riffic}
+                        style={{marginBottom: 10}}/>
+        <TabContainer page={this.state.page}/>
       </View>
     </View>
   );
@@ -115,11 +118,12 @@ export default class Tutorials extends React.Component {
     <View style={styles.content}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <ImageBackground source={require('../assets/tutorials/TitleBG.png')}
-          resizeMode={'contain'}
-          style={styles.titleBackground}>
+                         resizeMode={'contain'}
+                         style={styles.titleBackground}>
           <Text style={[styles.title, this.state.riffic]}>SHIT TO WALLET</Text>
         </ImageBackground>
-        <Text style={[styles.description, this.state.riffic]}>Purchase a Trolly Rentel ticket, and ship your SnakeGold to your SnakeBank Wallet</Text>
+        <Text style={[styles.description, this.state.riffic]}>Purchase a Trolly Rentel ticket, and ship your SnakeGold
+          to your SnakeBank Wallet</Text>
         <Image
           source={require("../assets/tutorials/welcome.png")}
           style={styles.welcomeImage}
@@ -127,8 +131,9 @@ export default class Tutorials extends React.Component {
         />
       </ScrollView>
       <View style={styles.bottomHighlight}>
-        <ContinueButton onPress={() => this.setState({page: 4})} fontFamily={this.state.riffic} style={{ marginBottom: 10 }} />
-        <TabContainer page={this.state.page} />
+        <ContinueButton onPress={() => this.setState({page: 4})} fontFamily={this.state.riffic}
+                        style={{marginBottom: 10}}/>
+        <TabContainer page={this.state.page}/>
       </View>
     </View>
   );
@@ -137,8 +142,8 @@ export default class Tutorials extends React.Component {
     <View style={styles.content}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <ImageBackground source={require('../assets/tutorials/TitleBG.png')}
-          resizeMode={'contain'}
-          style={styles.titleBackground}>
+                         resizeMode={'contain'}
+                         style={styles.titleBackground}>
           <Text style={[styles.title, this.state.riffic]}>GET STARTED!</Text>
         </ImageBackground>
         <Image
@@ -148,8 +153,8 @@ export default class Tutorials extends React.Component {
         />
       </ScrollView>
       <View style={styles.bottomHighlight}>
-        <ContinueButton onPress={this.props.onDone} fontFamily={this.state.riffic} style={{ marginBottom: 10 }} />
-        <TabContainer page={this.state.page} />
+        <ContinueButton onPress={this.props.onDone} fontFamily={this.state.riffic} style={{marginBottom: 10}}/>
+        <TabContainer page={this.state.page}/>
       </View>
     </View>
   );
@@ -159,8 +164,8 @@ export default class Tutorials extends React.Component {
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles.scrollView}>
           <ImageBackground source={require("../assets/tutorials/background.png")}
-            resizeMode={'cover'}
-            style={styles.backgroundImage}>
+                           resizeMode={'cover'}
+                           style={styles.backgroundImage}>
             {this.getPage()}
           </ImageBackground>
         </ScrollView>
@@ -179,8 +184,7 @@ const styles = {
     alignItems: 'center'
   },
   scrollView: {
-    flex: 1,
-    paddingHorizontal: screenWidth * 0.1,
+    minHeight: screenHeight
   },
   title: {
     color: '#FAB523',
@@ -196,9 +200,6 @@ const styles = {
     color: "#352927",
     fontSize: normalize(18),
     marginBottom: 5
-  },
-  scrollView: {
-    minHeight: screenHeight
   },
   backgroundImage: {
     position: 'relative',
