@@ -1,16 +1,16 @@
 import React from "react";
-import {Image, SafeAreaView, ImageBackground, ScrollView, View, Text, TouchableOpacity} from 'react-native';
-import {Font} from "expo";
-import {normalize} from "../utils/FontNormalizer";
+import { Image, SafeAreaView, ImageBackground, ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import { Font } from "expo";
+import { normalize } from "../utils/FontNormalizer";
 
 let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
 
 const ContinueButton = (props) => (
-  <TouchableOpacity onPress={props.onPress} style={{marginBottom: 25}}>
+  <TouchableOpacity onPress={props.onPress} style={{ marginBottom: 25, marginTop: 20 }}>
     <ImageBackground source={require('../assets/tutorials/ContinueBtn.png')}
-                     resizeMode={'contain'}
-                     style={styles.continueButton}>
+      resizeMode={'contain'}
+      style={styles.continueButton}>
       <Text style={[styles.continueText, props.fontFamily]}>CONTINUE</Text>
     </ImageBackground>
   </TouchableOpacity>
@@ -21,15 +21,15 @@ const TabIcon = (props) => {
     require('../assets/tutorials/ActiveTab.png') :
     require('../assets/tutorials/InActiveBtn.png');
 
-  return <Image source={imageSource} style={styles.tabIcon}/>
+  return <Image source={imageSource} style={styles.tabIcon} />
 };
 
 const TabContainer = (props) => (
   <View style={styles.tabContainer}>
-    <TabIcon isActive={props.page === 1}/>
-    <TabIcon isActive={props.page === 2}/>
-    <TabIcon isActive={props.page === 3}/>
-    <TabIcon isActive={props.page === 4}/>
+    <TabIcon isActive={props.page === 1} />
+    <TabIcon isActive={props.page === 2} />
+    <TabIcon isActive={props.page === 3} />
+    <TabIcon isActive={props.page === 4} />
   </View>
 );
 
@@ -54,7 +54,7 @@ export default class Tutorials extends React.Component {
   }
 
   getPage() {
-    const {page} = this.state;
+    const { page } = this.state;
     switch (page) {
       case 1:
         return this.welcomePage();
@@ -70,102 +70,117 @@ export default class Tutorials extends React.Component {
   welcomePage = () => (
     <View style={styles.content}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <ImageBackground source={require('../assets/tutorials/TitleBG.png')}
-                         resizeMode={'contain'}
-                         style={styles.titleBackground}>
-          <Text style={[styles.title, this.state.riffic]}>Welcome</Text>
-        </ImageBackground>
-        <Text style={[styles.description, this.state.riffic]}>Mine Snakechain by {'\n'}playing Snake!</Text>
-        <Image
-          source={require("../assets/tutorials/welcome.png")}
-          style={styles.welcomeImage}
-          resizeMode={'contain'}
-        />
+        <View style={styles.scrollViewContent}>
+          <ImageBackground source={require('../assets/tutorials/TitleBG.png')}
+            resizeMode={'contain'}
+            style={styles.titleBackground}>
+            <Text style={[styles.title, this.state.riffic]}>Welcome</Text>
+          </ImageBackground>
+          <Text style={[styles.description, this.state.riffic]}>Mine Snakechain by {'\n'}playing Snake!</Text>
+          <Image
+            source={require("../assets/tutorials/welcome.png")}
+            style={styles.welcomeImage}
+            resizeMode={'contain'}
+          />
+          <View style={styles.bottomHighlight}>
+            <ContinueButton onPress={() => this.setState({ page: 2 })} fontFamily={this.state.riffic}
+              style={{ marginBottom: 10 }} />
+            <TabContainer page={this.state.page} />
+          </View>
+        </View>
       </ScrollView>
-      <View style={styles.bottomHighlight}>
-        <ContinueButton onPress={() => this.setState({page: 2})} fontFamily={this.state.riffic}
-                        style={{marginBottom: 10}}/>
-        <TabContainer page={this.state.page}/>
-      </View>
     </View>
   );
 
   howToPlayPage = () => (
     <View style={styles.content}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <ImageBackground source={require('../assets/tutorials/TitleBG.png')}
-                         resizeMode={'contain'}
-                         style={styles.titleBackground}>
-          <Text style={[styles.title, this.state.riffic]}>HOW TO PLAY</Text>
-        </ImageBackground>
-        <Text style={[styles.description, this.state.riffic]}>Choose your tunnel, and collect each SNakeGold to add to
-          your haul!</Text>
-        <Image
-          source={require("../assets/tutorials/welcome.png")}
-          style={styles.welcomeImage}
-          resizeMode={'contain'}
-        />
+        <View style={styles.scrollViewContent}>
+          <ImageBackground source={require('../assets/tutorials/TitleBG.png')}
+            resizeMode={'contain'}
+            style={styles.titleBackground}>
+            <Text style={[styles.title, this.state.riffic]}>HOW TO PLAY</Text>
+          </ImageBackground>
+          <Text style={[styles.description, this.state.riffic]}>
+            Choose your tunnel, and collect each SnakeGold to add to your haul!
+          </Text>
+          <Image
+            source={require("../assets/tutorials/howToPlay.png")}
+            style={styles.howToPlayImage}
+            resizeMode={'contain'}
+          />
+          <ContinueButton onPress={() => this.setState({ page: 3 })} fontFamily={this.state.riffic}
+            style={{ marginBottom: 10 }} />
+          <TabContainer page={this.state.page} />
+        </View>
       </ScrollView>
-      <View style={styles.bottomHighlight}>
-        <ContinueButton onPress={() => this.setState({page: 3})} fontFamily={this.state.riffic}
-                        style={{marginBottom: 10}}/>
-        <TabContainer page={this.state.page}/>
-      </View>
     </View>
   );
 
   shipToWalletPage = () => (
     <View style={styles.content}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <ImageBackground source={require('../assets/tutorials/TitleBG.png')}
-                         resizeMode={'contain'}
-                         style={styles.titleBackground}>
-          <Text style={[styles.title, this.state.riffic]}>SHIT TO WALLET</Text>
-        </ImageBackground>
-        <Text style={[styles.description, this.state.riffic]}>Purchase a Trolly Rentel ticket, and ship your SnakeGold
-          to your SnakeBank Wallet</Text>
-        <Image
-          source={require("../assets/tutorials/welcome.png")}
-          style={styles.welcomeImage}
-          resizeMode={'contain'}
-        />
+        <View style={styles.scrollViewContent}>
+          <ImageBackground source={require('../assets/tutorials/TitleBG.png')}
+            resizeMode={'contain'}
+            style={styles.titleBackground}>
+            <Text style={[styles.title, this.state.riffic]}>SHIP TO WALLET</Text>
+          </ImageBackground>
+          <Text style={[styles.description, this.state.riffic]}>
+            Purchase a Trolly Rental ticket, and ship your SnakeGold to your SNakeBank Wallet
+          </Text>
+          <Image
+            source={require("../assets/tutorials/shipToWallet.png")}
+            style={styles.shipToWalletImage}
+            resizeMode={'contain'}
+          />
+          <View style={styles.bottomHighlight}>
+            <ContinueButton onPress={() => this.setState({ page: 4 })} fontFamily={this.state.riffic}
+              style={{ marginBottom: 10 }} />
+            <TabContainer page={this.state.page} />
+          </View>
+        </View>
       </ScrollView>
-      <View style={styles.bottomHighlight}>
-        <ContinueButton onPress={() => this.setState({page: 4})} fontFamily={this.state.riffic}
-                        style={{marginBottom: 10}}/>
-        <TabContainer page={this.state.page}/>
-      </View>
     </View>
   );
 
   getStarted = () => (
     <View style={styles.content}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <ImageBackground source={require('../assets/tutorials/TitleBG.png')}
-                         resizeMode={'contain'}
-                         style={styles.titleBackground}>
-          <Text style={[styles.title, this.state.riffic]}>GET STARTED!</Text>
-        </ImageBackground>
-        <Image
-          source={require("../assets/tutorials/welcome.png")}
-          style={styles.welcomeImage}
-          resizeMode={'contain'}
-        />
+        <View style={styles.scrollViewContent}>
+          <ImageBackground source={require('../assets/tutorials/TitleBG.png')}
+            resizeMode={'contain'}
+            style={styles.titleBackground}>
+            <Text style={[styles.title, this.state.riffic]}>GET STARTED</Text>
+          </ImageBackground>
+          <ImageBackground source={require('../assets/tutorials/TextBackground.png')}
+            resizeMode={'contain'} style={styles.getStartedTextContainer}>
+            <Text style={[styles.description, this.state.riffic]}>
+              Go to your mine and start playing now!
+            </Text>
+          </ImageBackground>
+          <TouchableOpacity onPress={this.props.onDone} style={styles.playNowContainer}>
+            <Image source={require("../assets/tutorials/PlayNow.png")}
+              style={styles.playNowImage} />
+          </TouchableOpacity>
+          <TabContainer page={this.state.page} />
+        </View>
       </ScrollView>
-      <View style={styles.bottomHighlight}>
-        <ContinueButton onPress={this.props.onDone} fontFamily={this.state.riffic} style={{marginBottom: 10}}/>
-        <TabContainer page={this.state.page}/>
-      </View>
     </View>
   );
 
   render() {
+    const background = this.state.page === 4 ?
+      require('../assets/tutorials/GetStartedBackground.png') :
+      require("../assets/tutorials/background.png");
+    const backgroundStyle = this.state.page === 4 ? { height: screenWidth * 2.1 } : {}
+
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles.scrollView}>
-          <ImageBackground source={require("../assets/tutorials/background.png")}
-                           resizeMode={'cover'}
-                           style={styles.backgroundImage}>
+          <ImageBackground source={background}
+            resizeMode={'cover'}
+            style={[styles.backgroundImage, backgroundStyle]}>
             {this.getPage()}
           </ImageBackground>
         </ScrollView>
@@ -184,13 +199,19 @@ const styles = {
     alignItems: 'center'
   },
   scrollView: {
-    minHeight: screenHeight
+    minHeight: screenHeight,
+    width: screenWidth
+  },
+  scrollViewContent: {
+    flex: 1,
+    alignItems: 'center'
   },
   title: {
     color: '#FAB523',
     fontSize: normalize(22)
   },
   description: {
+    maxWidth: screenWidth * 0.8,
     marginVertical: 15,
     color: '#FAB523',
     fontSize: normalize(18),
@@ -208,6 +229,7 @@ const styles = {
   },
   titleBackground: {
     marginTop: screenWidth * 0.1,
+    alignSelf: 'center',
     width: screenWidth * 0.8,
     height: screenHeight * 0.125,
     justifyContent: 'center',
@@ -230,12 +252,13 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: 20,
-    paddingBottom: 30
+    // paddingBottom: 30
   },
   tabContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginBottom: 30
   },
   tabIcon: {
     width: screenWidth * 0.05,
@@ -244,8 +267,32 @@ const styles = {
     marginHorizontal: screenWidth * 0.025
   },
   welcomeImage: {
-    resizeMode: 'contain',
     width: screenWidth * 0.8,
     height: screenWidth * 1.57
+  },
+  howToPlayImage: {
+    width: screenWidth * 0.8,
+    height: screenWidth * 1.1,
+  },
+  shipToWalletImage: {
+    width: screenWidth * 0.8,
+    height: screenWidth * 1.6
+  },
+  getStartedTextContainer: {
+    width: screenWidth * 0.8,
+    height: screenWidth * 0.36,
+    padding: 20,
+    marginTop: screenWidth * 0.95,
+    justiyContent: 'center',
+    alignItems: 'center'
+  },
+  playNowContainer: {
+    marginTop: 25,
+    marginBottom: 40,
+  },
+  playNowImage: {
+    width: screenWidth * 0.6,
+    height: screenWidth * 0.2,
+    resizeMode: 'contain'
   }
 };
