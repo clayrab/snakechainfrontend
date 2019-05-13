@@ -154,12 +154,8 @@ export default class App extends React.Component {
     Linking.addEventListener('url', (event) => {
       console.log("Linking.addEventListener");
       console.log(event.url);
-      alert("Linking.addEventListener")
-      alert(event.url)
     });
     Linking.getInitialURL().then((url) => {
-      alert("getInitialURL")
-      alert(url)
       if (url) {
         console.log('Initial url is: ' + url);
       }

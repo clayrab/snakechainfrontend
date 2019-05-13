@@ -144,6 +144,7 @@ export default class Login extends React.Component {
     // iOS Client ID:620503403501-k6v8ghht8dr639uhhjr8gpk4p9iogbq2.apps.googleusercontent.com
     // Web Client ID:620503403501-5a09pm3ih5l3o6s6o4vecj6ftg9teh2p.apps.googleusercontent.com
     // Android Client ID:620503403501-os62lfr7up8q48cpklcvlihd1annvpoi.apps.googleusercontent.com
+    //
     console.log("doGoogleOauth")
     const config = {
       issuer: 'https://accounts.google.com',
@@ -156,6 +157,7 @@ export default class Login extends React.Component {
     if(Platform.OS === 'android'){
       config.clientId = '620503403501-os62lfr7up8q48cpklcvlihd1annvpoi.apps.googleusercontent.com';
     } else if(Platform.OS === 'ios'){
+      console.log("ios 620503403501-v46v5kk2gg0p72i6oi0d2e8onm01p6a9.apps.googleusercontent.com")
       //config.clientId = '620503403501-k6v8ghht8dr639uhhjr8gpk4p9iogbq2.apps.googleusercontent.com';
       config.clientId = '620503403501-v46v5kk2gg0p72i6oi0d2e8onm01p6a9.apps.googleusercontent.com';
     } else {
@@ -165,13 +167,15 @@ export default class Login extends React.Component {
     console.log(config)
     try {
       const tokenResponse = await AppAuth.authAsync(config);
+      console.log("tokenResponse")
       console.log(tokenResponse)
-      alert("accessToken: " + tokenResponse.accessToken)
-      alert("idToken: " + tokenResponse.idToken)
-      alert("accessTokenExpirationDate: " + tokenResponse.accessTokenExpirationDate)
-      alert("additionalParameters: " + tokenResponse.additionalParameters)
-      alert("tokenType: " + tokenResponse.tokenType)
-      alert("refreshToken: " + tokenResponse.refreshToken)
+      console.log("accessTokenExpirationDate: " + tokenResponse.accessTokenExpirationDate)
+      // alert("accessToken: " + tokenResponse.accessToken)
+      // alert("idToken: " + tokenResponse.idToken)
+      // alert("accessTokenExpirationDate: " + tokenResponse.accessTokenExpirationDate)
+      // alert("additionalParameters: " + tokenResponse.additionalParameters)
+      // alert("tokenType: " + tokenResponse.tokenType)
+      // alert("refreshToken: " + tokenResponse.refreshToken)
       let data = {
         code: tokenResponse.idToken
       }
