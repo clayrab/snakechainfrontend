@@ -6,7 +6,8 @@ import {
   View,
   ImageBackground,
   Image,
-  TextInput
+  TextInput,
+  AsyncStorage
 } from 'react-native';
 import {Font} from 'expo';
 import {normalize} from '../utils/FontNormalizer.js';
@@ -71,6 +72,7 @@ export default class Signup extends React.Component {
         });
 
         const resp = await response.json();
+        await AsyncStorage.setItem("LAST_REGISTERED", loginPlaceHolder);
         this.setState({signedUp: true});
 
       } catch (error) {

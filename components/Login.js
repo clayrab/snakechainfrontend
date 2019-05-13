@@ -10,10 +10,10 @@ import {
   AsyncStorage
 } from 'react-native';
 import ScreenView from '../components/ScreenView.js';
-import {Font} from 'expo';
-import {context} from "../utils/Context.js";
+import { Font } from 'expo';
+import { context } from "../utils/Context.js";
 import Loading from './Loading.js';
-import {normalize} from '../utils/FontNormalizer.js';
+import { normalize } from '../utils/FontNormalizer.js';
 
 let loginPlaceHolder = 'Login/Phone';
 let passwordPlaceHolder = 'Password';
@@ -43,7 +43,7 @@ export default class Login extends React.Component {
     });
     let username = await AsyncStorage.getItem("username");
     let password = await AsyncStorage.getItem("password");
-    if(username && password) {
+    if (username && password) {
       this.setState({
         "username": username,
         showLoginPlaceHolder: false,
@@ -55,16 +55,16 @@ export default class Login extends React.Component {
   }
 
   loginFocus = async () => {
-    await this.setState({showLoginPlaceHolder: false});
+    await this.setState({ showLoginPlaceHolder: false });
   }
   passwordFocus = async () => {
-    await this.setState({showPasswordPlaceHolder: false});
+    await this.setState({ showPasswordPlaceHolder: false });
   }
   loginChange = async (value) => {
-    await this.setState({username: value});
+    await this.setState({ username: value });
   }
   passwordChange = async (value) => {
-    await this.setState({pw: value});
+    await this.setState({ pw: value });
   }
   easterEgg = async () => {
     easterEggCount = easterEggCount + 1;
@@ -114,9 +114,9 @@ export default class Login extends React.Component {
       }
     }
   }
-  rememberPress = async() => {
-    await this.setState({remember: !this.state.remember});
-    if(!this.state.remember) {
+  rememberPress = async () => {
+    await this.setState({ remember: !this.state.remember });
+    if (!this.state.remember) {
       await AsyncStorage.removeItem("username");
       await AsyncStorage.removeItem("password");
     }
@@ -124,8 +124,8 @@ export default class Login extends React.Component {
   sendLoginCreds = async () => {
     console.log("sendLoginCreds");
     try {
-      this.setState({loading: true});
-      var data = {user: this.state.username, pw: this.state.pw};
+      this.setState({ loading: true });
+      var data = { user: this.state.username, pw: this.state.pw };
       var response = await fetch(`${context.host}:${context.port}/login`, {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         body: JSON.stringify(data), // body data type must match "Content-Type" header
@@ -143,17 +143,17 @@ export default class Login extends React.Component {
         } else {
           alert("Unknown error:\n\n" + resp.error);
         }
-        this.setState({loading: false});
+        this.setState({ loading: false });
       } else if (resp.token) {
-        if(this.state.remember) {
+        if (this.state.remember) {
           await AsyncStorage.setItem("username", this.state.username)
           await AsyncStorage.setItem("password", this.state.pw)
         }
-        this.props.loggedIn(resp.token);
+        this.props.loggedIn(resp.token, this.state.username);
       }
     } catch (error) {
       alert(error);
-      this.setState({loading: false});
+      this.setState({ loading: false });
     }
   }
 
@@ -175,53 +175,53 @@ export default class Login extends React.Component {
 
         <ScreenView style={styles.screen}>
           <ImageBackground source={require('../assets/login/background.png')} style={styles.backgroundImage}
-                           resizeMode="stretch"
-                           onClick={this.easterEgg}>
+            resizeMode="stretch"
+            onClick={this.easterEgg}>
             <TouchableOpacity
               onPress={this.easterEgg}
-              style={{height: 100, width: 100,}}
+              style={{ height: 100, width: 100, }}
             >
             </TouchableOpacity>
             <View style={[styles.halfView, styles.topView]}>
               <ImageBackground source={require('../assets/login/textBox.png')} style={styles.loginInput}
-                               resizeMode="stretch">
+                resizeMode="stretch">
                 <TextInput style={[styles.textInput, this.state.buttonDynamicStyle]} underlineColorAndroid="transparent"
-                           onFocus={this.loginFocus}
-                           onChangeText={this.loginChange}
-                           value={usernameValue}>
+                  onFocus={this.loginFocus}
+                  onChangeText={this.loginChange}
+                  value={usernameValue}>
                 </TextInput>
               </ImageBackground>
             </View>
             <View style={[styles.halfView, styles.bottomView]}>
               <ImageBackground source={require('../assets/login/textBox.png')}
-                               style={[styles.loginInput, styles.passwordInput]} resizeMode="stretch">
+                style={[styles.loginInput, styles.passwordInput]} resizeMode="stretch">
                 <Image source={require('../assets/login/passwordIcon.png')} style={styles.lockImage}
-                       resizeMode="stretch"/>
+                  resizeMode="stretch" />
                 <TextInput style={[styles.textInput, this.state.buttonDynamicStyle]} underlineColorAndroid="transparent"
-                           secureTextEntry={true}
-                           onFocus={this.passwordFocus}
-                           onChangeText={this.passwordChange}
-                           value={passwordValue}/>
+                  secureTextEntry={true}
+                  onFocus={this.passwordFocus}
+                  onChangeText={this.passwordChange}
+                  value={passwordValue} />
               </ImageBackground>
               <TouchableOpacity
                 onPress={this.sendLoginCreds}>
                 <ImageBackground source={require('../assets/login/button.png')}
-                                 style={[styles.loginButton, styles.passwordInput]} resizeMode="stretch">
+                  style={[styles.loginButton, styles.passwordInput]} resizeMode="stretch">
                   <Text style={[styles.loginText, this.state.buttonDynamicStyle]}>LOGIN</Text>
                 </ImageBackground>
               </TouchableOpacity>
 
-              {/*<TouchableOpacity
+              <TouchableOpacity
                 onPress={this.props.onSignUpPress}>
                 <ImageBackground source={require('../assets/login/button.png')} style={[styles.loginButton, styles.passwordInput]} resizeMode="stretch">
                   <Text style={[styles.loginText, this.state.buttonDynamicStyle]}>SIGN UP</Text>
                 </ImageBackground>
-              </TouchableOpacity>*/}
+              </TouchableOpacity>
               <View style={styles.rememberView}>
                 <TouchableOpacity onPress={this.rememberPress}>
                   <Image
                     source={!this.state.remember ? require('../assets/login/checkBox.png') : require('../assets/login/checkBox-1.png')}
-                    style={styles.checkBoxImage} resizeMode="stretch"/>
+                    style={styles.checkBoxImage} resizeMode="stretch" />
                 </TouchableOpacity>
                 <Text style={[styles.checkboxText, this.state.buttonDynamicStyle]}>Remember me</Text>
               </View>

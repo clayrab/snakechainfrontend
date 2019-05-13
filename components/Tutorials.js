@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, SafeAreaView, ImageBackground, ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import { Image, SafeAreaView, ImageBackground, ScrollView, View, Text, TouchableOpacity, AsyncStorage } from 'react-native';
 import { Font } from "expo";
 import { normalize } from "../utils/FontNormalizer";
 
@@ -159,7 +159,7 @@ export default class Tutorials extends React.Component {
               Go to your mine and start playing now!
             </Text>
           </ImageBackground>
-          <TouchableOpacity onPress={this.props.onDone} style={styles.playNowContainer}>
+          <TouchableOpacity onPress={this.onDone} style={styles.playNowContainer}>
             <Image source={require("../assets/tutorials/PlayNow.png")}
               style={styles.playNowImage} />
           </TouchableOpacity>
@@ -168,6 +168,11 @@ export default class Tutorials extends React.Component {
       </ScrollView>
     </View>
   );
+
+  onDone = async () => {
+    await AsyncStorage.removeItem("LAST_REGISTERED");
+    this.props.onDone();
+  }
 
   render() {
     const background = this.state.page === 4 ?
@@ -252,7 +257,6 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: 20,
-    // paddingBottom: 30
   },
   tabContainer: {
     flexDirection: 'row',

@@ -1,4 +1,5 @@
 import React from 'react';
+import {AsyncStorage} from 'react-native';
 import {Loop, Stage, World, Body, Sprite} from 'react-game-kit/native';
 import SocketIOClient from 'socket.io-client';
 
@@ -273,12 +274,12 @@ export default class App extends React.Component {
     }
   }
 
-  async loggedIn(jwt) {
-    //console.log("LoggedIn")
+  async loggedIn(jwt, username) {
     await asyncStore("jwt", jwt);
     if (this.state.screen == screens.LOGIN) {
-      // await this.setState({screen: screens.HOME});
-      await this.setState({screen: screens.TUTORIALS});
+      let firstLogin = await AsyncStorage.getItem("LAST_REGISTERED");
+      let screen = firstLogin && firstLogin == username ? screens.TUTORIALS : screens.HOME; 
+      await this.setState({screen});
     }
     this.loadUser(jwt);
     try {
@@ -558,7 +559,7 @@ export default class App extends React.Component {
     this.setState({screen: screens.LOGIN});
   }
 
-  onHomePage = () => {
+  onHomePage = async () => {
     this.setState({screen: screens.HOME});
   }
 
