@@ -19,12 +19,14 @@ import ErrorOverlay from './components/ErrorOverlay.js';
 import GameOverOverlay from './components/GameOverOverlay.js';
 import Homepage from './components/Homepage.js';
 import Login from './components/Login.js';
+import LoginChoose from './components/LoginChoose.js';
 import Loading from './components/Loading.js';
 import LoadingOverlay from './components/LoadingOverlay.js';
 import PauseOverlay from './components/PauseOverlay.js';
 import PowerupOverlay from './components/PowerupOverlay.js';
 import ScreenView from './components/ScreenView.js';
-import SignUp from './components/Signup.js';
+import Signup from './components/Signup.js';
+import SignupChoose from './components/SignupChoose.js';
 import SnakeTown from './components/SnakeTown.js';
 import StartGameOverlay from './components/StartGameOverlay.js';
 import Wallet from './components/Wallet.js';
@@ -57,6 +59,7 @@ const connectionConfig = {
 var screens = {
   "GAME": 0, "HOME": 1, "LOADING": 2, "PREFERENCES": 3, "PROFILE": 4,
   "ACCOUNTHISTORY": 5, "GAMEHISTORY": 6, "LOGIN": 7, "SNAKETOWN": 8, "WALLET": 9,
+  "LOGINCHOOSE": 10, "SIGNUPCHOOSE": 11, "SIGNUP": 12,
 };
 var overlays = {
   "PAUSE": 0, "GAMEOVER": 1, "MINE": 2, "AREYOUSURE": 3, "LOADING": 4,
@@ -87,7 +90,7 @@ export default class App extends React.Component {
         }
       },
       running: false,
-      screen: screens.LOGIN,
+      screen: screens.LOGINCHOOSE,
       overlay: overlays.STARTGAME,
       pressedButton: CONSTANTS.DPADSTATES.UP,
       toggleReset: true,
@@ -119,7 +122,7 @@ export default class App extends React.Component {
       errorParagraph: "",
       //powerups: null
     };
-    this.loggedIn = this.loggedIn.bind(this);
+    //this.loggedIn = this.loggedIn.bind(this);
     this.closeOverlay = this.closeOverlay.bind(this);
     this.restart = this.restart.bind(this);
     this.start = this.start.bind(this);
@@ -206,8 +209,9 @@ export default class App extends React.Component {
     }
   }
 
-  async loggedIn(jwt) {
-    //console.log("LoggedIn")
+  loggedIn = async (jwt) => {
+    console.log("LoggedIn")
+    console.log(jwt)
     await asyncStore("jwt", jwt);
     if (this.state.screen == screens.LOGIN) {
       await this.setState({screen: screens.HOME});
@@ -437,7 +441,15 @@ export default class App extends React.Component {
   onWallet = () => {
     this.setState({screen: screens.WALLET, overlay: -1});
   }
-
+  goToLogin = () => {
+    this.setState({screen: screens.LOGIN, overlay: -1});
+  }
+  goToSignup = () => {
+    this.setState({screen: screens.SIGNUP, overlay: -1});
+  }
+  goToSignupChoose = () => {
+    this.setState({screen: screens.SIGNUPCHOOSE, overlay: -1});
+  }
   closeOverlay() {
     this.setState({running: true, overlay: -1});
   }
@@ -466,19 +478,13 @@ export default class App extends React.Component {
         >
         </Homepage>
       );
+    } else if (this.state.screen == screens.LOGINCHOOSE) {
+      return (
+        <LoginChoose goToLogin={this.goToLogin} goToSignupChoose={this.goToSignupChoose} loggedIn={this.loggedIn}/>
+      );
     } else if (this.state.screen == screens.LOGIN) {
       return (
         <Login loggedIn={this.loggedIn}/>
-        //<AccountHistory />
-        //<ViewSponsor />
-        //<PurchaseTicket />
-        //<PurchasedTicket />
-        //<Success />
-        //<Fail />
-        //<GameOverview />
-        // <Paused/>
-        //<EditProfile/>
-        //<ChangePassword/>
       );
     } else if (this.state.screen == screens.WALLET) {
       return (
@@ -486,7 +492,11 @@ export default class App extends React.Component {
       );
     } else if (this.state.screen == screens.SIGNUP) {
       return (
-        <SignUp/>
+        <Signup/>
+      );
+    } else if (this.state.screen == screens.SIGNUPCHOOSE) {
+      return (
+        <SignupChoose goToSignup={this.goToSignup}/>
       );
     } else if (this.state.screen == screens.PROFILE) {
       return (
