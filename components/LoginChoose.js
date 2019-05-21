@@ -59,7 +59,13 @@ export default class LoginChoose extends React.Component {
       }
     }
   }
-
+  easterEgg = async () => {
+    console.log("easteregg")
+    easterEggCount = easterEggCount + 1;
+    if (easterEggCount >= 5) {
+      this.props.loggedIn("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ29vZ2xlOmNsYXl0b25yYWJlbmRhQGdtYWlsLmNvbSIsInB1YmtleSI6IjB4NTlGMWJlMzg4MjczRUJmOTkwZDUyMTk3MDJiNzIzYUM0YjU5MkNFQiIsInJhbmRvbVNlY3JldCI6IjljOGFkMTk4NzJmMTRmYzRlZGJhMjhkMGY1ODQxZTE1YmY5MzBjNmJiYmFkZDQ0MTBhYjhkMjEwNDBmMjllODZmNmMxODExZTYzOTgxMDA0NjM3MWFiNGY5NWJmODgwYmViNjczZDIxMjY4MWRhZTAxZGJhY2RlNWZiOTQ3N2MyMzQ3ODA1NDk4NTU2OWI2MjZjNWVmZDkyMTJhNjViNjgzN2EyMDRmNjJhMzZhYTViMTY5ODI2ZjAyMzYzMWNlZWI4ZDMzMTAwNGU3Mjc5MWNlMmNhNzI3ZWJhYmRhNTBhYTBiYzQ5OTdiNGYwNWZjMmU2OGUyMDY0MmJmMTY4OWI0MzVmN2JkZTBjOWJkNGEyYzYwNWIxNTkzZGE2OTc2MTk0ZTQ5ZjFlNWY0ZGZiYjUzMzEwNTE4ZGVjNjhhOTMzZTA1NjI3ZDdhNjRhODA0NzRhNDdlMGNiNzZhMzk3OTcwOTMyNmEwYTE5YWVjMGNlMDFmOTIzNjI5ODBhOGFlZTVlMTk5OTFkOTcyNDZiNTliMzMxMGI5MGFmN2RhMjc3YmM4YmFiMGY1OTNkYjZjMTM5OGZjMTQ2N2Q4MWIzYjkxZGRhZDJhN2JkMDI4MjQ0MTMxN2Y2NTQyNGJmNGM2ZTBiNDkzNmUzZWQ3MGY0ZTdkMzhhYzlmMWU1ZmU3M2FiIiwiaWF0IjoxNTU4NDQzMTcyLCJleHAiOjE1NTg2MTU5NzJ9.Ahfv1nyRmuSW-meFWACZat7U_J5KY6anB4djJxTthBw");
+    }
+  }
   render() {
     if (this.state.loading) {
       return (
@@ -69,8 +75,12 @@ export default class LoginChoose extends React.Component {
       return (
         <ScreenView style={styles.screen}>
           <ImageBackground source={require('../assets/login/background.png')} style={styles.backgroundImage}
-                           resizeMode="stretch"
-                           onClick={this.easterEgg}>
+                           resizeMode="stretch">
+                           <TouchableOpacity
+                             onPress={this.easterEgg}
+                             style={{height: 100, width: 100, position: "absolute", left: 0}}
+                           >
+                           </TouchableOpacity>
             <TouchableOpacity
               onPress={this.props.goToLogin}>
               <ImageBackground source={require('../assets/login/button.png')}

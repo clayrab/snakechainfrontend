@@ -15,6 +15,7 @@ import ScreenView from '../components/ScreenView.js';
 import {context} from "../utils/Context.js";
 import Loading from './Loading.js';
 import {normalize} from '../utils/FontNormalizer.js';
+import {doGoogleOauth} from '../utils/Oauth.js';
 
 let loginPlaceHolder = 'Login/Phone';
 let passwordPlaceHolder = 'Password';

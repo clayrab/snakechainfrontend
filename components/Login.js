@@ -140,7 +140,7 @@ export default class Login extends React.Component {
       this.setState({loading: false});
     }
   }
-  
+
   render() {
     if (this.state.loading) {
       return (
@@ -160,8 +160,7 @@ export default class Login extends React.Component {
 
         <ScreenView style={styles.screen}>
           <ImageBackground source={require('../assets/login/background.png')} style={styles.backgroundImage}
-                           resizeMode="stretch"
-                           onClick={this.easterEgg}>
+                           resizeMode="stretch">
             <TouchableOpacity
               onPress={this.easterEgg}
               style={{height: 100, width: 100,}}
