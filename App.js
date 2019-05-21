@@ -135,20 +135,20 @@ export default class App extends React.Component {
 
   async componentDidMount() {
     try {
-      var response = await fetch(`${context.host}:${context.port}/getPrices`, {
-        method: "GET", // *GET, POST, PUT, DELETE, etc.
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      });
-      var resp = await response.json();
-      if (resp.error) {
-        alert(resp.error);
-      } else if (resp.prices) {
-        this.setState({prices: resp.prices});
-      } else {
-        alert("error retrieving prices");
-      }
+      // var response = await fetch(`${context.host}:${context.port}/getPrices`, {
+      //   method: "GET", // *GET, POST, PUT, DELETE, etc.
+      //   headers: {
+      //     "Content-Type": "application/x-www-form-urlencoded",
+      //   },
+      // });
+      // var resp = await response.json();
+      // if (resp.error) {
+      //   alert(resp.error);
+      // } else if (resp.prices) {
+      //   this.setState({prices: resp.prices});
+      // } else {
+      //   alert("error retrieving prices");
+      // }
     } catch (err) {
       console.log("there was an error retreiving prices.");
       console.log(err)
@@ -173,39 +173,29 @@ export default class App extends React.Component {
     })
   }
   loadUser = async (jwt) => {
-    let prom = async () => {
-      return await new Promise((resolve, reject) => {
-        fetch(`${context.host}:${context.port}/getUser`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json; charset=utf-8",
-            "Authorization": "JWT " + jwt,
-          },
-        }).then(async (response) => {
-          var resp = await response.json();
-          if (!resp.error) {
-            if (resp) {
-              resolve({loadingUser: false, user: resp})
-            } else {
-              alert("There was an error, no response.");
-              resolve({loadingUser: false});
-            }
-          } else {
-            alert(resp.error);
-            resolve({loadingUser: false});
-          }
-        }).catch(err => {
-          console.log("there was an error retreiving user.");
-          console.log(err)
-          reject(err);
-        });
+    try{
+      let response = await fetch(`${context.host}:${context.port}/getUser`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          "Authorization": "JWT " + jwt,
+        },
       });
-    }
-    try {
-      let state = await prom();
-      await this.setState(state);
-    } catch (err) {
-      this.genericNetworkError();
+      var resp = await response.json();
+      if (!resp.error) {
+        if (resp) {
+          await this.setState({loadingUser: false, user: resp});
+        } else {
+          alert("There was an error, no response.");
+          await this.setState({loadingUser: false});
+        }
+      } else {
+        alert(resp.error);
+        await this.setState({loadingUser: false});
+      }
+    }catch(err){
+      console.log("****** error loading user ******")
+      //console.log(err)
     }
   }
 
@@ -213,7 +203,7 @@ export default class App extends React.Component {
     console.log("LoggedIn")
     console.log(jwt)
     await asyncStore("jwt", jwt);
-    if (this.state.screen == screens.LOGIN) {
+    if (this.state.screen == screens.LOGINCHOOSE || this.state.screen == screens.LOGIN) {
       await this.setState({screen: screens.HOME});
     }
     this.loadUser(jwt);

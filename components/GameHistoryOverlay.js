@@ -58,38 +58,27 @@ export default class GameHistoryOverlay extends React.Component {
         fontFamily: 'riffic-free-bold',
       }
     });
-    let prom = async () => {
-      return await new Promise((resolve, reject) => {
-        getFromAsyncStore("jwt").then((jwt) => {
-          fetch(`${context.host}:${context.port}/getGames`, {
-            method: "GET", // *GET, POST, PUT, DELETE, etc.
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-              "Authorization": "JWT " + jwt,
-            },
-          }).then(async (response) => {
-            var resp = await response.json();
-            if (resp.error) {
-              alert(resp.error);
-              resolve({loading: false});
-            } else if (resp) {
-              resolve({games: resp.games});
-            }
-          }).catch(
-            err => {
-              throw err
-            });
-        }).catch(err => {
-          throw err
-        });
-      }).catch(err => {
-        throw err
-      });
-    }
-    //let state = await makeRetry()(1500, prom);
-    let state = await prom();
-    if (this.isComponentMounted) {
-      this.setState(state);
+    try{
+      let jwt = await getFromAsyncStore("jwt");
+      let response = await fetch(`${context.host}:${context.port}/getGames`, {
+        method: "GET", // *GET, POST, PUT, DELETE, etc.
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": "JWT " + jwt,
+        },
+      })
+      var resp = await response.json();
+      if (resp.error) {
+        alert(resp.error);
+        this.setState({loading: false});
+      } else if (resp) {
+        this.setState({games: resp.games, loading: false});
+      }
+      if (this.isComponentMounted) {
+        this.setState({games: resp.games});
+      }
+    }catch(err){
+      console.log("****** error loading game history ******")
     }
   }
 
