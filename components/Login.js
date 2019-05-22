@@ -194,13 +194,6 @@ export default class Login extends React.Component {
                   <Text style={[styles.loginText, this.state.buttonDynamicStyle]}>LOGIN</Text>
                 </ImageBackground>
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={this.doGoogleOauth}>
-                <ImageBackground source={require('../assets/login/button.png')}
-                                 style={[styles.loginButton, styles.passwordInput]} resizeMode="stretch">
-                  <Text style={[styles.loginText, this.state.buttonDynamicStyle]}>GOOGLE LOGIN</Text>
-                </ImageBackground>
-              </TouchableOpacity>
               {/*<View style={styles.rememberView}>
                 <TouchableOpacity onPress={this.rememberPress}>
                   <Image source={ this.state.remember ? require('../assets/login/checkBox.png') : require('../assets/login/checkBox-1.png')} style={styles.checkBoxImage} resizeMode="stretch"/>

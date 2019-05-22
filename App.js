@@ -135,20 +135,20 @@ export default class App extends React.Component {
 
   async componentDidMount() {
     try {
-      // var response = await fetch(`${context.host}:${context.port}/getPrices`, {
-      //   method: "GET", // *GET, POST, PUT, DELETE, etc.
-      //   headers: {
-      //     "Content-Type": "application/x-www-form-urlencoded",
-      //   },
-      // });
-      // var resp = await response.json();
-      // if (resp.error) {
-      //   alert(resp.error);
-      // } else if (resp.prices) {
-      //   this.setState({prices: resp.prices});
-      // } else {
-      //   alert("error retrieving prices");
-      // }
+      var response = await fetch(`${context.host}:${context.port}/getPrices`, {
+        method: "GET", // *GET, POST, PUT, DELETE, etc.
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      });
+      var resp = await response.json();
+      if (resp.error) {
+        alert(resp.error);
+      } else if (resp.prices) {
+        this.setState({prices: resp.prices});
+      } else {
+        alert("error retrieving prices");
+      }
     } catch (err) {
       console.log("there was an error retreiving prices.");
       console.log(err)

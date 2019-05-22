@@ -11,11 +11,12 @@ import {
 } from 'react-native';
 import { AppAuth, Constants, Font} from 'expo';
 
-import ScreenView from '../components/ScreenView.js';
-import {context} from "../utils/Context.js";
 import Loading from './Loading.js';
-import {normalize} from '../utils/FontNormalizer.js';
-import {doGoogleOauth} from '../utils/Oauth.js';
+import ScreenView from '../components/ScreenView.js';
+
+import { context } from "../utils/Context.js";
+import { normalize } from '../utils/FontNormalizer.js';
+import { doGoogleOauth, sendGoogleToken } from '../utils/Oauth.js';
 
 let loginPlaceHolder = 'Login/Phone';
 let passwordPlaceHolder = 'Password';
@@ -45,8 +46,6 @@ export default class LoginChoose extends React.Component {
       let token = await doGoogleOauth(false);
       if(token) {
         await this.setState({loading: false});
-        console.log("token")
-        console.log(token)
         this.props.loggedIn(token);
       } else {
         await this.setState({loading: false});
@@ -63,7 +62,7 @@ export default class LoginChoose extends React.Component {
     console.log("easteregg")
     easterEggCount = easterEggCount + 1;
     if (easterEggCount >= 5) {
-      this.props.loggedIn("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ29vZ2xlOmNsYXl0b25yYWJlbmRhQGdtYWlsLmNvbSIsInB1YmtleSI6IjB4NTlGMWJlMzg4MjczRUJmOTkwZDUyMTk3MDJiNzIzYUM0YjU5MkNFQiIsInJhbmRvbVNlY3JldCI6IjljOGFkMTk4NzJmMTRmYzRlZGJhMjhkMGY1ODQxZTE1YmY5MzBjNmJiYmFkZDQ0MTBhYjhkMjEwNDBmMjllODZmNmMxODExZTYzOTgxMDA0NjM3MWFiNGY5NWJmODgwYmViNjczZDIxMjY4MWRhZTAxZGJhY2RlNWZiOTQ3N2MyMzQ3ODA1NDk4NTU2OWI2MjZjNWVmZDkyMTJhNjViNjgzN2EyMDRmNjJhMzZhYTViMTY5ODI2ZjAyMzYzMWNlZWI4ZDMzMTAwNGU3Mjc5MWNlMmNhNzI3ZWJhYmRhNTBhYTBiYzQ5OTdiNGYwNWZjMmU2OGUyMDY0MmJmMTY4OWI0MzVmN2JkZTBjOWJkNGEyYzYwNWIxNTkzZGE2OTc2MTk0ZTQ5ZjFlNWY0ZGZiYjUzMzEwNTE4ZGVjNjhhOTMzZTA1NjI3ZDdhNjRhODA0NzRhNDdlMGNiNzZhMzk3OTcwOTMyNmEwYTE5YWVjMGNlMDFmOTIzNjI5ODBhOGFlZTVlMTk5OTFkOTcyNDZiNTliMzMxMGI5MGFmN2RhMjc3YmM4YmFiMGY1OTNkYjZjMTM5OGZjMTQ2N2Q4MWIzYjkxZGRhZDJhN2JkMDI4MjQ0MTMxN2Y2NTQyNGJmNGM2ZTBiNDkzNmUzZWQ3MGY0ZTdkMzhhYzlmMWU1ZmU3M2FiIiwiaWF0IjoxNTU4NDQzMTcyLCJleHAiOjE1NTg2MTU5NzJ9.Ahfv1nyRmuSW-meFWACZat7U_J5KY6anB4djJxTthBw");
+      sendGoogleToken("eyJhbGciOiJSUzI1NiIsImtpZCI6IjJjM2ZhYzE2YjczZmM4NDhkNDI2ZDVhMjI1YWM4MmJjMWMwMmFlZmQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI2MjA1MDM0MDM1MDEtdjQ2djVrazJnZzBwNzJpNm9pMGQyZThvbm0wMXA2YTkuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI2MjA1MDM0MDM1MDEtdjQ2djVrazJnZzBwNzJpNm9pMGQyZThvbm0wMXA2YTkuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTgzNzU1NDY0MTk1NzcyNDg1MTgiLCJlbWFpbCI6ImNsYXl0b25yYWJlbmRhQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhdF9oYXNoIjoiVmtyX1REaUlCX2VlZERCc1lDcXYxQSIsIm5vbmNlIjoiN21TczlrXzNldlNFVl9EeFExT21GUmprZEpKdjNmNEwzT3ZGSFpBNWI1QSIsIm5hbWUiOiJDbGF5dG9uIFJhYmVuZGEiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tLy1SVGVuWl9GbHJNWS9BQUFBQUFBQUFBSS9BQUFBQUFBQUJ4VS81WkpidXNCM0pPYy9zOTYtYy9waG90by5qcGciLCJnaXZlbl9uYW1lIjoiQ2xheXRvbiIsImZhbWlseV9uYW1lIjoiUmFiZW5kYSIsImxvY2FsZSI6ImVuIiwiaWF0IjoxNTU4NTEwNTA2LCJleHAiOjE1NTg1MTQxMDZ9.aJhCDRIvpBkUFfu4MDPDg9m4QP3RYiuSoOIJq1dKzfX3AlrdnM9ws2Z5hlfl-R2DdNefXU83YEmrLIOWMp99jvtsU110Sp9qtaUQNl6e5y4GlHSPQs-LFRvx3Z82i6MsBnmERo3DkbQkBE5icgr5WMFZkD4-Qm25GPddseelf2z-ABTtBgiY1x1ZCtkF1jOq7aXRtKBzZory9qeRQlPm8n8qB8SEvXoFiAwGhbO7Bi3kgMiNnJPHP47TZnrX-Dp1gh5Ae-_A8XUSi42cxPp1NG45Y7A2BHZOyi3PAdtju2U3pRKEiTx6PuPHwBOVLkJ7aBYoJFoEC9EdGYZ4GMasCg")
     }
   }
   render() {

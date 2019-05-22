@@ -2,6 +2,57 @@ import { Platform } from 'react-native';
 import { AppAuth, Constants } from 'expo';
 import {context} from "../utils/Context.js";
 
+let environments = {
+  "expo-ios": {
+    url: "loginGoogleIOSTest",
+    signupUrl: "createGoogleUserIOSTest",
+    clientId: '620503403501-v46v5kk2gg0p72i6oi0d2e8onm01p6a9.apps.googleusercontent.com',
+  },
+  "expo-android": {
+    url: "loginGoogleAndroidTest",
+    signupUrl: "createGoogleUserAndroidTest",
+    clientId: '620503403501-d6stchtjia63djtggiaaespeapl0ist3.apps.googleusercontent.com',
+  },
+  "standalone-ios": {
+    url: "loginGoogleIOS",
+    signupUrl: "createGoogleUserIOS",
+    clientId: '620503403501-k6v8ghht8dr639uhhjr8gpk4p9iogbq2.apps.googleusercontent.com',
+  },
+  "standalone-android": {
+    url: "loginGoogleAndroid",
+    signupUrl: "createGoogleUserAndroid",
+    clientId: '620503403501-os62lfr7up8q48cpklcvlihd1annvpoi.apps.googleusercontent.com',
+  }
+};
+
+exports.sendGoogleToken = async(token, signup) => {
+  console.log("sendGoogleToken")
+  console.log(token)
+  if(environments[Constants.appOwnership + "-" + Platform.OS]) {
+    let url = environments[Constants.appOwnership + "-" + Platform.OS].url;
+    if(signup) {
+      url = environments[Constants.appOwnership + "-" + Platform.OS].signupUrl;
+    }
+    let data = { "id_token": token };
+    console.log(`${context.host}:${context.port}/${url}`)
+    var response = await fetch(`${context.host}:${context.port}/${url}`, {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    var resp = await response.json();
+    if(resp.token){
+      return resp.token;
+    } else {
+      throw "no token in response";
+    }
+  } else {
+    throw("Unsupported environment: " + Constants.appOwnership + "-" + Platform.OS)
+  }
+}
+
 exports.doGoogleOauth = async(signup = false) => {
   // -Expo iOS clientID(host.exp.exponent bundleId):
   // 620503403501-v46v5kk2gg0p72i6oi0d2e8onm01p6a9.apps.googleusercontent.com
@@ -17,48 +68,13 @@ exports.doGoogleOauth = async(signup = false) => {
     clientId: null,
     scopes: ['profile', 'email', 'openid'],
   };
-  let url = "";
-  let signupUrl = "";
-  if(Constants.appOwnership == "expo"){
-    if(Platform.OS === 'ios'){
-      url = "loginGoogleIOSTest";
-      signupUrl = "createGoogleUserIOSTest";
-      config.clientId = '620503403501-v46v5kk2gg0p72i6oi0d2e8onm01p6a9.apps.googleusercontent.com';
-    } else if(Platform.OS === 'android'){
-      url = "loginGoogleAndroidTest";
-      signupUrl = "createGoogleUserAndroidTest";
-      config.clientId = '620503403501-d6stchtjia63djtggiaaespeapl0ist3.apps.googleusercontent.com';
-    }
+  if(environments[Constants.appOwnership + "-" + Platform.OS]) {
+    config.clientId = environments[Constants.appOwnership + "-" + Platform.OS].clientId;
+    let tokenResponse = await AppAuth.authAsync(config);
+    console.log("tokenResponse.idToken")
+    console.log(tokenResponse.idToken)
+    return await exports.sendGoogleToken(tokenResponse.idToken, signup)
   } else {
-    if(Platform.OS === 'ios'){
-      url = "loginGoogleIOS";
-      signupUrl = "createGoogleUserIOS";
-      config.clientId = '620503403501-k6v8ghht8dr639uhhjr8gpk4p9iogbq2.apps.googleusercontent.com';
-    } else if(Platform.OS === 'android'){
-      url = "loginGoogleAndroid";
-      signupUrl = "createGoogleUserAndroid";
-      config.clientId = '620503403501-os62lfr7up8q48cpklcvlihd1annvpoi.apps.googleusercontent.com';
-    }
-  }
-  if(signup) {
-    url = signupUrl;
-  }
-  if(config.clientId === null){
-    throw "Unsupported platform";
-  }
-  const tokenResponse = await AppAuth.authAsync(config);
-  let data = { "id_token": tokenResponse.idToken };
-  var response = await fetch(`${context.host}:${context.port}/${url}`, {
-    method: "POST", // *GET, POST, PUT, DELETE, etc.
-    body: JSON.stringify(data),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  var resp = await response.json();
-  if(resp.token){
-    return resp.token;
-  } else {
-    throw "no token in response";
+    throw("Unsupported environment: " + Constants.appOwnership + "-" + Platform.OS)
   }
 }
