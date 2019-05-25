@@ -1,2 +1,4 @@
-export let context = {host: 'http://202.182.117.196', port: "3001", socketPort: "3002"};
-//export let context = {host: 'http://192.168.1.5', port: "3001", socketPort: "3002"};
+let QA = 'http://202.182.117.196';
+let QA2 = 'http://45.77.26.205';
+let LOCAL = 'http://192.168.1.7';
+export let context = {host: QA2, port: "3001", socketPort: "3002"};

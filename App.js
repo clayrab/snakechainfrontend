@@ -275,7 +275,7 @@ export default class App extends React.Component {
     }
   }
 
-  async loggedIn(jwt, username) {
+  loggedIn = async(jwt, username) => {
     await asyncStore("jwt", jwt);
     if (this.state.screen == screens.LOGINCHOOSE || this.state.screen == screens.LOGIN) {
       let firstLogin = await AsyncStorage.getItem("LAST_REGISTERED");
