@@ -7,13 +7,17 @@ import {
   ImageBackground,
   Image,
   TextInput,
-  AsyncStorage
+  AsyncStorage,
+  Platform
 } from 'react-native';
+import { AppAuth, Constants, Font} from 'expo';
+
 import ScreenView from '../components/ScreenView.js';
-import { Font } from 'expo';
+
 import { context } from "../utils/Context.js";
 import Loading from './Loading.js';
 import { normalize } from '../utils/FontNormalizer.js';
+
 
 let loginPlaceHolder = 'Login/Phone';
 let passwordPlaceHolder = 'Password';

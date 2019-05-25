@@ -1,5 +1,5 @@
 import React from 'react';
-import {AsyncStorage} from 'react-native';
+import {AsyncStorage, Linking} from 'react-native';
 import {Loop, Stage, World, Body, Sprite} from 'react-game-kit/native';
 import SocketIOClient from 'socket.io-client';
 
@@ -19,12 +19,14 @@ import ErrorOverlay from './components/ErrorOverlay.js';
 import GameOverOverlay from './components/GameOverOverlay.js';
 import Homepage from './components/Homepage.js';
 import Login from './components/Login.js';
+import LoginChoose from './components/LoginChoose.js';
 import Loading from './components/Loading.js';
 import LoadingOverlay from './components/LoadingOverlay.js';
 import PauseOverlay from './components/PauseOverlay.js';
 import PowerupOverlay from './components/PowerupOverlay.js';
 import ScreenView from './components/ScreenView.js';
-import SignUp from './components/Signup.js';
+import Signup from './components/Signup.js';
+import SignupChoose from './components/SignupChoose.js';
 import SnakeTown from './components/SnakeTown.js';
 import StartGameOverlay from './components/StartGameOverlay.js';
 import Wallet from './components/Wallet.js';
@@ -62,7 +64,7 @@ const connectionConfig = {
 var screens = {
   "GAME": 0, "HOME": 1, "LOADING": 2, "PREFERENCES": 3, "PROFILE": 4,
   "ACCOUNTHISTORY": 5, "GAMEHISTORY": 6, "LOGIN": 7, "SNAKETOWN": 8, "WALLET": 9,
-  "SELECTLEVEL": 10, "SIGNUP": 11, "TUTORIALS": 12,
+  "SELECTLEVEL": 10, "SIGNUP": 11, "TUTORIALS": 12, "LOGINCHOOSE": 13, "SIGNUPCHOOSE": 14, "SIGNUP": 15,
 };
 var overlays = {
   "PAUSE": 0, "GAMEOVER": 1, "MINE": 2, "AREYOUSURE": 3, "LOADING": 4,
@@ -156,7 +158,7 @@ export default class App extends React.Component {
         }
       },
       running: false,
-      screen: screens.LOGIN,
+      screen: screens.LOGINCHOOSE,
       overlay: overlays.STARTGAME,
       level: 0,
       mode: "",
@@ -193,7 +195,7 @@ export default class App extends React.Component {
 
       //powerups: null
     };
-    this.loggedIn = this.loggedIn.bind(this);
+    //this.loggedIn = this.loggedIn.bind(this);
     this.closeOverlay = this.closeOverlay.bind(this);
     this.restart = this.restart.bind(this);
     this.start = this.start.bind(this);
@@ -228,6 +230,15 @@ export default class App extends React.Component {
       console.log(err)
       this.genericNetworkError();
     }
+    Linking.addEventListener('url', (event) => {
+      console.log("Linking.addEventListener");
+      console.log(event.url);
+    });
+    Linking.getInitialURL().then((url) => {
+      if (url) {
+        console.log('Initial url is: ' + url);
+      }
+    }).catch(err => console.error('An error occurred', err));
   }
 
   genericNetworkError = () => {
@@ -238,47 +249,37 @@ export default class App extends React.Component {
     })
   }
   loadUser = async (jwt) => {
-    let prom = async () => {
-      return await new Promise((resolve, reject) => {
-        fetch(`${context.host}:${context.port}/getUser`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json; charset=utf-8",
-            "Authorization": "JWT " + jwt,
-          },
-        }).then(async (response) => {
-          var resp = await response.json();
-          if (!resp.error) {
-            if (resp) {
-              resolve({loadingUser: false, user: resp})
-            } else {
-              alert("There was an error, no response.");
-              resolve({loadingUser: false});
-            }
-          } else {
-            alert(resp.error);
-            resolve({loadingUser: false});
-          }
-        }).catch(err => {
-          console.log("there was an error retreiving user.");
-          console.log(err)
-          reject(err);
-        });
+    try{
+      let response = await fetch(`${context.host}:${context.port}/getUser`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          "Authorization": "JWT " + jwt,
+        },
       });
-    }
-    try {
-      let state = await prom();
-      await this.setState(state);
-    } catch (err) {
-      this.genericNetworkError();
+      var resp = await response.json();
+      if (!resp.error) {
+        if (resp) {
+          await this.setState({loadingUser: false, user: resp});
+        } else {
+          alert("There was an error, no response.");
+          await this.setState({loadingUser: false});
+        }
+      } else {
+        alert(resp.error);
+        await this.setState({loadingUser: false});
+      }
+    }catch(err){
+      console.log("****** error loading user ******")
+      //console.log(err)
     }
   }
 
   async loggedIn(jwt, username) {
     await asyncStore("jwt", jwt);
-    if (this.state.screen == screens.LOGIN) {
+    if (this.state.screen == screens.LOGINCHOOSE || this.state.screen == screens.LOGIN) {
       let firstLogin = await AsyncStorage.getItem("LAST_REGISTERED");
-      let screen = firstLogin && firstLogin == username ? screens.TUTORIALS : screens.HOME; 
+      let screen = firstLogin && firstLogin == username ? screens.TUTORIALS : screens.HOME;
       await this.setState({screen});
     }
     this.loadUser(jwt);
@@ -506,8 +507,16 @@ export default class App extends React.Component {
   onWallet = () => {
     this.setState({screen: screens.WALLET, overlay: -1});
   }
-
-  closeOverlay = () => {
+  goToLogin = () => {
+    this.setState({screen: screens.LOGIN, overlay: -1});
+  }
+  goToSignup = () => {
+    this.setState({screen: screens.SIGNUP, overlay: -1});
+  }
+  goToSignupChoose = () => {
+    this.setState({screen: screens.SIGNUPCHOOSE, overlay: -1});
+  }
+  closeOverlay() {
     this.setState({running: true, overlay: -1});
   }
   onSignUp = () => {
@@ -615,6 +624,10 @@ export default class App extends React.Component {
         //<EditProfile/>
         //<ChangePassword/>
       );
+    } else if (this.state.screen == screens.LOGINCHOOSE) {
+      return (
+        <LoginChoose goToLogin={this.goToLogin} goToSignupChoose={this.goToSignupChoose} loggedIn={this.loggedIn}/>
+      );
     } else if (this.state.screen == screens.WALLET) {
       return (
         <Wallet user={this.state.user} exit={this.exit}/>
@@ -626,6 +639,10 @@ export default class App extends React.Component {
     } else if (this.state.screen == screens.WALLET) {
       return (
         <Wallet user={this.state.user} exit={this.exit}/>
+      );
+    } else if (this.state.screen == screens.SIGNUPCHOOSE) {
+      return (
+        <SignupChoose goToSignup={this.goToSignup}/>
       );
     } else if (this.state.screen == screens.PROFILE) {
       return (
