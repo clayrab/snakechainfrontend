@@ -1,7 +1,7 @@
 import React from 'react';
-import {Animated, View, StyleSheet, TouchableOpacity, Image, ImageBackground,} from 'react-native';
-import {Audio} from 'expo';
-import {Sprite} from 'react-game-kit/native';
+import { Animated, View, StyleSheet, TouchableOpacity, Image, ImageBackground, Dimensions, Text } from 'react-native';
+import { Audio, Font } from 'expo';
+import { Sprite } from 'react-game-kit/native';
 import PropTypes from 'prop-types';
 import CONSTANTS from '../Constants.js';
 
@@ -10,8 +10,10 @@ import WallPart from './WallPart.js'
 import ScoreBoard from './ScoreBoard.js'
 import Buttons from './Buttons.js';
 import Dpad from './Dpad.js';
+import { normalize } from '../utils/FontNormalizer.js';
 
 let easterEggCount = 0;
+let dpadSize = CONSTANTS.DPADBUTTONSIZE * CONSTANTS.DPADMULT;
 export default class Snek extends Sprite {
   // static contextTypes = {
   //   loop: PropTypes.object,
@@ -39,10 +41,11 @@ export default class Snek extends Sprite {
       pelletRot: new Animated.Value(0),
       boardShake: new Animated.Value(0),
       alive: true,
-      snakeHead: {transform: [{rotate: '0deg'}]},
+      snakeHead: { transform: [{ rotate: '0deg' }] },
       walls: [],
       mushrooms: {},
-      speedEffector: 1
+      speedEffector: 1,
+      fontStyle: {}
     };
     this.board = [];
     this.wallComponents = [];
@@ -67,6 +70,14 @@ export default class Snek extends Sprite {
   async componentDidMount() {
     await this.setupAudio();
     this.context.loop.subscribe(this.update);
+    await Font.loadAsync({
+      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
+    });
+    this.setState({
+      fontStyle: {
+        fontFamily: 'riffic-free-bold',
+      }
+    });
   }
 
   componentWillUnmount() {
@@ -136,7 +147,7 @@ export default class Snek extends Sprite {
     startState.alive = this.defaultState.alive;
     startState.tail = this.makeTail(5, this.defaultState.boardX, this.defaultState.boardY);
     startState.tailIndex = 4;
-    startState.snakeHead = {transform: [{rotate: '0deg'}]};
+    startState.snakeHead = { transform: [{ rotate: '0deg' }] };
     startState.walls = this.getRandomWalls();
     startState.speedEffector = this.defaultState.speedEffector;
     return startState;
@@ -308,7 +319,7 @@ export default class Snek extends Sprite {
   // }
 
   die = async () => {
-    this.setState({alive: false});
+    this.setState({ alive: false });
     await this.playSound(this.sounds.DIE);
     await this.props.onDied(this.state.score);
   }
@@ -357,7 +368,7 @@ export default class Snek extends Sprite {
     // });
 
     this.setState({
-      pelletLocation: {x: x, y: y},
+      pelletLocation: { x: x, y: y },
       redPelletLocation: this.randomRedPelletGenerate()
     });
 
@@ -380,17 +391,17 @@ export default class Snek extends Sprite {
       isTail = this.board[y][x];
       isHead = this.state.boardX === x && this.state.boardY === y;
     }
-    return {x, y};
+    return { x, y };
   }
 
   eatRedPellet = async () => {
-    this.setState({redPelletLocation: null});
-    let addPointsPelletSound = async(howMany) => {
-      setTimeout(async() => {
+    this.setState({ redPelletLocation: null });
+    let addPointsPelletSound = async (howMany) => {
+      setTimeout(async () => {
         await this.playSound(this.sounds.EAT_PELLET_1);
-        setTimeout(async() => {
+        setTimeout(async () => {
           await this.playSound(this.sounds.EAT_PELLET_1);
-          setTimeout(async() => {
+          setTimeout(async () => {
             await this.playSound(this.sounds.EAT_PELLET_1);
           }, 500);
         }, 500);
@@ -402,46 +413,46 @@ export default class Snek extends Sprite {
       {
         name: "die",
         weight: 2.0
-      },{
+      }, {
         name: "speedup",
         weight: 20.0
-      },{
+      }, {
         name: "slowdown",
         weight: 30.0
-      },{
+      }, {
         name: "removetail",
         weight: 30.0
-      },{
+      }, {
         name: "sleepy",
         weight: 50.0
-      },{
+      }, {
         name: "addtail",
         weight: 30.0
-      },{
+      }, {
         name: "addpoints",
         weight: 30.0
       },
     ];
     const maxWeight = actions
-      .map((obj) => { return obj.weight;})
-      .reduce((total, weight) => { return total + weight;}); // sum of all weights
+      .map((obj) => { return obj.weight; })
+      .reduce((total, weight) => { return total + weight; }); // sum of all weights
     let action = this.getRandomInt(1, maxWeight);
     let nextAction = 0;
-    while(action >= 0){
-      action-=actions[nextAction].weight;
+    while (action >= 0) {
+      action -= actions[nextAction].weight;
       nextAction++;
     }
-    switch(actions[nextAction-1].name){
+    switch (actions[nextAction - 1].name) {
       case "die":
         this.die();
         break;
       case "speedup":
-        this.setState({speedEffector: 2});
-        setTimeout(() => this.setState({speedEffector: 1}), 5000);
+        this.setState({ speedEffector: 2 });
+        setTimeout(() => this.setState({ speedEffector: 1 }), 5000);
         break;
       case "slowdown":
-        this.setState({speedEffector: 0.5});
-        setTimeout(() => this.setState({speedEffector: 1}), 8666);
+        this.setState({ speedEffector: 0.5 });
+        setTimeout(() => this.setState({ speedEffector: 1 }), 8666);
         break;
       case "removetail":
         let howLong = this.getRandomInt(3, 10);
@@ -449,13 +460,13 @@ export default class Snek extends Sprite {
         break;
       case "addtail":
         let howLong2 = this.getRandomInt(3, 10);
-        for(var i = 0; i < howLong2; i++){
+        for (var i = 0; i < howLong2; i++) {
           this.growTail();
         }
         break;
       case "addpoints":
         addPointsPelletSound(3);
-        this.setState({score: this.state.score + CONSTANTS.REDPELLETSCOREBONUS*CONSTANTS.PELLETMULT});
+        this.setState({ score: this.state.score + CONSTANTS.REDPELLETSCOREBONUS * CONSTANTS.PELLETMULT });
         break;
       case "sleepy":
         this.props.showCowOverlay();
@@ -468,7 +479,7 @@ export default class Snek extends Sprite {
     await this.playSound(this.sounds.EAT_PELLET_1);
     let growLength = 0;
     let scoreCountdown = this.state.score;
-    while(scoreCountdown >= 0 && growLength < 5){
+    while (scoreCountdown >= 0 && growLength < 5) {
       growLength++;
       scoreCountdown = scoreCountdown - (10 * CONSTANTS.PELLETMULT);
     }
@@ -476,7 +487,7 @@ export default class Snek extends Sprite {
       this.growTail();
     }
     this.placePellet();
-    this.setState({score: this.state.score + (CONSTANTS.PELLETMULT * growLength), pelletCount: this.state.pelletCount + 1});
+    this.setState({ score: this.state.score + (CONSTANTS.PELLETMULT * growLength), pelletCount: this.state.pelletCount + 1 });
   }
   makeNewBoard = () => {
     let board = [];
@@ -490,14 +501,14 @@ export default class Snek extends Sprite {
     return board;
   }
 
-  reduceTail = async(howMuch) => {
+  reduceTail = async (howMuch) => {
     if (this.state.tail.length > 0) {
       howMuch = howMuch > this.state.tail.length - 1 ? this.state.tail.length - 1 : howMuch;
       let newTailStart = this.state.tail.slice(0, this.state.tailIndex + 1);
       let newTailEnd = this.state.tail.slice(this.state.tailIndex + 1, this.state.tail.length);
       //let lastTailPart = this.state.tail[this.state.tailIndex];
-      while(howMuch > 0) {
-        if(newTailStart.length > 0) {
+      while (howMuch > 0) {
+        if (newTailStart.length > 0) {
           let lastPart = newTailStart[newTailStart.length - 1];
           this.board[lastPart.props.boardY][lastPart.props.boardX] = false;
           newTailStart = newTailStart.slice(0, -1);
@@ -509,13 +520,13 @@ export default class Snek extends Sprite {
         howMuch--;
       }
       let newTailIndex = 0;
-      if(newTailStart.length > 0){
+      if (newTailStart.length > 0) {
         newTailIndex = newTailStart.length - 1;
       } else {
         newTailIndex = newTailEnd.length - 1;
       }
       let newTail = newTailStart.concat(newTailEnd);
-      await this.setState({tail: newTail, tailIndex: newTailIndex});
+      await this.setState({ tail: newTail, tailIndex: newTailIndex });
     }
   }
   growTail() {
@@ -540,7 +551,7 @@ export default class Snek extends Sprite {
       );
       newTailStart = newTailStart.concat(newTailEnd);
       let newTailIndex = this.state.tailIndex + 1;
-      this.setState({tail: newTailStart, tailIndex: newTailIndex});
+      this.setState({ tail: newTailStart, tailIndex: newTailIndex });
     } else {
       let newTail = [];
       newTail.push(
@@ -556,11 +567,11 @@ export default class Snek extends Sprite {
         </SnekPart>
       );
       let newTailIndex = this.state.tailIndex + 1;
-      this.setState({tail: newTail, tailIndex: newTailIndex});
+      this.setState({ tail: newTail, tailIndex: newTailIndex });
     }
   }
 
-  moveTail = async(direction) => {
+  moveTail = async (direction) => {
     if (this.state.tailIndex >= 0) {
       this.onLeaveBoardTile(this.state.tail[this.state.tailIndex].props.boardX, this.state.tail[this.state.tailIndex].props.boardY);
       //cheating here and not using setState. it will be fired below.
@@ -587,7 +598,7 @@ export default class Snek extends Sprite {
     var newPosX = this.boardXtoPosX(this.state.boardX);
     var newPosY = this.boardYtoPosY(this.state.boardY);
     //await this call so that onBoardTile is in the right state
-    await this.setState({tailIndex: newTailIndex, posX: newPosX, posY: newPosY});
+    await this.setState({ tailIndex: newTailIndex, posX: newPosX, posY: newPosY });
   }
 
   goUp() {
@@ -601,7 +612,7 @@ export default class Snek extends Sprite {
       this.setState({
         direction: CONSTANTS.DPADSTATES.UP,
         boardY: this.state.boardY - 1,
-        snakeHead: {transform: [{rotate: '0deg'}]}
+        snakeHead: { transform: [{ rotate: '0deg' }] }
       });
     }
   }
@@ -617,7 +628,7 @@ export default class Snek extends Sprite {
       this.setState({
         direction: CONSTANTS.DPADSTATES.DOWN,
         boardY: this.state.boardY + 1,
-        snakeHead: {transform: [{rotate: '180deg'}]}
+        snakeHead: { transform: [{ rotate: '180deg' }] }
       });
     }
   }
@@ -633,7 +644,7 @@ export default class Snek extends Sprite {
       this.setState({
         direction: CONSTANTS.DPADSTATES.LEFT,
         boardX: this.state.boardX - 1,
-        snakeHead: {transform: [{rotate: '270deg'}]}
+        snakeHead: { transform: [{ rotate: '270deg' }] }
       });
     }
   }
@@ -649,7 +660,7 @@ export default class Snek extends Sprite {
       this.setState({
         direction: CONSTANTS.DPADSTATES.RIGHT,
         boardX: this.state.boardX + 1,
-        snakeHead: {transform: [{rotate: '90deg'}]}
+        snakeHead: { transform: [{ rotate: '90deg' }] }
       });
     }
   }
@@ -713,20 +724,20 @@ export default class Snek extends Sprite {
           var speed = 0;
         } else {
           let rushEffect = 1.0;
-          if(this.props.mode === "SNAKE RUSH"){
-            rushEffect += this.state.pelletCount/10.0;
+          if (this.props.mode === "SNAKE RUSH") {
+            rushEffect += this.state.pelletCount / 10.0;
           }
           var speed = CONSTANTS.SNEKSPEED * (now - this.lastFrameTime) * this.state.speedEffector * rushEffect;
         }
         this.lastFrameTime = now;
         if (this.state.direction == CONSTANTS.DPADSTATES.UP) {
-          this.setState({posY: this.state.posY - speed});
+          this.setState({ posY: this.state.posY - speed });
         } else if (this.state.direction == CONSTANTS.DPADSTATES.DOWN) {
-          this.setState({posY: this.state.posY + speed});
+          this.setState({ posY: this.state.posY + speed });
         } else if (this.state.direction == CONSTANTS.DPADSTATES.RIGHT) {
-          this.setState({posX: this.state.posX + speed});
+          this.setState({ posX: this.state.posX + speed });
         } else if (this.state.direction == CONSTANTS.DPADSTATES.LEFT) {
-          this.setState({posX: this.state.posX - speed});
+          this.setState({ posX: this.state.posX - speed });
         }
       }
     }
@@ -749,15 +760,15 @@ export default class Snek extends Sprite {
   easterEgg = async () => {
     easterEggCount = easterEggCount + 1;
     if (easterEggCount > 6) {
-      this.setState({score: this.state.score + CONSTANTS.PELLETMULT})
+      this.setState({ score: this.state.score + CONSTANTS.PELLETMULT })
     }
   }
 
   render() {
     let redPellet = null;
     let pellet = null;
-    let snek = (<View style={[styles.snek, { left: this.state.posX, top: this.state.posY,}]}>
-      <Image source={require('../assets/gameplay/headUp.png')} style={[styles.snek, this.state.snakeHead]} resizeMode="stretch"/>
+    let snek = (<View style={[styles.snek, { left: this.state.posX, top: this.state.posY, }]}>
+      <Image source={require('../assets/gameplay/headUp.png')} style={[styles.snek, this.state.snakeHead]} resizeMode="stretch" />
     </View>);
 
     let snekHeadBack = null;
@@ -787,18 +798,18 @@ export default class Snek extends Sprite {
       pellet = (<Animated.View style={[styles.pellet, {
         left: this.boardXtoPosX(this.state.pelletLocation.x),
         top: this.boardYtoPosY(this.state.pelletLocation.y),
-        transform: [{rotate: this.spin()}],
+        transform: [{ rotate: this.spin() }],
       }]}>
-        <Image source={require('../assets/gameplay/Diamond.png')} style={styles.pellet} resizeMode="stretch"/>
+        <Image source={require('../assets/gameplay/Diamond.png')} style={styles.pellet} resizeMode="stretch" />
       </Animated.View>);
     }
     if (this.state.redPelletLocation) {
       redPellet = (<Animated.View style={[styles.redPellet, {
         left: this.boardXtoPosX(this.state.redPelletLocation.x),
         top: this.boardYtoPosY(this.state.redPelletLocation.y),
-        transform: [{rotate: this.spin()}],
+        transform: [{ rotate: this.spin() }],
       }]}>
-        <Image source={require('../assets/powerupsoverlay/mushroom_voilet.png')} style={styles.redPellet} resizeMode="stretch"/>
+        <Image source={require('../assets/powerupsoverlay/mushroom_voilet.png')} style={styles.redPellet} resizeMode="stretch" />
       </Animated.View>);
     }
     if (!this.state.alive) {
@@ -811,17 +822,17 @@ export default class Snek extends Sprite {
     //let scoreBoardHeight = screenWidth*.757/3.6;
     return (
       <View
-      //renderToHardwareTextureAndroid={true}
-      style={[styles.gameBack, {/*transferX: this.boardShakeInterpolate()*/},]}>
-        <ImageBackground source={require('../assets/gameplay/gameAreaBack.png')} style={styles.fieldBack}
-                         resizeMode="stretch">
+        //renderToHardwareTextureAndroid={true}
+        style={[styles.gameBack, {/*transferX: this.boardShakeInterpolate()*/ },]}>
+        <ImageBackground source={require('../assets/gameplay/Background.png')} style={styles.fieldBack}
+          resizeMode="stretch">
           <ScoreBoard
             score={this.state.score}
             easterEgg={this.easterEgg}
             loading={this.props.loading}
-            user={this.props.user}/>
+            user={this.props.user} />
         </ImageBackground>
-        <ImageBackground source={require('../assets/gameplay/gameArea.png')} style={styles.field} resizeMode="stretch"/>
+        {/* <ImageBackground source={require('../assets/gameplay/Background.png')} style={styles.field} resizeMode="stretch" /> */}
         {this.state.tail.map((elem) => {
           return (elem);
         })}
@@ -830,8 +841,57 @@ export default class Snek extends Sprite {
         {pellet}
         {redPellet}
         {this.wallComponents}
-        <Dpad onDpadChange={this.props.onDpadChange} pressedButton={this.props.pressedButton}></Dpad>
-        <Buttons running={this.props.running} powerUps={this.props.powerUps} pause={this.props.pause}></Buttons>
+        <View>
+          <View style={{ position: 'absolute', top: screenWidth * -0.117, zIndex: 10000, alignItems: 'center' }}>
+            <View style={{ bottom: 15, zIndex: 10001, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', width: screenWidth * 0.82, position: 'absolute' }}>
+              <TouchableOpacity>
+                <Image source={require("../assets/gameplay/MGold.png")}
+                  style={{ width: screenWidth * 0.2, height: screenWidth * 0.2, resizeMode: 'contain' }} />
+                <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={{ position: 'absolute', top: 0, left: (screenWidth * 0.1) - 10, width: 20, height: 20, justifyContent: 'center', alignItems: 'center' }}>
+                  <Text style={[this.state.fontStyle, { fontSize: normalize(12) }]}>1</Text>
+                </ImageBackground>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Image source={require("../assets/gameplay/MBlue.png")}
+                  style={{ width: screenWidth * 0.2, height: screenWidth * 0.2, resizeMode: 'contain' }} />
+                <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={{ position: 'absolute', top: 0, left: (screenWidth * 0.1) - 10, width: 20, height: 20, justifyContent: 'center', alignItems: 'center' }}>
+                  <Text style={[this.state.fontStyle, { fontSize: normalize(12) }]}>2</Text>
+                </ImageBackground>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Image source={require("../assets/gameplay/MPink.png")}
+                  style={{ width: screenWidth * 0.2, height: screenWidth * 0.2, resizeMode: 'contain' }} />
+                <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={{ position: 'absolute', top: 0, left: (screenWidth * 0.1) - 10, width: 20, height: 20, justifyContent: 'center', alignItems: 'center' }}>
+                  <Text style={[this.state.fontStyle, { fontSize: normalize(12) }]}>3</Text>
+                </ImageBackground>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Image source={require("../assets/gameplay/MRed.png")}
+                  style={{ width: screenWidth * 0.2, height: screenWidth * 0.2, resizeMode: 'contain' }} />
+                <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={{ position: 'absolute', top: 0, left: (screenWidth * 0.1) - 10, width: 20, height: 20, justifyContent: 'center', alignItems: 'center' }}>
+                  <Text style={[this.state.fontStyle, { fontSize: normalize(12) }]}>4</Text>
+                </ImageBackground>
+              </TouchableOpacity>
+            </View>
+            <Image source={require("../assets/gameplay/MushroomsHolder.png")}
+              style={{ width: screenWidth, height: screenWidth * 0.117, resizeMode: 'contain' }} />
+          </View>
+          <View style={{
+            height: dpadSize * 1.1,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <TouchableOpacity style={{}}>
+              <Image source={require("../assets/gameplay/SnowButton.png")} style={styles.snowButton} />
+            </TouchableOpacity>
+            <Dpad onDpadChange={this.props.onDpadChange} pressedButton={this.props.pressedButton}></Dpad>
+            <TouchableOpacity>
+              <Image source={require("../assets/gameplay/MushroomButton.png")} style={styles.mushroomButton} />
+            </TouchableOpacity>
+          </View>
+        </View>
+        {/* <Buttons running={this.props.running} powerUps={this.props.powerUps} pause={this.props.pause}></Buttons> */}
       </View>
     );
   }
@@ -839,6 +899,8 @@ export default class Snek extends Sprite {
 let borderWidth = 5;
 let boardWidth = CONSTANTS.BOARDWIDTH * CONSTANTS.SNEKSIZE + 2 * borderWidth + 2;
 let boardHeight = CONSTANTS.BOARDHEIGHT * CONSTANTS.SNEKSIZE + 2 * borderWidth + 2;
+const screenWidth = Dimensions.get("window").width;
+const screenHeight = Dimensions.get("window").height
 let styles = StyleSheet.create({
   gameBack: {
     position: 'absolute',
@@ -852,13 +914,14 @@ let styles = StyleSheet.create({
     height: CONSTANTS.DEVICEHEIGHT - CONSTANTS.DPADHEIGHT + 6
   },
   field: {
-    width: CONSTANTS.GAMEWIDTH,
-    backgroundColor: 'transparent',
+    width: screenWidth,
+    // backgroundColor: 'transparent',
     height: CONSTANTS.GAMEHEIGHT,
     position: "absolute",
-    top: CONSTANTS.BOARDCENTERY - (0.5 * CONSTANTS.GAMEHEIGHT),
+    // top: CONSTANTS.BOARDCENTERY - (0.5 * CONSTANTS.GAMEHEIGHT),
+    top: 0,
     //bottom: CONSTANTS.DPADMULT,
-    left: (CONSTANTS.DEVICEWIDTH / 2) - (0.5 * CONSTANTS.GAMEWIDTH),
+    // left: (CONSTANTS.DEVICEWIDTH / 2) - (0.5 * CONSTANTS.GAMEWIDTH),
     zIndex: 2,
   },
   snek: {
@@ -879,7 +942,7 @@ let styles = StyleSheet.create({
     width: CONSTANTS.SNEKSIZE + 2,
     height: CONSTANTS.SNEKSIZE + 2,
     zIndex: 3,
-    transform: [{rotate: '45deg'}],
+    transform: [{ rotate: '45deg' }],
   },
   redPellet: {
     position: "absolute",
@@ -888,4 +951,12 @@ let styles = StyleSheet.create({
     zIndex: 4,
     //tintColor: 'red'
   },
+  snowButton: {
+    width: screenWidth * 0.15,
+    height: screenWidth * 0.15,
+  },
+  mushroomButton: {
+    width: screenWidth * 0.15,
+    height: screenWidth * 0.15,
+  }
 });

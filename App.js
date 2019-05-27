@@ -133,6 +133,9 @@ const snakesData = {
   },
 
 };
+
+console.disableYellowBox = true;
+
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -702,9 +705,9 @@ export default class App extends React.Component {
             prices={this.state.prices}
             user={this.props.user}
             show={this.state.overlay == overlays.POWERUPS}/>
-          <StartGameOverlay
+          {/* <StartGameOverlay TODO: For test purposes
             show={this.state.overlay == overlays.STARTGAME}
-            onStart={this.start}/>
+            onStart={this.start}/> */}
           <ErrorOverlay
             closeOverlay={this.closeOverlay}
             show={this.state.overlay == overlays.ERROR}
