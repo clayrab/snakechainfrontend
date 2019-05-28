@@ -215,12 +215,6 @@ export default class Login extends React.Component {
                 </ImageBackground>
               </TouchableOpacity>
 
-              <TouchableOpacity
-                onPress={this.props.onSignUpPress}>
-                <ImageBackground source={require('../assets/login/button.png')} style={[styles.loginButton, styles.passwordInput]} resizeMode="stretch">
-                  <Text style={[styles.loginText, this.state.buttonDynamicStyle]}>SIGN UP</Text>
-                </ImageBackground>
-              </TouchableOpacity>
               <View style={styles.rememberView}>
                 <TouchableOpacity onPress={this.rememberPress}>
                   <Image

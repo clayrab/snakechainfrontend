@@ -205,7 +205,6 @@ export default class App extends React.Component {
     this.onDoContract = this.onDoContract.bind(this);
     this.gameOverDoContract = this.gameOverDoContract.bind(this);
     this.onConfirmTxOk = this.onConfirmTxOk.bind(this);
-    this.onSignUp = this.onSignUp.bind(this);
     this.onLogin = this.onLogin.bind(this);
     this.signedUp = this.signedUp.bind(this);
   }
@@ -495,9 +494,6 @@ export default class App extends React.Component {
   closeOverlay() {
     this.setState({running: true, overlay: -1});
   }
-  onSignUp = () => {
-    this.setState({screen: screens.SIGNUP, overlay: -1});
-  }
   onLogin = () => {
     this.setState({screen: screens.LOGIN, overlay: -1});
   }
@@ -588,7 +584,7 @@ export default class App extends React.Component {
       );
     } else if (this.state.screen == screens.LOGIN) {
       return (
-        <Login loggedIn={this.loggedIn} onSignUpPress={this.onSignUp}/>
+        <Login loggedIn={this.loggedIn}/>
         //<AccountHistory />
         //<ViewSponsor />
         //<PurchaseTicket />
