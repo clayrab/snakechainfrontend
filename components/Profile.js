@@ -34,7 +34,7 @@ export default class Profile extends React.Component {
 
   render() {
     return (
-      <ScreenView>
+      <ScreenView styles={{ backgroundColor: '#6B534E', }}>
         <Header loading={this.props.loading} user={this.props.user} onProfile={this.props.onProfile}
                 onWallet={this.props.onWallet} hasBackButton={true} exit={this.props.exit}/>
         <ImageBackground source={require('../assets/profile/imageHolderBG.png')} style={styles.profileDetailsBG}
