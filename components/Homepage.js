@@ -10,6 +10,7 @@ import {
 import {Font} from 'expo';
 import CONSTANTS from '../Constants.js';
 import {context} from "../utils/Context.js";
+import {createTransaction} from '../utils/Transactions.js';
 import {normalize} from '../utils/FontNormalizer.js';
 import {formatToken} from '../utils/uiHelperFunctions.js';
 import {asyncStore, getFromAsyncStore, removeItem} from "../utils/AsyncStore.js";
@@ -109,53 +110,28 @@ export default class Homepage extends React.Component {
       this.props.onPlayPress();
     }
   }
+
   onPurchaseTicketSelect = async (ticketType) => {
-    if (ticketType == "ETH" || ticketType == "SNK") {
-      await this.setState({overlay: overlays.LOADING});
-      let jwt = await getFromAsyncStore("jwt");
-      let price = this.props.prices.mineGamePrice;
-      if (ticketType == "SNK") {
-        price = this.props.prices.mineHaulPrice;
+    try {
+      if (ticketType == "ETH") {
+        await this.setState({overlay: overlays.LOADING});
+        let jwt = await getFromAsyncStore("jwt");
+        let price = this.props.prices.mineGamePrice;
+        // if (ticketType == "SNK") {
+        //   price = this.props.prices.mineHaulPrice;
+        // }
+        let txKey = await createTransaction(ticketType, price, jwt);
+        this.setState({
+          overlay: overlays.CONFIRMTICKET,
+          confirmAmount: price,
+          confirmTokenType: ticketType,
+          txKey: txKey
+        });
+      } else {
+        alert("Error. Ticket type must be ETH.")
       }
-      let data = {
-        amount: price,
-        type: ticketType,
-      };
-      fetch(`${context.host}:${context.port}/createTransaction`, {
-        method: "POST",
-        body: JSON.stringify(data), // body data type must match "Content-Type" header
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          "Authorization": "JWT " + jwt,
-        },
-      }).then(async (response) => {
-        var resp = await response.json();
-        if (!resp.error) {
-          if (resp) {
-            if (resp.transactionKey) {
-              this.setState({
-                overlay: overlays.CONFIRMTICKET,
-                confirmAmount: price,
-                confirmTokenType: ticketType,
-                txKey: resp.transactionKey
-              });
-            } else {
-              alert("There was an error, malformed response.");
-              this.setState({overlay: -1});
-            }
-          } else {
-            alert("There was an error, no response.");
-            this.setState({overlay: -1});
-          }
-        } else {
-          alert(resp.error);
-          this.setState({overlay: -1});
-        }
-      }).catch(err => {
-        throw err
-      });
-    } else {
-      alert("Error. Ticket type must be ETH or SNK.")
+    } catch(err) {
+      alert("There was an Error.\n" + err.toString());
     }
   }
   onConfirmTicket = async () => {
@@ -199,47 +175,21 @@ export default class Homepage extends React.Component {
     this.props.onGoToTown();
   }
   buySnkDynamite = async () => {
-    let ticketType = "SNK"
-    await this.setState({overlay: overlays.LOADING});
-    let jwt = await getFromAsyncStore("jwt");
-    let price = this.props.prices.tnt;
-    let data = {
-      amount: price,
-      type: ticketType,
-    };
-    fetch(`${context.host}:${context.port}/createTransaction`, {
-      method: "POST",
-      body: JSON.stringify(data), // body data type must match "Content-Type" header
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        "Authorization": "JWT " + jwt,
-      },
-    }).then(async (response) => {
-      var resp = await response.json();
-      if (!resp.error) {
-        if (resp) {
-          if (resp.transactionKey) {
-            this.setState({
-              overlay: overlays.CONFIRMSNKDYNAMITE,
-              confirmAmount: price,
-              confirmTokenType: ticketType,
-              txKey: resp.transactionKey
-            });
-          } else {
-            alert("There was an error, malformed response.");
-            this.setState({overlay: -1});
-          }
-        } else {
-          alert("There was an error, no response.");
-          this.setState({overlay: -1});
-        }
-      } else {
-        alert(resp.error);
-        this.setState({overlay: -1});
-      }
-    }).catch(err => {
-      throw err
-    });
+    try {
+      let ticketType = "SNK"
+      await this.setState({overlay: overlays.LOADING});
+      let jwt = await getFromAsyncStore("jwt");
+      let price = this.props.prices.tnt;
+      let txKey = await createTransaction(ticketType, price, jwt);
+      this.setState({
+        overlay: overlays.CONFIRMSNKDYNAMITE,
+        confirmAmount: price,
+        confirmTokenType: ticketType,
+        txKey: txKey
+      });
+    } catch(err) {
+      alert("There was an Error.\n" + err.toString());
+    }
   }
   onConfirmDynamite = async () => {
     await this.setState({overlay: overlays.LOADING});
@@ -290,45 +240,17 @@ export default class Homepage extends React.Component {
   }
 
   createPowerupsTransaction = async (powerupsData = this.state.powerupsData) => {
-    if (!powerupsData) return null;
-    let jwt = await getFromAsyncStore("jwt");
-    let data = {
-      amount: powerupsData.amount,
-      type: "SNK"
-    };
-    fetch(`${context.host}:${context.port}/createTransaction`, {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        "Authorization": "JWT " + jwt,
-      },
-    }).then(async (response) => {
-      let resp = await response.json();
-      if (!resp.error) {
-        if (resp) {
-          if (resp.transactionKey) {
-
-            this.setState({
-              txKey: resp.transactionKey,
-              overlay: overlays.CONFIRMPOWERUPBUYOVERLAY
-            });
-
-          } else {
-            alert("There was an error, malformed response.");
-            this.setState({overlay: -1});
-          }
-        } else {
-          alert("There was an error, no response.");
-          this.setState({overlay: -1});
-        }
-      } else {
-        alert(resp.error);
-        this.setState({overlay: -1});
-      }
-    }).catch(err => {
-      throw err
-    })
+    try {
+      if (!powerupsData) return null;
+      let jwt = await getFromAsyncStore("jwt");
+      let txKey = await createTransaction("SNK", powerupsData.amount, jwt);
+      this.setState({
+        txKey: txKey,
+        overlay: overlays.CONFIRMPOWERUPBUYOVERLAY
+      });
+    } catch(err) {
+      alert("There was an Error.\n" + err.toString());
+    }
   }
 
   buyPowerups = async () => {

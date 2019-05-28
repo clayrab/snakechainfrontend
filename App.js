@@ -8,6 +8,7 @@ import {asyncStore, getFromAsyncStore, removeItem} from "./utils/AsyncStore.js";
 import {context} from "./utils/Context.js";
 import {makeRetry} from "./utils/Retry.js";
 import {formatToken} from './utils/uiHelperFunctions.js';
+import {createTransaction} from './utils/Transactions.js';
 
 import Snek from './sprites/Snek.js';
 
@@ -361,46 +362,21 @@ export default class App extends React.Component {
 
   async onDoContract() {
     console.log("onDoContract")
-    await this.setState({overlay: overlays.LOADING});
-    let jwt = await getFromAsyncStore("jwt");
-    let price = this.state.prices.mineGamePrice;
-    let data = {
-      amount: price,
-      type: "ETH",
-    };
-    fetch(`${context.host}:${context.port}/createTransaction`, {
-      method: "POST",
-      body: JSON.stringify(data), // body data type must match "Content-Type" header
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        "Authorization": "JWT " + jwt,
-      },
-    }).then(async (response) => {
-      var resp = await response.json();
-      if (!resp.error) {
-        if (resp) {
-          if (resp.transactionKey) {
-            this.setState({
-              overlay: overlays.CONFIRMCONTRACT,
-              confirmAmount: price,
-              confirmTokenType: "ETH",
-              txKey: resp.transactionKey
-            });
-          } else {
-            alert("There was an error, malformed response.");
-            this.setState({overlay: -1});
-          }
-        } else {
-          alert("There was an error, no response.");
-          this.setState({overlay: -1});
-        }
-      } else {
-        alert(resp.error);
-        this.setState({overlay: -1});
-      }
-    }).catch(err => {
-      throw err
-    });
+    try {
+      await this.setState({overlay: overlays.LOADING});
+      let jwt = await getFromAsyncStore("jwt");
+      let price = this.state.prices.mineGamePrice;
+      let txKey = await createTransaction("ETH", price, jwt);
+      this.setState({
+        overlay: overlays.CONFIRMCONTRACT,
+        confirmAmount: price,
+        confirmTokenType: "ETH",
+        txKey: txKey
+      });
+    } catch(err) {
+      alert("There was an Error.\n" + err.toString());
+      this.setState({overlay: -1});
+    }
   }
 
   onConfirmContract = async () => {

@@ -12,6 +12,7 @@ import ScreenView from '../components/ScreenView.js';
 import {Font} from 'expo';
 import {asyncStore, getFromAsyncStore, removeItem} from "../utils/AsyncStore.js";
 import {context} from "../utils/Context.js";
+import {createTransaction} from '../utils/Transactions.js';
 import {normalize} from '../utils/FontNormalizer.js';
 import {formatToken} from '../utils/uiHelperFunctions.js';
 
@@ -83,47 +84,20 @@ export default class AccountHistory extends React.Component {
     this.setState({overlay: -1});
   }
   onSend = async (amount, pubkey, type) => {
-    await this.setState({overlay: overlays.LOADING});
-    let jwt = await getFromAsyncStore("jwt");
-    let data = {
-      amount: amount,
-      type: type,
-      lastTxHash: "",
-    };
-    fetch(`${context.host}:${context.port}/createTransaction`, {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        "Authorization": "JWT " + jwt,
-      },
-    }).then(async (response) => {
-      var resp = await response.json();
-      if (!resp.error) {
-        if (resp) {
-          if (resp.transactionKey) {
-            this.setState({
-              overlay: overlays.CONFIRMSEND,
-              confirmAmount: amount,
-              confirmTokenType: type,
-              confirmPubkey: pubkey,
-              txKey: resp.transactionKey,
-            });
-          } else {
-            alert("There was an error, malformed response.");
-            this.setState({overlay: -1});
-          }
-        } else {
-          alert("There was an error, no response.");
-          this.setState({overlay: -1});
-        }
-      } else {
-        alert(resp.error);
-        this.setState({overlay: -1});
-      }
-    }).catch(err => {
-      throw err
-    });
+    try {
+      await this.setState({overlay: overlays.LOADING});
+      let jwt = await getFromAsyncStore("jwt");
+      let txKey = await createTransaction(type, amount, jwt);
+      this.setState({
+        overlay: overlays.CONFIRMSEND,
+        confirmAmount: amount,
+        confirmTokenType: type,
+        confirmPubkey: pubkey,
+        txKey: txKey,
+      });
+    } catch(err) {
+      alert("There was an Error.\n" + err.toString());
+    }
   }
   onConfirmSend = async () => {
     await this.setState({overlay: overlays.LOADING});
