@@ -163,10 +163,10 @@ export default class Homepage extends React.Component {
     let jwt = await getFromAsyncStore("jwt");
     let price = this.props.prices.mineGamePrice;
     let url = "/mine";
-    if (this.state.confirmTokenType == "SNK") {
-      price = this.props.prices.minehaulPrice;
-      url = "/mineWithSnek";
-    }
+    // if (this.state.confirmTokenType == "SNK") {
+    //   price = this.props.prices.minehaulPrice;
+    //   url = "/mineWithSnek";
+    // }
     var data = {
       txkey: this.state.txKey,
       type: this.state.confirmTokenType,
