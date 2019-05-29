@@ -7,17 +7,27 @@ import {
   ImageBackground,
   Image
 } from 'react-native';
-import ScreenView from '../components/ScreenView.js';
 import {Font} from 'expo';
+
+import AreYouSureOverlay from '../components/AreYouSureOverlay.js';
+import ScreenView from '../components/ScreenView.js';
 import Header from '../components/Header.js';
+
+import {context} from "../utils/Context.js";
+import {createTransaction} from '../utils/Transactions.js';
+import {asyncStore, getFromAsyncStore, removeItem} from "../utils/AsyncStore.js";
 import {normalize} from '../utils/FontNormalizer.js';
 import {formatToken} from '../utils/uiHelperFunctions.js';
 
+let overlays = {"CONFIRMDELETE": 0};
 export default class Profile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       buttonDynamicStyle: {},
+      overlay: -1,
+      confirmAmount: -1,
+      confirmTokenType: null,
     }
   }
 
@@ -30,6 +40,48 @@ export default class Profile extends React.Component {
         fontFamily: 'riffic-free-bold',
       }
     });
+  }
+
+  deleteAccount = async() => {
+    console.log("deleteAccount");
+    let jwt = await getFromAsyncStore("jwt");
+    let txKey = await createTransaction("DELETE", -1, jwt);
+    this.setState({
+      overlay: overlays.CONFIRMDELETE,
+      confirmAmount: -1,
+      confirmTokenType: "DELETE",
+      txKey: txKey,
+    });
+  }
+
+  onConfirmDelete = async () => {
+    await this.setState({overlay: overlays.LOADING});
+    let jwt = await getFromAsyncStore("jwt");
+    let data = {
+      txkey: this.state.txKey,
+      type: this.state.confirmTokenType,
+      amount: this.state.confirmAmount,
+    };
+    var response = await fetch(`${context.host}:${context.port}/deleteUser`, {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      body: JSON.stringify(data), // body data type must match "Content-Type" header
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Authorization": "JWT " + jwt,
+      },
+    });
+    var resp = await response.json();
+    if (resp.error) {
+      alert(resp.error);
+      await this.setState({overlay: -1});
+    } else {
+      this.setState({overlay: -1});
+      await this.props.logOut();
+    }
+  }
+
+  onCancel = async() => {
+    this.setState({overlay: overlays.CONFIRMDELETE});
   }
 
   render() {
@@ -107,14 +159,6 @@ export default class Profile extends React.Component {
               </Text>
             </ImageBackground>
           </TouchableOpacity>*/}
-          <TouchableOpacity>
-            <ImageBackground source={require('../assets/profile/button.png')} style={styles.buttonBG}
-                             resizeMode="stretch">
-              <Text style={[this.state.buttonDynamicStyle, styles.buttonBig]}>
-                CHANGE PASSWORD
-              </Text>
-            </ImageBackground>
-          </TouchableOpacity>
           <TouchableOpacity onPress={this.props.logOut}>
             <ImageBackground source={require('../assets/profile/button.png')} style={styles.buttonBG}
                              resizeMode="stretch">
@@ -123,7 +167,21 @@ export default class Profile extends React.Component {
               </Text>
             </ImageBackground>
           </TouchableOpacity>
+          <TouchableOpacity onPress={this.deleteAccount}>
+            <ImageBackground source={require('../assets/profile/button.png')} style={styles.buttonBG}
+                             resizeMode="stretch">
+              <Text style={[this.state.buttonDynamicStyle, styles.buttonBig]}>
+                DELETE ACCOUNT
+              </Text>
+            </ImageBackground>
+          </TouchableOpacity>
         </View>
+
+        <AreYouSureOverlay
+          show={this.state.overlay == overlays.CONFIRMDELETE}
+          text={`Are you sure you want to delete your account?`}
+          onYes={this.onConfirmDelete}
+          onNo={this.onCancel}/>
       </ScreenView>
     )
   }

@@ -192,6 +192,7 @@ export default class Login extends React.Component {
                 <TextInput style={[styles.textInput, this.state.buttonDynamicStyle]} underlineColorAndroid="transparent"
                   onFocus={this.loginFocus}
                   onChangeText={this.loginChange}
+                  autoCapitalize={'none'}
                   value={usernameValue}>
                 </TextInput>
               </ImageBackground>

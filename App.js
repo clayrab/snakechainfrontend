@@ -537,7 +537,7 @@ export default class App extends React.Component {
   };
   logOut = async () => {
     await removeItem("jwt");
-    this.setState({screen: screens.LOGIN});
+    this.setState({screen: screens.LOGINCHOOSE});
   }
 
   onHomePage = async () => {
