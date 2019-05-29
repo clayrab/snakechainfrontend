@@ -26,9 +26,9 @@ let environments = {
 };
 
 exports.sendGoogleToken = async(token, signup) => {
-  console.log("sendGoogleToken")
-  console.log(token)
-  if(environments[Constants.appOwnership + "-" + Platform.OS]) {
+  if(!environments[Constants.appOwnership + "-" + Platform.OS]) {
+    throw("Unsupported environment: " + Constants.appOwnership + "-" + Platform.OS)
+  } else {
     let url = environments[Constants.appOwnership + "-" + Platform.OS].url;
     if(signup) {
       url = environments[Constants.appOwnership + "-" + Platform.OS].signupUrl;
@@ -42,14 +42,11 @@ exports.sendGoogleToken = async(token, signup) => {
         "Content-Type": "application/json",
       },
     });
-    var resp = await response.json();
-    if(resp.token){
-      return resp.token;
-    } else {
-      throw "no token in response";
+    try {
+      return await response.json();
+    } catch(err) {
+      alert("There was an error parsing the response.")
     }
-  } else {
-    throw("Unsupported environment: " + Constants.appOwnership + "-" + Platform.OS)
   }
 }
 

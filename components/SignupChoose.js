@@ -42,12 +42,19 @@ export default class SignupChoose extends React.Component {
   googleOauth = async() => {
     this.setState({loading: true});
     try {
-      let token = await doGoogleOauth(true);
-      if(token) {
-        this.props.loggedIn(token);
+      let resp = await doGoogleOauth(true);
+      if(!resp.error && resp.token){
+        await this.props.loggedIn(resp.token);
       } else {
         await this.setState({loading: false});
-        alert("Unknown error");
+        if(resp.error === "Object already exists!") {
+          alert("User already exists!")
+        } else if(!resp.token) {
+          console.log(resp);
+          alert("There was a problem authenticating with the server.");
+        } else {
+          alert("Unknown error\n" + resp.error)
+        }
       }
     } catch (err){
       await this.setState({loading: false});

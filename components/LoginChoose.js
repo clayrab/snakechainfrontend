@@ -43,13 +43,21 @@ export default class LoginChoose extends React.Component {
   googleOauth = async() => {
     this.setState({loading: true});
     try {
-      let token = await doGoogleOauth(false);
-      if(token) {
-        await this.setState({loading: false});
-        this.props.loggedIn(token);
+      let resp = await doGoogleOauth(false);
+      if(!resp.error && resp.token){
+        this.props.loggedIn(resp.token);
       } else {
         await this.setState({loading: false});
-        alert("Unknown error");
+        if(resp.error) {
+          if(resp.error.startsWith("Object not found in model")) {
+            alert("No user by that username found.")
+          } else {
+            alert("Unknown error\n" + resp.error)
+          }
+        } else if(!resp.token) {
+          console.log(resp)
+          alert("There was a problem authenticating with the server.");
+        }
       }
     } catch (err){
       await this.setState({loading: false});

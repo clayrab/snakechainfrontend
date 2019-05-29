@@ -277,7 +277,7 @@ export default class App extends React.Component {
 
   loggedIn = async(jwt, username) => {
     await asyncStore("jwt", jwt);
-    if (this.state.screen == screens.LOGINCHOOSE || this.state.screen == screens.LOGIN) {
+    if (this.state.screen == screens.LOGINCHOOSE || this.state.screen == screens.SIGNUPCHOOSE || this.state.screen == screens.LOGIN) {
       let firstLogin = await AsyncStorage.getItem("LAST_REGISTERED");
       let screen = firstLogin && firstLogin == username ? screens.TUTORIALS : screens.HOME;
       await this.setState({screen});
@@ -614,7 +614,7 @@ export default class App extends React.Component {
       );
     } else if (this.state.screen == screens.SIGNUPCHOOSE) {
       return (
-        <SignupChoose goToSignup={this.goToSignup}/>
+        <SignupChoose goToSignup={this.goToSignup} loggedIn={this.loggedIn}/>
       );
     } else if (this.state.screen == screens.PROFILE) {
       return (
