@@ -45,7 +45,8 @@ export default class Snek extends Sprite {
       walls: [],
       mushrooms: {},
       speedEffector: 1,
-      fontStyle: {}
+      fontStyle: {},
+      headerOpen: true
     };
     this.board = [];
     this.wallComponents = [];
@@ -764,6 +765,10 @@ export default class Snek extends Sprite {
     }
   }
 
+  toggleHeader = () => {
+    this.setState({ headerOpen: !this.state.headerOpen })
+  }
+
   render() {
     let redPellet = null;
     let pellet = null;
@@ -826,62 +831,131 @@ export default class Snek extends Sprite {
         style={[styles.gameBack, {/*transferX: this.boardShakeInterpolate()*/ },]}>
         <ImageBackground source={require('../assets/gameplay/Background.png')} style={styles.fieldBack}
           resizeMode="stretch">
-          <ScoreBoard
+
+          <ImageBackground source={require('../assets/gameplay/header.png')} resizeMode={"cover"}
+            style={[styles.headerBackground, { top: this.state.headerOpen ? 0 : -65 }]}>
+
+            {/* Dropdown Button */}
+            <TouchableOpacity onPress={this.toggleHeader} style={styles.dropdown}>
+              <Image source={require('../assets/gameplay/Dropdown.png')} style={[styles.dropdownImage, { transform: [{ rotate: this.state.headerOpen ? "180deg" : "0deg" }] }]} />
+            </TouchableOpacity>
+
+            {/* Timer */}
+            <View style={styles.timer}>
+              <Text style={[styles.timerText, this.state.fontStyle]}>0:30</Text>
+            </View>
+
+            {/* Content Below (Open) -Start */}
+            <View style={[styles.contentOpen, { opacity: this.state.headerOpen ? 1 : 0 }]}>
+              <TouchableOpacity onPress={() => null}>
+                <Image source={require('../assets/gameplay/PauseButton.png')} style={styles.pauseButtonImage} />
+              </TouchableOpacity>
+
+              <ImageBackground source={require('../assets/gameplay/Holder.png')} resizeMode={"contain"}
+                style={styles.gameplayHolderImage}>
+                <Image source={require('../assets/gameplay/Gold.png')} style={styles.amountImage} />
+                <Text style={[styles.amountText, this.state.fontStyle]}>100</Text>
+                <TouchableOpacity style={styles.amountAddTouchable}>
+                  <Image source={require('../assets/gameplay/Add.png')} style={styles.amountAdd} />
+                </TouchableOpacity>
+              </ImageBackground>
+
+              <ImageBackground source={require('../assets/gameplay/Holder.png')} resizeMode={"contain"}
+                style={styles.gameplayHolderImage}>
+                <Image source={require('../assets/gameplay/Silver.png')} style={styles.amountImage} />
+                <Text style={[styles.amountText, this.state.fontStyle]}>100,000</Text>
+                <TouchableOpacity style={styles.amountAddTouchable}>
+                  <Image source={require('../assets/gameplay/Add.png')} style={styles.amountAdd} />
+                </TouchableOpacity>
+              </ImageBackground>
+
+            </View>
+            {/* Content Below (Open) -End */}
+
+            <View style={styles.levelInfoRow}>
+
+              <ImageBackground source={require("../assets/gameplay/scoreBackground.png")} resizeMode={"contain"}
+                style={styles.levelScoreBackground}>
+                <Text style={[styles.levelTitle, this.state.fontStyle]}>SCORE</Text>
+                <Text style={[styles.levelValue, this.state.fontStyle]}>{this.state.score}</Text>
+              </ImageBackground>
+
+              <ImageBackground source={require("../assets/gameplay/scoreBackground.png")} resizeMode={"contain"}
+                style={styles.levelScoreBackground}>
+                <Text style={[styles.levelTitle, this.state.fontStyle]}>TIME:</Text>
+                <Text style={[styles.levelValue, this.state.fontStyle]}>3:50</Text>
+              </ImageBackground>
+
+              <ImageBackground source={require("../assets/gameplay/scoreBackground.png")} resizeMode={"contain"}
+                style={styles.levelScoreBackground}>
+                <Text style={[styles.levelTitle, this.state.fontStyle]}>LEVEL</Text>
+                <Text style={[styles.levelValue, this.state.fontStyle]}>20</Text>
+              </ImageBackground>
+
+            </View>
+
+            <View style={styles.levelLastRow}>
+              <Text style={[styles.levelM, this.state.fontStyle]}>M:15 x 2</Text>
+              <ImageBackground source={require("../assets/gameplay/LongHeader.png")} resizeMode={"contain"}
+                style={styles.wideHeaderInfoBG}>
+                <Text style={[styles.inlineText, this.state.fontStyle]}>* You ate 1</Text>
+                <Image source={require("../assets/gameplay/BlueMushroom.png")} style={styles.inlineImage} />
+                <Text style={[styles.inlineText, this.state.fontStyle]}>and received</Text>
+                <Image source={require("../assets/gameplay/RedMushroom.png")} style={styles.inlineImage} />
+                <Text style={[styles.inlineText, this.state.fontStyle]}>x2</Text>
+              </ImageBackground>
+            </View>
+
+          </ImageBackground>
+
+          {/* <ScoreBoard
             score={this.state.score}
             easterEgg={this.easterEgg}
             loading={this.props.loading}
-            user={this.props.user} />
+            user={this.props.user} /> */}
         </ImageBackground>
         {/* <ImageBackground source={require('../assets/gameplay/Background.png')} style={styles.field} resizeMode="stretch" /> */}
-        {this.state.tail.map((elem) => {
-          return (elem);
-        })}
+        {
+          this.state.tail.map((elem) => {
+            return (elem);
+          })
+        }
         {snekHeadBack}
         {snek}
         {pellet}
         {redPellet}
         {this.wallComponents}
         <View>
-          <View style={{ position: 'absolute', top: screenWidth * -0.117, zIndex: 10000, alignItems: 'center' }}>
-            <View style={{ bottom: 15, zIndex: 10001, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', width: screenWidth * 0.82, position: 'absolute' }}>
+          <View style={styles.controllerContainer}>
+            <View style={styles.mushroomRow}>
               <TouchableOpacity>
-                <Image source={require("../assets/gameplay/MGold.png")}
-                  style={{ width: screenWidth * 0.2, height: screenWidth * 0.2, resizeMode: 'contain' }} />
-                <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={{ position: 'absolute', top: 0, left: (screenWidth * 0.1) - 10, width: 20, height: 20, justifyContent: 'center', alignItems: 'center' }}>
-                  <Text style={[this.state.fontStyle, { fontSize: normalize(12) }]}>1</Text>
+                <Image source={require("../assets/gameplay/MGold.png")} style={styles.mushroomImage} />
+                <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
+                  <Text style={[this.state.fontStyle, styles.mushroomText]}>1</Text>
                 </ImageBackground>
               </TouchableOpacity>
               <TouchableOpacity>
-                <Image source={require("../assets/gameplay/MBlue.png")}
-                  style={{ width: screenWidth * 0.2, height: screenWidth * 0.2, resizeMode: 'contain' }} />
-                <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={{ position: 'absolute', top: 0, left: (screenWidth * 0.1) - 10, width: 20, height: 20, justifyContent: 'center', alignItems: 'center' }}>
-                  <Text style={[this.state.fontStyle, { fontSize: normalize(12) }]}>2</Text>
+                <Image source={require("../assets/gameplay/MBlue.png")} style={styles.mushroomImage} />
+                <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
+                  <Text style={[this.state.fontStyle, styles.mushroomText]}>2</Text>
                 </ImageBackground>
               </TouchableOpacity>
               <TouchableOpacity>
-                <Image source={require("../assets/gameplay/MPink.png")}
-                  style={{ width: screenWidth * 0.2, height: screenWidth * 0.2, resizeMode: 'contain' }} />
-                <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={{ position: 'absolute', top: 0, left: (screenWidth * 0.1) - 10, width: 20, height: 20, justifyContent: 'center', alignItems: 'center' }}>
-                  <Text style={[this.state.fontStyle, { fontSize: normalize(12) }]}>3</Text>
+                <Image source={require("../assets/gameplay/MPink.png")} style={styles.mushroomImage} />
+                <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
+                  <Text style={[this.state.fontStyle, styles.mushroomText]}>3</Text>
                 </ImageBackground>
               </TouchableOpacity>
               <TouchableOpacity>
-                <Image source={require("../assets/gameplay/MRed.png")}
-                  style={{ width: screenWidth * 0.2, height: screenWidth * 0.2, resizeMode: 'contain' }} />
-                <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={{ position: 'absolute', top: 0, left: (screenWidth * 0.1) - 10, width: 20, height: 20, justifyContent: 'center', alignItems: 'center' }}>
-                  <Text style={[this.state.fontStyle, { fontSize: normalize(12) }]}>4</Text>
+                <Image source={require("../assets/gameplay/MRed.png")} style={styles.mushroomImage} />
+                <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
+                  <Text style={[this.state.fontStyle, styles.mushroomText]}>4</Text>
                 </ImageBackground>
               </TouchableOpacity>
             </View>
-            <Image source={require("../assets/gameplay/MushroomsHolder.png")}
-              style={{ width: screenWidth, height: screenWidth * 0.117, resizeMode: 'contain' }} />
+            <Image source={require("../assets/gameplay/MushroomsHolder.png")} style={styles.mushroomHolder} />
           </View>
-          <View style={{
-            height: dpadSize * 1.1,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
+          <View style={styles.controllerExtraBtns}>
             <TouchableOpacity style={{}}>
               <Image source={require("../assets/gameplay/SnowButton.png")} style={styles.snowButton} />
             </TouchableOpacity>
@@ -892,7 +966,7 @@ export default class Snek extends Sprite {
           </View>
         </View>
         {/* <Buttons running={this.props.running} powerUps={this.props.powerUps} pause={this.props.pause}></Buttons> */}
-      </View>
+      </View >
     );
   }
 }
@@ -958,5 +1032,82 @@ let styles = StyleSheet.create({
   mushroomButton: {
     width: screenWidth * 0.15,
     height: screenWidth * 0.15,
-  }
+  },
+  headerBackground: {
+    position: 'absolute',
+    width: screenWidth,
+    height: 185,
+    resizeMode: 'contain'
+  },
+  dropdown: {
+    position: 'absolute',
+    top: 155,
+    left: (screenWidth / 2) - 20
+  },
+  dropdownImage: {
+    width: 40, height: 40, resizeMode: 'contain',
+  },
+  timer: { width: screenWidth, position: 'absolute', top: 200, justifyContent: 'center', alignItems: 'center' },
+  timerText: { fontSize: normalize(20), color: "#1D1511" },
+
+  contentOpen: {
+    flexDirection: 'row', padding: 10, paddingBottom: 0, justifyContent: "space-between", alignItems: 'center',
+  },
+  pauseButtonImage: { width: screenWidth * 0.13, height: screenWidth * 0.13, resizeMode: 'contain' },
+  gameplayHolderImage: {
+    width: screenWidth * 0.38,
+    height: screenWidth * 0.11,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10
+  },
+  amountImage: { width: screenWidth * 0.06, height: screenWidth * 0.06, resizeMode: 'contain' },
+  amountText: { fontSize: normalize(16), color: "#F7B324", marginLeft: 10 },
+  amountAddTouchable: { position: 'absolute', right: -10, top: -2 },
+  amountAdd: { width: screenWidth * 0.1, height: screenWidth * 0.12, resizeMode: 'contain' },
+
+  levelInfoRow: { flexDirection: 'row', padding: 10, justifyContent: "space-between", alignItems: 'center' },
+  levelScoreBackground: {
+    width: screenWidth * 0.3,
+    height: screenWidth * 0.09,
+    resizeMode: 'contain',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    paddingHorizontal: 10
+  },
+  levelTitle: { color: "#FAB523", fontSize: normalize(15) },
+  levelValue: { color: "#FFFFFF", fontSize: normalize(15) },
+
+  levelLastRow: { flexDirection: 'row', paddingHorizontal: 10, justifyContent: "space-between", alignItems: 'center' },
+  levelM: { color: "#352927", fontSize: normalize(16) },
+
+  wideHeaderInfoBG: {
+    width: screenWidth * 0.75,
+    height: screenWidth * 0.07,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    paddingHorizontal: 10
+  },
+  inlineText: { color: "#FAB523", fontSize: normalize(14) },
+  inlineImage: { width: screenWidth * 0.05, height: screenWidth * 0.05, resizeMode: 'contain', marginHorizontal: 5 },
+
+  controllerContainer: { position: 'absolute', top: screenWidth * -0.117, zIndex: 10000, alignItems: 'center' },
+  mushroomRow: { bottom: 15, zIndex: 10001, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', width: screenWidth * 0.82, position: 'absolute' },
+  mushroomImage: { width: screenWidth * 0.2, height: screenWidth * 0.2, resizeMode: 'contain' },
+
+  mushroomCountHolder: { position: 'absolute', top: 0, left: (screenWidth * 0.1) - 10, width: 20, height: 20, justifyContent: 'center', alignItems: 'center' },
+  mushroomHolder: { width: screenWidth, height: screenWidth * 0.117, resizeMode: 'contain' },
+  mushroomText: {
+    fontSize: normalize(12)
+  },
+  controllerExtraBtns: {
+    height: dpadSize * 1.1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+
 });

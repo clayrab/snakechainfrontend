@@ -705,9 +705,9 @@ export default class App extends React.Component {
             prices={this.state.prices}
             user={this.props.user}
             show={this.state.overlay == overlays.POWERUPS}/>
-          {/* <StartGameOverlay TODO: For test purposes
+          <StartGameOverlay
             show={this.state.overlay == overlays.STARTGAME}
-            onStart={this.start}/> */}
+            onStart={this.start}/> 
           <ErrorOverlay
             closeOverlay={this.closeOverlay}
             show={this.state.overlay == overlays.ERROR}
