@@ -457,7 +457,7 @@ export default class App extends React.Component {
     this.setState({overlay: overlays.PAUSE});
   }
   onSelectLevel = (levelNumber, mode) => {
-    this.setState({screen: screens.GAME, level: levelNumber, mode: mode});
+    this.setState({ screen: screens.GAME, level: levelNumber, mode: mode, overlay: overlays.STARTGAME, });
   }
 
   onSelectLevelPlayPress() {
