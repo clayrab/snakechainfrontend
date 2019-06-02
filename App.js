@@ -134,7 +134,8 @@ const snakesData = {
 
 };
 
-console.disableYellowBox = true;
+// TODO: Comment below when pushing
+// console.disableYellowBox = true;
 
 export default class App extends React.Component {
   constructor(props) {
