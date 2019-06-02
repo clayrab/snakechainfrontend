@@ -46,7 +46,8 @@ export default class Snek extends Sprite {
       mushrooms: {},
       speedEffector: 1,
       fontStyle: {},
-      headerOpen: true
+      headerOpen: true,
+      mushroomBarVisible: false
     };
     this.board = [];
     this.wallComponents = [];
@@ -769,6 +770,10 @@ export default class Snek extends Sprite {
     this.setState({ headerOpen: !this.state.headerOpen })
   }
 
+  onMushroomPress = () => {
+    this.setState({ mushroomBarVisible: !this.state.mushroomBarVisible })
+  }
+
   render() {
     let redPellet = null;
     let pellet = null;
@@ -914,7 +919,7 @@ export default class Snek extends Sprite {
             loading={this.props.loading}
             user={this.props.user} /> */}
         </ImageBackground>
-        {/* <ImageBackground source={require('../assets/gameplay/Background.png')} style={styles.field} resizeMode="stretch" /> */}
+         <ImageBackground source={require('../assets/gameplay/gameArea.png')} style={styles.field} resizeMode="stretch" />
         {
           this.state.tail.map((elem) => {
             return (elem);
@@ -926,41 +931,46 @@ export default class Snek extends Sprite {
         {redPellet}
         {this.wallComponents}
         <View>
-          <View style={styles.controllerContainer}>
-            <View style={styles.mushroomRow}>
-              <TouchableOpacity>
-                <Image source={require("../assets/gameplay/MGold.png")} style={styles.mushroomImage} />
-                <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
-                  <Text style={[this.state.fontStyle, styles.mushroomText]}>1</Text>
-                </ImageBackground>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Image source={require("../assets/gameplay/MBlue.png")} style={styles.mushroomImage} />
-                <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
-                  <Text style={[this.state.fontStyle, styles.mushroomText]}>2</Text>
-                </ImageBackground>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Image source={require("../assets/gameplay/MPink.png")} style={styles.mushroomImage} />
-                <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
-                  <Text style={[this.state.fontStyle, styles.mushroomText]}>3</Text>
-                </ImageBackground>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Image source={require("../assets/gameplay/MRed.png")} style={styles.mushroomImage} />
-                <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
-                  <Text style={[this.state.fontStyle, styles.mushroomText]}>4</Text>
-                </ImageBackground>
-              </TouchableOpacity>
+
+          {
+            this.state.mushroomBarVisible &&
+            <View style={styles.controllerContainer}>
+              <View style={styles.mushroomRow}>
+                <TouchableOpacity>
+                  <Image source={require("../assets/gameplay/MGold.png")} style={styles.mushroomImage} />
+                  <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
+                    <Text style={[this.state.fontStyle, styles.mushroomText]}>1</Text>
+                  </ImageBackground>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Image source={require("../assets/gameplay/MBlue.png")} style={styles.mushroomImage} />
+                  <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
+                    <Text style={[this.state.fontStyle, styles.mushroomText]}>2</Text>
+                  </ImageBackground>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Image source={require("../assets/gameplay/MPink.png")} style={styles.mushroomImage} />
+                  <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
+                    <Text style={[this.state.fontStyle, styles.mushroomText]}>3</Text>
+                  </ImageBackground>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Image source={require("../assets/gameplay/MRed.png")} style={styles.mushroomImage} />
+                  <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
+                    <Text style={[this.state.fontStyle, styles.mushroomText]}>4</Text>
+                  </ImageBackground>
+                </TouchableOpacity>
+              </View>
+              <Image source={require("../assets/gameplay/MushroomsHolder.png")} style={styles.mushroomHolder} />
             </View>
-            <Image source={require("../assets/gameplay/MushroomsHolder.png")} style={styles.mushroomHolder} />
-          </View>
+          }
+
           <View style={styles.controllerExtraBtns}>
             <TouchableOpacity style={{}}>
               <Image source={require("../assets/gameplay/SnowButton.png")} style={styles.snowButton} />
             </TouchableOpacity>
             <Dpad onDpadChange={this.props.onDpadChange} pressedButton={this.props.pressedButton}></Dpad>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={this.onMushroomPress}>
               <Image source={require("../assets/gameplay/MushroomButton.png")} style={styles.mushroomButton} />
             </TouchableOpacity>
           </View>
@@ -988,14 +998,13 @@ let styles = StyleSheet.create({
     height: CONSTANTS.DEVICEHEIGHT - CONSTANTS.DPADHEIGHT + 6
   },
   field: {
-    width: screenWidth,
-    // backgroundColor: 'transparent',
+    width: CONSTANTS.GAMEWIDTH,
+    backgroundColor: 'transparent',
     height: CONSTANTS.GAMEHEIGHT,
     position: "absolute",
-    // top: CONSTANTS.BOARDCENTERY - (0.5 * CONSTANTS.GAMEHEIGHT),
-    top: 0,
+    top: CONSTANTS.BOARDCENTERY - (0.5 * CONSTANTS.GAMEHEIGHT),
     //bottom: CONSTANTS.DPADMULT,
-    // left: (CONSTANTS.DEVICEWIDTH / 2) - (0.5 * CONSTANTS.GAMEWIDTH),
+    left: (CONSTANTS.DEVICEWIDTH / 2) - (0.5 * CONSTANTS.GAMEWIDTH),
     zIndex: 2,
   },
   snek: {
@@ -1037,7 +1046,8 @@ let styles = StyleSheet.create({
     position: 'absolute',
     width: screenWidth,
     height: 185,
-    resizeMode: 'contain'
+    resizeMode: 'contain',
+    zIndex: 3
   },
   dropdown: {
     position: 'absolute',
