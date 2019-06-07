@@ -400,14 +400,14 @@ export default class Homepage extends React.Component {
                               closeOverlay={this.closeOverlay}
                               user={this.props.user}
                               gototown={this.onMineHaul}/>
-          <SelectLevelOverlay show={this.state.overlay == overlays.SELECTLEVEL}
+          {/*<SelectLevelOverlay show={this.state.overlay == overlays.SELECTLEVEL}
                               rushMode={true}
                               closeOverlay={this.closeOverlay}
                               user={this.props.user}
                               onSelectLevel={this.props.onSelectLevel}
                               buyEthDynamite={this.buyEthDynamite}
                               buySnkDynamite={this.buySnkDynamite}
-          />
+          />*/}
           <PurchaseTicketOverlay show={this.state.overlay == overlays.PURCHASETICKET}
                                  closeOverlay={this.closeOverlay}
                                  user={this.props.user}

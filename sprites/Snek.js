@@ -35,20 +35,22 @@ export default class Snek extends Sprite {
       score: 0,
       pelletCount: 0,
       pelletLocation: null,
-      redPelletLocation: null,
+      redPelletLocation: null, //RED PELLET IS NOW PURPLE MUSHROOM!!
       pelletRot: new Animated.Value(0),
       boardShake: new Animated.Value(0),
       alive: true,
       snakeHead: {transform: [{rotate: '0deg'}]},
       walls: [],
-      mushrooms: {},
-      speedEffector: 1
+      speedEffector: 1,
+      //renderTrigger: true, // Flip this to force a render. The cost of React Native for animation. This isn't great, but it helps.
     };
-    this.board = [];
+    this.boardState = [];
     this.wallComponents = [];
+    this.edibles = []; //Managed through helper functions addEdible and removeEdible
+    this.numberOfEdibles = 0;
     this.nextID = 0;
     this.state = this.copyDefaultState();
-    this.state.toggleReset = this.props.toggleReset;
+    this.state.toggleReset = props.toggleReset;
     this.resetBoard();
     this.lastFrameTime = null;
     this.pelletAnim = Animated.timing(this.state.pelletRot, {
@@ -71,6 +73,140 @@ export default class Snek extends Sprite {
 
   componentWillUnmount() {
     this.context.loop.unsubscribe(this.update);
+  }
+  // triggerRender = async() => {
+  //   await this.setState({renderTrigger: !this.state.renderTrigger});
+  // }
+  //edibleTypesGraphics = { "GREENMUSH": require('../assets/powerupsoverlay/mushroom_voilet.png'), "PURPLEMUSH": 1, "REDMUSH": 2, "GOLDMUSH": 3, "BLUEMUSH": 4, "SKYBLUEMUSH": 5, "PLATINUMMUSH": 6, "PELLET": 7, };
+  eatEdibleEvents = {
+    "GREENMUSH": async() => {
+      // bonus pellet chances:
+      // 3 pellets : 50%
+      // 5 pellets: 15%
+      // 10 pellets: 5%
+      // 10000 onchain: 1%
+      // 1 ticket: 0.5%
+      // 1 pellet: leftover %
+      //
+      // Additionally 20% chance to plant a random powerup mushroom.
+      const rewards = [ "10000", "10", "5", "3", "ticket", "1" ];
+      const chances = {
+        "ticket": 0.005,
+        "eth"   : 0.0,
+        "snk"   : 0.005,
+        "10"    : 0.05,
+        "5"     : 0.15,
+        "3"     : 0.50,
+        "1"     : 1.0, // Leftover chance. W guarantee to trigger the roll to this state by subtracting full 100%.
+      };
+      let roll = Math.random(); // pseudo-random number in the range [0, 1) (inclusive of 0, but not 1)
+      let reward = null;
+      let rewardsIndex = 0, rollCountDown = roll;
+      while (true) {
+        rollCountDown = rollCountDown - chances[rewards[rewardsIndex]];
+        if(rollCountDown < 0.0) {
+          reward = rewards[rewardsIndex];
+          break;
+        }
+        rewardsIndex++;
+      }
+      if (reward === "ticket") {
+        // todo: ticket reward
+      } else if (reward === "eth") {
+        // todo: onchain rewards.
+      } else if (reward === "snk") {
+        // todo: onchain rewards.
+      } else {
+        let value = parseInt(reward);
+
+      }
+    },
+    "PURPLEMUSH": async() => {
+    },
+    "REDMUSH": async() => {
+    },
+    "GOLDMUSH": async() => {
+    },
+    "BLUEMUSH": async() => {
+    },
+    "SKYBLUEMUSH": async() => {
+    },
+    "PLATINUMMUSH": async() => {
+    },
+    "PELLET": async() => {
+    },
+  }
+
+  // This.state.edibles is an array with nulls on the end. We want maximum speed rendering so it will render until it hit's null.
+  // This.state.edibles never shrinks. Nulls from the end are swapped when removing and adding.
+  edibleTypes = {
+    "GREENMUSH": {
+      png: require('../assets/powerupsoverlay/mushroom_voilet.png'),
+    },
+    "PURPLEMUSH": {
+
+    },
+    "REDMUSH": {
+
+    },
+    "GOLDMUSH": {
+
+    },
+    "BLUEMUSH": {
+
+    },
+    "SKYBLUEMUSH": {
+
+    },
+    "PLATINUMMUSH": {
+
+    },
+    "PELLET": {
+
+    },
+  };
+  makeEdibleStruct = (type, x, y) => {
+    return {
+      type: type,
+      x: x,
+      y: y,
+    };
+  }
+  addEdible = (type, x, y) => {
+    if (this.edibles.length > this.numberOfEdibles) {
+      this.edibles[this.numberOfEdibles] = type;
+    } else {
+      this.edibles.push(type);
+    }
+    this.numberOfEdibles++;
+  }
+  removeEdible = async(index) => {
+    if (  this.numberOfEdibles > 0 &&
+          this.edibles[index] !== null &&
+          index <= this.numberOfEdibles &&
+          this.numberOfEdibles <= this.edibles.length &&
+          index <= this.edibles.length) {
+      this.edibles[index] = this.edibles[this.numberOfEdibles];
+      this.edibles[this.numberOfEdibles] = null;
+    } else {
+      throw "Error in edibles"
+    }
+  }
+  eatEdible = async(x, y) => {
+    for (let i = 0; i < this.edibles.length; i++) {
+       if (x == this.edibles[i].x && y === this.edibles[i].y) {
+         removeEdible(i);
+         break;
+         //component.forceUpdate(callback)
+       }
+    }
+    //await this.triggerRender();
+  }
+  placeRandomEdible = (type) => {
+
+  }
+  placeEdible = async(type, location) => {
+    this.addEdible(type, location.x, location.y);
   }
 
   setupAudio = async () => {
@@ -139,25 +275,29 @@ export default class Snek extends Sprite {
     startState.snakeHead = {transform: [{rotate: '0deg'}]};
     startState.walls = this.getRandomWalls();
     startState.speedEffector = this.defaultState.speedEffector;
+    startState.toggleReset = this.props.toggleReset;
     return startState;
   }
 
+  placeSnake = (board) => {
+    for (var index3 = 0; index3 < this.state.tail.length - 1; index3++) {
+      board[this.state.tail[index3].props.boardY][this.state.tail[index3].props.boardX] = "WALL";
+    }
+    return board;
+  }
   resetBoard() {
     // Board is false in "safe" spots and true where the snake and walls are
     this.props.doResetDpad();
-    let board = this.makeNewBoard();
-    for (var index3 = 0; index3 < this.state.tail.length - 1; index3++) {
-      board[this.state.tail[index3].props.boardY][this.state.tail[index3].props.boardX] = true;
-    }
-
+    let board = this.makeEmptyBoard();
+    board = this.placeSnake(board);
     for (var yIndex = 0; yIndex < CONSTANTS.BOARDHEIGHT; yIndex++) {
       for (var xIndex = 0; xIndex < CONSTANTS.BOARDWIDTH; xIndex++) {
         if (this.state.walls[yIndex * 100 + xIndex]) {
-          board[yIndex][xIndex] = true;
+          board[yIndex][xIndex] = "WALL";
         }
       }
     }
-    this.board = board.slice(0); //copy board
+    this.boardState = board.slice(0); //copy board
     this.setWallComponents();
   }
 
@@ -313,75 +453,72 @@ export default class Snek extends Sprite {
     await this.props.onDied(this.state.score);
   }
 
-  reset() {
+  hardReset = async() => {
+    console.log("hardReset")
     var startState = this.copyDefaultState();
-    startState.toggleReset = this.props.toggleReset;
+    // console.log("hardReset this.state.toggleReset")
+    // console.log(this.props.toggleReset)
+    // //startState.toggleReset = this.props.toggleReset;
     this.setState(startState);
     this.resetBoard();
-  }
-
-  onBoardTile(boardX, boardY) {
-    if (this.state.pelletLocation.x == boardX && this.state.pelletLocation.y == boardY) {
-      this.eatPellet();
-    }
-    if (this.state.redPelletLocation &&
-      this.state.redPelletLocation.x === boardX &&
-      this.state.redPelletLocation.y === boardY) {
-      this.eatRedPellet();
-    }
-    this.board[boardY][boardX] = true;
+    await this.placePellet();
   }
 
   onLeaveBoardTile(boardX, boardY) {
-    this.board[boardY][boardX] = false;
+    this.boardState[boardY][boardX] = null;
   }
 
   getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  placePellet() {
-    let isTail = true;
-    let isHead = undefined;
-    let x, y;
-    while (isTail || isHead) {
-      x = this.getRandomInt(0, CONSTANTS.BOARDWIDTH - 1);
-      y = this.getRandomInt(0, CONSTANTS.BOARDHEIGHT - 1);
-      isTail = this.board[y][x];
-      isHead = this.state.boardX === x && this.state.boardY === y;
+  placePellet = async() => {
+    console.log("placePellet")
+    await this.setState({ pelletLocation: this.randomLocation(), });
+    await this.setState({ redPelletLocation: this.randomLocation(), });
+    if(this.props.mode === "SUPER SNAKE" || true){
+      this.placeEdible("GREENMUSH", this.randomLocation());
     }
-    //
-    // this.setState({
-    //   pelletLocation: {x: x, y: y},
-    //   redPelletLocation: null,
-    // });
-
-    this.setState({
-      pelletLocation: {x: x, y: y},
-      redPelletLocation: this.randomRedPelletGenerate()
-    });
-
-    if ((this.state.baseScore + 2) % 5 === 0) {
-      //this.state.pelletRot.setValue(0);
-      this.state.shakeBoard.setValue(0);
-      //pelletRot
-      //this.pelletAnim.start();
-      this.boardShakeAnim.start();
-    }
+    // if ((this.state.baseScore + 2) % 5 === 0) {
+    //   //this.state.pelletRot.setValue(0);
+    //   this.state.shakeBoard.setValue(0);
+    //   //this.pelletAnim.start();
+    //   this.boardShakeAnim.start();
+    // }
   }
 
-  randomRedPelletGenerate() {
-    let isTail = true;
-    let isHead = undefined;
+  randomLocation = () => {
+    let loc = {x: null, y: null};
+    let isEmpty = true;
     let x, y;
-    while (isTail || isHead) {
+    while (isEmpty) {
       x = this.getRandomInt(0, CONSTANTS.BOARDWIDTH - 1);
       y = this.getRandomInt(0, CONSTANTS.BOARDHEIGHT - 1);
-      isTail = this.board[y][x];
-      isHead = this.state.boardX === x && this.state.boardY === y;
+      isEmpty = this.boardState[y][x];
     }
-    return {x, y};
+    loc.x = x;
+    loc.y = y;
+    return loc;
   }
+
+  // randomRedPelletGenerate() {
+  //   let isTail = true;
+  //   let isHead = true;
+  //   //let isEdible = true;
+  //
+  //   let x, y;
+  //   // while (isTail || isHead || isEdible) {
+  //   //   x = this.getRandomInt(0, CONSTANTS.BOARDWIDTH - 1);
+  //   //   y = this.getRandomInt(0, CONSTANTS.BOARDHEIGHT - 1);
+  //   //   isTail = this.boardState[y][x];
+  //   //   isHead = this.state.boardX === x && this.state.boardY === y;
+  //   //
+  //   //   //isEdible =
+  //   //
+  //   //
+  //   // }
+  //   return {x, y};
+  // }
 
   eatRedPellet = async () => {
     this.setState({redPelletLocation: null});
@@ -478,12 +615,14 @@ export default class Snek extends Sprite {
     this.placePellet();
     this.setState({score: this.state.score + (CONSTANTS.PELLETMULT * growLength), pelletCount: this.state.pelletCount + 1});
   }
-  makeNewBoard = () => {
+
+
+  makeEmptyBoard = () => {
     let board = [];
     for (var index1 = 0; index1 < CONSTANTS.BOARDHEIGHT; index1++) {
       let row = [];
       for (var index2 = 0; index2 < CONSTANTS.BOARDWIDTH; index2++) {
-        row.push(false);
+        row.push(null);
       }
       board.push(row);
     }
@@ -499,11 +638,11 @@ export default class Snek extends Sprite {
       while(howMuch > 0) {
         if(newTailStart.length > 0) {
           let lastPart = newTailStart[newTailStart.length - 1];
-          this.board[lastPart.props.boardY][lastPart.props.boardX] = false;
+          this.boardState[lastPart.props.boardY][lastPart.props.boardX] = null;
           newTailStart = newTailStart.slice(0, -1);
         } else {
           let lastPart = newTailEnd[newTailEnd.length - 1];
-          this.board[lastPart.props.boardY][lastPart.props.boardX] = false;
+          this.boardState[lastPart.props.boardY][lastPart.props.boardX] = null;
           newTailEnd = newTailEnd.slice(0, -1);
         }
         howMuch--;
@@ -590,11 +729,25 @@ export default class Snek extends Sprite {
     await this.setState({tailIndex: newTailIndex, posX: newPosX, posY: newPosY});
   }
 
+  onBoardTile(boardX, boardY) {
+    if(this.state.pelletLocation) {
+      if (this.state.pelletLocation.x == boardX && this.state.pelletLocation.y == boardY) {
+        this.eatPellet();
+      }
+    }
+    // if (this.state.redPelletLocation &&
+    //   this.state.redPelletLocation.x === boardX &&
+    //   this.state.redPelletLocation.y === boardY) {
+    //   this.eatRedPellet();
+    // }
+    this.boardState[boardY][boardX] = "WALL";
+  }
+
   goUp() {
     this.moveTail(CONSTANTS.DPADSTATES.UP);
     if (this.state.boardY - 1 < 0) {
       this.die();
-    } else if (this.board[this.state.boardY - 1][this.state.boardX]) {
+    } else if (this.boardState[this.state.boardY - 1][this.state.boardX] === "WALL") {
       this.die();
     } else {
       this.onBoardTile(this.state.boardX, this.state.boardY - 1);
@@ -610,7 +763,7 @@ export default class Snek extends Sprite {
     this.moveTail(CONSTANTS.DPADSTATES.DOWN);
     if (this.state.boardY + 1 > CONSTANTS.BOARDHEIGHT - 1) {
       this.die();
-    } else if (this.board[this.state.boardY + 1][this.state.boardX]) {
+    } else if (this.boardState[this.state.boardY + 1][this.state.boardX] === "WALL") {
       this.die();
     } else {
       this.onBoardTile(this.state.boardX, this.state.boardY + 1);
@@ -626,7 +779,7 @@ export default class Snek extends Sprite {
     this.moveTail(CONSTANTS.DPADSTATES.LEFT);
     if (this.state.boardX - 1 < 0) {
       this.die();
-    } else if (this.board[this.state.boardY][this.state.boardX - 1]) {
+    } else if (this.boardState[this.state.boardY][this.state.boardX - 1] === "WALL") {
       this.die();
     } else {
       this.onBoardTile(this.state.boardX - 1, this.state.boardY);
@@ -642,7 +795,7 @@ export default class Snek extends Sprite {
     this.moveTail(CONSTANTS.DPADSTATES.RIGHT);
     if (this.state.boardX + 1 > CONSTANTS.BOARDWIDTH - 1) {
       this.die();
-    } else if (this.board[this.state.boardY][this.state.boardX + 1]) {
+    } else if (this.boardState[this.state.boardY][this.state.boardX + 1] === "WALL") {
       this.die();
     } else {
       this.onBoardTile(this.state.boardX + 1, this.state.boardY);
@@ -654,17 +807,38 @@ export default class Snek extends Sprite {
     }
   }
 
-  update = () => {
-    if (this.state.toggleReset == !this.props.toggleReset) { // player reset game
-      this.reset();
+  spin() {
+    return this.state.pelletRot.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['0deg', '1440deg'],
+    });
+  }
+
+  boardShakeInterpolate() {
+    return this.state.boardShake.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 200],
+    });
+  }
+
+  easterEgg = async () => {
+    easterEggCount = easterEggCount + 1;
+    if (easterEggCount > 6) {
+      this.setState({score: this.state.score + CONSTANTS.PELLETMULT})
+    }
+  }
+
+  update = async() => {
+    if (this.state.toggleReset !== this.props.toggleReset) { // player reset game
+      await this.hardReset();
     }
     if (this.props.running) {
       if (!this.state.alive) { //player tried to start the game without reset
         this.die();
       }
-      if (this.state.pelletLocation == null) {
-        this.placePellet();
-      }
+      // if (this.state.pelletLocation == null) {
+      //   this.placePellet();
+      // }
       if (this.state.direction == CONSTANTS.DPADSTATES.UP && (this.state.posY < this.boardYtoPosY(this.state.boardY))) {
         if (this.props.pressedButton == CONSTANTS.DPADSTATES.UP) {
           this.goUp();
@@ -732,27 +906,6 @@ export default class Snek extends Sprite {
     }
   }
 
-  spin() {
-    return this.state.pelletRot.interpolate({
-      inputRange: [0, 1],
-      outputRange: ['0deg', '1440deg'],
-    });
-  }
-
-  boardShakeInterpolate() {
-    return this.state.boardShake.interpolate({
-      inputRange: [0, 1],
-      outputRange: [0, 200],
-    });
-  }
-
-  easterEgg = async () => {
-    easterEggCount = easterEggCount + 1;
-    if (easterEggCount > 6) {
-      this.setState({score: this.state.score + CONSTANTS.PELLETMULT})
-    }
-  }
-
   render() {
     let redPellet = null;
     let pellet = null;
@@ -760,6 +913,7 @@ export default class Snek extends Sprite {
       <Image source={require('../assets/gameplay/headUp.png')} style={[styles.snek, this.state.snakeHead]} resizeMode="stretch"/>
     </View>);
 
+    //TODO: Move this to an event that triggers when this.state.direction or boardX or boardY changes.
     let snekHeadBack = null;
     if (this.state.direction == CONSTANTS.DPADSTATES.UP) {
       snekHeadBack = (<View style={[styles.snekHeadBack, {
@@ -783,24 +937,24 @@ export default class Snek extends Sprite {
       }]}></View>);
     }
 
-    if (this.state.pelletLocation != null) {
-      pellet = (<Animated.View style={[styles.pellet, {
-        left: this.boardXtoPosX(this.state.pelletLocation.x),
-        top: this.boardYtoPosY(this.state.pelletLocation.y),
-        transform: [{rotate: this.spin()}],
-      }]}>
-        <Image source={require('../assets/gameplay/Diamond.png')} style={styles.pellet} resizeMode="stretch"/>
-      </Animated.View>);
-    }
-    if (this.state.redPelletLocation) {
-      redPellet = (<Animated.View style={[styles.redPellet, {
-        left: this.boardXtoPosX(this.state.redPelletLocation.x),
-        top: this.boardYtoPosY(this.state.redPelletLocation.y),
-        transform: [{rotate: this.spin()}],
-      }]}>
-        <Image source={require('../assets/powerupsoverlay/mushroom_voilet.png')} style={styles.redPellet} resizeMode="stretch"/>
-      </Animated.View>);
-    }
+    // if (this.state.pelletLocation != null) {
+    //   pellet = (<Animated.View style={[styles.pellet, {
+    //     left: this.boardXtoPosX(this.state.pelletLocation.x),
+    //     top: this.boardYtoPosY(this.state.pelletLocation.y),
+    //     transform: [{rotate: this.spin()}],
+    //   }]}>
+    //     <Image source={require('../assets/gameplay/Diamond.png')} style={styles.pellet} resizeMode="stretch"/>
+    //   </Animated.View>);
+    // }
+    // if (this.state.redPelletLocation) {
+    //   redPellet = (<Animated.View style={[styles.redPellet, {
+    //     left: this.boardXtoPosX(this.state.redPelletLocation.x),
+    //     top: this.boardYtoPosY(this.state.redPelletLocation.y),
+    //     transform: [{rotate: this.spin()}],
+    //   }]}>
+    //     <Image source={require('../assets/powerupsoverlay/mushroom_voilet.png')} style={styles.redPellet} resizeMode="stretch"/>
+    //   </Animated.View>);
+    // }
     if (!this.state.alive) {
       snek = (<View style={[styles.snek, {
         left: this.state.posX,

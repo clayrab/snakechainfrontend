@@ -96,13 +96,13 @@ export default class SelectLevel extends React.Component {
   }
   makeFnOnSelectLevel = (level) => {
     let onSelectLevel = () => {
-      this.props.onSelectLevel(level, this.props.currentSnake.name);
+      this.props.onSelectLevel(level, this.props.currentMode.name);
     }
     return onSelectLevel;
   }
 
   render() {
-    const {snakes, snakeIndex, currentSnake, onPreviousSnake, onNextSnake} = this.props;
+    const {gameModes, snakeIndex, currentMode, onPreviousMode, onNextMode} = this.props;
     return (
       <ScreenView style={styles.container}>
 
@@ -115,34 +115,34 @@ export default class SelectLevel extends React.Component {
 
         <SnakeNavigator
           fontStyle={this.state.riffic}
-          level={currentSnake}
-          onPrevious={onPreviousSnake}
-          onNext={onNextSnake}
-          hasNext={snakeIndex !== snakes.length - 1}
+          level={currentMode}
+          onPrevious={onPreviousMode}
+          onNext={onNextMode}
+          hasNext={snakeIndex !== gameModes.length - 1}
           hasPrevious={snakeIndex !== 0}
         />
 
         <ScrollView style={styles.scrollView}>
 
-          <ImageBackground source={currentSnake.background.top}
+          <ImageBackground source={currentMode.background.top}
                            resizeMode={'cover'}
                            style={styles.backgroundImage}>
 
-            <View style={[styles.snakeImageView, currentSnake.style.snakeImageView]}>
-              <Image source={currentSnake.snake}
-                     style={[styles.snakeImage, currentSnake.style.snakeImage]}/>
+            <View style={[styles.snakeImageView, currentMode.style.snakeImageView]}>
+              <Image source={currentMode.snake}
+                     style={[styles.snakeImage, currentMode.style.snakeImage]}/>
             </View>
 
             <Description fontStyle={this.state.riffic}
-                         text={currentSnake.description}/>
+                         text={currentMode.description}/>
 
-            <Weapon fontStyle={this.state.riffic} weapon={currentSnake.weapon}/>
+            <Weapon fontStyle={this.state.riffic} weapon={currentMode.weapon}/>
 
           </ImageBackground>
 
           <View style={styles.gameTypes}>
 
-            <ImageBackground source={currentSnake.background.bottom}
+            <ImageBackground source={currentMode.background.bottom}
                              resizeMode={'cover'}
                              style={styles.gameTypesBackground}>
 
@@ -154,7 +154,7 @@ export default class SelectLevel extends React.Component {
                     fontStyle={this.state.riffic}
                     title={"NO MULTIPLAYER"}
                     value={"FREE"}
-                    onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.FREE)}
+                    onPress={this.makeFnOnSelectLevel("FREE")}
                     valueStyle={{color: "#51B545"}}
                   />
                 </View>
@@ -174,13 +174,13 @@ export default class SelectLevel extends React.Component {
                       preview={require('../assets/snakemine/sc2.png')}
                       fontStyle={this.state.riffic}
                       title={"NO MULTIPLAYER"}
-                      onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.SCATTER1)}
+                      onPress={this.makeFnOnSelectLevel("SCATTER1")}
                       value={"0.01 ETH"}/>
                     <GameTypeItem
                       preview={require('../assets/snakemine/sc3.png')}
                       fontStyle={this.state.riffic}
                       title={"NO MULTIPLAYER"}
-                      onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BLOCK1)}
+                      onPress={this.makeFnOnSelectLevel("BLOCK1")}
                       value={"100 SNAKE"}/>
                   </View>
                   <View style={styles.gameTypeRow}>
@@ -188,13 +188,13 @@ export default class SelectLevel extends React.Component {
                       preview={require('../assets/snakemine/sc4.png')}
                       fontStyle={this.state.riffic}
                       title={"NO MULTIPLAYER"}
-                      onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.SCATTER2)}
+                      onPress={this.makeFnOnSelectLevel("SCATTER2")}
                       value={"0.1 ETH"}/>
                     <GameTypeItem
                       preview={require('../assets/snakemine/sc5.png')}
                       fontStyle={this.state.riffic}
                       title={"NO MULTIPLAYER"}
-                      onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BLOCK2)}
+                      onPress={this.makeFnOnSelectLevel("BLOCK2")}
                       value={"100 SNAKE"}/>
                   </View>
                 </View>

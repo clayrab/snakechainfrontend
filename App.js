@@ -62,18 +62,18 @@ const connectionConfig = {
   transports: ['websocket'],
 };
 
-var screens = {
+const screens = {
   "GAME": 0, "HOME": 1, "LOADING": 2, "PREFERENCES": 3, "PROFILE": 4,
   "ACCOUNTHISTORY": 5, "GAMEHISTORY": 6, "LOGIN": 7, "SNAKETOWN": 8, "WALLET": 9,
   "SELECTLEVEL": 10, "SIGNUP": 11, "TUTORIALS": 12, "LOGINCHOOSE": 13, "SIGNUPCHOOSE": 14, "SIGNUP": 15,
 };
-var overlays = {
+const overlays = {
   "PAUSE": 0, "GAMEOVER": 1, "MINE": 2, "AREYOUSURE": 3, "LOADING": 4,
   "CONFIRMTX": 5, "TRANSACTION": 6, "CONFIRMCONTRACT": 7, "POWERUPS": 8, "STARTGAME": 9,
   "ERROR": 10, "CONFIRMEXIT": 11, "COWOVERLAY": 12,
 };
-const snakes = ["TRADITIONAL", "SUPER_SNAKE", "SNAKE_RUSH"];
-const snakesData = {
+const gameModes = ["TRADITIONAL", "SUPER_SNAKE", "SNAKE_RUSH"];
+const modesData = {
   "TRADITIONAL": {
     name: "TRADITIONAL",
     description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod",
@@ -164,7 +164,7 @@ export default class App extends React.Component {
       level: 0,
       mode: "",
       pressedButton: CONSTANTS.DPADSTATES.UP,
-      toggleReset: true,
+      toggleReset: false,
       lastScore: -1,
       unredeemedSnekBalance: -1,
       snekBalance: -1,
@@ -191,9 +191,9 @@ export default class App extends React.Component {
       loadingUser: true,
       errorTitle: "",
       errorParagraph: "",
-      currentSnakeIndex: 0,
-      currentSnake: snakesData[snakes[0]],
-
+      currentModeIndex: 0,
+      currentMode: modesData[gameModes[0]],
+      //newGameCounter: 0, // Toggling to true will cause Snek.js to reset if it's still alive.
       //powerups: null
     };
     //this.loggedIn = this.loggedIn.bind(this);
@@ -417,7 +417,8 @@ export default class App extends React.Component {
   }
 
   restart() {
-    this.setState({toggleReset: !this.state.toggleReset, overlay: overlays.STARTGAME});
+    console.log("restart")
+    //this.setState({toggleReset: !this.state.toggleReset, overlay: overlays.STARTGAME});
   }
 
   pause() {
@@ -455,8 +456,9 @@ export default class App extends React.Component {
   onCancelConfirmExit = () => {
     this.setState({overlay: overlays.PAUSE});
   }
-  onSelectLevel = (levelNumber, mode) => {
-    this.setState({ screen: screens.GAME, level: levelNumber, mode: mode, overlay: overlays.STARTGAME, });
+  onSelectLevel = async(levelNumber, mode) => {
+    await this.setState({ screen: screens.GAME, level: levelNumber, mode: mode, overlay: overlays.STARTGAME, });
+    this.setState({toggleReset: !this.state.toggleReset, });
   }
 
   onSelectLevelPlayPress() {
@@ -514,21 +516,21 @@ export default class App extends React.Component {
     this.setState({screen: screens.HOME})
   };
 
-  onPreviousSnake = () => {
-    let {currentSnakeIndex} = this.state;
-    currentSnakeIndex--;
+  onPreviousMode = () => {
+    let {currentModeIndex} = this.state;
+    currentModeIndex--;
     this.setState({
-      currentSnakeIndex,
-      currentSnake: snakesData[snakes[currentSnakeIndex]]
+      currentModeIndex,
+      currentMode: modesData[gameModes[currentModeIndex]]
     })
   };
 
-  onNextSnake = () => {
-    let {currentSnakeIndex} = this.state;
-    currentSnakeIndex++;
+  onNextMode = () => {
+    let {currentModeIndex} = this.state;
+    currentModeIndex++;
     this.setState({
-      currentSnakeIndex,
-      currentSnake: snakesData[snakes[currentSnakeIndex]]
+      currentModeIndex,
+      currentMode: modesData[gameModes[currentModeIndex]]
     })
   };
 
@@ -548,7 +550,6 @@ export default class App extends React.Component {
           user={this.state.user}
           prices={this.state.prices}
           onPlayPress={this.onPlayPress}
-          onSelectLevel={this.onSelectLevel}
           onGoToTown={this.onGoToTown}
           onWallet={this.onWallet}
           onProfile={this.onProfile}
@@ -566,13 +567,12 @@ export default class App extends React.Component {
     } else if (this.state.screen == screens.SELECTLEVEL) {
       return (
         <SelectLevel
-          snakes={snakes}
-          snakesData={snakesData}
-          currentSnake={this.state.currentSnake}
-          snakeIndex={this.state.currentSnakeIndex}
-          onPreviousSnake={this.onPreviousSnake}
-          onNextSnake={this.onNextSnake}
-
+          gameModes={gameModes}
+          //modesData={modesData}
+          currentMode={this.state.currentMode}
+          snakeIndex={this.state.currentModeIndex}
+          onPreviousMode={this.onPreviousMode}
+          onNextMode={this.onNextMode}
           onSelectLevel={this.onSelectLevel}
           user={this.state.user}
           onWallet={this.onWallet}
@@ -626,10 +626,13 @@ export default class App extends React.Component {
         <SnakeTown exit={this.exit}/>
       );
     } else if (this.state.screen == screens.GAME) {
+      console.log("render game")
+      console.log(this.state.toggleReset)
       return (
         <ScreenView>
           <Loop>
             <Snek
+              newGameCounter={this.state.newGameCounter}
               pressedButton={this.state.pressedButton}
               onDpadChange={this.onDpadChange}
               doResetDpad={this.doResetDpad}
