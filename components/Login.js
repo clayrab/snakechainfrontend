@@ -153,7 +153,7 @@ export default class Login extends React.Component {
           await AsyncStorage.setItem("username", this.state.username)
           await AsyncStorage.setItem("password", this.state.pw)
         }
-        this.props.loggedIn(resp.token, this.state.username);
+        this.props.loggedIn(resp.token);
       }
     } catch (error) {
       alert(error);

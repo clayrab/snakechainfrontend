@@ -48,12 +48,12 @@ export default class SignupChoose extends React.Component {
       } else {
         await this.setState({loading: false});
         if(resp.error === "Object already exists!") {
-          alert("User already exists!")
+          alert("User already exists!");
         } else if(!resp.token) {
           console.log(resp);
           alert("There was a problem authenticating with the server.");
         } else {
-          alert("Unknown error\n" + resp.error)
+          alert("Unknown error\n" + resp.error);
         }
       }
     } catch (err){
@@ -77,14 +77,13 @@ export default class SignupChoose extends React.Component {
               onPress={this.googleOauth}>
               <ImageBackground source={require('../assets/login/button.png')}
                                style={[styles.button]} resizeMode="stretch">
-                <Text style={[styles.loginText, this.state.buttonDynamicStyle]}>SIGN UP WITH GOOGLE</Text>
+                <Text style={[styles.loginText, this.state.buttonDynamicStyle]}>GOOGLE SIGN UP</Text>
               </ImageBackground>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={this.props.goToSignup}>
+            <TouchableOpacity onPress={this.props.goToSignup}>
               <ImageBackground source={require('../assets/login/button.png')}
                                style={[styles.button]} resizeMode="stretch">
-                <Text style={[styles.loginText, this.state.buttonDynamicStyle]}>SIGN UP WITH EMAIL</Text>
+                <Text style={[styles.loginText, this.state.buttonDynamicStyle]}>BASIC SIGN UP</Text>
               </ImageBackground>
             </TouchableOpacity>
           </ImageBackground>

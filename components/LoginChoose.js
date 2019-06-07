@@ -14,6 +14,7 @@ import { AppAuth, Constants, Font} from 'expo';
 import Loading from './Loading.js';
 import ScreenView from '../components/ScreenView.js';
 
+import { getFromAsyncStore } from "../utils/AsyncStore.js";
 import { context } from "../utils/Context.js";
 import { normalize } from '../utils/FontNormalizer.js';
 import { doGoogleOauth, sendGoogleToken } from '../utils/Oauth.js';
@@ -26,19 +27,30 @@ export default class LoginChoose extends React.Component {
     super(props);
     this.state = {
       buttonDynamicStyle: {},
-      loading: false,
+      loading: true,
     };
   }
 
   async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      buttonDynamicStyle: {
-        fontFamily: 'riffic-free-bold',
+    try {
+      await Font.loadAsync({
+        'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
+      });
+      this.setState({
+        buttonDynamicStyle: {
+          fontFamily: 'riffic-free-bold',
+        }
+      });
+      let jwt = await getFromAsyncStore("jwt");
+      if(jwt) {
+        await this.props.loggedIn(jwt);
+      } else {
+        await this.setState({loading: false});
       }
-    });
+    } catch(err) {
+      alert(err);
+      await this.setState({loading: false});
+    }
   }
   googleOauth = async() => {
     this.setState({loading: true});
@@ -102,14 +114,12 @@ export default class LoginChoose extends React.Component {
                 <Text style={[styles.loginText, this.state.buttonDynamicStyle]}>GOOGLE LOGIN</Text>
               </ImageBackground>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={this.props.goToSignupChoose}>
-              <ImageBackground source={require('../assets/login/button.png')}
-                               style={[styles.button]} resizeMode="stretch">
-                <Text style={[styles.loginText, this.state.buttonDynamicStyle]}>SIGN UP</Text>
-              </ImageBackground>
-            </TouchableOpacity>
           </ImageBackground>
+          <View style={styles.signupButtonHolder}>
+            <TouchableOpacity onPress={this.props.goToSignupChoose} style={styles.signupTextTouchable}>
+              <Text style={[styles.signupText, this.state.buttonDynamicStyle]}>SIGN UP</Text>
+            </TouchableOpacity>
+          </View>
         </ScreenView>
       );
     }
@@ -117,9 +127,10 @@ export default class LoginChoose extends React.Component {
 }
 let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
+let buttonWidth = screenWidth / 1.5;
 let styles = StyleSheet.create({
   screen: {
-    //marginTop: 20,
+    alignItems: 'center',
   },
   backgroundImage: {
     paddingTop: 250,
@@ -129,7 +140,7 @@ let styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    width: screenWidth / 1.5,
+    width: buttonWidth,
     height: 60,
     marginTop: 20,
     alignItems: 'center',
@@ -138,6 +149,17 @@ let styles = StyleSheet.create({
   loginText: {
     fontSize: normalize(18),
     color: '#352927',
+  },
+  signupButtonHolder: {
+    position: "absolute",
+    bottom: 10,
+    width: buttonWidth,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  signupText: {
+    fontSize: normalize(13),
+    marginRight: 15,
   },
   rememberView: {
     flexDirection: 'row',

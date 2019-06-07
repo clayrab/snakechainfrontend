@@ -13,15 +13,15 @@ import {Font} from 'expo';
 import {normalize} from '../utils/FontNormalizer.js';
 import {context} from "../utils/Context";
 import Loading from "./Loading";
-import SuccessOverlay from "./SuccessOverlay";
+//import SuccessOverlay from "./SuccessOverlay";
 
 export default class Signup extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       loading: false,
-      signedUp: false,
-      loginPlaceHolder: 'Phone Number',
+      //signedUp: false,
+      loginPlaceHolder: 'Username',
       passwordPlaceHolder: 'Password',
       repasswordPlaceHolder: 'Re enter password',
       robotCBPress: true,
@@ -48,7 +48,7 @@ export default class Signup extends React.Component {
     if (loading) return;
 
     if (loginPlaceHolder == 0) {
-      alert("Please enter phone number")
+      alert("Please enter a user name")
     } else if (passwordPlaceHolder == 0 || repasswordPlaceHolder == "") {
       alert("Please enter password and confirmation password");
     } else if (passwordPlaceHolder != repasswordPlaceHolder) {
@@ -59,7 +59,6 @@ export default class Signup extends React.Component {
       alert("Please accept terms and conditions");
     } else {
       try {
-
         this.setState({loading: true});
         const data = {username: loginPlaceHolder, pw: passwordPlaceHolder};
         const response = await fetch(`${context.host}:${context.port}/createLocalUser`, {
@@ -70,20 +69,22 @@ export default class Signup extends React.Component {
             //application/x-www-form-urlencoded on Postman...
           },
         });
-
         const resp = await response.json();
-        await AsyncStorage.setItem("LAST_REGISTERED", loginPlaceHolder);
-        this.setState({signedUp: true});
-
+        if(!resp.token) {
+          alert("Unknown error occured");
+        } else {
+          console.log("signedup")
+          console.log(resp)
+          await AsyncStorage.setItem("LAST_REGISTERED", loginPlaceHolder);
+          this.props.loggedIn(resp.token);
+        }
+        //this.setState({signedUp: true});
       } catch (error) {
-
         console.log(error);
         alert(error);
-
       } finally {
         this.setState({loading: false});
       }
-
     }
   }
 
@@ -142,8 +143,8 @@ export default class Signup extends React.Component {
   }
 
   goBack = () => {
-    this.setState({signedUp: false});
-    this.props.signedUp();
+    //this.setState({signedUp: false});
+    //this.props.onLogin();
   }
 
   render() {
@@ -159,7 +160,7 @@ export default class Signup extends React.Component {
                          resizeMode={'stretch'}>
           <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10}}>
             <View style={{flex: 1}}>
-              <TouchableOpacity onPress={this.props.exit} style={styles.backButtonTouchable}>
+              <TouchableOpacity onPress={this.props.onLogin} style={styles.backButtonTouchable}>
                 <ImageBackground source={require('../assets/backbutton.png')} style={styles.backButtonIcon}/>
               </TouchableOpacity>
             </View>
@@ -223,11 +224,6 @@ export default class Signup extends React.Component {
             </ImageBackground>
           </TouchableOpacity>
         </ImageBackground>
-
-        <SuccessOverlay
-          show={this.state.signedUp}
-          onNext={this.goBack}
-        />
       </View>
     )
   }

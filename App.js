@@ -205,8 +205,6 @@ export default class App extends React.Component {
     this.onDoContract = this.onDoContract.bind(this);
     this.gameOverDoContract = this.gameOverDoContract.bind(this);
     this.onConfirmTxOk = this.onConfirmTxOk.bind(this);
-    this.onLogin = this.onLogin.bind(this);
-    this.signedUp = this.signedUp.bind(this);
   }
 
   async componentDidMount() {
@@ -275,14 +273,15 @@ export default class App extends React.Component {
     }
   }
 
-  loggedIn = async(jwt, username) => {
+  loggedIn = async(jwt) => {
+    console.log("loggedIn")
     await asyncStore("jwt", jwt);
-    if (this.state.screen == screens.LOGINCHOOSE || this.state.screen == screens.SIGNUPCHOOSE || this.state.screen == screens.LOGIN) {
+    await this.loadUser(jwt);
+    if (this.state.screen == screens.LOGINCHOOSE || this.state.screen == screens.SIGNUPCHOOSE || this.state.screen == screens.SIGNUP || this.state.screen == screens.LOGIN) {
       let firstLogin = await AsyncStorage.getItem("LAST_REGISTERED");
-      let screen = firstLogin && firstLogin == username ? screens.TUTORIALS : screens.HOME;
+      let screen = firstLogin && firstLogin == this.state.user.name ? screens.TUTORIALS : screens.HOME;
       await this.setState({screen});
     }
-    this.loadUser(jwt);
     try {
       this.socket = SocketIOClient(`${context.host}:${context.socketPort}`, {
         //path: '/mypath',
@@ -497,9 +496,6 @@ export default class App extends React.Component {
   onLogin = () => {
     this.setState({screen: screens.LOGIN, overlay: -1});
   }
-  signedUp = () => {
-    this.setState({screen: screens.LOGIN, overlays: -1});
-  }
 
   updatePowerups = powerups => {
     this.setState({
@@ -535,6 +531,7 @@ export default class App extends React.Component {
       currentSnake: snakesData[snakes[currentSnakeIndex]]
     })
   };
+
   logOut = async () => {
     await removeItem("jwt");
     this.setState({screen: screens.LOGINCHOOSE});
@@ -606,7 +603,7 @@ export default class App extends React.Component {
       );
     } else if (this.state.screen == screens.SIGNUP) {
       return (
-        <SignUp exit={this.onLogin} signedUp={this.signedUp}/>
+        <Signup onLogin={this.onLogin} loggedIn={this.loggedIn}/>
       )
     } else if (this.state.screen == screens.WALLET) {
       return (
@@ -614,7 +611,7 @@ export default class App extends React.Component {
       );
     } else if (this.state.screen == screens.SIGNUPCHOOSE) {
       return (
-        <SignupChoose goToSignup={this.goToSignup} loggedIn={this.loggedIn}/>
+        <SignupChoose goToSignup={this.goToSignup} loggedIn={this.loggedIn} />
       );
     } else if (this.state.screen == screens.PROFILE) {
       return (
