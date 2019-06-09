@@ -89,6 +89,7 @@ export default class Snek extends Sprite {
       // 1 pellet: leftover %
       //
       // Additionally 20% chance to plant a random powerup mushroom.
+      console.log("GREENMUSH event")
       const rewards = [ "10000", "10", "5", "3", "ticket", "1" ];
       const chances = {
         "ticket": 0.005,
@@ -111,17 +112,20 @@ export default class Snek extends Sprite {
         rewardsIndex++;
       }
       if (reward === "ticket") {
+        console.log("reward ticket")
         // todo: ticket reward
       } else if (reward === "eth") {
+        console.log("reward eth")
         // todo: onchain rewards.
       } else if (reward === "snk") {
+        console.log("reward snk")
         // todo: onchain rewards.
       } else {
-        let value = parseInt(reward);
-
+        this.setState({ score: this.state.score + parseInt(reward), });
       }
     },
     "PURPLEMUSH": async() => {
+      // was red pellet
     },
     "REDMUSH": async() => {
     },
@@ -141,28 +145,28 @@ export default class Snek extends Sprite {
   // This.state.edibles never shrinks. Nulls from the end are swapped when removing and adding.
   edibleTypes = {
     "GREENMUSH": {
-      png: require('../assets/powerupsoverlay/mushroom_voilet.png'),
+      png: require('../assets/powerupsoverlay/mushroom_yellow.png'),
     },
     "PURPLEMUSH": {
-
+      png: require('../assets/powerupsoverlay/mushroom_voilet.png'),
     },
     "REDMUSH": {
-
+      png: require('../assets/powerupsoverlay/mushroom_red.png'),
     },
     "GOLDMUSH": {
-
+      png: require('../assets/powerupsoverlay/mushroom_yellow.png'),
     },
     "BLUEMUSH": {
-
+      png: require('../assets/powerupsoverlay/mushroom_blue.png'),
     },
     "SKYBLUEMUSH": {
-
+      png: require('../assets/powerupsoverlay/mushroom_blue.png'),
     },
     "PLATINUMMUSH": {
-
+      png: require('../assets/powerupsoverlay/mushroom_blue.png'),
     },
     "PELLET": {
-
+      png: "#0d0",
     },
   };
   makeEdibleStruct = (type, x, y) => {
@@ -174,9 +178,9 @@ export default class Snek extends Sprite {
   }
   addEdible = (type, x, y) => {
     if (this.edibles.length > this.numberOfEdibles) {
-      this.edibles[this.numberOfEdibles] = type;
+      this.edibles[this.numberOfEdibles] = this.makeEdibleStruct(type, x, y);
     } else {
-      this.edibles.push(type);
+      this.edibles.push(this.makeEdibleStruct(type, x, y));
     }
     this.numberOfEdibles++;
   }
@@ -735,6 +739,12 @@ export default class Snek extends Sprite {
         this.eatPellet();
       }
     }
+    for (let i = 0; i < this.edibles.length; i++) {
+      if (this.edibles[i] && this.edibles[i].x === boardX && this.edibles[i].y === boardY) {
+        this.eatEdibleEvents[this.edibles[i].type]()
+      }
+    }
+
     // if (this.state.redPelletLocation &&
     //   this.state.redPelletLocation.x === boardX &&
     //   this.state.redPelletLocation.y === boardY) {
@@ -912,7 +922,6 @@ export default class Snek extends Sprite {
     let snek = (<View style={[styles.snek, { left: this.state.posX, top: this.state.posY,}]}>
       <Image source={require('../assets/gameplay/headUp.png')} style={[styles.snek, this.state.snakeHead]} resizeMode="stretch"/>
     </View>);
-
     //TODO: Move this to an event that triggers when this.state.direction or boardX or boardY changes.
     let snekHeadBack = null;
     if (this.state.direction == CONSTANTS.DPADSTATES.UP) {
@@ -981,6 +990,24 @@ export default class Snek extends Sprite {
         })}
         {snekHeadBack}
         {snek}
+        {
+          this.edibles.map((edible, idx) => {
+            if(!edible){
+              return ({});
+            } else {
+              return (
+                <Animated.View key={idx} style={[styles.redPellet, {
+                  left: this.boardXtoPosX(this.edibles[idx].x),
+                  top: this.boardYtoPosY(this.edibles[idx].y),
+                }]}>
+                  <Image source={this.edibleTypes[edible.type].png} style={styles.redPellet} resizeMode="stretch"/>
+                </Animated.View>
+              );
+            }
+
+          })
+        }
+
         {pellet}
         {redPellet}
         {this.wallComponents}
