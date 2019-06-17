@@ -8,31 +8,47 @@ import {normalize} from "../utils/FontNormalizer";
 
 let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
-
+{/*<View style={styles.childRowContent}>
+  <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.WILD)}>
+    <ImageBackground source={require('../assets/snakemine/leftBG.png')}
+      style={styles.snakeChainBG} resizeMode={'stretch'}>
+      <Text style={[this.state.riffic, styles.headerSC]}>
+        Random
+      </Text>
+      <Image source={require('../assets/snakemine/sc2.png')} style={styles.scImage} resizeMode={'stretch'}/>
+      <ImageBackground source={require('../assets/snakemine/leftDetails.png')} style={styles.scNameBG} resizeMode={'stretch'}>
+        <Text style={[this.state.riffic, styles.snakeText]}>
+          TBD
+        </Text>
+      </ImageBackground>
+    </ImageBackground>
+  </TouchableOpacity>
+  <ImageBackground source={require('../assets/snakemine/textPart.png')}
+    style={styles.scTitleBG} resizeMode={'stretch'}>
+    <Text style={[this.state.riffic, styles.avgTitleText]}>
+      AVG. 22 SNAKECHAIN
+    </Text>
+  </ImageBackground>
+</View>*/}
 const GameTypeItem = props => (
-  <TouchableOpacity style={styles.gameTypeItem} onPress={props.onPress}>
+  <TouchableOpacity style={[styles.gameTypeItem, ]} onPress={props.onPress}>
     <ImageBackground source={require('../assets/selectlevel/gameTypeItemBackground.png')}
-                     style={styles.gameTypeImage} resizeMode={'contain'}>
-
-      <Text style={[styles.gameTypeTitle, props.fontStyle]}>{props.title}</Text>
-
+                     style={styles.gameTypeImage} resizeMode={'stretch'}>
+      {/*<Text style={[styles.gameTypeTitle, props.fontStyle]}>{props.title}</Text>*/}
       <Image source={props.preview}
-             style={styles.gameTypePreview}
-             resizeMode={'contain'}/>
-
+             style={[styles.gameTypePreview, {}]}
+             resizeMode='center'/>
       <ImageBackground source={require("../assets/selectlevel/gameTypeValue.png")}
                        style={styles.gameTypeValueContainer} resizeMode={'contain'}>
         <Text style={[styles.gameTypeValueText, props.fontStyle, props.valueStyle]}>{props.value}</Text>
       </ImageBackground>
-
     </ImageBackground>
-
-    <ImageBackground source={require('../assets/snakemine/textPart.png')}
+    {/*<ImageBackground source={require('../assets/snakemine/textPart.png')}
                      style={[styles.scTitleBG]} resizeMode={'stretch'}>
       <Text style={[props.fontStyle, styles.avgTitleText]}>
         AVG. 22 SNAKECHAIN
       </Text>
-    </ImageBackground>
+    </ImageBackground>*/}
   </TouchableOpacity>
 );
 
@@ -57,25 +73,24 @@ const Description = props => (
   </View>
 );
 
-const SnakeNavigator = props => (
-  <ImageBackground source={require('../assets/selectlevel/transparent_bg.png')}
-                   style={styles.transparentImage}>
-
-    <TouchableOpacity onPress={props.onPrevious} disabled={!props.hasPrevious}>
-      <Image source={require('../assets/selectlevel/left.png')} style={styles.sliderHandler}/>
-    </TouchableOpacity>
-
-    <ImageBackground source={require("../assets/selectlevel/name_holder.png")} style={styles.nameHolder}>
-      <Text style={[styles.levelName, props.fontStyle]}>{props.level.name}</Text>
+const SnakeNavigator = props => {
+  let prevButtonOpacity = props.hasPrevious ? 1.0 : 0.2;
+  let nextButtonOpacity = props.hasNext ? 1.0 : 0.2;
+  return (
+    <ImageBackground source={require('../assets/selectlevel/transparent_bg.png')}
+                     style={styles.transparentImage}>
+      <TouchableOpacity onPress={props.onPrevious} disabled={!props.hasPrevious} style={{opacity: prevButtonOpacity}}>
+        <Image source={require('../assets/selectlevel/left.png')} style={styles.sliderHandler}/>
+      </TouchableOpacity>
+      <ImageBackground source={require("../assets/selectlevel/name_holder.png")} style={styles.nameHolder}>
+        <Text style={[styles.levelName, props.fontStyle]}>{props.level.name}</Text>
+      </ImageBackground>
+      <TouchableOpacity onPress={props.onNext} disabled={!props.hasNext} style={{opacity: nextButtonOpacity}}>
+        <Image source={require('../assets/selectlevel/right.png')} style={styles.sliderHandler}/>
+      </TouchableOpacity>
     </ImageBackground>
-
-    <TouchableOpacity onPress={props.onNext} disabled={!props.hasNext}>
-      <Image source={require('../assets/selectlevel/right.png')} style={styles.sliderHandler}/>
-    </TouchableOpacity>
-
-  </ImageBackground>
-);
-
+  );
+}
 export default class SelectLevel extends React.Component {
   constructor(props) {
     super(props);
@@ -121,41 +136,35 @@ export default class SelectLevel extends React.Component {
           hasNext={snakeIndex !== gameModes.length - 1}
           hasPrevious={snakeIndex !== 0}
         />
-
         <ScrollView style={styles.scrollView}>
-
           <ImageBackground source={currentMode.background.top}
                            resizeMode={'cover'}
                            style={styles.backgroundImage}>
-
             <View style={[styles.snakeImageView, currentMode.style.snakeImageView]}>
               <Image source={currentMode.snake}
                      style={[styles.snakeImage, currentMode.style.snakeImage]}/>
             </View>
-
-            <Description fontStyle={this.state.riffic}
-                         text={currentMode.description}/>
-
+            <Description fontStyle={this.state.riffic} text={currentMode.description}/>
             <Weapon fontStyle={this.state.riffic} weapon={currentMode.weapon}/>
-
           </ImageBackground>
-
           <View style={styles.gameTypes}>
-
             <ImageBackground source={currentMode.background.bottom}
                              resizeMode={'cover'}
                              style={styles.gameTypesBackground}>
-
               <ScrollView style={{flex: 1}}>
-
                 <View style={styles.gameTypeRow}>
                   <GameTypeItem
                     preview={require('../assets/snakemine/sc1.png')}
                     fontStyle={this.state.riffic}
                     title={"NO MULTIPLAYER"}
                     value={"FREE"}
-                    onPress={this.makeFnOnSelectLevel("FREE")}
-                    valueStyle={{color: "#51B545"}}
+                    onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.FREE)}
+                  />
+                  <GameTypeItem
+                    preview={require('../assets/snakemine/sc2.png')}
+                    fontStyle={this.state.riffic}
+                    value={"Random"}
+                    onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.WILD)}
                   />
                 </View>
                 <View style={{position: 'relative'}}>
@@ -171,31 +180,28 @@ export default class SelectLevel extends React.Component {
                   {/*</View>*/}
                   <View style={styles.gameTypeRow}>
                     <GameTypeItem
-                      preview={require('../assets/snakemine/sc2.png')}
-                      fontStyle={this.state.riffic}
-                      title={"NO MULTIPLAYER"}
-                      onPress={this.makeFnOnSelectLevel("SCATTER1")}
-                      value={"0.01 ETH"}/>
-                    <GameTypeItem
                       preview={require('../assets/snakemine/sc3.png')}
                       fontStyle={this.state.riffic}
                       title={"NO MULTIPLAYER"}
-                      onPress={this.makeFnOnSelectLevel("BLOCK1")}
-                      value={"100 SNAKE"}/>
-                  </View>
-                  <View style={styles.gameTypeRow}>
+                      onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.SCATTER1)}
+                      value={"Scatter 1"}/>
                     <GameTypeItem
                       preview={require('../assets/snakemine/sc4.png')}
                       fontStyle={this.state.riffic}
-                      title={"NO MULTIPLAYER"}
-                      onPress={this.makeFnOnSelectLevel("SCATTER2")}
-                      value={"0.1 ETH"}/>
+                      onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BLOCK1)}
+                      value={"Blocks 1"}/>
+                  </View>
+                  <View style={styles.gameTypeRow}>
                     <GameTypeItem
                       preview={require('../assets/snakemine/sc5.png')}
                       fontStyle={this.state.riffic}
-                      title={"NO MULTIPLAYER"}
-                      onPress={this.makeFnOnSelectLevel("BLOCK2")}
-                      value={"100 SNAKE"}/>
+                      onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.SCATTER2)}
+                      value={"Scatter 2"}/>
+                    <GameTypeItem
+                      preview={require('../assets/snakemine/sc6.png')}
+                      fontStyle={this.state.riffic}
+                      onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BLOCK2)}
+                      value={"Blocks 2"}/>
                   </View>
                 </View>
               </ScrollView>
@@ -302,15 +308,13 @@ let styles = StyleSheet.create({
   },
   gameTypeImage: {
     width: screenWidth * 0.35,
-    height: screenWidth * 0.48,
+    height: screenWidth * 0.40,
     alignItems: 'center',
-    paddingTop: 12,
-    paddingBottom: 5
   },
   gameTypePreview: {
     width: screenWidth * 0.3,
     height: screenWidth * 0.3,
-    resizeMode: 'contain',
+    //resizeMode: 'stretch',
   },
   gameTypeTitle: {
     marginBottom: 2,

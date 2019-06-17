@@ -35,7 +35,7 @@ export default class Snek extends Sprite {
       score: 0,
       pelletCount: 0,
       pelletLocation: null,
-      redPelletLocation: null, //RED PELLET IS NOW PURPLE MUSHROOM!!
+      //redPelletLocation: null, //RED PELLET IS NOW PURPLE MUSHROOM!!
       pelletRot: new Animated.Value(0),
       boardShake: new Animated.Value(0),
       alive: true,
@@ -90,19 +90,24 @@ export default class Snek extends Sprite {
       //
       // Additionally 20% chance to plant a random powerup mushroom.
       console.log("GREENMUSH event")
-      const rewards = [ "10000", "10", "5", "3", "ticket", "1" ];
+      //const rewards = [ "10000", "10", "5", "3", "ticket", "1" ];
       const chances = {
-        "ticket": 0.005,
-        "eth"   : 0.0,
-        "snk"   : 0.005,
-        "10"    : 0.05,
-        "5"     : 0.15,
-        "3"     : 0.50,
-        "1"     : 1.0, // Leftover chance. W guarantee to trigger the roll to this state by subtracting full 100%.
+        "ticket"  : 0.005,
+        "eth"     : 0.0,
+        "snk"     : 0.005,
+        "10"      : 0.05,
+        "5"       : 0.15,
+        "3"       : 0.50,
+        "randmush": 0.20,
+        "1"       : 1.0, // Leftover chance. W guarantee to trigger the roll to this state by subtracting full 100%.
       };
+      let rewards = Object.keys(chances);
       let roll = Math.random(); // pseudo-random number in the range [0, 1) (inclusive of 0, but not 1)
       let reward = null;
-      let rewardsIndex = 0, rollCountDown = roll;
+      let rewardsIndex = 0;
+      let rollCountDown = roll;
+      console.log(roll)
+      console.log(rewards)
       while (true) {
         rollCountDown = rollCountDown - chances[rewards[rewardsIndex]];
         if(rollCountDown < 0.0) {
@@ -111,6 +116,7 @@ export default class Snek extends Sprite {
         }
         rewardsIndex++;
       }
+      console.log(reward)
       if (reward === "ticket") {
         console.log("reward ticket")
         // todo: ticket reward
@@ -121,11 +127,12 @@ export default class Snek extends Sprite {
         console.log("reward snk")
         // todo: onchain rewards.
       } else {
-        this.setState({ score: this.state.score + parseInt(reward), });
+        await this.setState({ score: this.state.score + parseInt(reward), });
       }
     },
     "PURPLEMUSH": async() => {
       // was red pellet
+      await this.eatRedPellet();
     },
     "REDMUSH": async() => {
     },
@@ -190,8 +197,9 @@ export default class Snek extends Sprite {
           index <= this.numberOfEdibles &&
           this.numberOfEdibles <= this.edibles.length &&
           index <= this.edibles.length) {
-      this.edibles[index] = this.edibles[this.numberOfEdibles];
-      this.edibles[this.numberOfEdibles] = null;
+      this.edibles[index] = this.edibles[this.numberOfEdibles - 1];
+      this.edibles[this.numberOfEdibles - 1] = null;
+      this.numberOfEdibles--;
     } else {
       throw "Error in edibles"
     }
@@ -266,7 +274,7 @@ export default class Snek extends Sprite {
     startState.boardY = this.defaultState.boardY;
     startState.direction = this.defaultState.direction;
     startState.pelletLocation = this.defaultState.pelletLocation;
-    startState.redPelletLocation = this.defaultState.redPelletLocation;
+    //startState.redPelletLocation = this.defaultState.redPelletLocation;
     startState.pelletRot = this.defaultState.pelletRot;
     startState.boardShake = this.defaultState.boardShake;
     //startState.baseScore = this.defaultState.baseScore;
@@ -303,6 +311,8 @@ export default class Snek extends Sprite {
     }
     this.boardState = board.slice(0); //copy board
     this.setWallComponents();
+    this.edibles = [];
+    this.numberOfEdibles = 0;
   }
 
   hasNeighbor = (x, y, walls) => {
@@ -479,8 +489,9 @@ export default class Snek extends Sprite {
   placePellet = async() => {
     console.log("placePellet")
     await this.setState({ pelletLocation: this.randomLocation(), });
-    await this.setState({ redPelletLocation: this.randomLocation(), });
-    if(this.props.mode === "SUPER SNAKE" || true){
+    //await this.setState({ redPelletLocation: this.randomLocation(), });
+    this.placeEdible("PURPLEMUSH", this.randomLocation());
+    if(this.props.mode === "SUPER SNAKE"){
       this.placeEdible("GREENMUSH", this.randomLocation());
     }
     // if ((this.state.baseScore + 2) % 5 === 0) {
@@ -505,27 +516,8 @@ export default class Snek extends Sprite {
     return loc;
   }
 
-  // randomRedPelletGenerate() {
-  //   let isTail = true;
-  //   let isHead = true;
-  //   //let isEdible = true;
-  //
-  //   let x, y;
-  //   // while (isTail || isHead || isEdible) {
-  //   //   x = this.getRandomInt(0, CONSTANTS.BOARDWIDTH - 1);
-  //   //   y = this.getRandomInt(0, CONSTANTS.BOARDHEIGHT - 1);
-  //   //   isTail = this.boardState[y][x];
-  //   //   isHead = this.state.boardX === x && this.state.boardY === y;
-  //   //
-  //   //   //isEdible =
-  //   //
-  //   //
-  //   // }
-  //   return {x, y};
-  // }
-
   eatRedPellet = async () => {
-    this.setState({redPelletLocation: null});
+    //this.setState({redPelletLocation: null});
     let addPointsPelletSound = async(howMany) => {
       setTimeout(async() => {
         await this.playSound(this.sounds.EAT_PELLET_1);
@@ -568,7 +560,7 @@ export default class Snek extends Sprite {
       .reduce((total, weight) => { return total + weight;}); // sum of all weights
     let action = this.getRandomInt(1, maxWeight);
     let nextAction = 0;
-    while(action >= 0){
+    while(action > 0){
       action-=actions[nextAction].weight;
       nextAction++;
     }
@@ -620,7 +612,6 @@ export default class Snek extends Sprite {
     this.setState({score: this.state.score + (CONSTANTS.PELLETMULT * growLength), pelletCount: this.state.pelletCount + 1});
   }
 
-
   makeEmptyBoard = () => {
     let board = [];
     for (var index1 = 0; index1 < CONSTANTS.BOARDHEIGHT; index1++) {
@@ -661,6 +652,7 @@ export default class Snek extends Sprite {
       await this.setState({tail: newTail, tailIndex: newTailIndex});
     }
   }
+
   growTail() {
     // TailIndex is the last part of the tail. We snip the tail TailIndex,
     // push a new part into the middle of the array(the end of the tail),
@@ -740,8 +732,14 @@ export default class Snek extends Sprite {
       }
     }
     for (let i = 0; i < this.edibles.length; i++) {
-      if (this.edibles[i] && this.edibles[i].x === boardX && this.edibles[i].y === boardY) {
-        this.eatEdibleEvents[this.edibles[i].type]()
+      if (this.edibles[i]) {
+          if(this.edibles[i].x === boardX && this.edibles[i].y === boardY) {
+            this.eatEdibleEvents[this.edibles[i].type]();
+            this.removeEdible(i);
+            break;
+          }
+      } else {
+        break;
       }
     }
 
@@ -946,24 +944,15 @@ export default class Snek extends Sprite {
       }]}></View>);
     }
 
-    // if (this.state.pelletLocation != null) {
-    //   pellet = (<Animated.View style={[styles.pellet, {
-    //     left: this.boardXtoPosX(this.state.pelletLocation.x),
-    //     top: this.boardYtoPosY(this.state.pelletLocation.y),
-    //     transform: [{rotate: this.spin()}],
-    //   }]}>
-    //     <Image source={require('../assets/gameplay/Diamond.png')} style={styles.pellet} resizeMode="stretch"/>
-    //   </Animated.View>);
-    // }
-    // if (this.state.redPelletLocation) {
-    //   redPellet = (<Animated.View style={[styles.redPellet, {
-    //     left: this.boardXtoPosX(this.state.redPelletLocation.x),
-    //     top: this.boardYtoPosY(this.state.redPelletLocation.y),
-    //     transform: [{rotate: this.spin()}],
-    //   }]}>
-    //     <Image source={require('../assets/powerupsoverlay/mushroom_voilet.png')} style={styles.redPellet} resizeMode="stretch"/>
-    //   </Animated.View>);
-    // }
+    if (this.state.pelletLocation != null) {
+      pellet = (<Animated.View style={[styles.pellet, {
+        left: this.boardXtoPosX(this.state.pelletLocation.x),
+        top: this.boardYtoPosY(this.state.pelletLocation.y),
+        transform: [{rotate: this.spin()}],
+      }]}>
+        <Image source={require('../assets/gameplay/Diamond.png')} style={styles.pellet} resizeMode="stretch"/>
+      </Animated.View>);
+    }
     if (!this.state.alive) {
       snek = (<View style={[styles.snek, {
         left: this.state.posX,
@@ -990,10 +979,10 @@ export default class Snek extends Sprite {
         })}
         {snekHeadBack}
         {snek}
-        {
+        { !this.edibles ? null:
           this.edibles.map((edible, idx) => {
             if(!edible){
-              return ({});
+              return (null);
             } else {
               return (
                 <Animated.View key={idx} style={[styles.redPellet, {
@@ -1004,12 +993,10 @@ export default class Snek extends Sprite {
                 </Animated.View>
               );
             }
-
           })
         }
-
         {pellet}
-        {redPellet}
+
         {this.wallComponents}
         <Dpad onDpadChange={this.props.onDpadChange} pressedButton={this.props.pressedButton}></Dpad>
         <Buttons running={this.props.running} powerUps={this.props.powerUps} pause={this.props.pause}></Buttons>
@@ -1017,6 +1004,7 @@ export default class Snek extends Sprite {
     );
   }
 }
+
 let borderWidth = 5;
 let boardWidth = CONSTANTS.BOARDWIDTH * CONSTANTS.SNEKSIZE + 2 * borderWidth + 2;
 let boardHeight = CONSTANTS.BOARDHEIGHT * CONSTANTS.SNEKSIZE + 2 * borderWidth + 2;

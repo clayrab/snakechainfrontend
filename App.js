@@ -411,14 +411,13 @@ export default class App extends React.Component {
     }
   }
 
-
   start() {
     this.setState({offerContract: true, running: true, overlay: -1});
   }
 
   restart() {
-    console.log("restart")
-    //this.setState({toggleReset: !this.state.toggleReset, overlay: overlays.STARTGAME});
+    //console.log("restart")
+    this.setState({toggleReset: !this.state.toggleReset, overlay: overlays.STARTGAME});
   }
 
   pause() {
@@ -456,8 +455,11 @@ export default class App extends React.Component {
   onCancelConfirmExit = () => {
     this.setState({overlay: overlays.PAUSE});
   }
-  onSelectLevel = async(levelNumber, mode) => {
-    await this.setState({ screen: screens.GAME, level: levelNumber, mode: mode, overlay: overlays.STARTGAME, });
+  onSelectLevel = async(level, mode) => {
+    while(level === CONSTANTS.LEVELS.WILD) {
+      level = Math.floor(Math.random() * CONSTANTS.LEVELCOUNT);
+    }
+    await this.setState({ screen: screens.GAME, level: level, mode: mode, overlay: overlays.STARTGAME, });
     this.setState({toggleReset: !this.state.toggleReset, });
   }
 
@@ -626,8 +628,6 @@ export default class App extends React.Component {
         <SnakeTown exit={this.exit}/>
       );
     } else if (this.state.screen == screens.GAME) {
-      console.log("render game")
-      console.log(this.state.toggleReset)
       return (
         <ScreenView>
           <Loop>
