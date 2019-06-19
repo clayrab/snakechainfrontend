@@ -32,6 +32,7 @@ import SnakeTown from './components/SnakeTown.js';
 import StartGameOverlay from './components/StartGameOverlay.js';
 import Wallet from './components/Wallet.js';
 import Profile from './components/Profile.js';
+import SnakeUpgrade from './components/SnakeUpgrade';
 
 // import EditProfile from './components/EditProfile.js';
 // import SuccessfulEdit from './components/SuccessfulEdit'
@@ -65,7 +66,7 @@ const connectionConfig = {
 const screens = {
   "GAME": 0, "HOME": 1, "LOADING": 2, "PREFERENCES": 3, "PROFILE": 4,
   "ACCOUNTHISTORY": 5, "GAMEHISTORY": 6, "LOGIN": 7, "SNAKETOWN": 8, "WALLET": 9,
-  "SELECTLEVEL": 10, "SIGNUP": 11, "TUTORIALS": 12, "LOGINCHOOSE": 13, "SIGNUPCHOOSE": 14, "SIGNUP": 15,
+  "SELECTLEVEL": 10, "SIGNUP": 11, "TUTORIALS": 12, "LOGINCHOOSE": 13, "SIGNUPCHOOSE": 14, "SNAKEUPGRADE": 15,
 };
 const overlays = {
   "PAUSE": 0, "GAMEOVER": 1, "MINE": 2, "AREYOUSURE": 3, "LOADING": 4,
@@ -136,6 +137,26 @@ const modesData = {
   },
 
 };
+
+const snakeUpgrades = [
+  {
+    name: "Cowboy Snake",
+    image: require("./assets/snakeupgrade/CowboySnake.png")
+  },
+  {
+    name: "Cowboy Snake 2",
+    image: require("./assets/snakeupgrade/CowboySnake.png")
+  },
+  {
+    name: "Cowboy Snake 3",
+    image: require("./assets/snakeupgrade/CowboySnake.png")
+  },
+  {
+    name: "Cowboy Snake 4",
+    image: require("./assets/snakeupgrade/CowboySnake.png")
+  }
+];
+
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -193,6 +214,7 @@ export default class App extends React.Component {
       errorParagraph: "",
       currentModeIndex: 0,
       currentMode: modesData[gameModes[0]],
+      activeSnakeUpgrade: 0
       //newGameCounter: 0, // Toggling to true will cause Snek.js to reset if it's still alive.
       //powerups: null
     };
@@ -247,7 +269,7 @@ export default class App extends React.Component {
     })
   }
   loadUser = async (jwt) => {
-    try{
+    try {
       let response = await fetch(`${context.host}:${context.port}/getUser`, {
         method: "GET",
         headers: {
@@ -267,13 +289,13 @@ export default class App extends React.Component {
         alert(resp.error);
         await this.setState({loadingUser: false});
       }
-    }catch(err){
+    } catch (err) {
       console.log("****** error loading user ******")
       //console.log(err)
     }
   }
 
-  loggedIn = async(jwt) => {
+  loggedIn = async (jwt) => {
     console.log("loggedIn")
     await asyncStore("jwt", jwt);
     await this.loadUser(jwt);
@@ -371,7 +393,7 @@ export default class App extends React.Component {
         confirmTokenType: "ETH",
         txKey: txKey
       });
-    } catch(err) {
+    } catch (err) {
       alert("There was an Error.\n" + err.toString());
       this.setState({overlay: -1});
     }
@@ -456,9 +478,9 @@ export default class App extends React.Component {
   onCancelConfirmExit = () => {
     this.setState({overlay: overlays.PAUSE});
   }
-  onSelectLevel = async(levelNumber, mode) => {
-    await this.setState({ screen: screens.GAME, level: levelNumber, mode: mode, overlay: overlays.STARTGAME, });
-    this.setState({toggleReset: !this.state.toggleReset, });
+  onSelectLevel = async (levelNumber, mode) => {
+    await this.setState({screen: screens.GAME, level: levelNumber, mode: mode, overlay: overlays.STARTGAME,});
+    this.setState({toggleReset: !this.state.toggleReset,});
   }
 
   onSelectLevelPlayPress() {
@@ -492,9 +514,11 @@ export default class App extends React.Component {
   goToSignupChoose = () => {
     this.setState({screen: screens.SIGNUPCHOOSE, overlay: -1});
   }
+
   closeOverlay() {
     this.setState({running: true, overlay: -1});
   }
+
   onLogin = () => {
     this.setState({screen: screens.LOGIN, overlay: -1});
   }
@@ -541,6 +565,16 @@ export default class App extends React.Component {
 
   onHomePage = async () => {
     this.setState({screen: screens.HOME});
+  }
+
+  snakeUpgradeLeft = () => {
+    if (this.state.activeSnakeUpgrade > 0)
+      this.setState({activeSnakeUpgrade: this.state.activeSnakeUpgrade - 1})
+  }
+
+  snakeUpgradeRight = () => {
+    if (this.state.activeSnakeUpgrade < snakeUpgrades.length - 1)
+      this.setState({activeSnakeUpgrade: this.state.activeSnakeUpgrade + 1})
   }
 
   render() {
@@ -597,6 +631,13 @@ export default class App extends React.Component {
       return (
         <LoginChoose goToLogin={this.goToLogin} goToSignupChoose={this.goToSignupChoose} loggedIn={this.loggedIn}/>
       );
+    } else if (this.state.screen == screens.SNAKEUPGRADE) {
+      return (
+        <SnakeUpgrade user={this.state.user}
+                      snake={snakeUpgrades[this.state.activeSnakeUpgrade]}
+                      onLeftPress={this.snakeUpgradeLeft}
+                      onRightPress={this.snakeUpgradeRight}/>
+      );
     } else if (this.state.screen == screens.WALLET) {
       return (
         <Wallet user={this.state.user} exit={this.exit}/>
@@ -611,7 +652,7 @@ export default class App extends React.Component {
       );
     } else if (this.state.screen == screens.SIGNUPCHOOSE) {
       return (
-        <SignupChoose goToSignup={this.goToSignup} loggedIn={this.loggedIn} />
+        <SignupChoose goToSignup={this.goToSignup} loggedIn={this.loggedIn}/>
       );
     } else if (this.state.screen == screens.PROFILE) {
       return (
