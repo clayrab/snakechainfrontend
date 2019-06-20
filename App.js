@@ -499,6 +499,9 @@ export default class App extends React.Component {
   onGoToTown = () => {
     this.setState({screen: screens.SNAKETOWN, overlay: -1});
   }
+  onGoToSnakeStore = () => {
+    this.setState({screen: screens.SNAKEUPGRADE, overlay: -1});
+  }
   onProfile = () => {
     this.setState({screen: screens.PROFILE, overlay: -1});
   }
@@ -664,7 +667,7 @@ export default class App extends React.Component {
       );
     } else if (this.state.screen == screens.SNAKETOWN) {
       return (
-        <SnakeTown exit={this.exit}/>
+        <SnakeTown exit={this.exit} onGoToSnakeStore={this.onGoToSnakeStore}/>
       );
     } else if (this.state.screen == screens.GAME) {
       console.log("render game")

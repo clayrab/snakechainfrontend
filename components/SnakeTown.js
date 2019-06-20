@@ -7,12 +7,13 @@ import {
   ImageBackground,
   Image
 } from 'react-native';
-import ScreenView from '../components/ScreenView.js';
 import {Font} from 'expo';
-import SnakeBankOverlay from '../components/SnakeBankOverlay.js';
 import {normalize} from '../utils/FontNormalizer.js';
 
-var overlays = {"BANK": 0,};
+import ScreenView from '../components/ScreenView.js';
+import SnakeBankOverlay from '../components/SnakeBankOverlay.js';
+
+var overlays = {"BANK": 0, };
 export default class SnakeTown extends React.Component {
   constructor(props) {
     super(props);
@@ -50,18 +51,19 @@ export default class SnakeTown extends React.Component {
         </ImageBackground>
         <ImageBackground source={require('../assets/snaketown/textBoxBG.png')} style={styles.bottomImageBG}
                          resizeMode="stretch">
+
+           <TouchableOpacity onPress={this.props.onGoToSnakeStore}>
+             <ImageBackground source={require('../assets/snaketown/textBox.png')} style={styles.bottomTextBoxBG}
+                              resizeMode="stretch">
+               <Image source={require('../assets/snaketown/forumIcon.png')}
+                      style={[styles.buttonsIcon]}/>
+               <Text style={[this.state.riffic, styles.buttonsText]}>Snake Store</Text>
+             </ImageBackground>
+           </TouchableOpacity>
           <TouchableOpacity onPress={this.onBank}>
             <ImageBackground source={require('../assets/snaketown/textBox.png')} style={styles.bottomTextBoxBG}
                              resizeMode="stretch">
               <Image source={require('../assets/snaketown/saloonIcon.png')} style={styles.buttonsIcon}/>
-              <Text style={[styles.comingSoon, this.state.riffic, styles.buttonsText]}>Coming Soon</Text>
-            </ImageBackground>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={null}>
-            <ImageBackground source={require('../assets/snaketown/textBox.png')} style={styles.bottomTextBoxBG}
-                             resizeMode="stretch">
-              <Image source={require('../assets/snaketown/forumIcon.png')}
-                     style={[styles.comingSoon, styles.buttonsIcon]}/>
               <Text style={[styles.comingSoon, this.state.riffic, styles.buttonsText]}>Coming Soon</Text>
             </ImageBackground>
           </TouchableOpacity>
