@@ -73,7 +73,7 @@ export default class SelectLevelOverlay extends React.Component {
               </View>
               <View style={styles.childContentView}>
                 <View style={styles.childRowContent}>
-                  <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.FREE)}>
+                  <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BASIC)}>
                     <ImageBackground source={require('../assets/snakemine/leftBG.png')}
                                      style={styles.snakeChainBG} resizeMode={'stretch'}>
                       <Text style={[this.state.riffic, styles.headerSC]}>

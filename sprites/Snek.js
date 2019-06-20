@@ -89,17 +89,16 @@ export default class Snek extends Sprite {
       // 1 pellet: leftover %
       //
       // Additionally 20% chance to plant a random powerup mushroom.
-      console.log("GREENMUSH event")
-      //const rewards = [ "10000", "10", "5", "3", "ticket", "1" ];
+
       const chances = {
-        "ticket"  : 0.005,
+        "ticket"  : 0.0,
         "eth"     : 0.0,
-        "snk"     : 0.005,
+        "snk"     : 1.005,
         "10"      : 0.05,
         "5"       : 0.15,
         "3"       : 0.50,
         "randmush": 0.20,
-        "1"       : 1.0, // Leftover chance. W guarantee to trigger the roll to this state by subtracting full 100%.
+        //"1"       : 1.0, // Leftover chance. W guarantee to trigger the roll to this state by subtracting full 100%.
       };
       let rewards = Object.keys(chances);
       let roll = Math.random(); // pseudo-random number in the range [0, 1) (inclusive of 0, but not 1)
@@ -109,12 +108,18 @@ export default class Snek extends Sprite {
       console.log(roll)
       console.log(rewards)
       while (true) {
-        rollCountDown = rollCountDown - chances[rewards[rewardsIndex]];
-        if(rollCountDown < 0.0) {
-          reward = rewards[rewardsIndex];
+        if(!rewards[rewardsIndex]){
+          reward = "1";
           break;
+        } else {
+          rollCountDown = rollCountDown - chances[rewards[rewardsIndex]];
+          if(rollCountDown < 0.0) {
+            reward = rewards[rewardsIndex];
+            break;
+          }
+          rewardsIndex++;
         }
-        rewardsIndex++;
+
       }
       console.log(reward)
       if (reward === "ticket") {
@@ -124,7 +129,9 @@ export default class Snek extends Sprite {
         console.log("reward eth")
         // todo: onchain rewards.
       } else if (reward === "snk") {
-        console.log("reward snk")
+        // TODO: THIS SHOULD BE ONCHAIN LIKE ETH REWARD
+        // FOR NOW WE ARE JUST REWARDING "SNAKE GOLD"
+        await this.setState({ score: this.state.score + 10000, });
         // todo: onchain rewards.
       } else {
         await this.setState({ score: this.state.score + parseInt(reward), });

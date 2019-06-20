@@ -158,7 +158,7 @@ export default class SelectLevel extends React.Component {
                     fontStyle={this.state.riffic}
                     title={"NO MULTIPLAYER"}
                     value={"FREE"}
-                    onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.FREE)}
+                    onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BASIC)}
                   />
                   <GameTypeItem
                     preview={require('../assets/snakemine/sc2.png')}

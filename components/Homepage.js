@@ -23,7 +23,7 @@ import LoadingOverlay from '../components/LoadingOverlay.js';
 import MineEmptyOverlay from '../components/MineEmptyOverlay.js';
 import PowerupOverlay from '../components/PowerupOverlay.js';
 import PurchaseTicketOverlay from '../components/PurchaseTicketOverlay.js';
-import SelectLevelOverlay from '../components/SelectLevelOverlay.js';
+//import SelectLevelOverlay from '../components/SelectLevelOverlay.js';
 import ScreenView from '../components/ScreenView.js';
 import SnakeTown from '../components/SnakeTown.js';
 import CowOverlay from '../components/CowOverlay.js';
@@ -318,6 +318,7 @@ export default class Homepage extends React.Component {
   render() {
     let haul = this.props.user.haul;
     let mineGraphicIndex = 10 - Math.floor(10 * haul / this.props.user.mineMax);
+    mineGraphicIndex = mineGraphicIndex < 0 ? 0 : mineGraphicIndex; // if user hauls more than the mine max
     let mineTextColorStyle = {};
     if (mineGraphicIndex <= 6) {
       mineTextColorStyle = {color: "#fab523",}
@@ -326,6 +327,7 @@ export default class Homepage extends React.Component {
     }
     let mineImg = mineImages[mineGraphicIndex];
     let minePercent = (100 - Math.floor((100 * haul / this.props.user.mineMax)))
+    minePercent = minePercent < 0.0 ? 0.0 : minePercent; // if user hauls more than the mine max
     if (minePercent >= 100.0) {
       minePercent = minePercent.toPrecision(3);
     } else if (minePercent < 10.0) {
