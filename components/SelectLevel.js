@@ -37,7 +37,7 @@ const GameTypeItem = props => (
       {/*<Text style={[styles.gameTypeTitle, props.fontStyle]}>{props.title}</Text>*/}
       <Image source={props.preview}
              style={[styles.gameTypePreview, {}]}
-             resizeMode='center'/>
+             resizeMode='contain'/>
       <ImageBackground source={require("../assets/selectlevel/gameTypeValue.png")}
                        style={styles.gameTypeValueContainer} resizeMode={'contain'}>
         <Text style={[styles.gameTypeValueText, props.fontStyle, props.valueStyle]}>{props.value}</Text>
@@ -157,7 +157,7 @@ export default class SelectLevel extends React.Component {
                     preview={require('../assets/snakemine/sc1.png')}
                     fontStyle={this.state.riffic}
                     title={"NO MULTIPLAYER"}
-                    value={"FREE"}
+                    value={"Basic"}
                     onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BASIC)}
                   />
                   <GameTypeItem
@@ -308,13 +308,13 @@ let styles = StyleSheet.create({
   },
   gameTypeImage: {
     width: screenWidth * 0.35,
-    height: screenWidth * 0.40,
+    //height: screenWidth * 0.40,
     alignItems: 'center',
   },
   gameTypePreview: {
     width: screenWidth * 0.3,
     height: screenWidth * 0.3,
-    //resizeMode: 'stretch',
+    margin: 5,
   },
   gameTypeTitle: {
     marginBottom: 2,
@@ -326,10 +326,11 @@ let styles = StyleSheet.create({
     height: screenWidth * 0.07,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 8,
   },
   gameTypeValueText: {
     color: "#FFF646",
-    fontSize: normalize(16)
+    fontSize: normalize(16),
   },
   weaponItem: {
     position: 'absolute',

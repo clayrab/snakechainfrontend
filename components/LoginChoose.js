@@ -100,17 +100,13 @@ export default class LoginChoose extends React.Component {
                              style={{height: 100, width: 100, position: "absolute", left: 0}}
                            >
                            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={this.props.goToLogin}>
-              <ImageBackground source={require('../assets/login/button.png')}
-                               style={[styles.button]} res  izeMode="stretch">
+            <TouchableOpacity onPress={this.props.goToLogin}>
+              <ImageBackground source={require('../assets/login/button.png')} style={[styles.button]} resizeMode="stretch">
                 <Text style={[styles.loginText, this.state.buttonDynamicStyle]}>LOGIN</Text>
               </ImageBackground>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={this.googleOauth}>
-              <ImageBackground source={require('../assets/login/button.png')}
-                               style={[styles.button]} resizeMode="stretch">
+            <TouchableOpacity onPress={this.googleOauth}>
+              <ImageBackground source={require('../assets/login/button.png')} style={[styles.button]} resizeMode="stretch">
                 <Text style={[styles.loginText, this.state.buttonDynamicStyle]}>GOOGLE LOGIN</Text>
               </ImageBackground>
             </TouchableOpacity>
