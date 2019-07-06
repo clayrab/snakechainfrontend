@@ -72,7 +72,7 @@ EasingFunctions = {
     return t < .5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t
   }
 }
-let mode = 0;
+// let mode = 0;
 // 0 == opacity
 // 0 == y-gradient?
 // 1 == time-sin-gradient

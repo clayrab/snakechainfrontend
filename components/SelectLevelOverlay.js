@@ -11,6 +11,27 @@ import {
 import {Font} from 'expo';
 import CONSTANTS from '../Constants.js';
 import {normalize} from '../utils/FontNormalizer.js';
+const GameTypeItem = props => (
+  <TouchableOpacity style={[styles.gameTypeItem, ]} onPress={props.onPress}>
+    <ImageBackground source={require('../assets/selectlevel/gameTypeItemBackground.png')}
+                     style={styles.gameTypeImage} resizeMode={'stretch'}>
+      {/*<Text style={[styles.gameTypeTitle, props.fontStyle]}>{props.title}</Text>*/}
+      <Image source={props.preview}
+             style={[styles.gameTypePreview, {}]}
+             resizeMode='contain'/>
+      <ImageBackground source={require("../assets/selectlevel/gameTypeValue.png")}
+                       style={styles.gameTypeValueContainer} resizeMode={'contain'}>
+        <Text style={[styles.gameTypeValueText, props.fontStyle, props.valueStyle]}>{props.value}</Text>
+      </ImageBackground>
+    </ImageBackground>
+    {/*<ImageBackground source={require('../assets/snakemine/textPart.png')}
+                     style={[styles.scTitleBG]} resizeMode={'stretch'}>
+      <Text style={[props.fontStyle, styles.avgTitleText]}>
+        AVG. 22 SNAKECHAIN
+      </Text>
+    </ImageBackground>*/}
+  </TouchableOpacity>
+);
 
 export default class SelectLevelOverlay extends React.Component {
   constructor(props) {
@@ -67,226 +88,45 @@ export default class SelectLevelOverlay extends React.Component {
                 </Text>
               </ImageBackground>
             </View>
-            <ScrollView style={[{zIndex: 1}, styles.contentView]}>
-              <View style={styles.childContentView}>
-                <Text>Snake Rush</Text>
+            <ScrollView style={{flex: 1}}>
+              <View style={styles.gameTypeRow}>
+                <GameTypeItem
+                  preview={require('../assets/snakemine/sc1.png')}
+                  fontStyle={this.state.riffic}
+                  value={"Basic"}
+                  onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BASIC)}
+                />
+                <GameTypeItem
+                  preview={require('../assets/snakemine/sc2.png')}
+                  fontStyle={this.state.riffic}
+                  value={"Random"}
+                  onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.WILD)}
+                />
               </View>
-              <View style={styles.childContentView}>
-                <View style={styles.childRowContent}>
-                  <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BASIC)}>
-                    <ImageBackground source={require('../assets/snakemine/leftBG.png')}
-                                     style={styles.snakeChainBG} resizeMode={'stretch'}>
-                      <Text style={[this.state.riffic, styles.headerSC]}>
-                        Original
-                      </Text>
-                      <Image source={require('../assets/snakemine/sc1.png')} style={styles.scImage}
-                             resizeMode={'stretch'}/>
-                      <ImageBackground source={require('../assets/snakemine/leftDetails.png')} style={styles.scNameBG}
-                                       resizeMode={'stretch'}>
-                        <Text style={[this.state.riffic, styles.freeText]}>
-                          FREE
-                        </Text>
-                      </ImageBackground>
-                    </ImageBackground>
-                  </TouchableOpacity>
-                  <ImageBackground source={require('../assets/snakemine/textPart.png')}
-                                   style={styles.scTitleBG} resizeMode={'stretch'}>
-                    <Text style={[this.state.riffic, styles.avgTitleText]}>
-                      AVG. 22 SNAKECHAIN
-                    </Text>
-                  </ImageBackground>
-                </View>
-                {/*<View style={styles.childRowContent}>
-                  <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.WILD)}>
-                    <ImageBackground source={require('../assets/snakemine/leftBG.png')}
-                      style={styles.snakeChainBG} resizeMode={'stretch'}>
-                      <Text style={[this.state.riffic, styles.headerSC]}>
-                        Random
-                      </Text>
-                      <Image source={require('../assets/snakemine/sc2.png')} style={styles.scImage} resizeMode={'stretch'}/>
-                      <ImageBackground source={require('../assets/snakemine/leftDetails.png')} style={styles.scNameBG} resizeMode={'stretch'}>
-                        <Text style={[this.state.riffic, styles.snakeText]}>
-                          TBD
-                        </Text>
-                      </ImageBackground>
-                    </ImageBackground>
-                  </TouchableOpacity>
-                  <ImageBackground source={require('../assets/snakemine/textPart.png')}
-                    style={styles.scTitleBG} resizeMode={'stretch'}>
-                    <Text style={[this.state.riffic, styles.avgTitleText]}>
-                      AVG. 22 SNAKECHAIN
-                    </Text>
-                  </ImageBackground>
-                </View>*/}
+              <View style={styles.gameTypeRow}>
+                <GameTypeItem
+                  preview={require('../assets/snakemine/sc3.png')}
+                  fontStyle={this.state.riffic}
+                  title={"NO MULTIPLAYER"}
+                  onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.SCATTER1)}
+                  value={"Scatter 1"}/>
+                <GameTypeItem
+                  preview={require('../assets/snakemine/sc4.png')}
+                  fontStyle={this.state.riffic}
+                  onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BLOCK1)}
+                  value={"Blocks 1"}/>
               </View>
-
-              <View style={[{zIndex: 100}, styles.childContentView]}>
-                <View style={[styles.dynamiteOverlay, tntButtonStyle1]}>
-                  <TouchableOpacity onPress={this.props.buySnkDynamite}>
-                    <ImageBackground source={require('../assets/snakemine/textPart.png')}
-                                     style={styles.dynamiteTextBG} resizeMode={'stretch'}>
-                      <Text style={[this.state.riffic, styles.dynamiteText]}>
-                        USE <Text style={[this.state.riffic, styles.dynamiteText2]}>TNT</Text> TO UNLOCK
-                      </Text>
-                    </ImageBackground>
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.childRowContent}>
-                  <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.SCATTER1)}>
-                    <ImageBackground source={require('../assets/snakemine/leftBG.png')}
-                                     style={[styles.snakeChainBG, lockedStyle1]} resizeMode={'stretch'}>
-                      <Text style={[this.state.riffic, styles.headerSC]}>
-                        NO MULTIPLAYER
-                      </Text>
-                      <Image source={require('../assets/snakemine/sc3.png')} style={styles.scImage}
-                             resizeMode={'stretch'}/>
-                      <ImageBackground source={require('../assets/snakemine/leftDetails.png')} style={styles.scNameBG}
-                                       resizeMode={'stretch'}>
-                        <Text style={[this.state.riffic, styles.ethText]}>
-                          0.01 ETH
-                        </Text>
-                      </ImageBackground>
-                    </ImageBackground>
-                  </TouchableOpacity>
-                  <ImageBackground source={require('../assets/snakemine/textPart.png')}
-                                   style={[styles.scTitleBG, lockedStyle1]} resizeMode={'stretch'}>
-                    <Text style={[this.state.riffic, styles.avgTitleText]}>
-                      AVG. 22 SNAKECHAIN
-                    </Text>
-                  </ImageBackground>
-                </View>
-                <View style={styles.childRowContent}>
-                  <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BLOCK1)}>
-                    <ImageBackground source={require('../assets/snakemine/leftBG.png')}
-                                     style={[styles.snakeChainBG, lockedStyle1]} resizeMode={'stretch'}>
-                      <Text style={[this.state.riffic, styles.headerSC]}>
-                        NO MULTIPLAYER
-                      </Text>
-                      <Image source={require('../assets/snakemine/sc4.png')} style={styles.scImage}
-                             resizeMode={'stretch'}/>
-                      <ImageBackground source={require('../assets/snakemine/leftDetails.png')} style={styles.scNameBG}
-                                       resizeMode={'stretch'}>
-                        <Text style={[this.state.riffic, styles.snakeText]}>
-                          100 SNAKE
-                        </Text>
-                      </ImageBackground>
-                    </ImageBackground>
-                  </TouchableOpacity>
-                  <ImageBackground source={require('../assets/snakemine/textPart.png')}
-                                   style={[styles.scTitleBG, lockedStyle1]} resizeMode={'stretch'}>
-                    <Text style={[this.state.riffic, styles.avgTitleText]}>
-                      AVG. 22 SNAKECHAIN
-                    </Text>
-                  </ImageBackground>
-                </View>
-              </View>
-
-              <View style={[{zIndex: 2}, styles.childContentView]}>
-                <View style={styles.childRowContent}>
-                  <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.SCATTER2)}>
-                    <ImageBackground source={require('../assets/snakemine/leftBG.png')}
-                                     style={[styles.snakeChainBG, lockedStyle1]} resizeMode={'stretch'}>
-                      <Text style={[this.state.riffic, styles.headerSC]}>
-                        NO MULTIPLAYER
-                      </Text>
-                      <Image source={require('../assets/snakemine/sc5.png')} style={styles.scImage}
-                             resizeMode={'stretch'}/>
-                      <ImageBackground source={require('../assets/snakemine/leftDetails.png')} style={styles.scNameBG}
-                                       resizeMode={'stretch'}>
-                        <Text style={[this.state.riffic, styles.ethText]}>
-                          0.1 ETH
-                        </Text>
-                      </ImageBackground>
-                    </ImageBackground>
-                  </TouchableOpacity>
-                  <ImageBackground source={require('../assets/snakemine/textPart.png')}
-                                   style={[styles.scTitleBG, lockedStyle1]} resizeMode={'stretch'}>
-                    <Text style={[this.state.riffic, styles.avgTitleText]}>
-                      AVG. 22 SNAKECHAIN
-                    </Text>
-                  </ImageBackground>
-                </View>
-                <View style={styles.childRowContent}>
-                  <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BLOCK2)}>
-                    <ImageBackground source={require('../assets/snakemine/leftBG.png')}
-                                     style={[styles.snakeChainBG, lockedStyle1]} resizeMode={'stretch'}>
-                      <Text style={[this.state.riffic, styles.headerSC]}>
-                        NO MULTIPLAYER
-                      </Text>
-                      <Image source={require('../assets/snakemine/sc6.png')} style={styles.scImage}
-                             resizeMode={'stretch'}/>
-                      <ImageBackground source={require('../assets/snakemine/leftDetails.png')} style={styles.scNameBG}
-                                       resizeMode={'stretch'}>
-                        <Text style={[this.state.riffic, styles.snakeText]}>
-                          100 SNAKE
-                        </Text>
-                      </ImageBackground>
-                    </ImageBackground>
-                  </TouchableOpacity>
-                  <ImageBackground source={require('../assets/snakemine/textPart.png')}
-                                   style={[styles.scTitleBG, lockedStyle1]} resizeMode={'stretch'}>
-                    <Text style={[this.state.riffic, styles.avgTitleText]}>
-                      AVG. 22 SNAKECHAIN
-                    </Text>
-                  </ImageBackground>
-                </View>
-              </View>
-
-              <View style={styles.childContentView}>
-                {/*}<View style={[styles.dynamiteOverlay, {height: "100%"}]}>
-                  <TouchableOpacity onPress={this.props.buyEthDynamite}>
-                    <ImageBackground source={require('../assets/snakemine/textPart.png')}
-                      style={styles.dynamiteTextBG} resizeMode={'stretch'}>
-                      <Text style={[this.state.riffic, styles.dynamiteText]}>
-                        USE TNT TO UNLOCK
-                      </Text>
-                    </ImageBackground>
-                  </TouchableOpacity>
-                </View>*/}
-                {/*<View style={styles.childRowContent}>
-                  <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.SCATTER3)}>
-                    <ImageBackground source={require('../assets/snakemine/leftBG.png')}
-                      style={styles.snakeChainBG} resizeMode={'stretch'}>
-                      <Text style={[this.state.riffic, styles.headerSC]}>
-                        NO MULTIPLAYER
-                      </Text>
-                      <Image source={require('../assets/snakemine/sc7.png')} style={styles.scImage} resizeMode={'stretch'}/>
-                      <ImageBackground source={require('../assets/snakemine/leftDetails.png')} style={styles.scNameBG} resizeMode={'stretch'}>
-                        <Text style={[this.state.riffic, styles.ethText]}>
-                          0.001 ETH
-                        </Text>
-                      </ImageBackground>
-                    </ImageBackground>
-                  </TouchableOpacity>
-                  <ImageBackground source={require('../assets/snakemine/textPart.png')}
-                    style={styles.scTitleBG} resizeMode={'stretch'}>
-                    <Text style={[this.state.riffic, styles.avgTitleText]}>
-                      AVG. 22 SNAKECHAIN
-                    </Text>
-                  </ImageBackground>
-                </View>
-                <View style={styles.childRowContent}>
-                  <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BLOCK3)}>
-                    <ImageBackground source={require('../assets/snakemine/leftBG.png')}
-                      style={styles.snakeChainBG} resizeMode={'stretch'}>
-                      <Text style={[this.state.riffic, styles.headerSC]}>
-                        NO MULTIPLAYER
-                      </Text>
-                      <Image source={require('../assets/snakemine/sc8.png')} style={styles.scImage} resizeMode={'stretch'}/>
-                      <ImageBackground source={require('../assets/snakemine/leftDetails.png')} style={styles.scNameBG} resizeMode={'stretch'}>
-                        <Text style={[this.state.riffic, styles.snakeText]}>
-                          100 SNAKE
-                        </Text>
-                      </ImageBackground>
-                    </ImageBackground>
-                  </TouchableOpacity>
-                  <ImageBackground source={require('../assets/snakemine/textPart.png')}
-                    style={styles.scTitleBG} resizeMode={'stretch'}>
-                    <Text style={[this.state.riffic, styles.avgTitleText]}>
-                      AVG. 22 SNAKECHAIN
-                    </Text>
-                  </ImageBackground>
-                </View>*/}
+              <View style={styles.gameTypeRow}>
+                <GameTypeItem
+                  preview={require('../assets/snakemine/sc5.png')}
+                  fontStyle={this.state.riffic}
+                  onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.SCATTER2)}
+                  value={"Scatter 2"}/>
+                <GameTypeItem
+                  preview={require('../assets/snakemine/sc6.png')}
+                  fontStyle={this.state.riffic}
+                  onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BLOCK2)}
+                  value={"Blocks 2"}/>
               </View>
             </ScrollView>
           </ImageBackground>
@@ -441,5 +281,38 @@ var styles = StyleSheet.create({
     color: "#C22126",
     fontSize: normalize(14),
     fontWeight: 'bold'
-  }
+  },
+
+  gameTypeRow: {
+    paddingHorizontal: screenWidth * 0.05,
+    flexDirection: 'row',
+    justifyContent: 'space-around'
+  },
+  gameTypeItem: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20
+  },
+  gameTypeImage: {
+    width: screenWidth * 0.35,
+    //height: screenWidth * 0.40,
+    alignItems: 'center',
+  },
+  gameTypePreview: {
+    width: screenWidth * 0.3,
+    height: screenWidth * 0.3,
+    margin: 5,
+  },
+  gameTypeTitle: {
+    marginBottom: 2,
+    fontSize: normalize(12),
+    color: "#261D1C"
+  },
+  gameTypeValueContainer: {
+    width: screenWidth * 0.3,
+    height: screenWidth * 0.07,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
 });

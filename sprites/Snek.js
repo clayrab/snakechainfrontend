@@ -901,11 +901,11 @@ export default class Snek extends Sprite {
         if (this.lastFrameTime == null) { //first frame
           var speed = 0;
         } else {
-          let rushEffect = 1.0;
-          if(this.props.mode === "SNAKE RUSH"){
-            rushEffect += this.state.pelletCount/10.0;
-          }
-          var speed = CONSTANTS.SNEKSPEED * (now - this.lastFrameTime) * this.state.speedEffector * rushEffect;
+          // let rushEffect = 1.0;
+          // if(this.props.mode === "SNAKE RUSH"){
+          //   rushEffect += this.state.pelletCount/10.0;
+          // }
+          var speed = CONSTANTS.SNEKSPEED * (now - this.lastFrameTime) * this.state.speedEffector;
         }
         this.lastFrameTime = now;
         if (this.state.direction == CONSTANTS.DPADSTATES.UP) {

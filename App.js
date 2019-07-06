@@ -183,7 +183,6 @@ export default class App extends React.Component {
       screen: screens.LOGINCHOOSE,
       overlay: overlays.STARTGAME,
       level: 0,
-      mode: "",
       pressedButton: CONSTANTS.DPADSTATES.UP,
       toggleReset: false,
       lastScore: -1,
@@ -477,11 +476,11 @@ export default class App extends React.Component {
   onCancelConfirmExit = () => {
     this.setState({overlay: overlays.PAUSE});
   }
-  onSelectLevel = async(level, mode) => {
+  onSelectLevel = async(level) => {
     while(level === CONSTANTS.LEVELS.WILD) {
       level = Math.floor(Math.random() * CONSTANTS.LEVELCOUNT);
     }
-    await this.setState({ screen: screens.GAME, level: level, mode: mode, overlay: overlays.STARTGAME, });
+    await this.setState({ screen: screens.GAME, level: level, overlay: overlays.STARTGAME, });
     this.setState({toggleReset: !this.state.toggleReset, });
   }
 
@@ -536,10 +535,10 @@ export default class App extends React.Component {
       }
     })
   }
-
-  onPlayPress = () => {
-    this.setState({screen: screens.SELECTLEVEL});
-  };
+  //
+  // onPlayPress = () => {
+  //   this.setState({overlay: screens.SELECTLEVEL});
+  // };
 
   backToHomepage = () => {
     this.setState({screen: screens.HOME})
@@ -588,12 +587,12 @@ export default class App extends React.Component {
         <Homepage
           user={this.state.user}
           prices={this.state.prices}
-          onPlayPress={this.onPlayPress}
           onGoToTown={this.onGoToTown}
           onWallet={this.onWallet}
           onProfile={this.onProfile}
           doUpdateUser={this.doUpdateUser}
           updatePowerups={this.updatePowerups}
+          onSelectLevel={this.onSelectLevel}
         >
         </Homepage>
       );
@@ -603,21 +602,21 @@ export default class App extends React.Component {
           onDone={this.onHomePage}
         />
       )
-    } else if (this.state.screen == screens.SELECTLEVEL) {
-      return (
-        <SelectLevel
-          gameModes={gameModes}
-          //modesData={modesData}
-          currentMode={this.state.currentMode}
-          snakeIndex={this.state.currentModeIndex}
-          onPreviousMode={this.onPreviousMode}
-          onNextMode={this.onNextMode}
-          onSelectLevel={this.onSelectLevel}
-          user={this.state.user}
-          onWallet={this.onWallet}
-          exit={this.backToHomepage}
-        />
-      );
+    // } else if (this.state.screen == screens.SELECTLEVEL) {
+    //   return (
+    //     <SelectLevel
+    //       snakes={snakes}
+    //       snakesData={snakesData}
+    //       currentSnake={this.state.currentSnake}
+    //       snakeIndex={this.state.currentSnakeIndex}
+    //       onPreviousSnake={this.onPreviousSnake}
+    //       onNextSnake={this.onNextSnake}
+    //       onSelectLevel={this.onSelectLevel}
+    //       user={this.state.user}
+    //       onWallet={this.onWallet}
+    //       exit={this.backToHomepage}
+    //     />
+    //   );
     } else if (this.state.screen == screens.LOGIN) {
       return (
         <Login loggedIn={this.loggedIn}/>
@@ -690,8 +689,7 @@ export default class App extends React.Component {
               hideCowOverlay={this.hideCowOverlay}
               loading={this.state.loadingUser}
               user={this.state.user}
-              level={this.state.level}
-              mode={this.state.mode}>
+              level={this.state.level}>
             </Snek>
           </Loop>
           <PauseOverlay

@@ -23,7 +23,7 @@ import LoadingOverlay from '../components/LoadingOverlay.js';
 import MineEmptyOverlay from '../components/MineEmptyOverlay.js';
 import PowerupOverlay from '../components/PowerupOverlay.js';
 import PurchaseTicketOverlay from '../components/PurchaseTicketOverlay.js';
-//import SelectLevelOverlay from '../components/SelectLevelOverlay.js';
+import SelectLevelOverlay from '../components/SelectLevelOverlay.js';
 import ScreenView from '../components/ScreenView.js';
 import SnakeTown from '../components/SnakeTown.js';
 import CowOverlay from '../components/CowOverlay.js';
@@ -107,7 +107,7 @@ export default class Homepage extends React.Component {
     if (this.props.user.haul >= this.props.user.mineMax) {
       this.setState({overlay: overlays.MINEEMPTY});
     } else {
-      this.props.onPlayPress();
+      this.setState({overlay: overlays.SELECTLEVEL});
     }
   }
 
@@ -223,9 +223,9 @@ export default class Homepage extends React.Component {
       await this.setState({overlay: -1});
     }
   }
-  goToSelectLevel = () => {
-    this.setState({overlay: overlays.SELECTLEVEL});
-  }
+  // goToSelectLevel = () => {
+  //   this.setState({overlay: overlays.SELECTLEVEL});
+  // }
   onCancelConfirmSnkDynamite = () => {
     this.setState({overlay: overlays.SELECTLEVEL});
   }
@@ -402,14 +402,6 @@ export default class Homepage extends React.Component {
                               closeOverlay={this.closeOverlay}
                               user={this.props.user}
                               gototown={this.onMineHaul}/>
-          {/*<SelectLevelOverlay show={this.state.overlay == overlays.SELECTLEVEL}
-                              rushMode={true}
-                              closeOverlay={this.closeOverlay}
-                              user={this.props.user}
-                              onSelectLevel={this.props.onSelectLevel}
-                              buyEthDynamite={this.buyEthDynamite}
-                              buySnkDynamite={this.buySnkDynamite}
-          />*/}
           <PurchaseTicketOverlay show={this.state.overlay == overlays.PURCHASETICKET}
                                  closeOverlay={this.closeOverlay}
                                  user={this.props.user}
@@ -455,6 +447,22 @@ export default class Homepage extends React.Component {
             text={`Are you sure you want to buy these powerups?`}
             onYes={this.onConfirmBuyPowerups}
             onNo={this.onDeclineBuyPowerups}/>
+          <SelectLevelOverlay show={this.state.overlay == overlays.SELECTLEVEL}
+                              rushMode={true}
+                              closeOverlay={this.closeOverlay}
+                              user={this.props.user}
+                              onSelectLevel={this.props.onSelectLevel}
+                              // buyEthDynamite={this.buyEthDynamite}
+                              // buySnkDynamite={this.buySnkDynamite}
+            />
+            {/*<SelectLevelOverlay show={this.state.overlay == overlays.SELECTLEVEL}
+                                rushMode={true}
+                                closeOverlay={this.closeOverlay}
+                                user={this.props.user}
+                                onSelectLevel={this.props.onSelectLevel}
+                                buyEthDynamite={this.buyEthDynamite}
+                                buySnkDynamite={this.buySnkDynamite}
+            />*/}
         </ImageBackground>
       </ScreenView>
     );
