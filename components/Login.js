@@ -56,6 +56,7 @@ export default class Login extends React.Component {
         remember: true,
       });
     }
+    this.easterEgg();
   }
 
   loginFocus = async () => {
@@ -72,43 +73,15 @@ export default class Login extends React.Component {
   }
   easterEgg = async () => {
     easterEggCount = easterEggCount + 1;
-    if (easterEggCount >= 0) {
-      if (easterEggCount % 6 === 1) {
+    if (easterEggCount > 0) {
+      if (easterEggCount % 2 === 0) {
         await this.setState({
-          username: "clayrab",
+          username: "testuser",
           pw: "asdf",
           showLoginPlaceHolder: false,
           showPasswordPlaceHolder: false,
         });
-      } else if (easterEggCount % 6 === 2) {
-        await this.setState({
-          username: "ZB423",
-          pw: "1234",
-          showLoginPlaceHolder: false,
-          showPasswordPlaceHolder: false,
-        });
-      } else if (easterEggCount % 6 === 3) {
-        await this.setState({
-          username: "testuser1",
-          pw: "asdf",
-          showLoginPlaceHolder: false,
-          showPasswordPlaceHolder: false,
-        });
-      } else if (easterEggCount % 6 === 4) {
-        await this.setState({
-          username: "testuser2",
-          pw: "asdf",
-          showLoginPlaceHolder: false,
-          showPasswordPlaceHolder: false,
-        });
-      } else if (easterEggCount % 6 === 5) {
-        await this.setState({
-          username: "testuser3",
-          pw: "asdf",
-          showLoginPlaceHolder: false,
-          showPasswordPlaceHolder: false,
-        });
-      } else if (easterEggCount % 6 === 0) {
+      } else if (easterEggCount % 2 === 1) {
         await this.setState({
           username: "clayrab",
           pw: "asdf",

@@ -114,6 +114,7 @@ export default class AccountHistory extends React.Component {
       type: type,
       amount: this.state.confirmAmount,
       to: this.state.confirmPubkey,
+      pin: "1111",
     };
     var response = await fetch(`${context.host}:${context.port}${url}`, {
       method: "POST", // *GET, POST, PUT, DELETE, etc.

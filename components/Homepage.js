@@ -147,6 +147,7 @@ export default class Homepage extends React.Component {
       txkey: this.state.txKey,
       type: this.state.confirmTokenType,
       amount: this.state.confirmAmount,
+      pin: "1111",
     };
     var response = await fetch(`${context.host}:${context.port}${url}`, {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -260,6 +261,7 @@ export default class Homepage extends React.Component {
     const data = {
       type: "SNK",
       txkey: txKey,
+      pin: "1111",
       amount,
       ...powerups
     };

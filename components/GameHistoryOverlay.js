@@ -66,7 +66,7 @@ export default class GameHistoryOverlay extends React.Component {
           "Content-Type": "application/x-www-form-urlencoded",
           "Authorization": "JWT " + jwt,
         },
-      })
+      });
       var resp = await response.json();
       if (resp.error) {
         alert(resp.error);
@@ -77,8 +77,9 @@ export default class GameHistoryOverlay extends React.Component {
       if (this.isComponentMounted) {
         this.setState({games: resp.games});
       }
-    }catch(err){
+    } catch(err){
       console.log("****** error loading game history ******")
+      console.log(err)
     }
   }
 
