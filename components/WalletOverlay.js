@@ -9,6 +9,7 @@ import {
   TextInput,
   Clipboard
 } from 'react-native';
+import CONSTANTS from '../Constants.js';
 import {Keccak} from 'sha3';
 import {Font} from 'expo';
 import {normalize} from '../utils/FontNormalizer.js';
@@ -98,7 +99,7 @@ export default class Wallet extends React.Component {
       let type = this.state.coin == coins.ETHEREUM ? "ETH" : "SNK";
       let amt = Number(this.state.amountText);
       if (type == "ETH") {
-        amt = amt * 1000000000000000000;
+        amt = amt * CONSTANTS.WEIPERETH;
       }
       this.props.onSend(amt, this.state.address, type)
     }

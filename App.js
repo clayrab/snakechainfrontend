@@ -6,9 +6,9 @@ import SocketIOClient from 'socket.io-client';
 import CONSTANTS from './Constants.js';
 import {asyncStore, getFromAsyncStore, removeItem} from "./utils/AsyncStore.js";
 import {context} from "./utils/Context.js";
-import {makeRetry} from "./utils/Retry.js";
 import {formatToken} from './utils/uiHelperFunctions.js';
 import {createTransaction} from './utils/Transactions.js';
+import {doGetFetch} from './utils/Network.js';
 
 import Snek from './sprites/Snek.js';
 
@@ -54,7 +54,7 @@ import Tutorials from "./components/Tutorials";
 
 let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
-
+let didTryJwt = false;
 const connectionConfig = {
   jsonp: false,
   reconnection: true,
@@ -168,8 +168,8 @@ export default class App extends React.Component {
         pubkey: "",
         name: "",
         unredeemed: 0,
-        mineMax: 1000,
         haul: 0,
+        eggs: 0,
         gamecount: 0,
         totalhaul: 0,
         powerups: {
@@ -179,6 +179,8 @@ export default class App extends React.Component {
           redpowerup: -1
         }
       },
+      games: [],
+      transactions: [],
       running: false,
       screen: screens.LOGINCHOOSE,
       overlay: overlays.STARTGAME,
@@ -190,14 +192,7 @@ export default class App extends React.Component {
       snekBalance: -1,
       ethBalance: -1,
       //miningPrice: -1,
-      prices: {
-        mineGamePrice: -1,
-        mineHaulPrice: -1,
-        powerupPrice: -1,
-        lvlsnkPrice: -1,
-        lvlethPrice: -1,
-        gasPrice: -1,
-      },
+      prices: {},
       gameOverInfo: {
         score: 0,
         level: 0,
@@ -209,6 +204,8 @@ export default class App extends React.Component {
       txKey: "",
       offerContract: true,
       loadingUser: true,
+      loadingGames: true,
+      loadingTx: true,
       errorTitle: "",
       errorParagraph: "",
       currentModeIndex: 0,
@@ -217,36 +214,27 @@ export default class App extends React.Component {
       //newGameCounter: 0, // Toggling to true will cause Snek.js to reset if it's still alive.
       //powerups: null
     };
+    console.log("asdf")
+    console.log(this.state.games)
     //this.loggedIn = this.loggedIn.bind(this);
     this.closeOverlay = this.closeOverlay.bind(this);
     this.restart = this.restart.bind(this);
     this.start = this.start.bind(this);
     this.pause = this.pause.bind(this);
     this.onSelectLevelPlayPress = this.onSelectLevelPlayPress.bind(this);
-    this.onDoContract = this.onDoContract.bind(this);
+    //this.onDoContract = this.onDoContract.bind(this);
     this.gameOverDoContract = this.gameOverDoContract.bind(this);
     this.onConfirmTxOk = this.onConfirmTxOk.bind(this);
   }
 
   async componentDidMount() {
     try {
-      var response = await fetch(`${context.host}:${context.port}/getPrices`, {
-        method: "GET", // *GET, POST, PUT, DELETE, etc.
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      });
-      var resp = await response.json();
-      if (resp.error) {
-        alert(resp.error);
-      } else if (resp.prices) {
-        this.setState({prices: resp.prices});
-      } else {
-        alert("error retrieving prices");
-      }
-    } catch (err) {
-      console.log("there was an error retreiving prices.");
-      console.log(err)
+      let resp = await doGetFetch(`${context.host}:${context.port}/getPrices`, null);
+      console.log("prices: ")
+      console.log(resp)
+      this.setState({prices: resp.prices});
+    } catch(err) {
+      //alert("Unknown error while fetching prices: " + err);
       this.genericNetworkError();
     }
     Linking.addEventListener('url', (event) => {
@@ -258,6 +246,13 @@ export default class App extends React.Component {
         console.log('Initial url is: ' + url);
       }
     }).catch(err => console.error('An error occurred', err));
+
+    let jwt = await getFromAsyncStore("jwt");
+    if(jwt && !didTryJwt) {
+      await this.loggedIn(jwt);
+    }
+    //await this.setState({loading: false});
+    didTryJwt = true;
   }
 
   genericNetworkError = () => {
@@ -267,38 +262,73 @@ export default class App extends React.Component {
       overlay: overlays.ERROR,
     })
   }
-  loadUser = async (jwt) => {
+  fetchUser = async (jwt) => {
     try {
-      let response = await fetch(`${context.host}:${context.port}/getUser`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          "Authorization": "JWT " + jwt,
-        },
-      });
-      var resp = await response.json();
-      if (!resp.error) {
-        if (resp) {
-          await this.setState({loadingUser: false, user: resp});
-        } else {
-          alert("There was an error, no response.");
-          await this.setState({loadingUser: false});
-        }
+      let resp = await doGetFetch(`${context.host}:${context.port}/getUser`, jwt);
+      await this.setState({loadingUser: false, user: resp});
+      return true;
+    } catch(err) {
+      if(("" + err) === "Unauthorized") {
+        await removeItem("jwt");
+        await alert("Authorization failed. Please login again.");
       } else {
-        alert(resp.error);
-        await this.setState({loadingUser: false});
+        await alert("Unknown error while fetching user: " + err);
       }
-    } catch (err) {
-      console.log("****** error loading user ******")
-      //console.log(err)
+      console.log("made it here...???")
+      console.log(this.state)
+      await this.setState({screen: screens.LOGINCHOOSE, loadingUser: false});
+      console.log(this.state.screen)
+      //return false;
     }
   }
-
+  fetchGameHistory = async(jwt) => {
+    try {
+      let resp = await doGetFetch(`${context.host}:${context.port}/getGames`, jwt);
+      await this.setState({games: resp.games, loadingGames: false});
+      return true;
+    } catch(err) {
+      if(("" + err) === "Unauthorized") {
+        await removeItem("jwt");
+        alert("Authorization failed. Please login again.");
+      } else {
+        alert("Unknown error while fetching games: " + err);
+      }
+      await this.setState({screen: screens.LOGINCHOOSE, loadingGames: false});
+      return false;
+    }
+  }
+  fetchTxHistory = async(jwt) => {
+    try {
+      let resp = await doGetFetch(`${context.host}:${context.port}/getTransactions`, jwt);
+      await this.setState({transactions: resp.transactions, loadingTx: false});
+      return true;
+    } catch(err) {
+      if(("" + err) === "Unauthorized") {
+        await removeItem("jwt");
+        alert("Authorization failed. Please login again.");
+      } else {
+        alert("Unknown error while fetching games: " + err);
+      }
+      await this.setState({screen: screens.LOGINCHOOSE, loadingTx: false});
+      return false;
+    }
+  }
+  loadUser = async (jwt) => {
+    console.log("loadUser")
+    let result = await this.fetchUser(jwt);
+    if(result) {
+      result = result && this.fetchGameHistory(jwt);
+    }
+    if(result) {
+      result = result && this.fetchTxHistory(jwt);
+    }
+    return result;
+  }
   loggedIn = async (jwt) => {
     console.log("loggedIn")
     await asyncStore("jwt", jwt);
-    await this.loadUser(jwt);
-    if (this.state.screen == screens.LOGINCHOOSE || this.state.screen == screens.SIGNUPCHOOSE || this.state.screen == screens.SIGNUP || this.state.screen == screens.LOGIN) {
+    let result = await this.loadUser(jwt);
+    if (result && (this.state.screen == screens.LOGINCHOOSE || this.state.screen == screens.SIGNUPCHOOSE || this.state.screen == screens.SIGNUP || this.state.screen == screens.LOGIN)) {
       let firstLogin = await AsyncStorage.getItem("LAST_REGISTERED");
       let screen = firstLogin && firstLogin == this.state.user.name ? screens.TUTORIALS : screens.HOME;
       await this.setState({screen});
@@ -377,59 +407,6 @@ export default class App extends React.Component {
     }).catch(err => {
       throw err
     });
-  }
-
-  async onDoContract() {
-    console.log("onDoContract")
-    try {
-      await this.setState({overlay: overlays.LOADING});
-      let jwt = await getFromAsyncStore("jwt");
-      let price = this.state.prices.mineGamePrice;
-      let txKey = await createTransaction("ETH", price, jwt);
-      this.setState({
-        overlay: overlays.CONFIRMCONTRACT,
-        confirmAmount: price,
-        confirmTokenType: "ETH",
-        txKey: txKey
-      });
-    } catch (err) {
-      alert("There was an Error.\n" + err.toString());
-      this.setState({overlay: -1});
-    }
-  }
-
-  onConfirmContract = async () => {
-    await this.setState({overlay: overlays.LOADING});
-    let jwt = await getFromAsyncStore("jwt");
-    let price = this.state.prices.mineGamePrice;
-    var data = {
-      txkey: this.state.txKey,
-      type: "ETH",
-      amount: price,
-    };
-    var response = await fetch(`${context.host}:${context.port}/mine`, {
-      method: "POST", // *GET, POST, PUT, DELETE, etc.
-      body: JSON.stringify(data), // body data type must match "Content-Type" header
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        "Authorization": "JWT " + jwt,
-      },
-    });
-    var resp = await response.json();
-    if (resp.error) {
-      alert(resp.error);
-      await this.setState({overlay: -1});
-    } else if (resp.txhash) {
-      await this.setState({
-        offerContract: false,
-        overlay: overlays.CONFIRMTX,
-        lastTxHash: resp.txhash,
-        user: resp.user,
-      });
-    } else {
-      alert("Error sending transaction");
-      await this.setState({overlay: -1});
-    }
   }
 
   start() {
@@ -582,19 +559,21 @@ export default class App extends React.Component {
   }
 
   render() {
-    if (this.state.screen == screens.HOME) {
+    console.log("render app")
+    console.log(this.state.screen)
+    if (this.state.screen === screens.HOME) {
       return (
         <Homepage
           user={this.state.user}
           prices={this.state.prices}
+          games={[this.state.games]}
           onGoToTown={this.onGoToTown}
           onWallet={this.onWallet}
           onProfile={this.onProfile}
           doUpdateUser={this.doUpdateUser}
           updatePowerups={this.updatePowerups}
           onSelectLevel={this.onSelectLevel}
-        >
-        </Homepage>
+        />
       );
     } else if (this.state.screen == screens.TUTORIALS) {
       return (
@@ -602,21 +581,6 @@ export default class App extends React.Component {
           onDone={this.onHomePage}
         />
       )
-    // } else if (this.state.screen == screens.SELECTLEVEL) {
-    //   return (
-    //     <SelectLevel
-    //       snakes={snakes}
-    //       snakesData={snakesData}
-    //       currentSnake={this.state.currentSnake}
-    //       snakeIndex={this.state.currentSnakeIndex}
-    //       onPreviousSnake={this.onPreviousSnake}
-    //       onNextSnake={this.onNextSnake}
-    //       onSelectLevel={this.onSelectLevel}
-    //       user={this.state.user}
-    //       onWallet={this.onWallet}
-    //       exit={this.backToHomepage}
-    //     />
-    //   );
     } else if (this.state.screen == screens.LOGIN) {
       return (
         <Login loggedIn={this.loggedIn}/>
@@ -644,16 +608,12 @@ export default class App extends React.Component {
       );
     } else if (this.state.screen == screens.WALLET) {
       return (
-        <Wallet user={this.state.user} exit={this.exit}/>
+        <Wallet user={this.state.user} transactions={this.state.transactions} exit={this.exit}/>
       );
     } else if (this.state.screen == screens.SIGNUP) {
       return (
         <Signup onLogin={this.onLogin} loggedIn={this.loggedIn}/>
       )
-    } else if (this.state.screen == screens.WALLET) {
-      return (
-        <Wallet user={this.state.user} exit={this.exit}/>
-      );
     } else if (this.state.screen == screens.SIGNUPCHOOSE) {
       return (
         <SignupChoose goToSignup={this.goToSignup} loggedIn={this.loggedIn}/>
@@ -703,7 +663,7 @@ export default class App extends React.Component {
             closeOverlay={this.closeOverlay}
             gameOverInfo={this.state.gameOverInfo}
             miningPrice={this.state.prices.mineGamePrice}
-            onDoContract={this.onDoContract}
+            //onDoContract={this.onDoContract}
             offerContract={this.state.offerContract}
             restart={this.restart}
             exit={this.exit}/>

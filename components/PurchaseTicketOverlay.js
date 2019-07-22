@@ -9,6 +9,7 @@ import {
   ImageBackground,
   TouchableOpacity,
 } from 'react-native';
+import CONSTANTS from '../Constants.js';
 import {Font} from 'expo';
 import {normalize} from '../utils/FontNormalizer.js';
 
@@ -55,16 +56,17 @@ export default class PurchaseTicketOverlay extends React.Component {
             </View>
             <Image source={require("../assets/ticket/train.png")} style={styles.ticketImage}/>
             <View style={styles.headerText2Holder}>
-              <Text style={[styles.headerText2, this.state.buttonDynamicStyle]}>You can purchase transportation for your
-                raw <Image source={require('../assets/wallet/coin.png')} style={[styles.coin]}/> to be minted at the
-                Snake Bank</Text>
-              <Text style={[styles.headerText2, this.state.buttonDynamicStyle]}>Upon shipping your haul, a courier will
-                deposit [CURRENT HAUL AMT] <Image source={require('../assets/wallet/coin.png')}
-                                                  style={[styles.coin]}/> SnakeChain into your Snake Wallet</Text>
-              <Text style={[styles.headerText2small, this.state.buttonDynamicStyle]}>NOTE: It typically takes under
-                10min to receive courier deposit</Text>
+              <Text style={[styles.headerText2small, this.state.buttonDynamicStyle]}>
+                {this.props.user.eggs} eggs
+              </Text>
+              <Text style={[styles.headerText2small, this.state.buttonDynamicStyle]}>
+                {this.props.prices.mineHaulPrice/CONSTANTS.WEIPERETH} ETH per egg
+              </Text>
+              <Text style={[styles.headerText2, this.state.buttonDynamicStyle]}>
+                Total: {this.props.user.eggs*this.props.prices.mineHaulPrice/CONSTANTS.WEIPERETH} ETH
+              </Text>
             </View>
-            {this.props.user.haul > 0
+            {this.props.user.eggs > 0
               ?
               <TouchableOpacity onPress={this.purchaseWithETH}>
                 <ImageBackground source={require("../assets/ticket/button.png")} resizeMode='stretch'
@@ -73,7 +75,7 @@ export default class PurchaseTicketOverlay extends React.Component {
                     <Text style={[styles.ticketDescription, this.state.buttonDynamicStyle]}>Daily Tram </Text>
                   </View>
                   <View style={styles.ticketPrice}>
-                    <Text style={[styles.ticketText, this.state.buttonDynamicStyle]}>0.01 Eth</Text>
+                    <Text style={[styles.ticketText, this.state.buttonDynamicStyle]}>{this.props.user.eggs*this.props.prices.mineHaulPrice/CONSTANTS.WEIPERETH} ETH</Text>
                   </View>
                 </ImageBackground>
               </TouchableOpacity>
@@ -90,7 +92,7 @@ export default class PurchaseTicketOverlay extends React.Component {
                 </ImageBackground>
               </TouchableOpacity>
             }
-            {/*this.props.user.haul >= this.props.user.mineMax
+            {/*this.props.user.haul >= this.props.prices.mineMax
               ?
               <TouchableOpacity onPress={this.purchaseWithSNK}>
                 <ImageBackground source={require("../assets/ticket/button.png")} resizeMode='stretch' style={styles.inputBackground}>

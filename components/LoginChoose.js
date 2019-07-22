@@ -27,11 +27,12 @@ export default class LoginChoose extends React.Component {
     super(props);
     this.state = {
       buttonDynamicStyle: {},
-      loading: true,
+      loading: false,
     };
   }
 
   async componentDidMount() {
+    console.log("LoginChoose componentDidMount")
     try {
       await Font.loadAsync({
         'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
@@ -41,12 +42,6 @@ export default class LoginChoose extends React.Component {
           fontFamily: 'riffic-free-bold',
         }
       });
-      let jwt = await getFromAsyncStore("jwt");
-      if(jwt) {
-        await this.props.loggedIn(jwt);
-      } else {
-        await this.setState({loading: false});
-      }
     } catch(err) {
       alert(err);
       await this.setState({loading: false});
@@ -148,7 +143,7 @@ let styles = StyleSheet.create({
   },
   signupButtonHolder: {
     position: "absolute",
-    bottom: 10,
+    bottom: 100,
     width: buttonWidth,
     flexDirection: 'row',
     justifyContent: 'flex-end',

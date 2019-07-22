@@ -169,7 +169,7 @@ export default class GameOverOverlay extends React.Component {
                               <View style={styles.scrollmash}>
                                 <Text style={[styles.buttonText, styles.scoreText3, this.state.buttonDynamicStyle]}>
                                   3
-                                        </Text>
+                                </Text>
                                 <Image source={require('../assets/gameover/mashrom.png')} style={styles.mashroomImage1}
                                   resizeMode="contain" />
                               </View>
@@ -181,9 +181,6 @@ export default class GameOverOverlay extends React.Component {
                     </View>
                   </ImageBackground>
                 </View>
-
-
-
               </View>
             }
             <TouchableOpacity style={styles.touchableButton} onPress={this.props.restart}>
@@ -192,14 +189,7 @@ export default class GameOverOverlay extends React.Component {
                 <View style={{ flexDirection: 'row' }}>
                   <Text style={[styles.buttonText, styles.largeButtonBText]}>
                     PLAY AGAIN
-                </Text>
-                  <View style={styles.btnagain}>
-                    <Text style={[styles.buttonText, styles.scoreText5, this.state.buttonDynamicStyle]}>
-                      -3
                   </Text>
-                    <Image source={require('../assets/gameover/mashrom.png')} style={styles.mashroomImage1}
-                      resizeMode="contain" />
-                  </View>
                 </View>
               </ImageBackground>
             </TouchableOpacity>
@@ -207,7 +197,7 @@ export default class GameOverOverlay extends React.Component {
               <ImageBackground source={require('../assets/gameover/darkButton.png')} style={styles.largeButton}
                 resizeMode="stretch">
                 <Text style={[styles.buttonText, styles.largeButtonText]}>
-                  SELECT LEVEL
+                  EXIT
                 </Text>
               </ImageBackground>
             </TouchableOpacity>

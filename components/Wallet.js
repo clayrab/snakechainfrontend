@@ -32,7 +32,6 @@ export default class AccountHistory extends React.Component {
       riffic: {},
       overlayMode: null,
       loading: true,
-      transactions: null,
     };
   }
 
@@ -45,38 +44,37 @@ export default class AccountHistory extends React.Component {
         fontFamily: 'riffic-free-bold',
       }
     });
-    let prom = async () => {
-      return await new Promise((resolve, reject) => {
-        getFromAsyncStore("jwt").then((jwt) => {
-          fetch(`${context.host}:${context.port}/getTransactions`, {
-            method: "GET", // *GET, POST, PUT, DELETE, etc.
-            headers: {
-              //"Content-Type": "application/json; charset=utf-8",
-              "Content-Type": "application/x-www-form-urlencoded",
-              "Authorization": "JWT " + jwt,
-            },
-          }).then(async (response) => {
-            var resp = await response.json();
-            if (resp.error) {
-              alert(resp.error);
-              resolve({loading: false});
-            } else if (resp) {
-              resolve({loading: false, transactions: resp.transactions});
-            }
-          }).catch(
-            err => {
-              throw err
-            });
-        }).catch(err => {
-          throw err
-        });
-      }).catch(err => {
-        throw err
-      });
-    }
-    //let state = await makeRetry()(1500, prom);
-    let state = await prom();
-    this.setState(state);
+    // let prom = async () => {
+    //   return await new Promise((resolve, reject) => {
+    //     getFromAsyncStore("jwt").then((jwt) => {
+    //       fetch(`${context.host}:${context.port}/getTransactions`, {
+    //         method: "GET", // *GET, POST, PUT, DELETE, etc.
+    //         headers: {
+    //           //"Content-Type": "application/json; charset=utf-8",
+    //           "Content-Type": "application/x-www-form-urlencoded",
+    //           "Authorization": "JWT " + jwt,
+    //         },
+    //       }).then(async (response) => {
+    //         var resp = await response.json();
+    //         if (resp.error) {
+    //           alert(resp.error);
+    //           resolve({loading: false});
+    //         } else if (resp) {
+    //           resolve({loading: false, transactions: resp.transactions});
+    //         }
+    //       }).catch(
+    //         err => {
+    //           throw err
+    //         });
+    //     }).catch(err => {
+    //       throw err
+    //     });
+    //   }).catch(err => {
+    //     throw err
+    //   });
+    // }
+    // let state = await prom();
+    // this.setState(state);
 
   }
 
@@ -234,8 +232,8 @@ export default class AccountHistory extends React.Component {
           <ImageBackground source={require('../assets/accounthistory/accounthistoryBG.png')} style={styles.txHistory}
                            resizeMode="stretch">
             <ScrollView styles={styles.txHistoryScroll}>
-              {this.state.loading ? null :
-                this.state.transactions.map((transaction, i) => {
+              {this.props.transactions.length === 0 ? null :
+                this.props.transactions.map((transaction, i) => {
                   // "pubkey": "0x0b48797c3d9C0CF15B14f003d6A60B2F94F1F517",
                   // "txhash": "0x66c78149c875543b666a49e93574f95eea20488157781357b0d6b22cead2499d",
                   // "time": "2019-02-22T07:00:19.666Z",

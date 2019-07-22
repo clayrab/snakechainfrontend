@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import {Font} from 'expo';
 import {asyncStore, getFromAsyncStore, removeItem} from "../utils/AsyncStore.js";
-import {makeRetry} from "../utils/Retry.js";
 import {context} from "../utils/Context.js";
 import {normalize} from '../utils/FontNormalizer.js';
 
@@ -34,7 +33,7 @@ export default class GameHistoryOverlay extends React.Component {
     this.state = {
       loading: true,
       textStyle: {display: "none",},
-      games: [],
+      //games: [],
       riffic: {},
     }
   }
@@ -58,29 +57,6 @@ export default class GameHistoryOverlay extends React.Component {
         fontFamily: 'riffic-free-bold',
       }
     });
-    try{
-      let jwt = await getFromAsyncStore("jwt");
-      let response = await fetch(`${context.host}:${context.port}/getGames`, {
-        method: "GET", // *GET, POST, PUT, DELETE, etc.
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "Authorization": "JWT " + jwt,
-        },
-      });
-      var resp = await response.json();
-      if (resp.error) {
-        alert(resp.error);
-        this.setState({loading: false});
-      } else if (resp) {
-        this.setState({games: resp.games, loading: false});
-      }
-      if (this.isComponentMounted) {
-        this.setState({games: resp.games});
-      }
-    } catch(err){
-      console.log("****** error loading game history ******")
-      console.log(err)
-    }
   }
 
   componentWillUnmount() {
@@ -92,7 +68,7 @@ export default class GameHistoryOverlay extends React.Component {
       return null;
     } else {
       let haul = this.props.user.haul
-      let mineGraphicIndex = 10 - Math.floor(10 * haul / this.props.user.mineMax);
+      let mineGraphicIndex = 10 - Math.floor(10 * haul / this.props.prices.mineMax);
       let mineTextColorStyle = {};
       if (mineGraphicIndex <= 6) {
         mineTextColorStyle = {color: "#fab523",}
@@ -100,7 +76,7 @@ export default class GameHistoryOverlay extends React.Component {
         mineTextColorStyle = {color: "#352927",}
       }
       let mineImg = mineImages[mineGraphicIndex];
-      let minePercent = (100 - Math.floor((100 * haul / this.props.user.mineMax)))
+      let minePercent = (100 - Math.floor((100 * haul / this.props.prices.mineMax)))
       if (minePercent >= 100.0) {
         minePercent = minePercent.toPrecision(3);
       } else if (minePercent < 10.0) {
@@ -136,7 +112,7 @@ export default class GameHistoryOverlay extends React.Component {
                     REMAINING GOLD
                   </Text>
                   <Text style={[this.state.riffic, styles.headerText]}>
-                    {this.props.user.mineMax - this.props.user.haul}
+                    {this.props.prices.mineMax - this.props.user.haul}
                   </Text>
                 </ImageBackground>
                 <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage}
@@ -174,7 +150,7 @@ export default class GameHistoryOverlay extends React.Component {
                              style={[styles.contentImageBG, {flexDirection: 'column'}]} resizeMode="stretch">
               <ScrollView style={styles.contentView}>
                 {
-                  this.state.games.map((game, idx) => {
+                  this.props.games.map((game, idx) => {
                     return (
                       <ImageBackground key={idx} source={require('../assets/gamehistory/ghButtonBG.png')}
                                        style={[styles.historyBG]} resizeMode="stretch">

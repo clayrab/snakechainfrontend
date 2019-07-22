@@ -20,7 +20,6 @@ import ConfirmTxOverlay from '../components/ConfirmTxOverlay.js';
 import GameHistoryOverlay from '../components/GameHistoryOverlay.js';
 import Header from '../components/Header.js';
 import LoadingOverlay from '../components/LoadingOverlay.js';
-import MineEmptyOverlay from '../components/MineEmptyOverlay.js';
 import PowerupOverlay from '../components/PowerupOverlay.js';
 import PurchaseTicketOverlay from '../components/PurchaseTicketOverlay.js';
 import SelectLevelOverlay from '../components/SelectLevelOverlay.js';
@@ -51,11 +50,10 @@ var overlays = {
   "LOADING": 4,
   "CONFIRMTX": 5,
   "POWERUPS": 6,
-  "MINEEMPTY": 7,
-  "CONFIRMSNKDYNAMITE": 8,
-  "CONFIRMETHDYNAMITE": 9,
-  "RECEIPTOVERLAY": 10,
-  "CONFIRMPOWERUPBUYOVERLAY": 11,
+  "CONFIRMSNKDYNAMITE": 7,
+  "CONFIRMETHDYNAMITE": 8,
+  "RECEIPTOVERLAY": 9,
+  "CONFIRMPOWERUPBUYOVERLAY": 10,
 };
 export default class Homepage extends React.Component {
   constructor(props) {
@@ -104,22 +102,16 @@ export default class Homepage extends React.Component {
     this.setState({overlay: overlays.PURCHASETICKET});
   }
   onPlayPress = () => {
-    if (this.props.user.haul >= this.props.user.mineMax) {
-      this.setState({overlay: overlays.MINEEMPTY});
-    } else {
-      this.setState({overlay: overlays.SELECTLEVEL});
-    }
+    this.setState({overlay: overlays.SELECTLEVEL});
   }
-
   onPurchaseTicketSelect = async (ticketType) => {
+    console.log('onPurchaseTicketSelect')
+    console.log(this.props.prices)
     try {
       if (ticketType == "ETH") {
         await this.setState({overlay: overlays.LOADING});
         let jwt = await getFromAsyncStore("jwt");
-        let price = this.props.prices.mineGamePrice;
-        // if (ticketType == "SNK") {
-        //   price = this.props.prices.mineHaulPrice;
-        // }
+        let price = this.props.user.eggs*this.props.prices.mineHaulPrice;
         let txKey = await createTransaction(ticketType, price, jwt);
         this.setState({
           overlay: overlays.CONFIRMTICKET,
@@ -135,21 +127,19 @@ export default class Homepage extends React.Component {
     }
   }
   onConfirmTicket = async () => {
+    console.log('onConfirmTicket')
+    console.log(this.props.prices)
+    console.log(this.props.user)
     await this.setState({overlay: overlays.LOADING});
     let jwt = await getFromAsyncStore("jwt");
-    let price = this.props.prices.mineGamePrice;
-    let url = "/mine";
-    // if (this.state.confirmTokenType == "SNK") {
-    //   price = this.props.prices.minehaulPrice;
-    //   url = "/mineWithSnek";
-    // }
+    let price = this.props.user.eggs*this.props.prices.mineHaulPrice;
     var data = {
       txkey: this.state.txKey,
       type: this.state.confirmTokenType,
-      amount: this.state.confirmAmount,
+      amount: price,
       pin: "1111",
     };
-    var response = await fetch(`${context.host}:${context.port}${url}`, {
+    var response = await fetch(`${context.host}:${context.port}/mine`, {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       body: JSON.stringify(data), // body data type must match "Content-Type" header
       headers: {
@@ -192,47 +182,47 @@ export default class Homepage extends React.Component {
       alert("There was an Error.\n" + err.toString());
     }
   }
-  onConfirmDynamite = async () => {
-    await this.setState({overlay: overlays.LOADING});
-    let jwt = await getFromAsyncStore("jwt");
-    let price = this.props.prices.tnt;
-    let url = "/buyUpgradedMine";
-    let data = {
-      txkey: this.state.txKey,
-      type: this.state.confirmTokenType,
-      amount: this.state.confirmAmount,
-    };
-    var response = await fetch(`${context.host}:${context.port}${url}`, {
-      method: "POST", // *GET, POST, PUT, DELETE, etc.
-      body: JSON.stringify(data), // body data type must match "Content-Type" header
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        "Authorization": "JWT " + jwt,
-      },
-    });
-    var resp = await response.json();
-    if (resp.error) {
-      alert(resp.error);
-      await this.setState({overlay: -1});
-    } else if (resp.txhash) {
-      await this.props.doUpdateUser(resp.user);
-      this.setState({overlay: overlays.CONFIRMTX, lastTxHash: resp.txhash});
-    } else {
-      alert("Error sending transaction");
-      console.log("transferSnek error")
-      console.log(resp)
-      await this.setState({overlay: -1});
-    }
-  }
+  // onConfirmDynamite = async () => {
+  //   await this.setState({overlay: overlays.LOADING});
+  //   let jwt = await getFromAsyncStore("jwt");
+  //   let price = this.props.prices.tnt;
+  //   let url = "/buyUpgradedMine";
+  //   let data = {
+  //     txkey: this.state.txKey,
+  //     type: this.state.confirmTokenType,
+  //     amount: this.state.confirmAmount,
+  //   };
+  //   var response = await fetch(`${context.host}:${context.port}${url}`, {
+  //     method: "POST", // *GET, POST, PUT, DELETE, etc.
+  //     body: JSON.stringify(data), // body data type must match "Content-Type" header
+  //     headers: {
+  //       "Content-Type": "application/json; charset=utf-8",
+  //       "Authorization": "JWT " + jwt,
+  //     },
+  //   });
+  //   var resp = await response.json();
+  //   if (resp.error) {
+  //     alert(resp.error);
+  //     await this.setState({overlay: -1});
+  //   } else if (resp.txhash) {
+  //     await this.props.doUpdateUser(resp.user);
+  //     this.setState({overlay: overlays.CONFIRMTX, lastTxHash: resp.txhash});
+  //   } else {
+  //     alert("Error sending transaction");
+  //     console.log("transferSnek error")
+  //     console.log(resp)
+  //     await this.setState({overlay: -1});
+  //   }
+  // }
   // goToSelectLevel = () => {
   //   this.setState({overlay: overlays.SELECTLEVEL});
   // }
-  onCancelConfirmSnkDynamite = () => {
-    this.setState({overlay: overlays.SELECTLEVEL});
-  }
-  onCancelConfirmEthDynamite = () => {
-    this.setState({overlay: overlays.SELECTLEVEL});
-  }
+  // onCancelConfirmSnkDynamite = () => {
+  //   this.setState({overlay: overlays.SELECTLEVEL});
+  // }
+  // onCancelConfirmEthDynamite = () => {
+  //   this.setState({overlay: overlays.SELECTLEVEL});
+  // }
   onPowerups = () => {
     this.setState({overlay: overlays.POWERUPS});
   }
@@ -318,8 +308,7 @@ export default class Homepage extends React.Component {
   }
 
   render() {
-    let haul = this.props.user.haul;
-    let mineGraphicIndex = 10 - Math.floor(10 * haul / this.props.user.mineMax);
+    let mineGraphicIndex = 10 - Math.floor(10 * this.props.user.haul / this.props.prices.mineMax);
     mineGraphicIndex = mineGraphicIndex < 0 ? 0 : mineGraphicIndex; // if user hauls more than the mine max
     let mineTextColorStyle = {};
     if (mineGraphicIndex <= 6) {
@@ -328,7 +317,12 @@ export default class Homepage extends React.Component {
       mineTextColorStyle = {color: "#352927",}
     }
     let mineImg = mineImages[mineGraphicIndex];
-    let minePercent = (100 - Math.floor((100 * haul / this.props.user.mineMax)))
+    let minePercent = (100 - Math.floor((100 * this.props.user.haul / this.props.prices.mineMax)));
+    // console.log("homepage render")
+    // console.log(minePercent)
+    // console.log(this.props.user)
+    // console.log(this.props.user.haul)
+    // console.log(this.props.prices.mineMax)
     minePercent = minePercent < 0.0 ? 0.0 : minePercent; // if user hauls more than the mine max
     if (minePercent >= 100.0) {
       minePercent = minePercent.toPrecision(3);
@@ -396,6 +390,7 @@ export default class Homepage extends React.Component {
           <ReceiptOverlay
             show={this.state.overlay == overlays.RECEIPTOVERLAY}
             user={this.props.user}
+            prices={this.props.prices}
             transactionId={this.state.lastTxHash}
             //startMining={this.goToSelectLevel}
             closeOverlay={this.closeOverlay}
@@ -403,7 +398,9 @@ export default class Homepage extends React.Component {
           <GameHistoryOverlay show={this.state.overlay == overlays.MINE}
                               closeOverlay={this.closeOverlay}
                               user={this.props.user}
-                              gototown={this.onMineHaul}/>
+                              gototown={this.onMineHaul}
+                              games={this.props.games}
+                              prices={this.props.prices}/>
           <PurchaseTicketOverlay show={this.state.overlay == overlays.PURCHASETICKET}
                                  closeOverlay={this.closeOverlay}
                                  user={this.props.user}
@@ -415,17 +412,6 @@ export default class Homepage extends React.Component {
             text={`Pay ${formatToken(this.state.confirmAmount, this.state.confirmTokenType)} ${this.state.confirmTokenType} for ${this.props.user.haul} Snake Coins.\n\nAre you sure?`}
             onYes={this.onConfirmTicket}
             onNo={this.onCancelConfirm}/>
-
-          <AreYouSureOverlay
-            show={this.state.overlay == overlays.CONFIRMSNKDYNAMITE}
-            text={`Pay XXX SNK and XXX ETH gas to open deeper shafts in your mine?`}
-            onYes={this.onConfirmDynamite}
-            onNo={this.onCancelConfirmSnkDynamite}/>
-          <AreYouSureOverlay
-            show={this.state.overlay == overlays.CONFIRMETHDYNAMITE}
-            text={`Pay XXX ETH(including XXX for gas) to open deeper shafts in your mine?`}
-            onYes={this.onConfirmDynamite}
-            onNo={this.onCancelConfirmEthDynamite}/>
           <LoadingOverlay show={this.state.overlay == overlays.LOADING}/>
           <ConfirmTxOverlay
             show={this.state.overlay == overlays.CONFIRMTX}
@@ -438,9 +424,6 @@ export default class Homepage extends React.Component {
             proceedToAcquire={this.proceedToAcquire}
             prices={this.props.prices}
             show={this.state.overlay == overlays.POWERUPS}/>
-          <MineEmptyOverlay
-            closeOverlay={this.closeOverlay}
-            show={this.state.overlay == overlays.MINEEMPTY}/>
           <CowOverlay
             closeOverlay={this.closeOverlay}
             show={false}/>

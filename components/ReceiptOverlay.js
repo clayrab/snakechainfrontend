@@ -37,7 +37,7 @@ export default class ReceiptOverlay extends React.Component {
               New Mine Discovered!
             </Text>
             <Text style={[styles.goldenTextStyle, this.state.buttonDynamicStyle, {paddingLeft: 40, paddingRight: 40, }]}>
-              You have found a new mine with {this.props.user.mineMax} Snakechain Potential!
+              You have found a new mine with {this.props.prices.mineMax} Snakechain Potential!
             </Text>
             <Text style={[styles.goldenTextStyle, this.state.buttonDynamicStyle, {paddingTop: 20, paddingLeft: 40, paddingRight: 40, }]}>
               Begin a new mining expedition!
