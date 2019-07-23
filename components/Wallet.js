@@ -242,23 +242,24 @@ export default class AccountHistory extends React.Component {
                   // "to": "0x627306090abaB3A6e1400e9345bC60c78a8BEf57",
                   // "amount": "70000",
                   // "fee": null
+                  let sent = transaction.from === this.props.user.pubkey;
+                  let isEth = transaction.tpe === "eth";
+                  let prettyDate = transaction.time.slice(10)
                   return (
                     <ImageBackground key={i} source={require('../assets/accounthistory/historyBG.png')}
                                      style={styles.historyBG} resizeMode="contain">
-                      {this.recvTypes[transaction.type]
+                      {sent
                         ?
                         <View style={styles.historyLeftView}>
-                          <Image source={require('../assets/accounthistory/receiveicon.png')}
-                                 style={styles.buttonIconImage}/>
-                          <Text style={[styles.buttonText, styles.historyReceiveText]}>RECEIVE</Text>
-                          <Text style={[styles.buttonText, styles.dateText]}>15/10/2018</Text>
+                          <Image source={require('../assets/accounthistory/sendicon.png')} style={styles.buttonIconImage}/>
+                          <Text style={[this.state.riffic, styles.historyLabelText]}>SENT</Text>
+                          <Text style={[this.state.riffic, styles.dateText]}>{prettyDate}</Text>
                         </View>
                         :
                         <View style={styles.historyLeftView}>
-                          <Image source={require('../assets/accounthistory/sendicon.png')}
-                                 style={styles.buttonIconImage}/>
-                          <Text style={[this.state.riffic, styles.historyLabelText]}>SENT</Text>
-                          <Text style={[this.state.riffic, styles.dateText]}>15/10/2018</Text>
+                          <Image source={require('../assets/accounthistory/receiveicon.png')} style={styles.buttonIconImage}/>
+                          <Text style={[styles.buttonText, styles.historyReceiveText]}>RECEIVE</Text>
+                          <Text style={[styles.buttonText, styles.dateText]}>{prettyDate}</Text>
                         </View>
                       }
                       <Image source={require('../assets/accounthistory/historyseprate.png')}
@@ -266,9 +267,14 @@ export default class AccountHistory extends React.Component {
                       <View style={styles.historyRightView}>
                         <View style={styles.topRightHistoryView}>
                           <Text style={[this.state.riffic, styles.headerText]}>
-                            {formatToken(this.props.user.eth, transaction.type.toUpperCase())}
+                            {formatToken(transaction.amount, transaction.type.toUpperCase())}
                           </Text>
-                          <Image source={require('../assets/wallet/diamond.png')} style={styles.diamondImage}/>
+                          {isEth
+                            ?
+                            <Image source={require('../assets/wallet/diamond.png')} style={styles.diamondImage}/>
+                            :
+                            <Image source={require('../assets/wallet/coin.png')} style={[styles.diamondImage]}/>
+                          }
                           <Text style={[this.state.riffic, styles.headerText]}>
                             {this.state.loading ? null :
                               this.prettyTxTypes[transaction.type]

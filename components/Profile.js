@@ -81,7 +81,8 @@ export default class Profile extends React.Component {
   }
 
   onCancel = async() => {
-    this.setState({overlay: overlays.CONFIRMDELETE});
+    console.log("onCancel")
+    this.setState({overlay: -1});
   }
 
   render() {
