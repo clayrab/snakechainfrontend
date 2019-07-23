@@ -114,8 +114,6 @@ export default class Snek extends Sprite {
       let reward = null;
       let rewardsIndex = 0;
       let rollCountDown = roll;
-      console.log(roll)
-      console.log(rewards)
       while (true) {
         if (!rewards[rewardsIndex]) {
           reward = "1";
@@ -550,9 +548,6 @@ export default class Snek extends Sprite {
 
     var actions = [
       {
-        name: "die",
-        weight: 2.0
-      }, {
         name: "speedup",
         weight: 20.0
       }, {
