@@ -50,6 +50,7 @@ export default class Snek extends Sprite {
       //renderTrigger: true, // Flip this to force a render. The cost of React Native for animation. This isn't great, but it helps.
       framerate: 0,
       fontStyle: {},
+      fpsShow: false,
       headerOpen: true
     };
     this.boardState = [];
@@ -888,6 +889,9 @@ export default class Snek extends Sprite {
     if (easterEggCount > 6) {
       this.setState({score: this.state.score + CONSTANTS.PELLETMULT})
     }
+    if (easterEggCount === 6) {
+      this.setState({ fpsShow: true, });
+    }
   }
 
   update = async () => {
@@ -1059,11 +1063,11 @@ export default class Snek extends Sprite {
           })
         }
         {pellet}
-
-        <View style={styles.framerateContainer}>
-          <Text style={styles.framerateText}>{this.state.framerate} FPS</Text>
-        </View>
-
+        { (!this.state.fpsShow) ? null :
+          <View style={styles.framerateContainer}>
+            <Text style={styles.framerateText}>{this.state.framerate} FPS</Text>
+          </View>
+        }
         {this.wallComponents}
         <View style={styles.controllerOuterContainer}>
           <View style={styles.controllerContainer}>
