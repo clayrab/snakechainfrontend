@@ -1027,14 +1027,13 @@ export default class Snek extends Sprite {
         style={[styles.gameBack, {/*transferX: this.boardShakeInterpolate()*/ },]}>
         <ImageBackground source={require('../assets/gameplay/Background.png')} style={styles.fieldBack}
           resizeMode="stretch">
-
-
-           <ScoreBoard
-            score={this.state.score}
-            easterEgg={this.easterEgg}
-            loading={this.props.loading}
-            user={this.props.user} />
+         <ScoreBoard
+          score={this.state.score}
+          easterEgg={this.easterEgg}
+          loading={this.props.loading}
+          user={this.props.user} />
         </ImageBackground>
+        <ImageBackground source={require('../assets/gameplay/gameArea.png')} style={styles.field} resizeMode="stretch"/>
         {/* <ImageBackground source={require('../assets/gameplay/Background.png')} style={styles.field} resizeMode="stretch" /> */}
         {
           this.state.tail.map((elem) => {
@@ -1066,7 +1065,7 @@ export default class Snek extends Sprite {
         </View>
 
         {this.wallComponents}
-        <View>
+        <View style={styles.controllerOuterContainer}>
           <View style={styles.controllerContainer}>
             <View style={styles.mushroomRow}>
               <TouchableOpacity>
@@ -1127,17 +1126,16 @@ let styles = StyleSheet.create({
   fieldBack: {
     width: CONSTANTS.DEVICEWIDTH,
     //height: CONSTANTS.GAMEHEIGHT + CONSTANTS.SCOREBOARDHEIGHT + 6,
-    height: CONSTANTS.DEVICEHEIGHT - CONSTANTS.DPADHEIGHT + 6
+    height: CONSTANTS.DEVICEHEIGHT - CONSTANTS.DPADHEIGHT + 6,
+    zIndex: 2,
   },
   field: {
-    width: screenWidth,
-    // backgroundColor: 'transparent',
+    width: CONSTANTS.GAMEWIDTH,
+    backgroundColor: 'transparent',
     height: CONSTANTS.GAMEHEIGHT,
     position: "absolute",
-    // top: CONSTANTS.BOARDCENTERY - (0.5 * CONSTANTS.GAMEHEIGHT),
-    top: 0,
-    //bottom: CONSTANTS.DPADMULT,
-    // left: (CONSTANTS.DEVICEWIDTH / 2) - (0.5 * CONSTANTS.GAMEWIDTH),
+    top: CONSTANTS.BOARDCENTERY - (0.5 * CONSTANTS.GAMEHEIGHT),
+    left: (0.5 * CONSTANTS.DEVICEWIDTH) - (0.5 * CONSTANTS.GAMEWIDTH),
     zIndex: 2,
   },
   snek: {
@@ -1247,9 +1245,25 @@ let styles = StyleSheet.create({
   },
   inlineText: { color: "#FAB523", fontSize: normalize(14) },
   inlineImage: { width: screenWidth * 0.05, height: screenWidth * 0.05, resizeMode: 'contain', marginHorizontal: 5 },
-
-  controllerContainer: { position: 'absolute', top: screenWidth * -0.117, zIndex: 10000, alignItems: 'center' },
-  mushroomRow: { bottom: 15, zIndex: 10001, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', width: screenWidth * 0.82, position: 'absolute' },
+  controllerOuterContainer: {
+    zIndex: 10000,
+  },
+  controllerContainer: {
+    position: 'absolute',
+    top: screenWidth * -0.117,
+    zIndex: 10000,
+    alignItems: 'center'
+  },
+  mushroomRow: {
+    bottom: 15,
+    zIndex: 10001,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    width: screenWidth * 0.82,
+    position: 'absolute',
+    opacity: 0.4,
+  },
   mushroomImage: { width: screenWidth * 0.2, height: screenWidth * 0.2, resizeMode: 'contain' },
 
   mushroomCountHolder: { position: 'absolute', top: 0, left: (screenWidth * 0.1) - 10, width: 20, height: 20, justifyContent: 'center', alignItems: 'center' },
