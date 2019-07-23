@@ -1,6 +1,6 @@
 import React from 'react';
-import {View, StyleSheet, TouchableOpacity, ImageBackground, Image} from 'react-native';
-import {Sprite} from 'react-game-kit/native';
+import { View, StyleSheet, TouchableOpacity, ImageBackground, Image } from 'react-native';
+import { Sprite } from 'react-game-kit/native';
 import PropTypes from 'prop-types';
 import CONSTANTS from '../Constants.js';
 
@@ -23,23 +23,23 @@ export default class Dpad extends Sprite {
       var xDiffSquared = yDiff * yDiff;
       // makes sure the input is within a circle of radius dpadSizeHalf
       //if (xDiffSquared + xDiffSquared < this.dpadSizeHalf * this.dpadSizeHalf) {
-        if (xDiff * xDiff > yDiff * yDiff) {
-          if (xDiff < 0) {
-            this.props.onDpadChange(CONSTANTS.DPADSTATES.LEFT);
-            this.setState({direction: CONSTANTS.DPADSTATES.LEFT});
-          } else {
-            this.props.onDpadChange(CONSTANTS.DPADSTATES.RIGHT);
-            this.setState({direction: CONSTANTS.DPADSTATES.RIGHT});
-          }
+      if (xDiff * xDiff > yDiff * yDiff) {
+        if (xDiff < 0) {
+          this.props.onDpadChange(CONSTANTS.DPADSTATES.LEFT);
+          this.setState({ direction: CONSTANTS.DPADSTATES.LEFT });
         } else {
-          if (yDiff < 0) {
-            this.props.onDpadChange(CONSTANTS.DPADSTATES.UP);
-            this.setState({direction: CONSTANTS.DPADSTATES.UP});
-          } else {
-            this.props.onDpadChange(CONSTANTS.DPADSTATES.DOWN);
-            this.setState({direction: CONSTANTS.DPADSTATES.DOWN});
-          }
+          this.props.onDpadChange(CONSTANTS.DPADSTATES.RIGHT);
+          this.setState({ direction: CONSTANTS.DPADSTATES.RIGHT });
         }
+      } else {
+        if (yDiff < 0) {
+          this.props.onDpadChange(CONSTANTS.DPADSTATES.UP);
+          this.setState({ direction: CONSTANTS.DPADSTATES.UP });
+        } else {
+          this.props.onDpadChange(CONSTANTS.DPADSTATES.DOWN);
+          this.setState({ direction: CONSTANTS.DPADSTATES.DOWN });
+        }
+      }
       // } else {
       //   this.props.onDpadChange(CONSTANTS.DPADSTATES.NONE);
       //   this.setState({direction: CONSTANTS.DPADSTATES.NONE});
@@ -88,54 +88,43 @@ export default class Dpad extends Sprite {
   }
 
   render() {
-    let uButton = (<TouchableOpacity style={[styles.roundButton, styles.ubutton]} onPress={this.onUp}>
-      <Image source={require('../assets/gameplay/up.png')} style={styles.arrowImage} resizeMode="stretch"/>
+    let uActive = this.props.pressedButton == CONSTANTS.DPADSTATES.UP;
+    let dActive = this.props.pressedButton == CONSTANTS.DPADSTATES.DOWN;
+    let rActive = this.props.pressedButton == CONSTANTS.DPADSTATES.RIGHT;
+    let lActive = this.props.pressedButton == CONSTANTS.DPADSTATES.LEFT;
+
+    let uButton = (<TouchableOpacity style={[styles.roundButton, { opacity: uActive ? 0.3 : 1 }, styles.ubutton]} onPress={this.onUp} disabled={uActive}>
+      <Image source={require('../assets/gameplay/up.png')} style={styles.arrowImage} resizeMode="stretch" />
     </TouchableOpacity>);
-    let dButton = (<TouchableOpacity style={[styles.roundButton, styles.dbutton]} onPress={this.onDown}>
-      <Image source={require('../assets/gameplay/down.png')} style={styles.arrowImage} resizeMode="stretch"/>
+    let dButton = (<TouchableOpacity style={[styles.roundButton, { opacity: dActive ? 0.3 : 1 }, styles.dbutton]} onPress={this.onDown} disabled={dActive}>
+      <Image source={require('../assets/gameplay/down.png')} style={styles.arrowImage} resizeMode="stretch" />
     </TouchableOpacity>);
-    let rButton = (<TouchableOpacity style={[styles.roundButton, styles.rbutton]} onPress={this.onRight}>
-      <Image source={require('../assets/gameplay/right.png')} style={styles.arrowImage} resizeMode="stretch"/>
+    let rButton = (<TouchableOpacity style={[styles.roundButton, { opacity: rActive ? 0.3 : 1 }, styles.rbutton]} onPress={this.onRight} disabled={rActive}>
+      <Image source={require('../assets/gameplay/right.png')} style={styles.arrowImage} resizeMode="stretch" />
     </TouchableOpacity>);
-    let lButton = (<TouchableOpacity style={[styles.roundButton, styles.lbutton]} onPress={this.onLeft}>
-      <Image source={require('../assets/gameplay/left.png')} style={styles.arrowImage} resizeMode="stretch"/>
+    let lButton = (<TouchableOpacity style={[styles.roundButton, { opacity: lActive ? 0.3 : 1 }, styles.lbutton]} onPress={this.onLeft} disabled={lActive}>
+      <Image source={require('../assets/gameplay/left.png')} style={styles.arrowImage} resizeMode="stretch" />
     </TouchableOpacity>);
-    if (this.props.pressedButton == CONSTANTS.DPADSTATES.UP) {
-      uButton = (<View style={[styles.roundButton, styles.ubutton, {opacity: 0.3,}]}>
-        <Image source={require('../assets/gameplay/up.png')} style={styles.arrowImage} resizeMode="stretch"/>
-      </View>);
-    } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.DOWN) {
-      dButton = (<View style={[styles.roundButton, styles.dbutton, {opacity: 0.3,}]}>
-        <Image source={require('../assets/gameplay/down.png')} style={styles.arrowImage} resizeMode="stretch"/>
-      </View>);
-    } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.RIGHT) {
-      rButton = (<View style={[styles.roundButton, styles.rbutton, {opacity: 0.3,}]}>
-        <Image source={require('../assets/gameplay/right.png')} style={styles.arrowImage} resizeMode="stretch"/>
-      </View>);
-    } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.LEFT) {
-      lButton = (<View style={[styles.roundButton, styles.lbutton, {opacity: 0.3,}]}>
-        <Image source={require('../assets/gameplay/left.png')} style={styles.arrowImage} resizeMode="stretch"/>
-      </View>);
-    }
+
     return (
       <ImageBackground source={require('../assets/gameplay/ButtonBackground.png')} resizeMode={'cover'}
-                       style={styles.dpad}>
-        <View style={styles.buttonSpacer}/>
+        style={styles.dpad}>
+        {/* <View style={styles.buttonSpacer} /> */}
         <View style={styles.buttonsHolder}>
           {lButton}
           {rButton}
           {uButton}
           {dButton}
           <View style={styles.inputCapture}
-                onStartShouldSetResponder={this.onStartShouldSetResponder}
-                onMoveShouldSetResponder={this.onMoveShouldSetResponder}
-                onStartShouldSetResponderCapture={this.onStartShouldSetResponderCapture}
-                onMoveShouldSetResponderCapture={this.onMoveShouldSetResponderCapture}
-                onResponderMove={this.onResponderMove}
-                onResponderRelease={this.onResponderRelease}
-                onResponderGrant={this.onResponderGrant}
-                onResponderReject={this.onResponderReject}
-              ></View>
+            onStartShouldSetResponder={this.onStartShouldSetResponder}
+            onMoveShouldSetResponder={this.onMoveShouldSetResponder}
+            onStartShouldSetResponderCapture={this.onStartShouldSetResponderCapture}
+            onMoveShouldSetResponderCapture={this.onMoveShouldSetResponderCapture}
+            onResponderMove={this.onResponderMove}
+            onResponderRelease={this.onResponderRelease}
+            onResponderGrant={this.onResponderGrant}
+            onResponderReject={this.onResponderReject}
+          ></View>
         </View>
       </ImageBackground>
     );
@@ -162,25 +151,25 @@ let shouldUpdate = true;
 //let screenWidth = CONSTANTS.DEVICEWIDTH;
 let styles = StyleSheet.create({
   dpad: {
-    position: 'absolute',
+    // position: 'absolute',
     width: backgroundWidth,
     //height: backgroundWidth*1162/1274,
-    height: dpadSize * 1.5, //make it plenty big so graphics tuck under gameplay
+    height: dpadSize * 1.2, //make it plenty big so graphics tuck under gameplay
     bottom: -2,
-    left: (CONSTANTS.DEVICEWIDTH - backgroundWidth) / 2,
+    // left: (CONSTANTS.DEVICEWIDTH - backgroundWidth) / 2,
     zIndex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
   buttonSpacer: {
-    flex: 1
+    // flex: 1
   },
   buttonsHolder: {
     width: dpadSize,
     height: dpadSize,
     // paddingLeft: "#00f",
     // paddingRight: "#00f",
-    marginBottom: 6,
+    // marginBottom: 60,
   },
   inputCapture: {
     position: "relative",
@@ -200,24 +189,26 @@ let styles = StyleSheet.create({
     justifyContent: 'center',
     width: dpadButtonSize,
     height: dpadButtonSize,
+    // padding: 10,
     borderRadius: dpadButtonSize,
     position: 'absolute',
+    // margin: 5,
     //opacity: 0.0,
   },
   lbutton: {
     top: dpadSizeHalf - dpadButtonSizeHalf,
-    left: padding,
+    left: padding - 15,
   },
   rbutton: {
     top: dpadSizeHalf - dpadButtonSizeHalf,
-    left: dpadSize - dpadButtonSize - padding,
+    left: dpadSize - dpadButtonSize - padding + 15,
   },
   ubutton: {
-    top: padding,
+    top: padding + 5,
     left: dpadSizeHalf - dpadButtonSizeHalf,
   },
   dbutton: {
-    top: dpadSize - dpadButtonSize - padding,
+    top: dpadSize - dpadButtonSize - padding - 5,
     left: dpadSizeHalf - dpadButtonSizeHalf,
   },
   arrowImage: {

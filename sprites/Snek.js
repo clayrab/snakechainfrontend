@@ -1,7 +1,7 @@
 import React from 'react';
-import {Animated, View, StyleSheet, TouchableOpacity, Image, ImageBackground, Text} from 'react-native';
-import {Audio} from 'expo';
-import {Sprite} from 'react-game-kit/native';
+import { Animated, View, StyleSheet, TouchableOpacity, Image, ImageBackground, Dimensions, Text } from 'react-native';
+import { Audio, Font } from 'expo';
+import { Sprite } from 'react-game-kit/native';
 import PropTypes from 'prop-types';
 import CONSTANTS from '../Constants.js';
 
@@ -10,8 +10,10 @@ import WallPart from './WallPart.js'
 import ScoreBoard from './ScoreBoard.js'
 import Buttons from './Buttons.js';
 import Dpad from './Dpad.js';
+import { normalize } from '../utils/FontNormalizer.js';
 
 let easterEggCount = 0;
+let dpadSize = CONSTANTS.DPADBUTTONSIZE * CONSTANTS.DPADMULT;
 export default class Snek extends Sprite {
   // static contextTypes = {
   //   loop: PropTypes.object,
@@ -41,11 +43,14 @@ export default class Snek extends Sprite {
       pelletRot: new Animated.Value(0),
       boardShake: new Animated.Value(0),
       alive: true,
-      snakeHead: {transform: [{rotate: '0deg'}]},
+      snakeHead: { transform: [{ rotate: '0deg' }] },
       walls: [],
+      mushrooms: {},
       speedEffector: 1,
       //renderTrigger: true, // Flip this to force a render. The cost of React Native for animation. This isn't great, but it helps.
-      framerate: 0
+      framerate: 0,
+      fontStyle: {},
+      headerOpen: true
     };
     this.boardState = [];
     this.wallComponents = [];
@@ -76,6 +81,14 @@ export default class Snek extends Sprite {
       this.setState({framerate: this.frame});
       this.frame = 0;
     }, 1000)
+    await Font.loadAsync({
+      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
+    });
+    this.setState({
+      fontStyle: {
+        fontFamily: 'riffic-free-bold',
+      }
+    });
   }
 
   componentWillUnmount() {
@@ -298,7 +311,7 @@ export default class Snek extends Sprite {
     startState.alive = this.defaultState.alive;
     startState.tail = this.makeTail(5, this.defaultState.boardX, this.defaultState.boardY);
     startState.tailIndex = 4;
-    startState.snakeHead = {transform: [{rotate: '0deg'}]};
+    startState.snakeHead = { transform: [{ rotate: '0deg' }] };
     startState.walls = this.getRandomWalls();
     startState.speedEffector = this.defaultState.speedEffector;
     startState.toggleReset = this.props.toggleReset;
@@ -477,7 +490,7 @@ export default class Snek extends Sprite {
   // }
 
   die = async () => {
-    this.setState({alive: false});
+    this.setState({ alive: false });
     await this.playSound(this.sounds.DIE);
     await this.props.onDied(this.state.score);
   }
@@ -501,13 +514,41 @@ export default class Snek extends Sprite {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  placePellet = async () => {
+  placePellet = async() => {
+
     console.log("placePellet")
     await this.setState({pelletLocation: this.randomLocation(),});
     //await this.setState({ redPelletLocation: this.randomLocation(), });
     this.placeEdible("PURPLEMUSH", this.randomLocation());
     if (this.props.mode === "SUPER SNAKE") {
       this.placeEdible("GREENMUSH", this.randomLocation());
+    }
+    // let isTail = true;
+    // let isHead = undefined;
+    // let x, y;
+    // while (isTail || isHead) {
+    //   x = this.getRandomInt(0, CONSTANTS.BOARDWIDTH - 1);
+    //   y = this.getRandomInt(0, CONSTANTS.BOARDHEIGHT - 1);
+    //   isTail = this.board[y][x];
+    //   isHead = this.state.boardX === x && this.state.boardY === y;
+
+    //
+    // this.setState({
+    //   pelletLocation: {x: x, y: y},
+    //   redPelletLocation: null,
+    // });
+
+    // this.setState({
+    //   pelletLocation: { x: x, y: y },
+    //   redPelletLocation: this.randomRedPelletGenerate()
+    // });
+
+    if ((this.state.baseScore + 2) % 5 === 0) {
+      //this.state.pelletRot.setValue(0);
+      this.state.shakeBoard.setValue(0);
+      //pelletRot
+      //this.pelletAnim.start();
+      this.boardShakeAnim.start();
     }
     // if ((this.state.baseScore + 2) % 5 === 0) {
     //   //this.state.pelletRot.setValue(0);
@@ -526,9 +567,7 @@ export default class Snek extends Sprite {
       y = this.getRandomInt(0, CONSTANTS.BOARDHEIGHT - 1);
       isEmpty = this.boardState[y][x];
     }
-    loc.x = x;
-    loc.y = y;
-    return loc;
+    return { x, y };
   }
 
   eatRedPellet = async () => {
@@ -548,6 +587,9 @@ export default class Snek extends Sprite {
 
     var actions = [
       {
+        name: "die",
+        weight: 2.0
+      }, {
         name: "speedup",
         weight: 20.0
       }, {
@@ -568,15 +610,11 @@ export default class Snek extends Sprite {
       },
     ];
     const maxWeight = actions
-      .map((obj) => {
-        return obj.weight;
-      })
-      .reduce((total, weight) => {
-        return total + weight;
-      }); // sum of all weights
+      .map((obj) => { return obj.weight; })
+      .reduce((total, weight) => { return total + weight; }); // sum of all weights
     let action = this.getRandomInt(1, maxWeight);
     let nextAction = 0;
-    while (action > 0) {
+    while (action >= 0) {
       action -= actions[nextAction].weight;
       nextAction++;
     }
@@ -585,12 +623,12 @@ export default class Snek extends Sprite {
         this.die();
         break;
       case "speedup":
-        this.setState({speedEffector: 2});
-        setTimeout(() => this.setState({speedEffector: 1}), 5000);
+        this.setState({ speedEffector: 2 });
+        setTimeout(() => this.setState({ speedEffector: 1 }), 5000);
         break;
       case "slowdown":
-        this.setState({speedEffector: 0.5});
-        setTimeout(() => this.setState({speedEffector: 1}), 8666);
+        this.setState({ speedEffector: 0.5 });
+        setTimeout(() => this.setState({ speedEffector: 1 }), 8666);
         break;
       case "removetail":
         let howLong = this.getRandomInt(3, 10);
@@ -604,7 +642,7 @@ export default class Snek extends Sprite {
         break;
       case "addpoints":
         addPointsPelletSound(3);
-        this.setState({score: this.state.score + CONSTANTS.REDPELLETSCOREBONUS * CONSTANTS.PELLETMULT});
+        this.setState({ score: this.state.score + CONSTANTS.REDPELLETSCOREBONUS * CONSTANTS.PELLETMULT });
         break;
       case "sleepy":
         this.props.showCowOverlay();
@@ -625,10 +663,7 @@ export default class Snek extends Sprite {
       this.growTail();
     }
     this.placePellet();
-    this.setState({
-      score: this.state.score + (CONSTANTS.PELLETMULT * growLength),
-      pelletCount: this.state.pelletCount + 1
-    });
+    this.setState({ score: this.state.score + (CONSTANTS.PELLETMULT * growLength), pelletCount: this.state.pelletCount + 1 });
   }
 
   makeEmptyBoard = () => {
@@ -668,7 +703,7 @@ export default class Snek extends Sprite {
         newTailIndex = newTailEnd.length - 1;
       }
       let newTail = newTailStart.concat(newTailEnd);
-      await this.setState({tail: newTail, tailIndex: newTailIndex});
+      await this.setState({ tail: newTail, tailIndex: newTailIndex });
     }
   }
 
@@ -694,7 +729,7 @@ export default class Snek extends Sprite {
       );
       newTailStart = newTailStart.concat(newTailEnd);
       let newTailIndex = this.state.tailIndex + 1;
-      this.setState({tail: newTailStart, tailIndex: newTailIndex});
+      this.setState({ tail: newTailStart, tailIndex: newTailIndex });
     } else {
       let newTail = [];
       newTail.push(
@@ -710,7 +745,7 @@ export default class Snek extends Sprite {
         </SnekPart>
       );
       let newTailIndex = this.state.tailIndex + 1;
-      this.setState({tail: newTail, tailIndex: newTailIndex});
+      this.setState({ tail: newTail, tailIndex: newTailIndex });
     }
   }
 
@@ -741,7 +776,7 @@ export default class Snek extends Sprite {
     var newPosX = this.boardXtoPosX(this.state.boardX);
     var newPosY = this.boardYtoPosY(this.state.boardY);
     //await this call so that onBoardTile is in the right state
-    await this.setState({tailIndex: newTailIndex, posX: newPosX, posY: newPosY});
+    await this.setState({ tailIndex: newTailIndex, posX: newPosX, posY: newPosY });
   }
 
   onBoardTile(boardX, boardY) {
@@ -781,7 +816,7 @@ export default class Snek extends Sprite {
       this.setState({
         direction: CONSTANTS.DPADSTATES.UP,
         boardY: this.state.boardY - 1,
-        snakeHead: {transform: [{rotate: '0deg'}]}
+        snakeHead: { transform: [{ rotate: '0deg' }] }
       });
     }
   }
@@ -797,7 +832,7 @@ export default class Snek extends Sprite {
       this.setState({
         direction: CONSTANTS.DPADSTATES.DOWN,
         boardY: this.state.boardY + 1,
-        snakeHead: {transform: [{rotate: '180deg'}]}
+        snakeHead: { transform: [{ rotate: '180deg' }] }
       });
     }
   }
@@ -813,7 +848,7 @@ export default class Snek extends Sprite {
       this.setState({
         direction: CONSTANTS.DPADSTATES.LEFT,
         boardX: this.state.boardX - 1,
-        snakeHead: {transform: [{rotate: '270deg'}]}
+        snakeHead: { transform: [{ rotate: '270deg' }] }
       });
     }
   }
@@ -829,7 +864,7 @@ export default class Snek extends Sprite {
       this.setState({
         direction: CONSTANTS.DPADSTATES.RIGHT,
         boardX: this.state.boardX + 1,
-        snakeHead: {transform: [{rotate: '90deg'}]}
+        snakeHead: { transform: [{ rotate: '90deg' }] }
       });
     }
   }
@@ -922,27 +957,28 @@ export default class Snek extends Sprite {
         }
         this.lastFrameTime = now;
         if (this.state.direction == CONSTANTS.DPADSTATES.UP) {
-          this.setState({posY: this.state.posY - speed});
+          this.setState({ posY: this.state.posY - speed });
         } else if (this.state.direction == CONSTANTS.DPADSTATES.DOWN) {
-          this.setState({posY: this.state.posY + speed});
+          this.setState({ posY: this.state.posY + speed });
         } else if (this.state.direction == CONSTANTS.DPADSTATES.RIGHT) {
-          this.setState({posX: this.state.posX + speed});
+          this.setState({ posX: this.state.posX + speed });
         } else if (this.state.direction == CONSTANTS.DPADSTATES.LEFT) {
-          this.setState({posX: this.state.posX - speed});
+          this.setState({ posX: this.state.posX - speed });
         }
       }
     }
-
+  }
     // TODO: Maintain the framerate
 
+  toggleHeader = () => {
+    this.setState({ headerOpen: !this.state.headerOpen })
   }
 
   render() {
     let redPellet = null;
     let pellet = null;
-    let snek = (<View style={[styles.snek, {left: this.state.posX, top: this.state.posY,}]}>
-      <Image source={require('../assets/gameplay/headUp.png')} style={[styles.snek, this.state.snakeHead]}
-             resizeMode="stretch"/>
+    let snek = (<View style={[styles.snek, { left: this.state.posX, top: this.state.posY, }]}>
+      <Image source={require('../assets/gameplay/headUp.png')} style={[styles.snek, this.state.snakeHead]} resizeMode="stretch" />
     </View>);
     //TODO: Move this to an event that triggers when this.state.direction or boardX or boardY changes.
     let snekHeadBack = null;
@@ -972,9 +1008,9 @@ export default class Snek extends Sprite {
       pellet = (<Animated.View style={[styles.pellet, {
         left: this.boardXtoPosX(this.state.pelletLocation.x),
         top: this.boardYtoPosY(this.state.pelletLocation.y),
-        transform: [{rotate: this.spin()}],
+        transform: [{ rotate: this.spin() }],
       }]}>
-        <Image source={require('../assets/gameplay/Diamond.png')} style={styles.pellet} resizeMode="stretch"/>
+        <Image source={require('../assets/gameplay/Diamond.png')} style={styles.pellet} resizeMode="stretch" />
       </Animated.View>);
     }
     if (!this.state.alive) {
@@ -988,19 +1024,23 @@ export default class Snek extends Sprite {
     return (
       <View
         //renderToHardwareTextureAndroid={true}
-        style={[styles.gameBack, {/*transferX: this.boardShakeInterpolate()*/},]}>
-        <ImageBackground source={require('../assets/gameplay/gameAreaBack.png')} style={styles.fieldBack}
-                         resizeMode="stretch">
-          <ScoreBoard
+        style={[styles.gameBack, {/*transferX: this.boardShakeInterpolate()*/ },]}>
+        <ImageBackground source={require('../assets/gameplay/Background.png')} style={styles.fieldBack}
+          resizeMode="stretch">
+
+
+           <ScoreBoard
             score={this.state.score}
             easterEgg={this.easterEgg}
             loading={this.props.loading}
-            user={this.props.user}/>
+            user={this.props.user} />
         </ImageBackground>
-        <ImageBackground source={require('../assets/gameplay/gameArea.png')} style={styles.field} resizeMode="stretch"/>
-        {this.state.tail.map((elem) => {
-          return (elem);
-        })}
+        {/* <ImageBackground source={require('../assets/gameplay/Background.png')} style={styles.field} resizeMode="stretch" /> */}
+        {
+          this.state.tail.map((elem) => {
+            return (elem);
+          })
+        }
         {snekHeadBack}
         {snek}
         {!this.edibles ? null :
@@ -1026,9 +1066,48 @@ export default class Snek extends Sprite {
         </View>
 
         {this.wallComponents}
-        <Dpad onDpadChange={this.props.onDpadChange} pressedButton={this.props.pressedButton}></Dpad>
-        <Buttons running={this.props.running} powerUps={this.props.powerUps} pause={this.props.pause}></Buttons>
-      </View>
+        <View>
+          <View style={styles.controllerContainer}>
+            <View style={styles.mushroomRow}>
+              <TouchableOpacity>
+                <Image source={require("../assets/gameplay/MGold.png")} style={styles.mushroomImage} />
+                <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
+                  <Text style={[this.state.fontStyle, styles.mushroomText]}>1</Text>
+                </ImageBackground>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Image source={require("../assets/gameplay/MBlue.png")} style={styles.mushroomImage} />
+                <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
+                  <Text style={[this.state.fontStyle, styles.mushroomText]}>2</Text>
+                </ImageBackground>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Image source={require("../assets/gameplay/MPink.png")} style={styles.mushroomImage} />
+                <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
+                  <Text style={[this.state.fontStyle, styles.mushroomText]}>3</Text>
+                </ImageBackground>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Image source={require("../assets/gameplay/MRed.png")} style={styles.mushroomImage} />
+                <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
+                  <Text style={[this.state.fontStyle, styles.mushroomText]}>4</Text>
+                </ImageBackground>
+              </TouchableOpacity>
+            </View>
+            <Image source={require("../assets/gameplay/MushroomsHolder.png")} style={styles.mushroomHolder} />
+          </View>
+          <View style={styles.controllerExtraBtns}>
+            <TouchableOpacity style={{}}>
+              <Image source={require("../assets/gameplay/SnowButton.png")} style={styles.snowButton} />
+            </TouchableOpacity>
+            <Dpad onDpadChange={this.props.onDpadChange} pressedButton={this.props.pressedButton}></Dpad>
+            <TouchableOpacity>
+              <Image source={require("../assets/gameplay/MushroomButton.png")} style={styles.mushroomButton} />
+            </TouchableOpacity>
+          </View>
+        </View>
+        {/* <Buttons running={this.props.running} powerUps={this.props.powerUps} pause={this.props.pause}></Buttons> */}
+      </View >
     );
   }
 }
@@ -1036,6 +1115,8 @@ export default class Snek extends Sprite {
 let borderWidth = 5;
 let boardWidth = CONSTANTS.BOARDWIDTH * CONSTANTS.SNEKSIZE + 2 * borderWidth + 2;
 let boardHeight = CONSTANTS.BOARDHEIGHT * CONSTANTS.SNEKSIZE + 2 * borderWidth + 2;
+const screenWidth = Dimensions.get("window").width;
+const screenHeight = Dimensions.get("window").height
 let styles = StyleSheet.create({
   gameBack: {
     position: 'absolute',
@@ -1049,13 +1130,14 @@ let styles = StyleSheet.create({
     height: CONSTANTS.DEVICEHEIGHT - CONSTANTS.DPADHEIGHT + 6
   },
   field: {
-    width: CONSTANTS.GAMEWIDTH,
-    backgroundColor: 'transparent',
+    width: screenWidth,
+    // backgroundColor: 'transparent',
     height: CONSTANTS.GAMEHEIGHT,
     position: "absolute",
-    top: CONSTANTS.BOARDCENTERY - (0.5 * CONSTANTS.GAMEHEIGHT),
+    // top: CONSTANTS.BOARDCENTERY - (0.5 * CONSTANTS.GAMEHEIGHT),
+    top: 0,
     //bottom: CONSTANTS.DPADMULT,
-    left: (CONSTANTS.DEVICEWIDTH / 2) - (0.5 * CONSTANTS.GAMEWIDTH),
+    // left: (CONSTANTS.DEVICEWIDTH / 2) - (0.5 * CONSTANTS.GAMEWIDTH),
     zIndex: 2,
   },
   snek: {
@@ -1076,7 +1158,7 @@ let styles = StyleSheet.create({
     width: CONSTANTS.SNEKSIZE + 2,
     height: CONSTANTS.SNEKSIZE + 2,
     zIndex: 3,
-    transform: [{rotate: '45deg'}],
+    transform: [{ rotate: '45deg' }],
   },
   redPellet: {
     position: "absolute",
@@ -1097,5 +1179,90 @@ let styles = StyleSheet.create({
   },
   framerateText: {
     color: "#FFFFFF"
-  }
+  },
+  snowButton: {
+    width: screenWidth * 0.15,
+    height: screenWidth * 0.15,
+  },
+  mushroomButton: {
+    width: screenWidth * 0.15,
+    height: screenWidth * 0.15,
+  },
+  headerBackground: {
+    position: 'absolute',
+    width: screenWidth,
+    height: 185,
+    resizeMode: 'contain'
+  },
+  dropdown: {
+    position: 'absolute',
+    top: 155,
+    left: (screenWidth / 2) - 20
+  },
+  dropdownImage: {
+    width: 40, height: 40, resizeMode: 'contain',
+  },
+  timer: { width: screenWidth, position: 'absolute', top: 200, justifyContent: 'center', alignItems: 'center' },
+  timerText: { fontSize: normalize(20), color: "#1D1511" },
+
+  contentOpen: {
+    flexDirection: 'row', padding: 10, paddingBottom: 0, justifyContent: "space-between", alignItems: 'center',
+  },
+  pauseButtonImage: { width: screenWidth * 0.13, height: screenWidth * 0.13, resizeMode: 'contain' },
+  gameplayHolderImage: {
+    width: screenWidth * 0.38,
+    height: screenWidth * 0.11,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10
+  },
+  amountImage: { width: screenWidth * 0.06, height: screenWidth * 0.06, resizeMode: 'contain' },
+  amountText: { fontSize: normalize(16), color: "#F7B324", marginLeft: 10 },
+  amountAddTouchable: { position: 'absolute', right: -10, top: -2 },
+  amountAdd: { width: screenWidth * 0.1, height: screenWidth * 0.12, resizeMode: 'contain' },
+
+  levelInfoRow: { flexDirection: 'row', padding: 10, justifyContent: "space-between", alignItems: 'center' },
+  levelScoreBackground: {
+    width: screenWidth * 0.3,
+    height: screenWidth * 0.09,
+    resizeMode: 'contain',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    paddingHorizontal: 10
+  },
+  levelTitle: { color: "#FAB523", fontSize: normalize(15) },
+  levelValue: { color: "#FFFFFF", fontSize: normalize(15) },
+
+  levelLastRow: { flexDirection: 'row', paddingHorizontal: 10, justifyContent: "space-between", alignItems: 'center' },
+  levelM: { color: "#352927", fontSize: normalize(16) },
+
+  wideHeaderInfoBG: {
+    width: screenWidth * 0.75,
+    height: screenWidth * 0.07,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    paddingHorizontal: 10
+  },
+  inlineText: { color: "#FAB523", fontSize: normalize(14) },
+  inlineImage: { width: screenWidth * 0.05, height: screenWidth * 0.05, resizeMode: 'contain', marginHorizontal: 5 },
+
+  controllerContainer: { position: 'absolute', top: screenWidth * -0.117, zIndex: 10000, alignItems: 'center' },
+  mushroomRow: { bottom: 15, zIndex: 10001, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', width: screenWidth * 0.82, position: 'absolute' },
+  mushroomImage: { width: screenWidth * 0.2, height: screenWidth * 0.2, resizeMode: 'contain' },
+
+  mushroomCountHolder: { position: 'absolute', top: 0, left: (screenWidth * 0.1) - 10, width: 20, height: 20, justifyContent: 'center', alignItems: 'center' },
+  mushroomHolder: { width: screenWidth, height: screenWidth * 0.117, resizeMode: 'contain' },
+  mushroomText: {
+    fontSize: normalize(12)
+  },
+  controllerExtraBtns: {
+    height: dpadSize * 1.1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+
 });
