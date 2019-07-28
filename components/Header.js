@@ -1,48 +1,16 @@
 import React from 'react';
 import {
-  Image,
   ImageBackground,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Font} from 'expo';
 import CONSTANTS from '../Constants.js';
-import {context} from "../utils/Context.js";
-import {asyncStore, getFromAsyncStore, removeItem} from "../utils/AsyncStore.js";
 import {normalize} from '../utils/FontNormalizer.js';
 import {formatToken} from '../utils/uiHelperFunctions.js';
 
 export default class Header extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      titleBarTextStyle: {display: "none",},
-    };
-  }
-
-  async componentDidMount() {
-    try {
-      await Font.loadAsync({
-        'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-      });
-      this.setState({
-        mineTextStyle: {
-          color: "#fab523",
-          fontFamily: 'riffic-free-bold',
-        },
-        titleBarTextStyle: {
-          fontFamily: 'riffic-free-bold',
-        },
-      });
-      //await this.setState({loading: true});
-    } catch (error) {
-      alert(error);
-      //this.setState({loading: false});
-    }
-    //this.setState({overlay: -1}); // a little "hack" to cause render() to fire
-  }
 
   render() {
     let pending = false;
@@ -77,7 +45,7 @@ export default class Header extends React.Component {
               <View style={styles.top}></View>
               {this.props.loading ? null :
                 <Text adjustsFontSizeToFit numberOfLines={1}
-                      style={[styles.titleBarText, this.state.titleBarTextStyle]}>
+                      style={[styles.titleBarText]}>
                   {this.props.user.snek}
                 </Text>
               }
@@ -89,7 +57,7 @@ export default class Header extends React.Component {
             <View style={styles.titleBarEthTextHolder}>
               {this.props.loading ? null :
                 <Text adjustsFontSizeToFit numberOfLines={1}
-                      style={[styles.titleBarText, this.state.titleBarTextStyle]}>
+                      style={[styles.titleBarText]}>
                   {formatToken(this.props.user.eth, "ETH")}
                 </Text>
               }
@@ -178,5 +146,6 @@ let styles = StyleSheet.create({
   titleBarText: {
     color: "#fab523",
     fontSize: normalize(16),
+    fontFamily: 'riffic-free-bold',
   },
 });

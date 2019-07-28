@@ -2,35 +2,15 @@ import React from 'react';
 import {
   StyleSheet,
   Text,
-  ScrollView,
-  TextInput,
   Image,
   View,
   ImageBackground,
   TouchableOpacity,
 } from 'react-native';
 import CONSTANTS from '../Constants.js';
-import {Font} from 'expo';
 import {normalize} from '../utils/FontNormalizer.js';
 
 export default class PurchaseTicketOverlay extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      buttonDynamicStyle: {}
-    };
-  }
-
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      buttonDynamicStyle: {
-        fontFamily: 'riffic-free-bold',
-      }
-    });
-  }
 
   purchaseWithETH = () => {
     this.props.onSelectTicket("ETH");
@@ -52,17 +32,17 @@ export default class PurchaseTicketOverlay extends React.Component {
                      resizeMode="stretch"/>
             </TouchableOpacity>
             <View style={styles.headerView}>
-              <Text style={[styles.headerText, this.state.buttonDynamicStyle]}>Ship to SnakeBank</Text>
+              <Text style={[styles.headerText]}>Ship to SnakeBank</Text>
             </View>
             <Image source={require("../assets/ticket/train.png")} style={styles.ticketImage}/>
             <View style={styles.headerText2Holder}>
-              <Text style={[styles.headerText2small, this.state.buttonDynamicStyle]}>
+              <Text style={[styles.headerText2small]}>
                 {this.props.user.eggs} eggs
               </Text>
-              <Text style={[styles.headerText2small, this.state.buttonDynamicStyle]}>
+              <Text style={[styles.headerText2small]}>
                 {this.props.prices.mineHaulPrice/CONSTANTS.WEIPERETH} ETH per egg
               </Text>
-              <Text style={[styles.headerText2, this.state.buttonDynamicStyle]}>
+              <Text style={[styles.headerText2]}>
                 Total: {this.props.user.eggs*this.props.prices.mineHaulPrice/CONSTANTS.WEIPERETH} ETH
               </Text>
             </View>
@@ -72,10 +52,10 @@ export default class PurchaseTicketOverlay extends React.Component {
                 <ImageBackground source={require("../assets/ticket/button.png")} resizeMode='stretch'
                                  style={styles.inputBackground}>
                   <View style={styles.textInputStyle}>
-                    <Text style={[styles.ticketDescription, this.state.buttonDynamicStyle]}>Daily Tram </Text>
+                    <Text style={[styles.ticketDescription]}>Daily Tram </Text>
                   </View>
                   <View style={styles.ticketPrice}>
-                    <Text style={[styles.ticketText, this.state.buttonDynamicStyle]}>{this.props.user.eggs*this.props.prices.mineHaulPrice/CONSTANTS.WEIPERETH} ETH</Text>
+                    <Text style={[styles.ticketText]}>{this.props.user.eggs*this.props.prices.mineHaulPrice/CONSTANTS.WEIPERETH} ETH</Text>
                   </View>
                 </ImageBackground>
               </TouchableOpacity>
@@ -84,10 +64,10 @@ export default class PurchaseTicketOverlay extends React.Component {
                 <ImageBackground source={require("../assets/ticket/button.png")} resizeMode='stretch'
                                  style={styles.inputBackground}>
                   <View style={styles.textInputStyle}>
-                    <Text style={[styles.ticketDescription, this.state.buttonDynamicStyle]}>Daily Tram</Text>
+                    <Text style={[styles.ticketDescription]}>Daily Tram</Text>
                   </View>
                   <View style={styles.unvalid}>
-                    <Text style={[styles.unvalidText, this.state.buttonDynamicStyle]}>Unavailable</Text>
+                    <Text style={[styles.unvalidText]}>Unavailable</Text>
                   </View>
                 </ImageBackground>
               </TouchableOpacity>
@@ -97,10 +77,10 @@ export default class PurchaseTicketOverlay extends React.Component {
               <TouchableOpacity onPress={this.purchaseWithSNK}>
                 <ImageBackground source={require("../assets/ticket/button.png")} resizeMode='stretch' style={styles.inputBackground}>
                   <View style={styles.textInputStyle}>
-                    <Text style={[styles.ticketDescription, this.state.buttonDynamicStyle]} >Depleted Mine Tram</Text>
+                    <Text style={[styles.ticketDescription]} >Depleted Mine Tram</Text>
                   </View>
                   <View style={styles.ticketPrice}>
-                    <Text style={[styles.ticketText, this.state.buttonDynamicStyle]}>200 Snk</Text>
+                    <Text style={[styles.ticketText]}>200 Snk</Text>
                   </View>
                 </ImageBackground>
               </TouchableOpacity>
@@ -108,10 +88,10 @@ export default class PurchaseTicketOverlay extends React.Component {
               <TouchableOpacity>
                 <ImageBackground source={require("../assets/ticket/button.png")} resizeMode='stretch' style={styles.inputBackground}>
                   <View style={styles.textInputStyle}>
-                    <Text style={[styles.ticketDescription, this.state.buttonDynamicStyle]} >Depleted Mine Tram</Text>
+                    <Text style={[styles.ticketDescription]} >Depleted Mine Tram</Text>
                   </View>
                   <View style={styles.unvalid}>
-                    <Text style={[styles.unvalidText, this.state.buttonDynamicStyle]}>200 Snk</Text>
+                    <Text style={[styles.unvalidText]}>200 Snk</Text>
                   </View>
                 </ImageBackground>
               </TouchableOpacity>
@@ -119,7 +99,7 @@ export default class PurchaseTicketOverlay extends React.Component {
             {/*<View style={styles.proceedView}>
               <Image source={require("../assets/ticket/succeed.png")} resizeMode='stretch' style={styles.succeedButton} />
               <View style = {{position : 'absolute'  , flexDirection : "row" , justifyContent : 'center' , alignItems : 'center'}}>
-              <Text style={[styles.succeedText, this.state.buttonDynamicStyle]} >Proceed </Text>
+              <Text style={[styles.succeedText]} >Proceed </Text>
               <Image source={require("../assets/ticket/rightArrow.png")} resizeMode='stretch' style={styles.arrowImg} />
               </View>
             </View>*/}
@@ -152,6 +132,7 @@ let styles = StyleSheet.create({
   ticketText: {
     fontSize: normalize(16),
     color: "#FCB627",
+    fontFamily: 'riffic-free-bold',
   },
   headerView: {
     marginTop: 34,
@@ -161,6 +142,7 @@ let styles = StyleSheet.create({
   headerText: {
     fontSize: normalize(24),
     color: "#FCB627",
+    fontFamily: 'riffic-free-bold',
   },
   headerText2Holder: {
     padding: 25,
@@ -171,12 +153,14 @@ let styles = StyleSheet.create({
     fontSize: normalize(14),
     color: "#FCB627",
     paddingTop: 4,
+    fontFamily: 'riffic-free-bold',
   },
   headerText2small: {
     fontSize: normalize(12),
     color: "#FCB627",
     paddingTop: 4,
     opacity: 0.8,
+    fontFamily: 'riffic-free-bold',
   },
   ticketImage: {
     marginTop: 20,
@@ -186,10 +170,12 @@ let styles = StyleSheet.create({
   succeedButton: {height: screenHeight / 11, width: "45%",},
   arrowImg: {height: "60%", width: "20%", resizeMode: 'stretch',},
   textInputStyle: {flex: 2, paddingLeft: '7%', justifyContent: "center"},
-  succeedText: {color: "#352526", fontSize: normalize(13),},
+  succeedText: {color: "#352526", fontSize: normalize(13),
+    fontFamily: 'riffic-free-bold',},
   textBox: {fontSize: normalize(13), paddingLeft: '10%', width: "90%", color: "#705756", height: "100%"},
   unvalid: {flex: 1, justifyContent: "center", alignItems: "flex-start"},
-  unvalidText: {fontSize: normalize(13), color: "#7D5B1E"},
+  unvalidText: {fontSize: normalize(13), color: "#7D5B1E",
+    fontFamily: 'riffic-free-bold',},
   proceedView: {
     position: "absolute",
     bottom: -45,
@@ -207,6 +193,7 @@ let styles = StyleSheet.create({
   ticketDescription: {
     fontSize: normalize(12),
     color: "#947572",
+    fontFamily: 'riffic-free-bold',
   },
   ticketPrice: {
     flex: 1,

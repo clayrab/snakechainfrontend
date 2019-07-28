@@ -1,27 +1,8 @@
 import React from 'react';
-import {Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View,} from 'react-native';
-import {Font} from 'expo';
+import {Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
 import {normalize} from '../utils/FontNormalizer.js';
 
 export default class ReceiptOverlay extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      buttonDynamicStyle: {}
-    };
-  }
-
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      buttonDynamicStyle: {
-        fontFamily: 'riffic-free-bold',
-      }
-    },);
-  }
-
   render() {
     if (!this.props.show) {
       return null;
@@ -33,16 +14,16 @@ export default class ReceiptOverlay extends React.Component {
               <Image source={require('../assets/snakebank/closeBG.png')} style={styles.closeButtonImage}
                      resizeMode="stretch"/>
             </TouchableOpacity>
-            <Text style={[styles.heading2Style, this.state.buttonDynamicStyle]}>
+            <Text style={[styles.heading2Style]}>
               New Mine Discovered!
             </Text>
-            <Text style={[styles.goldenTextStyle, this.state.buttonDynamicStyle, {paddingLeft: 40, paddingRight: 40, }]}>
+            <Text style={[styles.goldenTextStyle, {paddingLeft: 40, paddingRight: 40, }]}>
               You have found a new mine with {this.props.prices.mineMax} Snakechain Potential!
             </Text>
-            <Text style={[styles.goldenTextStyle, this.state.buttonDynamicStyle, {paddingTop: 20, paddingLeft: 40, paddingRight: 40, }]}>
+            <Text style={[styles.goldenTextStyle, {paddingTop: 20, paddingLeft: 40, paddingRight: 40, }]}>
               Begin a new mining expedition!
             </Text>
-            {/*<Text style={[styles.textStyle, styles.mb10, this.state.buttonDynamicStyle, {paddingLeft: 40, paddingRight: 40, }]}>
+            {/*<Text style={[styles.textStyle, styles.mb10, {paddingLeft: 40, paddingRight: 40, }]}>
               When you broke ground on your new mine, you discovered a treasure trove of:
             </Text>*/}
             <View style={{flex: 1}}>
@@ -54,17 +35,17 @@ export default class ReceiptOverlay extends React.Component {
                     <View style={styles.tableViewBottom}>
                     </View>
                     <View style={{flex: 1, borderTopColor: "#EBAC26", borderTopWidth: 1}}>
-                      <Text style={[{color: "#EBAC26", textAlign: 'center'}, this.state.buttonDynamicStyle]}>105</Text>
+                      <Text style={[{color: "#EBAC26", textAlign: 'center', fontFamily: 'riffic-free-bold',}]}>105</Text>
                     </View>
                   </View>*/}
-                  <Text style={[styles.textStyle, this.state.buttonDynamicStyle]}>Your courier from the old haul is on the way.</Text>
-                  <Text style={[styles.textStyle, this.state.buttonDynamicStyle, {paddingTop: 15, }]}>Transaction ID: {this.props.transactionId}</Text>
+                  <Text style={[styles.textStyle]}>Your courier from the old haul is on the way.</Text>
+                  <Text style={[styles.textStyle, {paddingTop: 15, }]}>Transaction ID: {this.props.transactionId}</Text>
                 </View>
               </ImageBackground>
             </View>
             <TouchableOpacity onPress={this.props.closeOverlay}>
               <ImageBackground source={require("../assets/snakebank/button.png")} style={styles.backToCampButton}>
-                <Text style={[styles.backToCampButtonText, this.state.buttonDynamicStyle]}>START MINING</Text>
+                <Text style={[styles.backToCampButtonText]}>START MINING</Text>
               </ImageBackground>
             </TouchableOpacity>
           </ImageBackground>
@@ -100,20 +81,23 @@ let styles = StyleSheet.create({
     fontSize: normalize(22),
     textAlign: "center",
     marginTop: 10,
-    marginBottom: 20
+    marginBottom: 20,
+    fontFamily: 'riffic-free-bold',
   },
   textStyle: {
     textAlign: 'center',
     color: "#896A66",
     fontSize: normalize(14),
-    paddingHorizontal: 15
+    paddingHorizontal: 15,
+    fontFamily: 'riffic-free-bold',
   },
   mb10: {
     marginBottom: 10
   },
   goldenTextStyle: {
     color: "#EBAC26",
-    fontSize: normalize(14)
+    fontSize: normalize(14),
+    fontFamily: 'riffic-free-bold',
   },
   closeButton: {
     position: 'absolute',
@@ -152,6 +136,7 @@ let styles = StyleSheet.create({
   },
   backToCampButtonText: {
     color: "#EBAC26",
-    fontSize: normalize(16)
+    fontSize: normalize(16),
+    fontFamily: 'riffic-free-bold',
   },
 });

@@ -5,31 +5,10 @@ import {
   StyleSheet,
   Text,
   View,
-  ScrollView,
   ImageBackground
 } from 'react-native';
-import {Font} from 'expo';
-import CONSTANTS from '../Constants.js';
 
 export default class ErrorOverlay extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      riffic: {},
-    }
-  }
-
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      riffic: {
-        fontFamily: 'riffic-free-bold',
-      }
-    });
-  }
-
   render() {
     if (!this.props.show) {
       return null;
@@ -50,6 +29,7 @@ export default class ErrorOverlay extends React.Component {
     }
   }
 }
+
 let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
 var styles = StyleSheet.create({

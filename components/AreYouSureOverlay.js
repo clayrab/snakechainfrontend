@@ -1,35 +1,14 @@
 import React from 'react';
 import {
-  Image,
   ImageBackground,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Font} from 'expo';
-import CONSTANTS from '../Constants.js';
 import {normalize} from '../utils/FontNormalizer.js';
 
 export default class AreYouSureOverlay extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      riffic: {},
-    }
-  }
-
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      riffic: {
-        fontFamily: 'riffic-free-bold',
-      }
-    });
-  }
-
   render() {
     if (!this.props.show) {
       return null;
@@ -38,7 +17,7 @@ export default class AreYouSureOverlay extends React.Component {
         <View style={styles.container}>
           <ImageBackground source={require('../assets/areyousure/background.png')} style={styles.backgroundImage}
                            resizeMode="stretch">
-            <Text style={[this.state.riffic, styles.text]}>{this.props.text}</Text>
+            <Text style={[styles.text]}>{this.props.text}</Text>
             <View style={styles.buttonsHolder}>
               <TouchableOpacity style={styles.touchableButton} onPress={this.props.onYes}>
                 <ImageBackground source={require('../assets/areyousure/yesButton.png')}
@@ -81,6 +60,7 @@ var styles = StyleSheet.create({
     paddingBottom: screenWidth * 40 / 724,
     color: "#fab523",
     fontSize: normalize(16),
+    fontFamily: 'riffic-free-bold'
   },
   buttonsHolder: {
     flexDirection: "row",

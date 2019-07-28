@@ -1,27 +1,8 @@
 import React from 'react';
-import {Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View,} from 'react-native';
-import {Font} from 'expo';
+import {Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
 import {normalize} from '../utils/FontNormalizer.js';
 
 export default class SnakeBankOverlay extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      buttonDynamicStyle: {}
-    };
-  }
-
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      buttonDynamicStyle: {
-        fontFamily: 'riffic-free-bold',
-      }
-    },);
-  }
-
   render() {
     if (!this.props.show) {
       return null;
@@ -33,11 +14,11 @@ export default class SnakeBankOverlay extends React.Component {
               <Image source={require('../assets/snakebank/closeBG.png')} style={styles.closeButtonImage}
                      resizeMode="stretch"/>
             </TouchableOpacity>
-            <Text style={[styles.headingStyle, this.state.buttonDynamicStyle]}>
+            <Text style={[styles.headingStyle]}>
               SNAKE BANK
             </Text>
             <ImageBackground source={require("../assets/snakebank/textbox.png")} style={styles.textBox}>
-              <Text style={[styles.inputStyle, this.state.buttonDynamicStyle]}>
+              <Text style={[styles.inputStyle]}>
                 Text Box
               </Text>
             </ImageBackground>
@@ -51,16 +32,19 @@ export default class SnakeBankOverlay extends React.Component {
               <View style={styles.tableHolder}>
                 <View style={styles.tableHeader}>
                   <View style={styles.tableView}>
-                    <Text style={[{color: "#EBAC26", fontSize: normalize(10)}, this.state.buttonDynamicStyle]}>TX
-                      ID</Text>
+                    <Text style={[{color: "#EBAC26", fontSize: normalize(10), fontFamily: 'riffic-free-bold'}]}>
+                      TX ID
+                    </Text>
                   </View>
                   <View style={styles.tableView}>
-                    <Text style={[{color: "#896A66", fontSize: normalize(10)}, this.state.buttonDynamicStyle]}>TX
-                      ID</Text>
+                    <Text style={{color: "#896A66", fontSize: normalize(10), fontFamily: 'riffic-free-bold'}}>
+                      TX ID
+                    </Text>
                   </View>
                   <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
-                    <Text style={[{color: "#896A66", fontSize: normalize(10)}, this.state.buttonDynamicStyle]}>TX
-                      ID</Text>
+                    <Text style={{color: "#896A66", fontSize: normalize(10), fontFamily: 'riffic-free-bold'}}>
+                      TX ID
+                    </Text>
                   </View>
                 </View>
                 <View style={{flex: 2, flexDirection: "row",}}>
@@ -69,14 +53,16 @@ export default class SnakeBankOverlay extends React.Component {
                   <View style={styles.tableViewBottom}>
                   </View>
                   <View style={{flex: 1, borderTopColor: "#EBAC26", borderTopWidth: 1}}>
-                    <Text style={[{color: "#EBAC26", textAlign: 'center'}, this.state.buttonDynamicStyle]}>105</Text>
+                    <Text style={{color: "#EBAC26", textAlign: 'center', fontFamily: 'riffic-free-bold'}}>
+                      105
+                    </Text>
                   </View>
                 </View>
               </View>
             </ImageBackground>
             <TouchableOpacity>
               <ImageBackground source={require("../assets/snakebank/button.png")} style={styles.backToCampButton}>
-                <Text style={[styles.backToCampButtonText, this.state.buttonDynamicStyle]}>RETURN TO MING CAMP</Text>
+                <Text style={styles.backToCampButtonText}>RETURN TO MING CAMP</Text>
               </ImageBackground>
             </TouchableOpacity>
           </ImageBackground>
@@ -110,12 +96,14 @@ let styles = StyleSheet.create({
     color: "#EBAC26",
     fontSize: normalize(13),
     paddingLeft: '2%',
+    fontFamily: 'riffic-free-bold'
   },
   headingStyle: {
     color: "#EBAC26",
     fontSize: normalize(33),
     textAlign: "center",
     marginTop: 20,
+    fontFamily: 'riffic-free-bold'
   },
   closeButton: {
     position: 'absolute',
@@ -184,6 +172,7 @@ let styles = StyleSheet.create({
   },
   backToCampButtonText: {
     color: "#EBAC26",
-    fontSize: normalize(16)
+    fontSize: normalize(16),
+    fontFamily: 'riffic-free-bold'
   },
 });

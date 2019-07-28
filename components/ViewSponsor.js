@@ -1,31 +1,12 @@
 import React from 'react';
 import {
   StyleSheet,
-  Text, ScrollView,
-  TextInput, Image,
+  Text, Image,
   View, ImageBackground,
   TouchableOpacity,
 } from 'react-native';
-import {Font} from 'expo';
 
 export default class Sponsor extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      buttonDynamicStyle: {}
-    };
-  }
-
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      buttonDynamicStyle: {
-        fontFamily: 'riffic-free-bold',
-      }
-    });
-  }
 
   render() {
     return (
@@ -39,16 +20,16 @@ export default class Sponsor extends React.Component {
           <Image source={require("../assets/snakeoil/yellowsnake.png")} style={styles.snakeImage}
                  resizeMode={"stretch"}/>
           <View style={styles.ticketImageView}>
-            <Text style={[styles.sponsorText, this.state.buttonDynamicStyle]}>Watch a sponsor Video for </Text>
-            <Text style={[styles.sponsorText, this.state.buttonDynamicStyle]}>winnig snake chain </Text>
+            <Text style={[styles.sponsorText]}>Watch a sponsor Video for </Text>
+            <Text style={[styles.sponsorText]}>winnig snake chain </Text>
           </View>
           <View style={styles.textView}>
-            <Text style={[styles.ticketText, this.state.buttonDynamicStyle]}>Add 305 To Hank </Text>
+            <Text style={[styles.ticketText]}>Add 305 To Hank </Text>
           </View>
           <View style={styles.ButtonView}>
             <ImageBackground source={require("../assets/snakeoil/yellowButton.png")} resizeMode='stretch'
                              style={styles.succeedButton}>
-              <Text style={[styles.succeedText, this.state.buttonDynamicStyle]}>View Sponsor </Text>
+              <Text style={[styles.succeedText]}>View Sponsor </Text>
             </ImageBackground>
           </View>
         </ImageBackground>
@@ -60,15 +41,19 @@ let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
 let styles = StyleSheet.create({
   screen: {flex: 1, justifyContent: "center",},
-  ticketText: {fontSize: 18, color: "#FCB627"},
-  sponsorText: {fontSize: 14, color: "#947572"},
+  ticketText: {fontSize: 18, color: "#FCB627",
+    fontFamily: 'riffic-free-bold',},
+  sponsorText: {fontSize: 14, color: "#947572",
+    fontFamily: 'riffic-free-bold'
+  },
   mainView: {height: screenHeight / 2.2, marginHorizontal: '5%', alignItems: "center"},
   textView: {flex: 1, justifyContent: 'center', alignItems: "center"},
   succeedButton: {height: '55%', width: "90%", justifyContent: "center", alignItems: "center", flexDirection: "row"},
   ticketImage: {height: "60%", width: '50%', resizeMode: "stretch"},
   ticketImageView: {flex: 2, justifyContent: "flex-end", alignItems: "center"},
   ButtonView: {flex: 2, justifyContent: "center", alignItems: "center"},
-  succeedText: {color: "#352526", fontSize: 15, position: 'absolute',},
+  succeedText: {color: "#352526", fontSize: 15, position: 'absolute',
+    fontFamily: 'riffic-free-bold',},
   snakeImage: {position: 'absolute', height: "50%", width: '40%', top: -63},
   inputBackground: {height: "35%", marginHorizontal: "10%", flexDirection: 'row', marginVertical: '1%'},
   closeButton: {

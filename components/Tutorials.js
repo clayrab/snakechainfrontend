@@ -1,6 +1,5 @@
 import React from "react";
 import { Image, SafeAreaView, ImageBackground, ScrollView, View, Text, TouchableOpacity, AsyncStorage } from 'react-native';
-import { Font } from "expo";
 import { normalize } from "../utils/FontNormalizer";
 
 let screenWidth = require('Dimensions').get('window').width;
@@ -11,7 +10,7 @@ const ContinueButton = (props) => (
     <ImageBackground source={require('../assets/tutorials/ContinueBtn.png')}
       resizeMode={'contain'}
       style={styles.continueButton}>
-      <Text style={[styles.continueText, props.fontFamily]}>CONTINUE</Text>
+      <Text style={[styles.continueText]}>CONTINUE</Text>
     </ImageBackground>
   </TouchableOpacity>
 );
@@ -37,20 +36,8 @@ export default class Tutorials extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      riffic: {},
       page: 1
     };
-  }
-
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      riffic: {
-        fontFamily: 'riffic-free-bold',
-      }
-    });
   }
 
   getPage() {
@@ -74,16 +61,16 @@ export default class Tutorials extends React.Component {
           <ImageBackground source={require('../assets/tutorials/TitleBG.png')}
             resizeMode={'contain'}
             style={styles.titleBackground}>
-            <Text style={[styles.title, this.state.riffic]}>Welcome</Text>
+            <Text style={[styles.title]}>Welcome</Text>
           </ImageBackground>
-          <Text style={[styles.description, this.state.riffic]}>Mine Snakechain by {'\n'}playing Snake!</Text>
+          <Text style={[styles.description]}>Mine Snakechain by {'\n'}playing Snake!</Text>
           <Image
             source={require("../assets/tutorials/welcome.png")}
             style={styles.welcomeImage}
             resizeMode={'contain'}
           />
           <View style={styles.bottomHighlight}>
-            <ContinueButton onPress={() => this.setState({ page: 2 })} fontFamily={this.state.riffic}
+            <ContinueButton onPress={() => this.setState({ page: 2 })}
               style={{ marginBottom: 10 }} />
             <TabContainer page={this.state.page} />
           </View>
@@ -99,9 +86,9 @@ export default class Tutorials extends React.Component {
           <ImageBackground source={require('../assets/tutorials/TitleBG.png')}
             resizeMode={'contain'}
             style={styles.titleBackground}>
-            <Text style={[styles.title, this.state.riffic]}>HOW TO PLAY</Text>
+            <Text style={[styles.title]}>HOW TO PLAY</Text>
           </ImageBackground>
-          <Text style={[styles.description, this.state.riffic]}>
+          <Text style={[styles.description]}>
             Choose your tunnel, and collect each SnakeGold to add to your haul!
           </Text>
           <Image
@@ -109,7 +96,7 @@ export default class Tutorials extends React.Component {
             style={styles.howToPlayImage}
             resizeMode={'contain'}
           />
-          <ContinueButton onPress={() => this.setState({ page: 3 })} fontFamily={this.state.riffic}
+          <ContinueButton onPress={() => this.setState({ page: 3 })}
             style={{ marginBottom: 10 }} />
           <TabContainer page={this.state.page} />
         </View>
@@ -124,9 +111,9 @@ export default class Tutorials extends React.Component {
           <ImageBackground source={require('../assets/tutorials/TitleBG.png')}
             resizeMode={'contain'}
             style={styles.titleBackground}>
-            <Text style={[styles.title, this.state.riffic]}>SHIP TO WALLET</Text>
+            <Text style={[styles.title]}>SHIP TO WALLET</Text>
           </ImageBackground>
-          <Text style={[styles.description, this.state.riffic]}>
+          <Text style={[styles.description]}>
             Purchase a Trolly Rental ticket, and ship your SnakeGold to your SNakeBank Wallet
           </Text>
           <Image
@@ -135,7 +122,7 @@ export default class Tutorials extends React.Component {
             resizeMode={'contain'}
           />
           <View style={styles.bottomHighlight}>
-            <ContinueButton onPress={() => this.setState({ page: 4 })} fontFamily={this.state.riffic}
+            <ContinueButton onPress={() => this.setState({ page: 4 })}
               style={{ marginBottom: 10 }} />
             <TabContainer page={this.state.page} />
           </View>
@@ -151,11 +138,11 @@ export default class Tutorials extends React.Component {
           <ImageBackground source={require('../assets/tutorials/TitleBG.png')}
             resizeMode={'contain'}
             style={styles.titleBackground}>
-            <Text style={[styles.title, this.state.riffic]}>GET STARTED</Text>
+            <Text style={[styles.title]}>GET STARTED</Text>
           </ImageBackground>
           <ImageBackground source={require('../assets/tutorials/TextBackground.png')}
             resizeMode={'contain'} style={styles.getStartedTextContainer}>
-            <Text style={[styles.description, this.state.riffic]}>
+            <Text style={[styles.description]}>
               Go to your mine and start playing now!
             </Text>
           </ImageBackground>
@@ -213,7 +200,8 @@ const styles = {
   },
   title: {
     color: '#FAB523',
-    fontSize: normalize(22)
+    fontSize: normalize(22),
+    fontFamily: 'riffic-free-bold'
   },
   description: {
     maxWidth: screenWidth * 0.8,
@@ -221,11 +209,13 @@ const styles = {
     color: '#FAB523',
     fontSize: normalize(18),
     textAlign: 'center',
+    fontFamily: 'riffic-free-bold'
   },
   continueText: {
     color: "#352927",
     fontSize: normalize(18),
-    marginBottom: 5
+    marginBottom: 5,
+    fontFamily: 'riffic-free-bold'
   },
   backgroundImage: {
     position: 'relative',

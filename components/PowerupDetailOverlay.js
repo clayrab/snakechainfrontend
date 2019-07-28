@@ -11,15 +11,6 @@ import {Font} from 'expo';
 import {normalize} from "../utils/FontNormalizer";
 
 export default class PowerupDetailOverlay extends React.Component {
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    styles.buttonText = {
-      fontFamily: 'riffic-free-bold'
-    }
-  }
-
   render() {
     if (!this.props.show) {
       return null;
@@ -124,4 +115,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: normalize(15)
   },
+  buttonText: {
+    fontFamily: 'riffic-free-bold',
+  }
 });

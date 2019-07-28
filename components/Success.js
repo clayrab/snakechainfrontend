@@ -1,38 +1,19 @@
 import React from 'react';
 import {
   StyleSheet,
-  Text, ScrollView,
-  TextInput, Image,
+  Text,
+  Image,
   View, ImageBackground,
   TouchableOpacity,
 } from 'react-native';
-import {Font} from 'expo';
 
 export default class Success extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      buttonDynamicStyle: {}
-    };
-  }
-
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      buttonDynamicStyle: {
-        fontFamily: 'riffic-free-bold',
-      }
-    });
-  }
-
   render() {
     return (
       <View style={styles.screen}>
         <View style={styles.mainView}>
-          <View style={[styles.headingView, this.state.buttonDynamicStyle]}>
-            <Text style={[styles.textStyle, this.state.buttonDynamicStyle]}> SNAKETOWN </Text>
+          <View style={[styles.headingView]}>
+            <Text style={[styles.textStyle]}> SNAKETOWN </Text>
           </View>
           <ImageBackground source={require("../assets/ticket/background.png")} resizeMode={"stretch"}
                            style={styles.backgroundImageView}>
@@ -44,7 +25,7 @@ export default class Success extends React.Component {
               <Image source={require("../assets/success/check.png")} style={styles.rightImage}/>
             </View>
             <View style={{flex: 1.4}}>
-              <Text style={[styles.textStyle, this.state.buttonDynamicStyle]}>Edit Successfull </Text>
+              <Text style={[styles.textStyle]}>Edit Successfull </Text>
             </View>
           </ImageBackground>
         </View>
@@ -52,15 +33,35 @@ export default class Success extends React.Component {
     );
   }
 }
+
 let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
 let styles = StyleSheet.create({
   screen: {flex: 1,},
-  headingView: {flex: 1, justifyContent: 'center', alignItems: "center"},
-  textStyle: {fontSize: 20, color: "#FAC047"},
-  backgroundImageView: {flex: 2, alignItems: "center"},
-  rightImage: {height: '50%', width: screenWidth / 3, resizeMode: "stretch"},
-  mainView: {height: screenHeight / 1.4, marginHorizontal: '5%',},
+  headingView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: "center",
+    fontFamily: 'riffic-free-bold'
+  },
+  textStyle: {
+    fontSize: 20,
+    color: "#FAC047",
+    fontFamily: 'riffic-free-bold'
+  },
+  backgroundImageView: {
+    flex: 2,
+    alignItems: "center"
+  },
+  rightImage: {
+    height: '50%',
+    width: screenWidth / 3,
+    resizeMode: "stretch"
+  },
+  mainView: {
+    height: screenHeight / 1.4,
+    marginHorizontal: '5%',
+  },
   closeButton: {
     position: 'absolute',
     top: -20,
@@ -71,4 +72,4 @@ let styles = StyleSheet.create({
     height: 50,
     width: 35,
   },
-})
+});

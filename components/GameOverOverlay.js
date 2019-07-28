@@ -7,30 +7,9 @@ import {
   TouchableOpacity,
   View, ScrollView
 } from 'react-native';
-import { Font } from 'expo';
-import CONSTANTS from '../Constants.js';
 import { normalize } from '../utils/FontNormalizer.js';
-import { formatToken } from '../utils/uiHelperFunctions.js';
 
 export default class GameOverOverlay extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      buttonDynamicStyle: {}
-    };
-  }
-
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      buttonDynamicStyle: {
-        fontFamily: 'riffic-free-bold',
-      }
-    });
-  }
-
   render() {
     if (!this.props.show) {
       return null;
@@ -46,7 +25,7 @@ export default class GameOverOverlay extends React.Component {
 
             <ImageBackground source={require('../assets/gameover/topgameover.png')} style={styles.topgameover}
               resizeMode="stretch">
-              <Text style={[styles.buttonText, styles.gameOverText, this.state.buttonDynamicStyle]}>
+              <Text style={[styles.buttonText, styles.gameOverText]}>
                 GAME OVER
             </Text>
             </ImageBackground>
@@ -59,7 +38,7 @@ export default class GameOverOverlay extends React.Component {
                   <View >
                     <ImageBackground source={require('../assets/gameover/collectgoldback.png')} style={styles.collectGoldImg}
                       resizeMode="contain">
-                      <Text style={[styles.buttonText, styles.scoreText, this.state.buttonDynamicStyle]}>
+                      <Text style={[styles.buttonText, styles.scoreText]}>
                         1,205
                     </Text>
                     </ImageBackground>
@@ -67,18 +46,18 @@ export default class GameOverOverlay extends React.Component {
                       resizeMode="contain">
                       <View style={styles.scoreboardView}>
                         <View style={styles.dataView}>
-                          <Text style={[styles.buttonText, styles.scoreText1, this.state.buttonDynamicStyle]}>
+                          <Text style={[styles.buttonText, styles.scoreText1]}>
                             Time:
                         </Text>
-                          <Text style={[styles.buttonText, styles.scoreText2, this.state.buttonDynamicStyle]}>
+                          <Text style={[styles.buttonText, styles.scoreText2]}>
                             35:00
                         </Text>
                         </View>
                         <View style={styles.dataView}>
-                          <Text style={[styles.buttonText, styles.scoreText1, this.state.buttonDynamicStyle]}>
+                          <Text style={[styles.buttonText, styles.scoreText1]}>
                             Level:
                         </Text>
-                          <Text style={[styles.buttonText, styles.scoreText2, this.state.buttonDynamicStyle]}>
+                          <Text style={[styles.buttonText, styles.scoreText2]}>
                             105
                         </Text>
                         </View>
@@ -86,11 +65,11 @@ export default class GameOverOverlay extends React.Component {
                           <View style={{ flexDirection: 'row' }}>
                             <Image source={require('../assets/gameover/mashrom.png')} style={styles.mashroomImage}
                               resizeMode="contain" />
-                            <Text style={[styles.buttonText, styles.scoreText1, this.state.buttonDynamicStyle]}>
+                            <Text style={[styles.buttonText, styles.scoreText1]}>
                               Collected:
                         </Text>
                           </View>
-                          <Text style={[styles.buttonText, styles.scoreText2, this.state.buttonDynamicStyle]}>
+                          <Text style={[styles.buttonText, styles.scoreText2]}>
                             92
                         </Text>
 
@@ -111,11 +90,11 @@ export default class GameOverOverlay extends React.Component {
                           <ImageBackground source={require('../assets/gameover/scrollitem.png')} style={styles.scrollitem}
                             resizeMode="stretch">
                             <View style={styles.scrollitemtxt}>
-                              <Text style={[styles.buttonText, styles.scoreText6, this.state.buttonDynamicStyle]}>
+                              <Text style={[styles.buttonText, styles.scoreText6]}>
                                 Level 35 Bonus:
                         </Text>
                               <View style={styles.scrollmash}>
-                                <Text style={[styles.buttonText, styles.scoreText3, this.state.buttonDynamicStyle]}>
+                                <Text style={[styles.buttonText, styles.scoreText3]}>
                                   3
                         </Text>
                                 <Image source={require('../assets/gameover/mashrom.png')} style={styles.mashroomImage1}
@@ -128,11 +107,11 @@ export default class GameOverOverlay extends React.Component {
                           <ImageBackground source={require('../assets/gameover/scrollitem.png')} style={styles.scrollitem1}
                             resizeMode="stretch">
                             <View style={styles.scrollitemtxt}>
-                              <Text style={[styles.buttonText, styles.scoreText6, this.state.buttonDynamicStyle]}>
+                              <Text style={[styles.buttonText, styles.scoreText6]}>
                                 Gold Mashroom:
                         </Text>
                               <View style={styles.scrollmash}>
-                                <Text style={[styles.buttonText, styles.scoreText4, this.state.buttonDynamicStyle]}>
+                                <Text style={[styles.buttonText, styles.scoreText4]}>
                                   0.02
                           </Text>
                                 <Image source={require('../assets/gameover/mashrom.png')} style={styles.mashroomImage1}
@@ -145,11 +124,11 @@ export default class GameOverOverlay extends React.Component {
                           <ImageBackground source={require('../assets/gameover/scrollitem.png')} style={styles.scrollitem1}
                             resizeMode="stretch">
                             <View style={styles.scrollitemtxt}>
-                              <Text style={[styles.buttonText, styles.scoreText6, this.state.buttonDynamicStyle]}>
+                              <Text style={[styles.buttonText, styles.scoreText6]}>
                                 Level 30 Bonus:
                             </Text>
                               <View style={styles.scrollmash}>
-                                <Text style={[styles.buttonText, styles.scoreText3, this.state.buttonDynamicStyle]}>
+                                <Text style={[styles.buttonText, styles.scoreText3]}>
                                   3
                               </Text>
                                 <Image source={require('../assets/gameover/mashrom.png')} style={styles.mashroomImage1}
@@ -163,11 +142,11 @@ export default class GameOverOverlay extends React.Component {
                           <ImageBackground source={require('../assets/gameover/scrollitem.png')} style={styles.scrollitem1}
                             resizeMode="stretch">
                             <View style={styles.scrollitemtxt}>
-                              <Text style={[styles.buttonText, styles.scoreText6, this.state.buttonDynamicStyle]}>
+                              <Text style={[styles.buttonText, styles.scoreText6]}>
                                 Level 30 Bonus:
                                     </Text>
                               <View style={styles.scrollmash}>
-                                <Text style={[styles.buttonText, styles.scoreText3, this.state.buttonDynamicStyle]}>
+                                <Text style={[styles.buttonText, styles.scoreText3]}>
                                   3
                                 </Text>
                                 <Image source={require('../assets/gameover/mashrom.png')} style={styles.mashroomImage1}
@@ -363,7 +342,8 @@ var styles = StyleSheet.create({
     marginRight: 5
   },
   buttonText: {
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontFamily: 'riffic-free-bold',
   },
   largeButtonText: {
     color: "#fab523",

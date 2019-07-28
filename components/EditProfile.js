@@ -1,35 +1,15 @@
 import React from 'react';
 import {
   StyleSheet,
-  Text, ScrollView,
-  TextInput, Image,
+  Text, ScrollView, Image,
   View, ImageBackground,
   TouchableOpacity,
 } from 'react-native';
-import {Font} from 'expo';
 import ScreenView from '../components/ScreenView.js';
 import TextInputView from './TextInputView'
 import {normalize} from '../utils/FontNormalizer.js';
 
 export default class EditProfile extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      buttonDynamicStyle: {}
-    };
-  }
-
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      buttonDynamicStyle: {
-        fontFamily: 'riffic-free-bold',
-      }
-    });
-  }
-
   render() {
     return (
       <ScreenView>
@@ -40,11 +20,11 @@ export default class EditProfile extends React.Component {
             </View>
             <View style={[styles.headerChild]}>
               <Image source={require("../assets/edit/coinBox.png")} style={styles.coinBoxImage}/>
-              <Text style={[styles.headerText, this.state.buttonDynamicStyle]}>10</Text>
+              <Text style={[styles.headerText]}>10</Text>
             </View>
             <View style={[styles.headerChild]}>
               <Image source={require("../assets/edit/diamondBox.png")} style={styles.diamondBoxImage}/>
-              <Text style={[styles.headerText, this.state.buttonDynamicStyle]}>100,000</Text>
+              <Text style={[styles.headerText]}>100,000</Text>
             </View>
           </ImageBackground>
           <View style={styles.editImageView}>
@@ -53,14 +33,14 @@ export default class EditProfile extends React.Component {
               <Image source={require("../assets/edit/pencil.png")} style={styles.editPencil}/>
             </ImageBackground>
           </View>
-          <TextInputView placeHolder={"First Name"} dynamicStyle={this.state.buttonDynamicStyle}/>
-          <TextInputView placeHolder={"Last Name"} dynamicStyle={this.state.buttonDynamicStyle}/>
-          <TextInputView placeHolder={"User Name"} dynamicStyle={this.state.buttonDynamicStyle}/>
-          <TextInputView placeHolder={"Phone Number"} dynamicStyle={this.state.buttonDynamicStyle}/>
-          <TextInputView placeHolder={"Email"} dynamicStyle={this.state.buttonDynamicStyle}/>
+          <TextInputView placeHolder={"First Name"} dynamicStyle={styles.rifficFont}/>
+          <TextInputView placeHolder={"Last Name"} dynamicStyle={styles.rifficFont}/>
+          <TextInputView placeHolder={"User Name"} dynamicStyle={styles.rifficFont}/>
+          <TextInputView placeHolder={"Phone Number"} dynamicStyle={styles.rifficFont}/>
+          <TextInputView placeHolder={"Email"} dynamicStyle={styles.rifficFont}/>
           <ImageBackground source={require("../assets/edit/socialBackground.png")} style={styles.linkBackgroundImage}
                            resizeMode={"stretch"}>
-            <Text style={[styles.linkText, this.state.buttonDynamicStyle]}> Link to: </Text>
+            <Text style={[styles.linkText]}> Link to: </Text>
             <View style={styles.socialImagesContainer}>
               <View style={styles.socialImagesView}>
                 <Image source={require("../assets/edit/facebookIcon.png")} style={styles.socialImages}/>
@@ -78,23 +58,23 @@ export default class EditProfile extends React.Component {
           </ImageBackground>
           <ImageBackground source={require("../assets/edit/imageHolderBG.png")} style={styles.linkBackgroundImage}
                            resizeMode={"stretch"}>
-            <Text style={[styles.privacyText, this.state.buttonDynamicStyle]}> Privacy Setting </Text>
+            <Text style={[styles.privacyText]}> Privacy Setting </Text>
             <TouchableOpacity style={styles.privacyButton}>
               <Image source={require("../assets/edit/rankBox.png")} style={styles.privacyButtonImage}/>
-              <Text style={[styles.privacyButtonText, this.state.buttonDynamicStyle]}>Change Password</Text>
+              <Text style={[styles.privacyButtonText]}>Change Password</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.privacyButton}>
               <Image source={require("../assets/edit/rankBox.png")} style={styles.privacyButtonImage}/>
-              <Text style={[styles.privacyButtonText, this.state.buttonDynamicStyle]}>View Private Key</Text>
+              <Text style={[styles.privacyButtonText]}>View Private Key</Text>
             </TouchableOpacity>
           </ImageBackground>
           <ImageBackground source={require("../assets/edit/imageHolderBG.png")} style={styles.linkBackgroundImage}
                            resizeMode={"stretch"}>
-            <Text style={[styles.privacyText, this.state.buttonDynamicStyle]}> Enable 2 Factor Authentication </Text>
+            <Text style={[styles.privacyText]}> Enable 2 Factor Authentication </Text>
             <View style={styles.authenticationView}>
               <ImageBackground source={require("../assets/edit/rankBox.png")} style={styles.authChild}
                                resizeMode="stretch">
-                <Text style={[styles.authText, this.state.buttonDynamicStyle]}>Phone</Text>
+                <Text style={[styles.authText]}>Phone</Text>
               </ImageBackground>
               <View style={styles.authSwitch}>
                 <Image source={require("../assets/edit/swithOn.png")} style={styles.switchImage}/>
@@ -103,7 +83,7 @@ export default class EditProfile extends React.Component {
             <View style={styles.authenticationView}>
               <ImageBackground source={require("../assets/edit/rankBox.png")} style={styles.authChild}
                                resizeMode="stretch">
-                <Text style={[styles.authText, this.state.buttonDynamicStyle]}>Email</Text>
+                <Text style={[styles.authText]}>Email</Text>
               </ImageBackground>
               <View style={styles.authSwitch}>
                 <Image source={require("../assets/edit/swithOff.png")} style={styles.switchImage}/>
@@ -114,7 +94,7 @@ export default class EditProfile extends React.Component {
             <ImageBackground source={require("../assets/edit/DeleteButton.png")} style={styles.deleteImage}
                              resizeMode="stretch">
               <Image source={require("../assets/edit/deleteIcon.png")} style={styles.deleteIcon}/>
-              <Text style={[styles.deleteText, this.state.buttonDynamicStyle]}>Delete Account</Text>
+              <Text style={[styles.deleteText]}>Delete Account</Text>
             </ImageBackground>
           </View>
         </ScrollView>
@@ -140,7 +120,9 @@ let styles = StyleSheet.create({
     flex: 2, justifyContent: "center", alignItems: "center"
   },
   pencilImage: {height: "36%", width: "5%", resizeMode: "stretch", paddingRight: "6%"},
-  headerText: {color: "#FCB627", position: "absolute"},
+  headerText: {color: "#FCB627", position: "absolute",
+    fontFamily: 'riffic-free-bold',
+  },
   diamondBoxImage: {marginTop: 4, height: "60%", width: "90%", resizeMode: "stretch"},
   coinBoxImage: {height: "50%", width: "90%", resizeMode: "stretch"},
   editImageView: {
@@ -171,18 +153,18 @@ let styles = StyleSheet.create({
     marginTop: '2%',
   },
   switchImageLink: {height: '22%', width: '35%', resizeMode: "stretch", marginTop: '5%'},
-  deleteText: {color: '#fff', fontSize: normalize(16)},
+  deleteText: {color: '#fff', fontSize: normalize(16), fontFamily: 'riffic-free-bold',},
   deleteIcon: {height: "38%", width: "9%", resizeMode: "stretch", marginHorizontal: "5%"},
   deleteImage: {height: '70%', width: "70%", flexDirection: "row", alignItems: "center", justifyContent: "center"},
   deleteView: {height: screenHeight / 7, marginHorizontal: '5%', justifyContent: "center", alignItems: 'center',},
   privacyButton: {flex: 1, alignItems: "center", justifyContent: "center"},
-  privacyButtonText: {color: "#927773", position: 'absolute'},
+  privacyButtonText: {color: "#927773", position: 'absolute', fontFamily: 'riffic-free-bold',},
   privacyButtonImage: {height: "95%", width: "90%", resizeMode: "stretch"},
   authenticationView: {flex: 1, flexDirection: 'row', marginVertical: "2%"},
   authChild: {flex: 3, justifyContent: "center", marginHorizontal: "2%"},
   authSwitch: {flex: 1, justifyContent: 'center', alignItems: "center"},
   switchImage: {height: '70%', width: '60%', resizeMode: 'stretch'},
-  authText: {paddingLeft: "14%", color: "#927773"},
+  authText: {paddingLeft: "14%", color: "#927773", fontFamily: 'riffic-free-bold',},
   socialImages: {height: "55%", width: "50%", resizeMode: "stretch"},
   settingImage: {height: "70%", width: "70%", resizeMode: "stretch"},
   privacyText: {
@@ -190,7 +172,9 @@ let styles = StyleSheet.create({
     color: "#FBB323",
     fontSize: normalize(12),
     marginVertical: "4%",
-    letterSpacing: 0.8
+    letterSpacing: 0.8,
+    fontFamily: 'riffic-free-bold',
   },
-  linkText: {textAlign: "center", color: "#FBB323", fontSize: normalize(13), marginVertical: "2%", letterSpacing: 0.8}
+  linkText: {textAlign: "center", color: "#FBB323", fontSize: normalize(13), marginVertical: "2%", letterSpacing: 0.8, fontFamily: 'riffic-free-bold',},
+  rifficFont: {fontFamily: 'riffic-free-bold',}
 });

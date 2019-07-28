@@ -3,11 +3,9 @@ import {
   TouchableOpacity,
   StyleSheet,
   Text,
-  View,
   ImageBackground,
   Image
 } from 'react-native';
-import {Font} from 'expo';
 import {normalize} from '../utils/FontNormalizer.js';
 
 import ScreenView from '../components/ScreenView.js';
@@ -17,30 +15,18 @@ var overlays = {"BANK": 0, };
 export default class SnakeTown extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       overlay: -1,
-      riffic: {},
     }
-  }
-
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      riffic: {
-        fontFamily: 'riffic-free-bold',
-      }
-    });
   }
 
   closeOverlay = () => {
     this.setState({overlay: -1});
-  }
+  };
+
   onBank = () => {
     this.setState({overlay: overlays.BANK});
-  }
+  };
 
   render() {
     return (
@@ -57,14 +43,14 @@ export default class SnakeTown extends React.Component {
                               resizeMode="stretch">
                <Image source={require('../assets/snaketown/forumIcon.png')}
                       style={[styles.buttonsIcon]}/>
-               <Text style={[this.state.riffic, styles.buttonsText]}>Snake Store</Text>
+               <Text style={[styles.buttonsText]}>Snake Store</Text>
              </ImageBackground>
            </TouchableOpacity>
           <TouchableOpacity onPress={this.onBank}>
             <ImageBackground source={require('../assets/snaketown/textBox.png')} style={styles.bottomTextBoxBG}
                              resizeMode="stretch">
               <Image source={require('../assets/snaketown/saloonIcon.png')} style={styles.buttonsIcon}/>
-              <Text style={[styles.comingSoon, this.state.riffic, styles.buttonsText]}>Coming Soon</Text>
+              <Text style={[styles.comingSoon, styles.buttonsText]}>Coming Soon</Text>
             </ImageBackground>
           </TouchableOpacity>
           <TouchableOpacity onPress={null}>
@@ -72,13 +58,13 @@ export default class SnakeTown extends React.Component {
                              resizeMode="stretch">
               <Image source={require('../assets/snaketown/shopIcon.png')}
                      style={[styles.comingSoon, styles.buttonsIcon]}/>
-              <Text style={[styles.comingSoon, this.state.riffic, styles.buttonsText]}>Coming Soon</Text>
+              <Text style={[styles.comingSoon, styles.buttonsText]}>Coming Soon</Text>
             </ImageBackground>
           </TouchableOpacity>
           <TouchableOpacity style={styles.bottomTextBoxBG} onPress={this.props.exit}>
             <ImageBackground source={require('../assets/snaketown/button.png')} style={styles.buttonBG}
                              resizeMode="stretch">
-              <Text style={[this.state.riffic, styles.gotoText]}>
+              <Text style={[styles.gotoText]}>
                 BACK TO MINE
               </Text>
             </ImageBackground>
@@ -91,6 +77,7 @@ export default class SnakeTown extends React.Component {
     )
   }
 }
+
 let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
 let styles = StyleSheet.create({
@@ -138,9 +125,11 @@ let styles = StyleSheet.create({
     flex: 1,
     color: "#fab523",
     fontSize: normalize(24),
+    fontFamily: 'riffic-free-bold'
   },
   comingSoon: {
     opacity: 0.5,
+    fontFamily: 'riffic-free-bold'
   },
   buttonBG: {
     width: screenWidth / 1.5,
@@ -151,6 +140,7 @@ let styles = StyleSheet.create({
   },
   gotoText: {
     fontSize: normalize(20),
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontFamily: 'riffic-free-bold'
   }
 });

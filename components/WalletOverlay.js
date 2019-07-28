@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import CONSTANTS from '../Constants.js';
 import {Keccak} from 'sha3';
-import {Font} from 'expo';
 import {normalize} from '../utils/FontNormalizer.js';
 import {formatToken} from '../utils/uiHelperFunctions.js';
 
@@ -38,15 +37,6 @@ export default class Wallet extends React.Component {
       amountText: "",
       address: "",
     };
-  }
-
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    styles.buttonText = {
-      fontFamily: 'riffic-free-bold'
-    }
   }
 
   onCopyAddress = () => {
@@ -477,7 +467,8 @@ let styles = StyleSheet.create({
     marginTop: 5,
   },
   buttonText: {
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontFamily: 'riffic-free-bold',
   },
   blackText: {
     color: "#000",

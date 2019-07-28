@@ -1,35 +1,14 @@
 import React from 'react';
 import {
-  Image,
   ImageBackground,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Font} from 'expo';
-import CONSTANTS from '../Constants.js';
 import {normalize} from '../utils/FontNormalizer.js';
 
 export default class ConfirmTxOverlay extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      riffic: {},
-    }
-  }
-
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      riffic: {
-        fontFamily: 'riffic-free-bold',
-      }
-    });
-  }
-
   render() {
     if (!this.props.show) {
       return null;
@@ -38,10 +17,10 @@ export default class ConfirmTxOverlay extends React.Component {
         <View style={styles.container}>
           <ImageBackground source={require('../assets/areyousure/background.png')} style={styles.backgroundImage}
                            resizeMode="stretch">
-            <Text style={[this.state.riffic, styles.text, styles.line1]}>
+            <Text style={[styles.text, styles.line1]}>
               Your transaction has been sent and will be confirmed shortly
             </Text>
-            <Text style={[this.state.riffic, styles.text, styles.line2]}>
+            <Text style={[styles.text, styles.line2]}>
               Transaction ID: {this.props.transactionId}
             </Text>
             <TouchableOpacity style={styles.touchableButton} onPress={this.props.onOk}>
@@ -83,6 +62,7 @@ var styles = StyleSheet.create({
   text: {
     color: "#fab523",
     fontSize: normalize(12),
+    fontFamily: 'riffic-free-bold',
   },
   line1: {},
   line2: {

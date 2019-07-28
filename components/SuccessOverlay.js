@@ -1,36 +1,14 @@
 import React from 'react';
 import {
   TouchableOpacity,
-  Image,
   StyleSheet,
   Text,
   View,
-  ScrollView,
   ImageBackground
 } from 'react-native';
-import {Font} from 'expo';
-import CONSTANTS from '../Constants.js';
 import {normalize} from "../utils/FontNormalizer";
 
 export default class SuccessOverlay extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      riffic: {},
-    }
-  }
-
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      riffic: {
-        fontFamily: 'riffic-free-bold',
-      }
-    });
-  }
-
   render() {
     if (!this.props.show) {
       return null;
@@ -42,11 +20,10 @@ export default class SuccessOverlay extends React.Component {
             <Text style={styles.titleText}>Successfully Registered</Text>
             <Text style={styles.normalText}>Go back to login</Text>
             <View style={styles.backButton}>
-              <TouchableOpacity
-                onPress={this.props.onNext}>
+              <TouchableOpacity onPress={this.props.onNext}>
                 <ImageBackground source={require('../assets/login/button.png')}
                                  style={[styles.loginButton, styles.passwordInput]} resizeMode="stretch">
-                  <Text style={[styles.confirmText, this.state.buttonDynamicStyle]}>GO BACK</Text>
+                  <Text style={[styles.confirmText]}>GO BACK</Text>
                 </ImageBackground>
               </TouchableOpacity>
             </View>

@@ -2,12 +2,9 @@ import React from 'react';
 import {
   StyleSheet,
   Text, ScrollView,
-  TextInput, Image,
+  Image,
   View, ImageBackground,
-  TouchableOpacity,
 } from 'react-native';
-import {Font} from 'expo';
-import TextInputView from './TextInputView.js'
 
 const InputView = ((props) =>
     <ImageBackground source={require("../assets/Overview/input.png")} resizeMode={"stretch"}
@@ -23,26 +20,9 @@ const InputView = ((props) =>
         <Image source={require("../assets/Overview/message.png")} style={styles.inputImages}/>
       </View>
     </ImageBackground>
-)
+);
+
 export default class GameOverview extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      buttonDynamicStyle: {}
-    };
-  }
-
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      buttonDynamicStyle: {
-        fontFamily: 'riffic-free-bold',
-      }
-    });
-  }
-
   render() {
     return (
       <ScrollView style={styles.screen}>
@@ -53,8 +33,8 @@ export default class GameOverview extends React.Component {
             </ImageBackground>
           </View>
           <View style={styles.headerTextView}>
-            <Text style={[styles.title, this.state.buttonDynamicStyle]}>BOBBER SONT 142</Text>
-            <Text style={[styles.address, this.state.buttonDynamicStyle]}>PUBLIC ADDRESS: OX.......</Text>
+            <Text style={[styles.title]}>BOBBER SONT 142</Text>
+            <Text style={[styles.address]}>PUBLIC ADDRESS: OX.......</Text>
             <Text style={[styles.info]}>More Profile Info</Text>
           </View>
           <View style={[styles.settingImageView]}>
@@ -64,7 +44,7 @@ export default class GameOverview extends React.Component {
         <ImageBackground source={require("../assets/Overview/gamesBackground.png")} resizeMode={"stretch"}
                          style={styles.gamesBackground}>
           <View style={styles.gameTextView}>
-            <Text style={[styles.gamesText, this.state.buttonDynamicStyle]}>GAMES</Text>
+            <Text style={[styles.gamesText]}>GAMES</Text>
           </View>
           <View style={styles.gamesViewImages}>
             <Image source={require("../assets/edit/imageHolder.png")} style={styles.gamesImage}/>
@@ -80,56 +60,56 @@ export default class GameOverview extends React.Component {
         <ImageBackground source={require("../assets/Overview/balanceBackground.png")} resizeMode={"stretch"}
                          style={styles.balanceBackground}>
           <View style={styles.gameTextView}>
-            <Text style={[styles.gamesText, this.state.buttonDynamicStyle]}>BALANCES</Text>
+            <Text style={[styles.gamesText]}>BALANCES</Text>
           </View>
           <View style={styles.balanceInputView}>
-            <InputView heading={'Eath'} number={'300'} btnStyle={this.state.buttonDynamicStyle}/>
-            <InputView heading={'Snake'} number={'300'} btnStyle={this.state.buttonDynamicStyle}/>
-            <InputView heading={'GRBL'} number={'100,04,0123'} btnStyle={this.state.buttonDynamicStyle}/>
+            <InputView heading={'Eath'} number={'300'} btnStyle={{fontFamily: 'riffic-free-bold'}}/>
+            <InputView heading={'Snake'} number={'300'} btnStyle={{fontFamily: 'riffic-free-bold'}}/>
+            <InputView heading={'GRBL'} number={'100,04,0123'} btnStyle={{fontFamily: 'riffic-free-bold'}}/>
           </View>
         </ImageBackground>
         <ImageBackground source={require("../assets/Overview/HistoryBG.png")} resizeMode={"stretch"}
                          style={styles.HistoryBG}>
           <View style={styles.gameTextView}>
-            <Text style={[styles.gamesText, this.state.buttonDynamicStyle]}>HISTORY</Text>
+            <Text style={[styles.gamesText]}>HISTORY</Text>
           </View>
           <View style={styles.balanceInputView}>
             <ImageBackground source={require("../assets/Overview/historyInput.png")} resizeMode={"stretch"}
                              style={styles.historyInput}>
               <View style={{flex: 1, justifyContent: 'center', alignItems: 'center',}}>
                 <Image source={require("../assets/Overview/send.png")} style={styles.historyImage}/>
-                <Text style={[styles.sendText, this.state.buttonDynamicStyle]}>SEND</Text>
-                <Text style={[styles.date, this.state.buttonDynamicStyle]}>15/2/2014</Text>
+                <Text style={[styles.sendText]}>SEND</Text>
+                <Text style={[styles.date]}>15/2/2014</Text>
               </View>
               <View style={styles.borderView}>
                 <Image source={require("../assets/Overview/historyBorder.png")} style={styles.borderStyle}/>
               </View>
               <View style={styles.historyRightView}>
                 <View style={styles.historyTopText}>
-                  <Text style={[styles.gamesText, this.state.buttonDynamicStyle]}>0.1050</Text>
+                  <Text style={[styles.gamesText]}>0.1050</Text>
                   <Image source={require("../assets/Overview/diamond.png")} style={styles.diamondImage}/>
-                  <Text style={[styles.gamesText, this.state.buttonDynamicStyle]}>SENT</Text>
+                  <Text style={[styles.gamesText]}>SENT</Text>
                 </View>
-                <Text style={[styles.historyText, this.state.buttonDynamicStyle]}>stan@smith@gmail.com</Text>
+                <Text style={[styles.historyText]}>stan@smith@gmail.com</Text>
               </View>
             </ImageBackground>
             <ImageBackground source={require("../assets/Overview/historyInput.png")} resizeMode={"stretch"}
                              style={styles.historyInput}>
               <View style={{flex: 1, justifyContent: 'center', alignItems: 'center',}}>
                 <Image source={require("../assets/Overview/arrow.png")} style={styles.historyImage}/>
-                <Text style={[styles.receiveText, this.state.buttonDynamicStyle]}>RECEIVE</Text>
-                <Text style={[styles.date, this.state.buttonDynamicStyle]}>15/2/2014</Text>
+                <Text style={[styles.receiveText]}>RECEIVE</Text>
+                <Text style={[styles.date]}>15/2/2014</Text>
               </View>
               <View style={styles.borderView}>
                 <Image source={require("../assets/Overview/historyBorder.png")} style={styles.borderStyle}/>
               </View>
               <View style={styles.historyRightView}>
                 <View style={styles.historyTopText}>
-                  <Text style={[styles.gamesText, this.state.buttonDynamicStyle]}>0.1050</Text>
+                  <Text style={[styles.gamesText]}>0.1050</Text>
                   <Image source={require("../assets/Overview/diamond.png")} style={styles.diamondImage}/>
-                  <Text style={[styles.gamesText, this.state.buttonDynamicStyle]}>RECEIVED</Text>
+                  <Text style={[styles.gamesText]}>RECEIVED</Text>
                 </View>
-                <Text style={[styles.historyText, this.state.buttonDynamicStyle]}>stan@smith@gmail.com</Text>
+                <Text style={[styles.historyText]}>stan@smith@gmail.com</Text>
               </View>
             </ImageBackground>
           </View>
@@ -138,6 +118,7 @@ export default class GameOverview extends React.Component {
     );
   }
 }
+
 let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
 let titleBarHeight = screenWidth * .757 / 3.6;
@@ -149,12 +130,12 @@ let styles = StyleSheet.create({
   headerTextView: {flex: 4, justifyContent: "center"},
   menuImage: {height: "35%", width: '30%', resizeMode: 'contain'},
   settingImage: {height: "80%", width: "90%", resizeMode: "stretch"},
-  title: {fontSize: 15, color: "#000000",},
-  address: {fontSize: 12, color: "#3B2811",},
+  title: {fontSize: 15, color: "#000000", fontFamily: 'riffic-free-bold'},
+  address: {fontSize: 12, color: "#3B2811", fontFamily: 'riffic-free-bold'},
   info: {color: '#A35625', fontSize: 10, fontWeight: '600',},
   diamondBoxImage: {height: "94%", width: "90%", resizeMode: "stretch", justifyContent: "center", alignItems: 'center'},
   gamesBackground: {height: screenHeight / 3.5, marginHorizontal: '5%', marginTop: '2%',},
-  gamesText: {fontSize: 18, color: "#F7B829",},
+  gamesText: {fontSize: 18, color: "#F7B829", fontFamily: 'riffic-free-bold'},
   gamesViewImages: {flex: 3, flexDirection: 'row', justifyContent: "space-around", alignItems: 'center',},
   balanceInputView: {flex: 4, justifyContent: "space-around", alignItems: 'center',},
   gameTextView: {flex: 1, justifyContent: 'center', alignItems: 'center',},
@@ -171,13 +152,13 @@ let styles = StyleSheet.create({
   HistoryBG: {height: screenHeight / 2.5, marginHorizontal: '5%', marginVertical: '5%',},
   historyInput: {height: "35%", width: "90%", flexDirection: "row"},
   historyImage: {height: '35%', width: '30%', resizeMode: "stretch"},
-  receiveText: {color: "#2BB436", fontSize: 9,},
-  sendText: {color: "#FFB61E", fontSize: 9,},
-  date: {color: "#8C6D4A", fontSize: 6,},
+  receiveText: {color: "#2BB436", fontSize: 9, fontFamily: 'riffic-free-bold'},
+  sendText: {color: "#FFB61E", fontSize: 9, fontFamily: 'riffic-free-bold'},
+  date: {color: "#8C6D4A", fontSize: 6, fontFamily: 'riffic-free-bold'},
   borderStyle: {height: '70%', width: '20%', resizeMode: 'stretch'},
   borderView: {flex: .3, alignItems: 'center', justifyContent: 'center',},
   diamondImage: {height: '94%', width: '5%', resizeMode: 'stretch', marginHorizontal: '1%'},
-  historyText: {fontSize: 12, color: "#F7B829", textAlign: 'center'},
+  historyText: {fontSize: 12, color: "#F7B829", textAlign: 'center', fontFamily: 'riffic-free-bold'},
   historyTopText: {flexDirection: 'row', justifyContent: 'center'},
   historyRightView: {flex: 4, justifyContent: 'center', alignItems: 'center',},
 
