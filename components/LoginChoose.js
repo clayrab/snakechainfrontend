@@ -97,18 +97,18 @@ export default class LoginChoose extends React.Component {
                            </TouchableOpacity>
             <TouchableOpacity onPress={this.props.goToLogin}>
               <ImageBackground source={require('../assets/login/button.png')} style={[styles.button]} resizeMode="stretch">
-                <Text style={[styles.loginText, this.state.buttonDynamicStyle]}>LOGIN</Text>
+                <Text style={[styles.loginText]}>LOGIN</Text>
               </ImageBackground>
             </TouchableOpacity>
             <TouchableOpacity onPress={this.googleOauth}>
               <ImageBackground source={require('../assets/login/button.png')} style={[styles.button]} resizeMode="stretch">
-                <Text style={[styles.loginText, this.state.buttonDynamicStyle]}>GOOGLE LOGIN</Text>
+                <Text style={[styles.loginText]}>GOOGLE LOGIN</Text>
               </ImageBackground>
             </TouchableOpacity>
           </ImageBackground>
           <View style={styles.signupButtonHolder}>
             <TouchableOpacity onPress={this.props.goToSignupChoose} style={styles.signupTextTouchable}>
-              <Text style={[styles.signupText, this.state.buttonDynamicStyle]}>SIGN UP</Text>
+              <Text style={[styles.signupText]}>SIGN UP</Text>
             </TouchableOpacity>
           </View>
         </ScreenView>
@@ -140,6 +140,7 @@ let styles = StyleSheet.create({
   loginText: {
     fontSize: normalize(18),
     color: '#352927',
+    fontFamily: 'riffic-free-bold'
   },
   signupButtonHolder: {
     position: "absolute",
@@ -151,6 +152,7 @@ let styles = StyleSheet.create({
   signupText: {
     fontSize: normalize(13),
     marginRight: 15,
+    fontFamily: 'riffic-free-bold'
   },
   rememberView: {
     flexDirection: 'row',
