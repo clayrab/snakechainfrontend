@@ -723,8 +723,7 @@ export default class Snek extends Sprite {
           boardX={lastTailPart.props.boardX}
           boardY={lastTailPart.props.boardY}
           toggleUpdate={true}
-          direction={lastTailPart.props.direction}
-          godMode={this.state.godMode}>
+          direction={lastTailPart.props.direction}>
         </SnekPart>
       );
       newTailStart = newTailStart.concat(newTailEnd);
@@ -741,8 +740,7 @@ export default class Snek extends Sprite {
           boardX={this.state.boardX}
           boardY={this.state.boardY}
           toggleUpdate={true}
-          direction={this.state.direction}
-          godMode={this.state.godMode}>
+          direction={this.state.direction}>
         </SnekPart>
       );
       let newTailIndex = this.state.tailIndex + 1;

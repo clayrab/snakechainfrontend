@@ -228,7 +228,7 @@ export default class App extends React.Component {
     this.gameOverDoContract = this.gameOverDoContract.bind(this);
     this.onConfirmTxOk = this.onConfirmTxOk.bind(this);
   }
-  
+
   async loadResourcesAsync() {
     await Font.loadAsync({
       'riffic-free-bold': require('./assets/fonts/RifficFree-Bold.ttf'),
@@ -568,11 +568,9 @@ export default class App extends React.Component {
   snakeUpgradeRight = () => {
     if (this.state.activeSnakeUpgrade < snakeUpgrades.length - 1)
       this.setState({activeSnakeUpgrade: this.state.activeSnakeUpgrade + 1})
-  }
+}
 
   render() {
-<<<<<<< HEAD
-=======
     console.log("render app")
     console.log(this.state.screen)
 
@@ -583,10 +581,9 @@ export default class App extends React.Component {
           onFinish={() => this.setState({ isReady: true })}
           onError={console.warn}
         />
-      ); 
+      );
     }
 
->>>>>>> fontfamily
     if (this.state.screen === screens.HOME) {
       return (
         <Homepage

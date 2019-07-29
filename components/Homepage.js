@@ -362,11 +362,7 @@ export default class Homepage extends React.Component {
                                    style={styles.gototownButton}>
                     <Text style={[styles.gototownText]}>
                       <Text
-<<<<<<< HEAD
-                        style={[styles.gototownText, this.state.riffic, {fontSize: normalize(20)}]}>{this.props.user.eggs}</Text> Eggs <Image
-=======
-                        style={[styles.gototownText, {fontSize: normalize(20)}]}>{this.props.user.haul}</Text> Unminted <Image
->>>>>>> fontfamily
+                        style={[styles.gototownText, {fontSize: normalize(20)}]}>{this.props.user.eggs}</Text> Eggs <Image
                       source={require('../assets/wallet/coin.png')} style={[styles.coin]}/>
                     </Text>
                     {/*<Text style={[styles.gototownText, {fontSize: normalize(11),}]}>Ship to Snakebank</Text>*/}
