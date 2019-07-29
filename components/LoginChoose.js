@@ -26,27 +26,14 @@ export default class LoginChoose extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      buttonDynamicStyle: {},
       loading: false,
     };
   }
 
   async componentDidMount() {
     console.log("LoginChoose componentDidMount")
-    try {
-      await Font.loadAsync({
-        'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-      });
-      this.setState({
-        buttonDynamicStyle: {
-          fontFamily: 'riffic-free-bold',
-        }
-      });
-    } catch(err) {
-      alert(err);
-      await this.setState({loading: false});
-    }
   }
+
   googleOauth = async() => {
     this.setState({loading: true});
     try {
@@ -73,6 +60,7 @@ export default class LoginChoose extends React.Component {
       }
     }
   }
+
   easterEgg = async () => {
     console.log("easteregg")
     easterEggCount = easterEggCount + 1;
@@ -80,10 +68,11 @@ export default class LoginChoose extends React.Component {
       sendGoogleToken("eyJhbGciOiJSUzI1NiIsImtpZCI6IjJjM2ZhYzE2YjczZmM4NDhkNDI2ZDVhMjI1YWM4MmJjMWMwMmFlZmQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI2MjA1MDM0MDM1MDEtdjQ2djVrazJnZzBwNzJpNm9pMGQyZThvbm0wMXA2YTkuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI2MjA1MDM0MDM1MDEtdjQ2djVrazJnZzBwNzJpNm9pMGQyZThvbm0wMXA2YTkuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTgzNzU1NDY0MTk1NzcyNDg1MTgiLCJlbWFpbCI6ImNsYXl0b25yYWJlbmRhQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhdF9oYXNoIjoiVmtyX1REaUlCX2VlZERCc1lDcXYxQSIsIm5vbmNlIjoiN21TczlrXzNldlNFVl9EeFExT21GUmprZEpKdjNmNEwzT3ZGSFpBNWI1QSIsIm5hbWUiOiJDbGF5dG9uIFJhYmVuZGEiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tLy1SVGVuWl9GbHJNWS9BQUFBQUFBQUFBSS9BQUFBQUFBQUJ4VS81WkpidXNCM0pPYy9zOTYtYy9waG90by5qcGciLCJnaXZlbl9uYW1lIjoiQ2xheXRvbiIsImZhbWlseV9uYW1lIjoiUmFiZW5kYSIsImxvY2FsZSI6ImVuIiwiaWF0IjoxNTU4NTEwNTA2LCJleHAiOjE1NTg1MTQxMDZ9.aJhCDRIvpBkUFfu4MDPDg9m4QP3RYiuSoOIJq1dKzfX3AlrdnM9ws2Z5hlfl-R2DdNefXU83YEmrLIOWMp99jvtsU110Sp9qtaUQNl6e5y4GlHSPQs-LFRvx3Z82i6MsBnmERo3DkbQkBE5icgr5WMFZkD4-Qm25GPddseelf2z-ABTtBgiY1x1ZCtkF1jOq7aXRtKBzZory9qeRQlPm8n8qB8SEvXoFiAwGhbO7Bi3kgMiNnJPHP47TZnrX-Dp1gh5Ae-_A8XUSi42cxPp1NG45Y7A2BHZOyi3PAdtju2U3pRKEiTx6PuPHwBOVLkJ7aBYoJFoEC9EdGYZ4GMasCg")
     }
   }
+
   render() {
     if (this.state.loading) {
       return (
-        <Loading></Loading>
+        <Loading />
       );
     } else {
       return (
@@ -97,18 +86,18 @@ export default class LoginChoose extends React.Component {
                            </TouchableOpacity>
             <TouchableOpacity onPress={this.props.goToLogin}>
               <ImageBackground source={require('../assets/login/button.png')} style={[styles.button]} resizeMode="stretch">
-                <Text style={[styles.loginText, this.state.buttonDynamicStyle]}>LOGIN</Text>
+                <Text style={[styles.loginText]}>LOGIN</Text>
               </ImageBackground>
             </TouchableOpacity>
             <TouchableOpacity onPress={this.googleOauth}>
               <ImageBackground source={require('../assets/login/button.png')} style={[styles.button]} resizeMode="stretch">
-                <Text style={[styles.loginText, this.state.buttonDynamicStyle]}>GOOGLE LOGIN</Text>
+                <Text style={[styles.loginText]}>GOOGLE LOGIN</Text>
               </ImageBackground>
             </TouchableOpacity>
           </ImageBackground>
           <View style={styles.signupButtonHolder}>
             <TouchableOpacity onPress={this.props.goToSignupChoose} style={styles.signupTextTouchable}>
-              <Text style={[styles.signupText, this.state.buttonDynamicStyle]}>SIGN UP</Text>
+              <Text style={[styles.signupText]}>SIGN UP</Text>
             </TouchableOpacity>
           </View>
         </ScreenView>
@@ -116,6 +105,7 @@ export default class LoginChoose extends React.Component {
     }
   }
 }
+
 let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
 let buttonWidth = screenWidth / 1.5;
@@ -140,6 +130,7 @@ let styles = StyleSheet.create({
   loginText: {
     fontSize: normalize(18),
     color: '#352927',
+    fontFamily: 'riffic-free-bold'
   },
   signupButtonHolder: {
     position: "absolute",
@@ -151,6 +142,7 @@ let styles = StyleSheet.create({
   signupText: {
     fontSize: normalize(13),
     marginRight: 15,
+    fontFamily: 'riffic-free-bold'
   },
   rememberView: {
     flexDirection: 'row',

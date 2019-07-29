@@ -61,7 +61,6 @@ export default class Homepage extends React.Component {
     this.state = {
       overlay: null,
       loading: true,
-      riffic: {display: "none",},
       confirmAmount: -1,
       confirmTokenType: "ETH",
       txKey: "",
@@ -78,21 +77,6 @@ export default class Homepage extends React.Component {
       };
     }
     return null;
-  }
-
-  async componentDidMount() {
-    try {
-      await Font.loadAsync({
-        'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-      });
-      this.setState({
-        riffic: {
-          fontFamily: 'riffic-free-bold',
-        },
-      });
-    } catch (error) {
-      alert(error);
-    }
   }
 
   onMinePress = () => {
@@ -357,7 +341,7 @@ export default class Homepage extends React.Component {
                                 onPress={this.onMinePress}>
                 {this.state.loading ? null :
                   <ImageBackground style={styles.mineImage} source={mineImg}>
-                    <Text style={[mineTextColorStyle, styles.mineText, this.state.riffic, mineTextColorStyle]}>
+                    <Text style={[mineTextColorStyle, styles.mineText, mineTextColorStyle]}>
                       {minePercent}%
                     </Text>
                   </ImageBackground>
@@ -367,7 +351,7 @@ export default class Homepage extends React.Component {
                 <TouchableOpacity style={styles.playnow}
                                   onPress={this.onPlayPress}>
                   <ImageBackground style={styles.playnowImage} source={require('../assets/homepage/playNowButton.png')}>
-                    <Text style={[styles.playnowText, this.state.riffic]}>Play Now</Text>
+                    <Text style={[styles.playnowText]}>Play Now</Text>
                   </ImageBackground>
                 </TouchableOpacity>
                 <ImageBackground source={require('../assets/homepage/snakeCart.png')}
@@ -376,12 +360,16 @@ export default class Homepage extends React.Component {
                   onPress={this.onMineHaul}>
                   <ImageBackground source={require('../assets/homepage/gototownButton.png')}
                                    style={styles.gototownButton}>
-                    <Text style={[styles.gototownText, this.state.riffic]}>
+                    <Text style={[styles.gototownText]}>
                       <Text
+<<<<<<< HEAD
                         style={[styles.gototownText, this.state.riffic, {fontSize: normalize(20)}]}>{this.props.user.eggs}</Text> Eggs <Image
+=======
+                        style={[styles.gototownText, {fontSize: normalize(20)}]}>{this.props.user.haul}</Text> Unminted <Image
+>>>>>>> fontfamily
                       source={require('../assets/wallet/coin.png')} style={[styles.coin]}/>
                     </Text>
-                    {/*<Text style={[styles.gototownText, this.state.riffic, {fontSize: normalize(11),}]}>Ship to Snakebank</Text>*/}
+                    {/*<Text style={[styles.gototownText, {fontSize: normalize(11),}]}>Ship to Snakebank</Text>*/}
                   </ImageBackground>
                 </TouchableOpacity>
               </View>
@@ -528,6 +516,7 @@ let styles = StyleSheet.create({
     textShadowColor: 'rgba(0, 0, 0, 1.00)',
     textShadowOffset: {width: -1, height: 1},
     textShadowRadius: 1,
+    fontFamily: 'riffic-free-bold',
   },
   bottomIconsHolder: {
     flexDirection: "column",
@@ -567,6 +556,7 @@ let styles = StyleSheet.create({
     textShadowColor: 'rgba(0, 0, 0, 1.00)',
     textShadowOffset: {width: -1, height: 1},
     textShadowRadius: 1,
+    fontFamily: 'riffic-free-bold',
   },
   playnowText: {
     //color: "#fab523",
@@ -575,6 +565,7 @@ let styles = StyleSheet.create({
     textShadowColor: 'rgba(0, 0, 0, 1.00)',
     textShadowOffset: {width: -2, height: 2},
     textShadowRadius: 1,
+    fontFamily: 'riffic-free-bold',
   },
   coin: {height: 15, width: 15 * 168 / 128, resizeMode: 'stretch',}
 });

@@ -1,4 +1,6 @@
 import React from 'react';
+import * as Font from 'expo-font';
+import { AppLoading } from 'expo';
 import {AsyncStorage, Linking} from 'react-native';
 import {Loop, Stage, World, Body, Sprite} from 'react-game-kit/native';
 import SocketIOClient from 'socket.io-client';
@@ -209,9 +211,12 @@ export default class App extends React.Component {
       errorParagraph: "",
       currentModeIndex: 0,
       currentMode: modesData[gameModes[0]],
-      activeSnakeUpgrade: 0
+      activeSnakeUpgrade: 0,
       //newGameCounter: 0, // Toggling to true will cause Snek.js to reset if it's still alive.
       //powerups: null
+
+      // Loading fonts and assets
+      isReady: false,
     };
     //this.loggedIn = this.loggedIn.bind(this);
     this.closeOverlay = this.closeOverlay.bind(this);
@@ -222,6 +227,12 @@ export default class App extends React.Component {
     //this.onDoContract = this.onDoContract.bind(this);
     this.gameOverDoContract = this.gameOverDoContract.bind(this);
     this.onConfirmTxOk = this.onConfirmTxOk.bind(this);
+  }
+  
+  async loadResourcesAsync() {
+    await Font.loadAsync({
+      'riffic-free-bold': require('./assets/fonts/RifficFree-Bold.ttf'),
+    })
   }
 
   async componentDidMount() {
@@ -560,6 +571,22 @@ export default class App extends React.Component {
   }
 
   render() {
+<<<<<<< HEAD
+=======
+    console.log("render app")
+    console.log(this.state.screen)
+
+    if (!this.state.isReady) {
+      return (
+        <AppLoading
+          startAsync={this.loadResourcesAsync}
+          onFinish={() => this.setState({ isReady: true })}
+          onError={console.warn}
+        />
+      ); 
+    }
+
+>>>>>>> fontfamily
     if (this.state.screen === screens.HOME) {
       return (
         <Homepage

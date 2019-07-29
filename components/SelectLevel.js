@@ -1,6 +1,5 @@
 import React from "react";
 import {ImageBackground, StyleSheet, Image, TouchableOpacity, View, Text, ScrollView} from 'react-native';
-import {Font} from "expo";
 import ScreenView from "./ScreenView";
 import Header from "./Header";
 import CONSTANTS from "../Constants";
@@ -8,6 +7,7 @@ import {normalize} from "../utils/FontNormalizer";
 
 let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
+
 {/*<View style={styles.childRowContent}>
   <TouchableOpacity onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.WILD)}>
     <ImageBackground source={require('../assets/snakemine/leftBG.png')}
@@ -30,6 +30,7 @@ let screenHeight = require('Dimensions').get('window').height;
     </Text>
   </ImageBackground>
 </View>*/}
+
 const GameTypeItem = props => (
   <TouchableOpacity style={[styles.gameTypeItem, ]} onPress={props.onPress}>
     <ImageBackground source={require('../assets/selectlevel/gameTypeItemBackground.png')}
@@ -40,7 +41,7 @@ const GameTypeItem = props => (
              resizeMode='contain'/>
       <ImageBackground source={require("../assets/selectlevel/gameTypeValue.png")}
                        style={styles.gameTypeValueContainer} resizeMode={'contain'}>
-        <Text style={[styles.gameTypeValueText, props.fontStyle, props.valueStyle]}>{props.value}</Text>
+        <Text style={[styles.gameTypeValueText, props.valueStyle]}>{props.value}</Text>
       </ImageBackground>
     </ImageBackground>
     {/*<ImageBackground source={require('../assets/snakemine/textPart.png')}
@@ -57,7 +58,7 @@ const Weapon = props => (
     <View style={styles.circleContainer}>
       <ImageBackground source={require("../assets/selectlevel/circle.png")}
                        style={styles.weaponCountCircle}>
-        <Text style={[styles.weaponCount, props.fontStyle]}>5</Text>
+        <Text style={[styles.weaponCount]}>5</Text>
       </ImageBackground>
     </View>
     <Image source={props.weapon} resizeMode={'contain'}
@@ -67,7 +68,7 @@ const Weapon = props => (
 
 const Description = props => (
   <View style={styles.descriptionContainer}>
-    <Text style={[styles.descriptionText, props.fontStyle]}>
+    <Text style={[styles.descriptionText]}>
       {props.text}
     </Text>
   </View>
@@ -83,38 +84,23 @@ const SnakeNavigator = props => {
         <Image source={require('../assets/selectlevel/left.png')} style={styles.sliderHandler}/>
       </TouchableOpacity>
       <ImageBackground source={require("../assets/selectlevel/name_holder.png")} style={styles.nameHolder}>
-        <Text style={[styles.levelName, props.fontStyle]}>{props.level.name}</Text>
+        <Text style={[styles.levelName]}>{props.level.name}</Text>
       </ImageBackground>
       <TouchableOpacity onPress={props.onNext} disabled={!props.hasNext} style={{opacity: nextButtonOpacity}}>
         <Image source={require('../assets/selectlevel/right.png')} style={styles.sliderHandler}/>
       </TouchableOpacity>
     </ImageBackground>
   );
-}
-export default class SelectLevel extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      riffic: {},
-    };
-  }
+};
 
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      riffic: {
-        fontFamily: 'riffic-free-bold',
-      }
-    });
-  }
+export default class SelectLevel extends React.Component {
+
   makeFnOnSelectLevel = (level) => {
     let onSelectLevel = () => {
       this.props.onSelectLevel(level, this.props.currentMode.name);
-    }
+    };
     return onSelectLevel;
-  }
+  };
 
   render() {
     const {gameModes, snakeIndex, currentMode, onPreviousMode, onNextMode} = this.props;
@@ -129,13 +115,13 @@ export default class SelectLevel extends React.Component {
                 onWallet={this.props.onWallet}/>
 
         <SnakeNavigator
-          fontStyle={this.state.riffic}
           level={currentMode}
           onPrevious={onPreviousMode}
           onNext={onNextMode}
           hasNext={snakeIndex !== gameModes.length - 1}
           hasPrevious={snakeIndex !== 0}
         />
+
         <ScrollView style={styles.scrollView}>
           <ImageBackground source={currentMode.background.top}
                            resizeMode={'cover'}
@@ -144,8 +130,8 @@ export default class SelectLevel extends React.Component {
               <Image source={currentMode.snake}
                      style={[styles.snakeImage, currentMode.style.snakeImage]}/>
             </View>
-            <Description fontStyle={this.state.riffic} text={currentMode.description}/>
-            <Weapon fontStyle={this.state.riffic} weapon={currentMode.weapon}/>
+            <Description text={currentMode.description}/>
+            <Weapon weapon={currentMode.weapon}/>
           </ImageBackground>
           <View style={styles.gameTypes}>
             <ImageBackground source={currentMode.background.bottom}
@@ -155,51 +141,35 @@ export default class SelectLevel extends React.Component {
                 <View style={styles.gameTypeRow}>
                   <GameTypeItem
                     preview={require('../assets/snakemine/sc1.png')}
-                    fontStyle={this.state.riffic}
                     title={"NO MULTIPLAYER"}
                     value={"Basic"}
                     onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BASIC)}
                   />
                   <GameTypeItem
                     preview={require('../assets/snakemine/sc2.png')}
-                    fontStyle={this.state.riffic}
                     value={"Random"}
                     onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.WILD)}
                   />
                 </View>
                 <View style={{position: 'relative'}}>
-                  {/*<View style={styles.tntToUnlockContainer}>*/}
-                    {/*<TouchableOpacity onPress={() => null}>*/}
-                      {/*<ImageBackground source={require('../assets/snakemine/textPart.png')}*/}
-                                       {/*style={styles.dynamiteTextBG} resizeMode={'stretch'}>*/}
-                        {/*<Text style={[this.state.riffic, styles.dynamiteText]}>*/}
-                          {/*USE <Text style={[this.state.riffic, styles.dynamiteText2]}>TNT</Text> TO UNLOCK*/}
-                        {/*</Text>*/}
-                      {/*</ImageBackground>*/}
-                    {/*</TouchableOpacity>*/}
-                  {/*</View>*/}
                   <View style={styles.gameTypeRow}>
                     <GameTypeItem
                       preview={require('../assets/snakemine/sc3.png')}
-                      fontStyle={this.state.riffic}
                       title={"NO MULTIPLAYER"}
                       onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.SCATTER1)}
                       value={"Scatter 1"}/>
                     <GameTypeItem
                       preview={require('../assets/snakemine/sc4.png')}
-                      fontStyle={this.state.riffic}
                       onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BLOCK1)}
                       value={"Blocks 1"}/>
                   </View>
                   <View style={styles.gameTypeRow}>
                     <GameTypeItem
                       preview={require('../assets/snakemine/sc5.png')}
-                      fontStyle={this.state.riffic}
                       onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.SCATTER2)}
                       value={"Scatter 2"}/>
                     <GameTypeItem
                       preview={require('../assets/snakemine/sc6.png')}
-                      fontStyle={this.state.riffic}
                       onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BLOCK2)}
                       value={"Blocks 2"}/>
                   </View>
@@ -264,6 +234,7 @@ let styles = StyleSheet.create({
     textShadowColor: 'rgba(0, 0, 0, 1.00)',
     textShadowOffset: {width: -2, height: 2},
     textShadowRadius: 1,
+    fontFamily: 'riffic-free-bold'
   },
   descriptionContainer: {
     backgroundColor: 'rgba(53, 41, 39, 0.9)',
@@ -285,6 +256,7 @@ let styles = StyleSheet.create({
   descriptionText: {
     width: screenWidth * 0.8,
     color: '#FAB523',
+    fontFamily: 'riffic-free-bold'
   },
   gameTypes: {
     marginTop: -15,
@@ -331,6 +303,7 @@ let styles = StyleSheet.create({
   gameTypeValueText: {
     color: "#FFF646",
     fontSize: normalize(16),
+    fontFamily: 'riffic-free-bold'
   },
   weaponItem: {
     position: 'absolute',
@@ -365,7 +338,8 @@ let styles = StyleSheet.create({
     alignItems: 'center',
   },
   weaponCount: {
-    fontSize: normalize(18)
+    fontSize: normalize(18),
+    fontFamily: 'riffic-free-bold'
   },
   scTitleBG: {
     width: '100%',

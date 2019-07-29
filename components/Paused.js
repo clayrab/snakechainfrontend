@@ -30,42 +30,24 @@ const Box = ((props) =>
 )
 
 export default class Paused extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      buttonDynamicStyle: {}
-    };
-  }
-
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      buttonDynamicStyle: {
-        fontFamily: 'riffic-free-bold',
-      }
-    });
-  }
-
   render() {
     return (
       <ImageBackground source={require("../assets/Paused/background.png")} resizeMode={"stretch"}
                        style={styles.backgroundImage}>
         <Image source={require("../assets/Paused/close.png")} style={styles.closeButton} resizeMode={"stretch"}/>
-        <Text style={[styles.title, this.state.buttonDynamicStyle]}>PAUSED</Text>
+        <Text style={[styles.title]}>PAUSED</Text>
         <ScrollView>
           <View style={styles.powerUpsView}>
             <Image source={require("../assets/Paused/lightning.png")} style={styles.lightningImage}/>
-            <Text style={[styles.powerText, this.state.buttonDynamicStyle]}>POWER-UPS</Text>
+            <Text style={[styles.powerText]}>POWER-UPS</Text>
           </View>
           <View style={{flexDirection: 'row', justifyContent: "center"}}>
-            <Box buttonStyle={this.state.buttonDynamicStyle} boxImage={require('../assets/Paused/timeslowdown.png')}
+            <Box buttonStyle={{fontFamily: 'riffic-free-bold'}} boxImage={require('../assets/Paused/timeslowdown.png')}
                  inputNumber={"300"} circleText={'5'} heading={'Time Slowdown'}/>
             <View style={styles.boxContainer}>
               <ImageBackground source={require('../assets/Paused/partionBackground.png')} resizeMode={"stretch"}
                                style={styles.boxView}>
-                <Text style={[styles.boxText, this.state.buttonDynamicStyle]}>Ghost Tail</Text>
+                <Text style={[styles.boxText]}>Ghost Tail</Text>
                 <Image source={require('../assets/Paused/ghost.png')} style={styles.boxImageView}/>
                 <ImageBackground source={require("../assets/Paused/circle.png")} resizeMode={"stretch"}
                                  style={styles.circleView}>
@@ -75,21 +57,21 @@ export default class Paused extends React.Component {
               <ImageBackground source={require("../assets/Paused/inputBackground.png")} resizeMode={"stretch"}
                                style={[styles.numberInput, styles.ghostTail]}>
                 <Image source={require("../assets/Paused/minus.png")} style={[styles.plusMinusImage]}/>
-                <Text style={[styles.coinText, this.state.buttonDynamicStyle]}>2</Text>
+                <Text style={[styles.coinText]}>2</Text>
                 <Image source={require("../assets/Paused/plus.png")} style={[styles.plusMinusImage]}/>
               </ImageBackground>
             </View>
           </View>
           <View style={{flexDirection: 'row', justifyContent: "center"}}>
-            <Box buttonStyle={this.state.buttonDynamicStyle} boxImage={require('../assets/Paused/sizer.png')}
+            <Box buttonStyle={{fontFamily: 'riffic-free-bold'}} boxImage={require('../assets/Paused/sizer.png')}
                  customImage={styles.customImage} inputNumber={"1000"} circleText={'5'} heading={'Drop 5c Tail'}/>
-            <Box buttonStyle={this.state.buttonDynamicStyle} boxImage={require('../assets/Paused/fulltail.png')}
+            <Box buttonStyle={{fontFamily: 'riffic-free-bold'}} boxImage={require('../assets/Paused/fulltail.png')}
                  inputNumber={"1000"} customImage={styles.customTailImage} circleText={'5'} heading={'Shed Full Tail'}/>
           </View>
           <View style={{flexDirection: 'row', justifyContent: "center"}}>
-            <Box buttonStyle={this.state.buttonDynamicStyle} boxImage={require('../assets/Paused/5X.png')}
+            <Box buttonStyle={{fontFamily: 'riffic-free-bold'}} boxImage={require('../assets/Paused/5X.png')}
                  customImage={styles.custom5Image} inputNumber={"1000"} circleText={'5'} heading={'SX Pallets'}/>
-            <Box buttonStyle={this.state.buttonDynamicStyle} boxImage={require('../assets/Paused/questionMark.png')}
+            <Box buttonStyle={{fontFamily: 'riffic-free-bold'}} boxImage={require('../assets/Paused/questionMark.png')}
                  inputNumber={"1000"} circleText={'5'} heading={'Random'}/>
           </View>
         </ScrollView>
@@ -102,7 +84,8 @@ let screenHeight = require('Dimensions').get('window').height;
 let styles = StyleSheet.create({
   screen: {flex: 1,},
   closeButton: {position: "absolute", top: -6, right: -4, height: screenHeight / 12, width: screenWidth / 10},
-  coinText: {color: "#FDB525", marginHorizontal: "7%", fontSize: normalize(13)},
+  coinText: {color: "#FDB525", marginHorizontal: "7%", fontSize: normalize(13),
+    fontFamily: 'riffic-free-bold'},
   ghostTail: {justifyContent: "space-around"},
   plusMinusImage: {height: "45%", width: "15%", resizeMode: "stretch", marginHorizontal: "2%"},
   coinStyle: {height: "42%", width: "17%", resizeMode: "stretch"},
@@ -124,7 +107,8 @@ let styles = StyleSheet.create({
     textAlign: "center",
     paddingLeft: '4%',
     fontSize: normalize(10),
-    marginBottom: "5%"
+    marginBottom: "5%",
+    fontFamily: 'riffic-free-bold'
   },
   boxImageView: {resizeMode: "stretch", height: "40%", width: "40%"},
   customImage: {resizeMode: "stretch", height: "33%", width: "70%", marginRight: "12%"},
@@ -134,6 +118,8 @@ let styles = StyleSheet.create({
   boxView: {height: '70%', width: '92%', justifyContent: "center", alignItems: "center"},
   powerUpsView: {height: screenHeight / 7, justifyContent: 'center', alignItems: 'center', flexDirection: 'row',},
   lightningImage: {height: '85%', width: '10%', resizeMode: 'stretch', marginHorizontal: "2%",},
-  title: {color: '#FCB623', fontSize: screenHeight / 21, textAlign: "center", marginTop: '1.2%', marginBottom: "3%"},
-  powerText: {color: '#FDCF00', fontSize: screenHeight / 26,}
+  title: {color: '#FCB623', fontSize: screenHeight / 21, textAlign: "center", marginTop: '1.2%', marginBottom: "3%",
+    fontFamily: 'riffic-free-bold'},
+  powerText: {color: '#FDCF00', fontSize: screenHeight / 26,
+  fontFamily: 'riffic-free-bold'}
 });

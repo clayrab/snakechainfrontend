@@ -8,25 +8,24 @@ import {
   ScrollView,
   ImageBackground
 } from 'react-native';
-import {Font} from 'expo';
 import CONSTANTS from '../Constants.js';
 import {normalize} from '../utils/FontNormalizer.js';
 const GameTypeItem = props => (
   <TouchableOpacity style={[styles.gameTypeItem, ]} onPress={props.onPress}>
     <ImageBackground source={require('../assets/selectlevel/gameTypeItemBackground.png')}
                      style={styles.gameTypeImage} resizeMode={'stretch'}>
-      {/*<Text style={[styles.gameTypeTitle, props.fontStyle]}>{props.title}</Text>*/}
+      {/*<Text style={[styles.gameTypeTitle]}>{props.title}</Text>*/}
       <Image source={props.preview}
              style={[styles.gameTypePreview, {}]}
              resizeMode='contain'/>
       <ImageBackground source={require("../assets/selectlevel/gameTypeValue.png")}
                        style={styles.gameTypeValueContainer} resizeMode={'contain'}>
-        <Text style={[styles.gameTypeValueText, props.fontStyle, props.valueStyle]}>{props.value}</Text>
+        <Text style={[styles.gameTypeValueText, props.valueStyle]}>{props.value}</Text>
       </ImageBackground>
     </ImageBackground>
     {/*<ImageBackground source={require('../assets/snakemine/textPart.png')}
                      style={[styles.scTitleBG]} resizeMode={'stretch'}>
-      <Text style={[props.fontStyle, styles.avgTitleText]}>
+      <Text style={[styles.avgTitleText]}>
         AVG. 22 SNAKECHAIN
       </Text>
     </ImageBackground>*/}
@@ -34,23 +33,6 @@ const GameTypeItem = props => (
 );
 
 export default class SelectLevelOverlay extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      riffic: {},
-    };
-  }
-
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      riffic: {
-        fontFamily: 'riffic-free-bold',
-      }
-    });
-  }
 
   makeFnOnSelectLevel = (level) => {
     let onSelectLevel = () => {
@@ -83,7 +65,7 @@ export default class SelectLevelOverlay extends React.Component {
             <View style={styles.buttonView}>
               <ImageBackground style={styles.brownButton} source={require('../assets/snakemine/title.png')}
                                resizeMode={'stretch'}>
-                <Text style={[this.state.riffic, styles.titleText]}>
+                <Text style={[styles.titleText]}>
                   SELECT SNAKE MINE
                 </Text>
               </ImageBackground>
@@ -92,13 +74,11 @@ export default class SelectLevelOverlay extends React.Component {
               <View style={styles.gameTypeRow}>
                 <GameTypeItem
                   preview={require('../assets/snakemine/sc1.png')}
-                  fontStyle={this.state.riffic}
                   value={"Basic"}
                   onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BASIC)}
                 />
                 <GameTypeItem
                   preview={require('../assets/snakemine/sc2.png')}
-                  fontStyle={this.state.riffic}
                   value={"Random"}
                   onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.WILD)}
                 />
@@ -106,25 +86,21 @@ export default class SelectLevelOverlay extends React.Component {
               <View style={styles.gameTypeRow}>
                 <GameTypeItem
                   preview={require('../assets/snakemine/sc3.png')}
-                  fontStyle={this.state.riffic}
                   title={"NO MULTIPLAYER"}
                   onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.SCATTER1)}
                   value={"Scatter 1"}/>
                 <GameTypeItem
                   preview={require('../assets/snakemine/sc4.png')}
-                  fontStyle={this.state.riffic}
                   onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BLOCK1)}
                   value={"Blocks 1"}/>
               </View>
               <View style={styles.gameTypeRow}>
                 <GameTypeItem
                   preview={require('../assets/snakemine/sc5.png')}
-                  fontStyle={this.state.riffic}
                   onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.SCATTER2)}
                   value={"Scatter 2"}/>
                 <GameTypeItem
                   preview={require('../assets/snakemine/sc6.png')}
-                  fontStyle={this.state.riffic}
                   onPress={this.makeFnOnSelectLevel(CONSTANTS.LEVELS.BLOCK2)}
                   value={"Blocks 2"}/>
               </View>
@@ -218,11 +194,13 @@ var styles = StyleSheet.create({
   titleText: {
     color: "#fab523",
     fontSize: normalize(14),
+    fontFamily: 'riffic-free-bold',
   },
   avgTitleText: {
     color: "#fab523",
     fontSize: normalize(8),
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontFamily: 'riffic-free-bold',
   },
   headerSC: {
     color: '#261D1C',
@@ -306,7 +284,8 @@ var styles = StyleSheet.create({
   gameTypeTitle: {
     marginBottom: 2,
     fontSize: normalize(12),
-    color: "#261D1C"
+    color: "#261D1C",
+    fontFamily: 'riffic-free-bold',
   },
   gameTypeValueContainer: {
     width: screenWidth * 0.3,
@@ -315,4 +294,7 @@ var styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 8,
   },
+  rifficFont: {
+    fontFamily: 'riffic-free-bold',
+  }
 });

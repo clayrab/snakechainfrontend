@@ -1,6 +1,6 @@
 import React from 'react';
 import { Animated, View, StyleSheet, TouchableOpacity, Image, ImageBackground, Dimensions, Text } from 'react-native';
-import { Audio, Font } from 'expo';
+import { Audio } from 'expo';
 import { Sprite } from 'react-game-kit/native';
 import PropTypes from 'prop-types';
 import CONSTANTS from '../Constants.js';
@@ -53,7 +53,6 @@ export default class Snek extends Sprite {
       godMode: false,
       //renderTrigger: true, // Flip this to force a render. The cost of React Native for animation. This isn't great, but it helps.
       framerate: 0,
-      fontStyle: {},
       fpsShow: false,
       headerOpen: true
     };
@@ -85,15 +84,7 @@ export default class Snek extends Sprite {
     this.framerateInterval = setInterval(() => {
       this.setState({framerate: this.frame});
       this.frame = 0;
-    }, 1000)
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      fontStyle: {
-        fontFamily: 'riffic-free-bold',
-      }
-    });
+    }, 1000);
   }
 
   componentWillUnmount() {
@@ -1114,25 +1105,25 @@ export default class Snek extends Sprite {
               <TouchableOpacity onPress={this.yellowPowerup}>
                 <Image source={require("../assets/gameplay/MGold.png")} style={styles.mushroomImage} />
                 <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
-                  <Text style={[this.state.fontStyle, styles.mushroomText]}>{this.props.user.powerups.yellowpowerup}</Text>
+                  <Text style={[styles.mushroomText]}>{this.props.user.powerups.yellowpowerup}</Text>
                 </ImageBackground>
               </TouchableOpacity>
               <TouchableOpacity onPress={this.bluePowerup}>
                 <Image source={require("../assets/gameplay/MBlue.png")} style={styles.mushroomImage} />
                 <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
-                  <Text style={[this.state.fontStyle, styles.mushroomText]}>{this.props.user.powerups.bluepowerup}</Text>
+                  <Text style={[styles.mushroomText]}>{this.props.user.powerups.bluepowerup}</Text>
                 </ImageBackground>
               </TouchableOpacity>
               <TouchableOpacity onPress={this.orangePowerup}>
                 <Image source={require("../assets/gameplay/MPink.png")} style={styles.mushroomImage} />
                 <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
-                  <Text style={[this.state.fontStyle, styles.mushroomText]}>{this.props.user.powerups.orangepowerup}</Text>
+                  <Text style={[styles.mushroomText]}>{this.props.user.powerups.orangepowerup}</Text>
                 </ImageBackground>
               </TouchableOpacity>
               <TouchableOpacity onPress={this.redPowerup}>
                 <Image source={require("../assets/gameplay/MRed.png")} style={styles.mushroomImage} />
                 <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
-                  <Text style={[this.state.fontStyle, styles.mushroomText]}>{this.props.user.powerups.redpowerup}</Text>
+                  <Text style={[styles.mushroomText]}>{this.props.user.powerups.redpowerup}</Text>
                 </ImageBackground>
               </TouchableOpacity>
             </View>
@@ -1312,7 +1303,8 @@ let styles = StyleSheet.create({
   mushroomCountHolder: { position: 'absolute', top: 0, left: (screenWidth * 0.1) - 10, width: 20, height: 20, justifyContent: 'center', alignItems: 'center' },
   mushroomHolder: { width: screenWidth, height: screenWidth * 0.117, resizeMode: 'contain' },
   mushroomText: {
-    fontSize: normalize(12)
+    fontSize: normalize(12),
+    fontFamily: 'riffic-free-bold'
   },
   controllerExtraBtns: {
     height: dpadSize * 1.1,

@@ -8,9 +8,6 @@ import {
   ImageBackground,
   Image
 } from 'react-native';
-import {Font} from 'expo';
-import {asyncStore, getFromAsyncStore, removeItem} from "../utils/AsyncStore.js";
-import {context} from "../utils/Context.js";
 import {normalize} from '../utils/FontNormalizer.js';
 
 let mineImages = [
@@ -32,9 +29,7 @@ export default class GameHistoryOverlay extends React.Component {
     super(props);
     this.state = {
       loading: true,
-      textStyle: {display: "none",},
       //games: [],
-      riffic: {},
     }
   }
 
@@ -45,22 +40,6 @@ export default class GameHistoryOverlay extends React.Component {
       };
     }
     return null;
-  }
-
-  async componentDidMount() {
-    this.isComponentMounted = true;
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      riffic: {
-        fontFamily: 'riffic-free-bold',
-      }
-    });
-  }
-
-  componentWillUnmount() {
-    this.isComponentMounted = false;
   }
 
   render() {
@@ -94,40 +73,40 @@ export default class GameHistoryOverlay extends React.Component {
             </TouchableOpacity>
             <View style={styles.topView}>
               <View style={styles.topHalfView1}>
-                <Text style={[this.state.riffic, styles.superHeaderText,]}>
+                <Text style={[styles.superHeaderText,]}>
                   YOUR SNAKE MINE
                 </Text>
                 <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage}
                                  resizeMode="stretch">
-                  <Text style={[this.state.riffic, styles.headerLabelText, styles.opacityFont]}>
+                  <Text style={[styles.headerLabelText, styles.opacityFont]}>
                     CURRENT HAUL
                   </Text>
-                  <Text style={[this.state.riffic, styles.headerText]}>
+                  <Text style={[styles.headerText]}>
                     {this.props.user.haul}
                   </Text>
                 </ImageBackground>
                 <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage}
                                  resizeMode="stretch">
-                  <Text style={[this.state.riffic, styles.headerLabelText, styles.opacityFont]}>
+                  <Text style={[styles.headerLabelText, styles.opacityFont]}>
                     REMAINING GOLD
                   </Text>
-                  <Text style={[this.state.riffic, styles.headerText]}>
+                  <Text style={[styles.headerText]}>
                     {this.props.prices.mineMax - this.props.user.haul}
                   </Text>
                 </ImageBackground>
                 <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage}
                                  resizeMode="stretch">
-                  <Text style={[this.state.riffic, styles.headerLabelText, styles.opacityFont]}>
+                  <Text style={[styles.headerLabelText, styles.opacityFont]}>
                     GAMES PLAYED
                   </Text>
-                  <Text style={[this.state.riffic, styles.headerText]}>
+                  <Text style={[styles.headerText]}>
                     {this.props.user.gamecount}
                   </Text>
                 </ImageBackground>
               </View>
               <View style={styles.mineView}>
                 <ImageBackground source={mineImg} style={styles.mineImage} resizeMode="contain">
-                  <Text style={[this.state.riffic, styles.mineText, mineTextColorStyle]}>
+                  <Text style={[styles.mineText, mineTextColorStyle]}>
                     {minePercent}%
                   </Text>
                 </ImageBackground>
@@ -137,12 +116,12 @@ export default class GameHistoryOverlay extends React.Component {
                              resizeMode="stretch">
               <View style={styles.leftTrackNo}>
                 {/* this once had text in it, but now it's just for layout. fix me.
-                <Text style={[this.state.riffic, styles.snakeNoText]}></Text>*/}
+                <Text style={[styles.snakeNoText]}></Text>*/}
               </View>
               <TouchableOpacity style={styles.rightTrackContent} onPress={this.props.gototown}>
                 <ImageBackground source={require('../assets/gamehistory/mintbutton.png')} style={styles.buttonImage}
                                  resizeMode="stretch">
-                  <Text style={[this.state.riffic, styles.mintHaulText]}>MINT HAUL</Text>
+                  <Text style={[styles.mintHaulText]}>MINT HAUL</Text>
                 </ImageBackground>
               </TouchableOpacity>
             </ImageBackground>
@@ -155,18 +134,18 @@ export default class GameHistoryOverlay extends React.Component {
                       <ImageBackground key={idx} source={require('../assets/gamehistory/ghButtonBG.png')}
                                        style={[styles.historyBG]} resizeMode="stretch">
                         <View style={styles.historyFirstView}>
-                          <Text style={[this.state.riffic, styles.historyLabelText]}>{levelNames[game.level]}</Text>
+                          <Text style={[styles.historyLabelText]}>{levelNames[game.level]}</Text>
                         </View>
                         <Image source={require('../assets/gamehistory/Line.png')} style={styles.historySepImage}
                                resizeMode="contain"/>
                         <View style={styles.historyView}>
-                          <Text style={[this.state.riffic, styles.historyLabelText]}>0</Text>
-                          <Text style={[this.state.riffic, styles.historyLabelText, styles.opacityFont]}>POWER
+                          <Text style={[styles.historyLabelText]}>0</Text>
+                          <Text style={[styles.historyLabelText, styles.opacityFont]}>POWER
                             UPS</Text>
                         </View>
                         <View style={styles.historyView}>
-                          <Text style={[this.state.riffic, styles.historyLabelText]}>{game.score}</Text>
-                          <Text style={[this.state.riffic, styles.historyLabelText, styles.opacityFont]}>GOLD</Text>
+                          <Text style={[styles.historyLabelText]}>{game.score}</Text>
+                          <Text style={[styles.historyLabelText, styles.opacityFont]}>GOLD</Text>
                         </View>
                       </ImageBackground>
                     );
@@ -248,6 +227,7 @@ let styles = StyleSheet.create({
     fontSize: normalize(14),
     paddingBottom: 65,
     paddingLeft: 10,
+    fontFamily: 'riffic-free-bold',
   },
   trackBGImage: {
     width: "100%",
@@ -346,15 +326,18 @@ let styles = StyleSheet.create({
   },
   historyLabelText: {
     color: "#fab523",
-    fontSize: normalize(12)
+    fontSize: normalize(12),
+    fontFamily: 'riffic-free-bold',
   },
   superHeaderText: {
     color: "#fab523",
-    fontSize: normalize(13)
+    fontSize: normalize(13),
+    fontFamily: 'riffic-free-bold',
   },
   mintHaulText: {
     color: "#fab523",
-    fontSize: normalize(14)
+    fontSize: normalize(14),
+    fontFamily: 'riffic-free-bold',
   },
   dateText: {
     color: "#fab523",
@@ -365,10 +348,10 @@ let styles = StyleSheet.create({
     color: '#10BB1A',
     fontSize: normalize(12)
   },
-  headerText: {
-    color: "#fab523",
-    fontSize: normalize(15)
-  },
+  // headerText: {
+  //   color: "#fab523",
+  //   fontSize: normalize(15)
+  // },
   leftTrackNo: {
     flex: 475,
     width: screenWidth * 321 / 1080,
@@ -390,15 +373,18 @@ let styles = StyleSheet.create({
   },
   snakeNoText: {
     color: "#fab523",
-    fontSize: normalize(20)
+    fontSize: normalize(20),
+    fontFamily: 'riffic-free-bold',
   },
   headerText: {
     color: "#fab523",
-    fontSize: normalize(18)
+    fontSize: normalize(18),
+    fontFamily: 'riffic-free-bold',
   },
   headerLabelText: {
     color: '#fab523',
-    fontSize: normalize(8)
+    fontSize: normalize(8),
+    fontFamily: 'riffic-free-bold',
   },
   // liquidText: {
   //   marginTop: screenHeight * 0.10,

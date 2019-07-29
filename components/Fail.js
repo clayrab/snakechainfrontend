@@ -9,30 +9,12 @@ import {
 import {Font} from 'expo';
 
 export default class Fail extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      buttonDynamicStyle: {}
-    };
-  }
-
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      buttonDynamicStyle: {
-        fontFamily: 'riffic-free-bold',
-      }
-    });
-  }
-
   render() {
     return (
       <View style={styles.screen}>
         <View style={styles.mainView}>
           <View style={styles.headingView}>
-            <Text style={[styles.textStyle, this.state.buttonDynamicStyle]}> SNAKETOWN </Text>
+            <Text style={[styles.textStyle]}> SNAKETOWN </Text>
           </View>
           <ImageBackground source={require("../assets/ticket/background.png")} resizeMode={"stretch"}
                            style={styles.backgroundImageView}>
@@ -44,7 +26,7 @@ export default class Fail extends React.Component {
               <Image source={require("../assets/success/cross.png")} style={styles.rightImage}/>
             </View>
             <View style={{flex: 1.4}}>
-              <Text style={[styles.textStyle, this.state.buttonDynamicStyle]}> Edit UnSuccessfull </Text>
+              <Text style={[styles.textStyle]}> Edit UnSuccessfull </Text>
             </View>
           </ImageBackground>
         </View>
@@ -57,7 +39,8 @@ let screenHeight = require('Dimensions').get('window').height;
 let styles = StyleSheet.create({
   screen: {flex: 1,},
   headingView: {flex: 1, justifyContent: 'center', alignItems: "center"},
-  textStyle: {fontSize: 20, color: "#FAC047"},
+  textStyle: {fontSize: 20, color: "#FAC047",
+    fontFamily: 'riffic-free-bold',},
   backgroundImageView: {flex: 2, alignItems: "center"},
   rightImage: {height: '50%', width: screenWidth / 4, resizeMode: "stretch"},
   mainView: {height: screenHeight / 1.4, marginHorizontal: '5%',},

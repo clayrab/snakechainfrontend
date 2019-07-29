@@ -1,15 +1,8 @@
 import React from 'react';
 import {
-  TouchableOpacity,
-  Image,
   StyleSheet,
-  Text,
   View,
-  ScrollView,
-  ImageBackground
 } from 'react-native';
-import {Font} from 'expo';
-import CONSTANTS from '../Constants.js';
 
 let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
@@ -83,21 +76,12 @@ export default class CowOverlay extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      riffic: {},
       data: [],
     }
     //this.gradientBackground  = 'purple';
   }
 
   async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      riffic: {
-        fontFamily: 'riffic-free-bold',
-      }
-    });
     let c = 0;
     let easingFuncs = ["linear", "easeInQuad", "easeInCubic", "easeInQuart", "easeInQuint", "easeInQuart", "easeInCubic", "easeInQuad"];
     let easingFuncsWave = ["linear", "easeInQuad", "easeOutQuad", "easeInOutQuad", "easeInCubic", "easeOutCubic", "easeInOutCubic", "easeInQuart", "easeOutQuart", "easeInOutQuart", "easeInQuint", "easeOutQuint"];

@@ -3,13 +3,9 @@ import {
   TouchableOpacity,
   StyleSheet,
   Text,
-  View,
   ImageBackground,
-  Image,
-  TextInput,
-  Platform
 } from 'react-native';
-import { AppAuth, Constants, Font} from 'expo';
+import { AppAuth, Constants} from 'expo';
 
 import ScreenView from '../components/ScreenView.js';
 import {context} from "../utils/Context.js";
@@ -24,21 +20,10 @@ export default class SignupChoose extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      buttonDynamicStyle: {},
       loading: false,
     };
   }
 
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      buttonDynamicStyle: {
-        fontFamily: 'riffic-free-bold',
-      }
-    });
-  }
   googleOauth = async() => {
     this.setState({loading: true});
     try {
@@ -60,12 +45,12 @@ export default class SignupChoose extends React.Component {
       await this.setState({loading: false});
       alert(err);
     }
-  }
+  };
 
   render() {
     if (this.state.loading) {
       return (
-        <Loading></Loading>
+        <Loading />
       );
     } else {
       return (
@@ -77,13 +62,13 @@ export default class SignupChoose extends React.Component {
               onPress={this.googleOauth}>
               <ImageBackground source={require('../assets/login/button.png')}
                                style={[styles.button]} resizeMode="stretch">
-                <Text style={[styles.loginText, this.state.buttonDynamicStyle]}>GOOGLE SIGN UP</Text>
+                <Text style={[styles.loginText]}>GOOGLE SIGN UP</Text>
               </ImageBackground>
             </TouchableOpacity>
             <TouchableOpacity onPress={this.props.goToSignup}>
               <ImageBackground source={require('../assets/login/button.png')}
                                style={[styles.button]} resizeMode="stretch">
-                <Text style={[styles.loginText, this.state.buttonDynamicStyle]}>BASIC SIGN UP</Text>
+                <Text style={[styles.loginText]}>BASIC SIGN UP</Text>
               </ImageBackground>
             </TouchableOpacity>
           </ImageBackground>
@@ -92,6 +77,7 @@ export default class SignupChoose extends React.Component {
     }
   }
 }
+
 let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
 let styles = StyleSheet.create({
@@ -115,6 +101,7 @@ let styles = StyleSheet.create({
   loginText: {
     fontSize: normalize(18),
     color: '#352927',
+    fontFamily: 'riffic-free-bold'
   },
   rememberView: {
     flexDirection: 'row',

@@ -7,7 +7,6 @@ import {
   ImageBackground,
   Image
 } from 'react-native';
-import {Font} from 'expo';
 
 import AreYouSureOverlay from '../components/AreYouSureOverlay.js';
 import ScreenView from '../components/ScreenView.js';
@@ -24,22 +23,10 @@ export default class Profile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      buttonDynamicStyle: {},
       overlay: -1,
       confirmAmount: -1,
       confirmTokenType: null,
     }
-  }
-
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      buttonDynamicStyle: {
-        fontFamily: 'riffic-free-bold',
-      }
-    });
   }
 
   deleteAccount = async() => {
@@ -52,7 +39,7 @@ export default class Profile extends React.Component {
       confirmTokenType: "DELETE",
       txKey: txKey,
     });
-  }
+  };
 
   onConfirmDelete = async () => {
     await this.setState({overlay: overlays.LOADING});
@@ -78,12 +65,12 @@ export default class Profile extends React.Component {
       this.setState({overlay: -1});
       await this.props.logOut();
     }
-  }
+  };
 
   onCancel = async() => {
     console.log("onCancel")
     this.setState({overlay: -1});
-  }
+  };
 
   render() {
     return (
@@ -98,7 +85,7 @@ export default class Profile extends React.Component {
           <View style={styles.profileInfoView}>
             <View style={styles.nameView}>
               <Image source={require('../assets/profile/greenIcon.png')} style={styles.iconImage}/>
-              <Text style={[styles.profileName, this.state.buttonDynamicStyle]}>
+              <Text style={styles.profileName}>
                 {this.props.user.name}
               </Text>
             </View>
@@ -127,12 +114,12 @@ export default class Profile extends React.Component {
                            resizeMode="stretch">
             <View style={styles.rankChildView}>
               <View style={styles.childView}>
-                <Text style={[this.state.buttonDynamicStyle, styles.keyText]}>
+                <Text style={styles.keyText}>
                   Total Winnings:
                 </Text>
               </View>
               <View style={styles.childView}>
-                <Text style={[this.state.buttonDynamicStyle, styles.valueText]}>
+                <Text style={styles.valueText}>
                   ????
                 </Text>
               </View>
@@ -142,12 +129,12 @@ export default class Profile extends React.Component {
                            resizeMode="stretch">
             <View style={styles.rankChildView}>
               <View style={styles.childView}>
-                <Text style={[this.state.buttonDynamicStyle, styles.keyText]}>
+                <Text style={styles.keyText}>
                   Rank
                 </Text>
               </View>
               <View style={styles.childView}>
-                <Text style={[this.state.buttonDynamicStyle, styles.valueText]}>
+                <Text style={styles.valueText}>
                   ????
                 </Text>
               </View>
@@ -155,7 +142,7 @@ export default class Profile extends React.Component {
           </ImageBackground>
           {/*<TouchableOpacity style={{marginTop: 10}}>
             <ImageBackground source={require('../assets/profile/button.png')} style={styles.buttonBG} resizeMode="stretch">
-              <Text style={[this.state.buttonDynamicStyle, styles.buttonBig]}>
+              <Text style={styles.buttonBig}>
                 EDIT PROFILE PAGE
               </Text>
             </ImageBackground>
@@ -163,7 +150,7 @@ export default class Profile extends React.Component {
           <TouchableOpacity onPress={this.props.logOut}>
             <ImageBackground source={require('../assets/profile/button.png')} style={styles.buttonBG}
                              resizeMode="stretch">
-              <Text style={[this.state.buttonDynamicStyle, styles.buttonBig]}>
+              <Text style={styles.buttonBig}>
                 LOG OUT
               </Text>
             </ImageBackground>
@@ -171,7 +158,7 @@ export default class Profile extends React.Component {
           <TouchableOpacity onPress={this.deleteAccount}>
             <ImageBackground source={require('../assets/profile/button.png')} style={styles.buttonBG}
                              resizeMode="stretch">
-              <Text style={[this.state.buttonDynamicStyle, styles.buttonBig]}>
+              <Text style={styles.buttonBig}>
                 DELETE ACCOUNT
               </Text>
             </ImageBackground>
@@ -220,7 +207,8 @@ let styles = StyleSheet.create({
   profileName: {
     fontSize: normalize(20),
     color: '#F0C747',
-    marginLeft: 20
+    marginLeft: 20,
+    fontFamily: 'riffic-free-bold'
   },
   nameView: {
     flexDirection: 'row',
@@ -262,7 +250,8 @@ let styles = StyleSheet.create({
   },
   buttonBig: {
     fontSize: normalize(18),
-    color: '#F0C747'
+    color: '#F0C747',
+    fontFamily: 'riffic-free-bold'
   },
   rankChildView: {
     flexDirection: 'row',
@@ -275,11 +264,13 @@ let styles = StyleSheet.create({
   },
   keyText: {
     color: '#6B534E',
-    fontSize: normalize(16)
+    fontSize: normalize(16),
+    fontFamily: 'riffic-free-bold'
   },
   valueText: {
     color: '#F0C747',
-    fontSize: normalize(20)
+    fontSize: normalize(20),
+    fontFamily: 'riffic-free-bold'
   },
   diamondBG: {
     width: screenWidth / 3,

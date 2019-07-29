@@ -8,7 +8,6 @@ import {
   View,
   ScrollView
 } from 'react-native';
-import { Font } from 'expo';
 import { normalize } from '../utils/FontNormalizer.js';
 
 import Header from '../components/Header.js';
@@ -21,28 +20,12 @@ export default class SnakeUpgrade extends React.Component {
     this.state = {
       overlay: null,
       loading: true,
-      riffic: { display: "none", },
       confirmAmount: -1,
       confirmTokenType: "ETH",
       txKey: "",
       confirmPubkey: "",
       powerupsData: null
     };
-  }
-
-  async componentDidMount() {
-    try {
-      await Font.loadAsync({
-        'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-      });
-      this.setState({
-        riffic: {
-          fontFamily: 'riffic-free-bold',
-        },
-      });
-    } catch (error) {
-      alert(error);
-    }
   }
 
   render() {
@@ -61,7 +44,7 @@ export default class SnakeUpgrade extends React.Component {
               <ImageBackground source={require('../assets/snakeupgrade/CowboyBackground.png')}
                 style={styles.cowboyback} resizeMode="cover">
                 <View style={styles.snakeStageContainer}>
-                  <Text style={[styles.snakeText, this.state.riffic]}>{snake.name}</Text>
+                  <Text style={[styles.snakeText]}>{snake.name}</Text>
                   <View style={styles.scroll}>
                     <TouchableOpacity onPress={onLeftPress}>
                       <Image source={require('../assets/snakeupgrade/LeftArrow.png')}
@@ -89,14 +72,14 @@ export default class SnakeUpgrade extends React.Component {
                       <Image
                         source={require('../assets/snakeupgrade/BlueMushroom.png')}
                         style={styles.mushroompic} />
-                      <Text style={[styles.mushroomText, this.state.riffic]}>02 BLUE
+                      <Text style={[styles.mushroomText]}>02 BLUE
                             MUSHROOM</Text>
                     </View>
                     <View style={styles.mushroomItem}>
                       <Image
                         source={require('../assets/snakeupgrade/RedMushroom.png')}
                         style={styles.mushroompic} />
-                      <Text style={[styles.mushroomText, this.state.riffic]}>02 RED
+                      <Text style={[styles.mushroomText]}>02 RED
                             MUSHROOM</Text>
                     </View>
                   </View>
@@ -105,7 +88,7 @@ export default class SnakeUpgrade extends React.Component {
                 <ImageBackground
                   source={require('../assets/snakeupgrade/EthValueBackground.png')}
                   style={styles.ethButton} resizeMode={'contain'}>
-                  <Text style={[styles.purchaseText, this.state.riffic]}>0.00012 ETH</Text>
+                  <Text style={[styles.purchaseText]}>0.00012 ETH</Text>
                   <ImageBackground source={require('../assets/snakeupgrade/purchasebtn.png')}
                     style={styles.purchaseButton} resizeMode={'contain'}>
                   </ImageBackground>
@@ -206,16 +189,19 @@ let styles = StyleSheet.create({
     fontSize: normalize(22),
     top: 35,
     textAlign: 'center',
+    fontFamily: 'riffic-free-bold',
   },
   purchaseText: {
     fontSize: normalize(26),
     marginTop: screenWidth * 0.15,
     textAlign: 'center',
-    color: "#FAB523"
+    color: "#FAB523",
+    fontFamily: 'riffic-free-bold',
   },
   mushroomText: {
     color: "#000",
     fontSize: normalize(21),
+    fontFamily: 'riffic-free-bold',
   },
   scroll: {
     width: screenWidth,

@@ -7,21 +7,11 @@ import {
   View,
   ImageBackground
 } from 'react-native';
-import {Font} from 'expo';
 import {normalize} from '../utils/FontNormalizer.js';
 
 export default class PauseOverlay extends React.Component {
   constructor(props) {
     super(props);
-  }
-
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    styles.buttonText = {
-      fontFamily: 'riffic-free-bold'
-    }
   }
 
   render() {
@@ -145,4 +135,7 @@ var styles = StyleSheet.create({
     color: '#FAB523',
     fontWeight: 'bold'
   },
+  buttonText: {
+    fontFamily: 'riffic-free-bold',
+  }
 });

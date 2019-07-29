@@ -5,30 +5,10 @@ import {
   StyleSheet,
   Text,
   View,
-  ScrollView,
   ImageBackground
 } from 'react-native';
-import {Font} from 'expo';
-import CONSTANTS from '../Constants.js';
 
 export default class MineEmptyOverlay extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      riffic: {},
-    }
-  }
-
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      riffic: {
-        fontFamily: 'riffic-free-bold',
-      }
-    });
-  }
 
   render() {
     if (!this.props.show) {

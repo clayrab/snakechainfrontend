@@ -91,19 +91,7 @@ export default class PowerupOverlay extends React.Component {
       bluePowerUpCount: 0,
       purplePowerUpCount: 0,
       redPowerUpCount: 0,
-      buttonText: {}
     }
-  }
-
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      buttonText: {
-        fontFamily: 'riffic-free-bold'
-      }
-    })
   }
 
   initializePowerUpsCount = () => {
@@ -179,7 +167,7 @@ export default class PowerupOverlay extends React.Component {
                                resizeMode={'stretch'}>
                 <Image source={require("../assets/powerupsoverlay/powerup.png")}
                        style={{width: 14, height: 22, resizeMode: 'contain'}}/>
-                <Text style={[this.state.buttonText, styles.titleText]}>
+                <Text style={[styles.buttonText, styles.titleText]}>
                   POWER-UPS
                 </Text>
               </ImageBackground>
@@ -197,8 +185,8 @@ export default class PowerupOverlay extends React.Component {
                     paddingHorizontal: 15
                   }}>
 
-                    <PowerupBox buttonStyle={[this.state.buttonText]}
-                         fontStyle={this.state.buttonText}
+                    <PowerupBox buttonStyle={[styles.buttonText]}
+                         fontStyle={styles.buttonText}
                          boxImage={require('../assets/powerupsoverlay/mushroom_yellow.png')}
                          boughtCount={this.state.goldPowerUpCount}
                          price={this.props.prices.yellowpowerup}
@@ -207,8 +195,8 @@ export default class PowerupOverlay extends React.Component {
                          changeCount={this.onGoldCountChange}
                          onItemPress={this.onItemPress}
                     />
-                    <PowerupBox buttonStyle={[this.state.buttonText]}
-                         fontStyle={this.state.buttonText}
+                    <PowerupBox buttonStyle={[styles.buttonText]}
+                         fontStyle={styles.buttonText}
                          boughtCount={this.state.bluePowerUpCount}
                          price={this.props.prices.bluepowerup}
                          boxImage={require('../assets/powerupsoverlay/mushroom_blue.png')}
@@ -217,8 +205,8 @@ export default class PowerupOverlay extends React.Component {
                          changeCount={this.onBlueCountChange}
                          onItemPress={this.onItemPress}
                     />
-                    <PowerupBox buttonStyle={[this.state.buttonText]}
-                         fontStyle={this.state.buttonText}
+                    <PowerupBox buttonStyle={[styles.buttonText]}
+                         fontStyle={styles.buttonText}
                          boughtCount={this.state.purplePowerUpCount}
                          price={this.props.prices.orangepowerup}
                          boxImage={require('../assets/powerupsoverlay/mushroom_voilet.png')}
@@ -227,8 +215,8 @@ export default class PowerupOverlay extends React.Component {
                          changeCount={this.onPurpleCountChange}
                          onItemPress={this.onItemPress}
                     />
-                    <PowerupBox buttonStyle={[this.state.buttonText]}
-                         fontStyle={this.state.buttonText}
+                    <PowerupBox buttonStyle={[styles.buttonText]}
+                         fontStyle={styles.buttonText}
                          boughtCount={this.state.redPowerUpCount}
                          price={this.props.prices.redpowerup}
                          boxImage={require('../assets/powerupsoverlay/mushroom_red.png')}
@@ -242,20 +230,20 @@ export default class PowerupOverlay extends React.Component {
 
                   <MushroomTotal count={this.state.goldPowerUpCount} price={this.props.prices.yellowpowerup}
                                  image={require("../assets/powerupsoverlay/mushroom_yellow.png")}
-                                 fontStyle={this.state.buttonText}/>
+                                 fontStyle={styles.buttonText}/>
 
                   <MushroomTotal count={this.state.bluePowerUpCount} price={this.props.prices.bluepowerup}
                                  image={require("../assets/powerupsoverlay/mushroom_blue.png")}
-                                 fontStyle={this.state.buttonText}/>
+                                 fontStyle={styles.buttonText}/>
 
                   <MushroomTotal count={this.state.purplePowerUpCount} price={this.props.prices.orangepowerup}
                                  image={require("../assets/powerupsoverlay/mushroom_voilet.png")}
-                                 fontStyle={this.state.buttonText}/>
+                                 fontStyle={styles.buttonText}/>
 
                   <MushroomTotal count={this.state.redPowerUpCount} price={this.props.prices.redpowerup}
                                  image={require("../assets/powerupsoverlay/mushroom_red.png")}
-                                 fontStyle={this.state.buttonText}/>
-                  <TotalComp total={this.getTotalCount()} fontStyle={this.state.buttonText}/>
+                                 fontStyle={styles.buttonText}/>
+                  <TotalComp total={this.getTotalCount()} fontStyle={styles.buttonText}/>
                 </View>
               }
 
@@ -264,7 +252,7 @@ export default class PowerupOverlay extends React.Component {
                 <ImageBackground source={require("../assets/powerupsoverlay/yellowBG.png")}
                                  resizeMode={"contain"}
                                  style={styles.proceedToAcquireBtn}>
-                  <Text style={[styles.proceedToAcquireText, this.state.buttonText]}>Proceed to Acquire</Text>
+                  <Text style={[styles.proceedToAcquireText, styles.buttonText]}>Proceed to Acquire</Text>
                 </ImageBackground>
               </TouchableOpacity>
             </ScrollView>
@@ -416,4 +404,7 @@ const styles = StyleSheet.create({
     color: "#352826",
     fontSize: normalize(14)
   },
+  buttonText: {
+    fontFamily: 'riffic-free-bold',
+  }
 });

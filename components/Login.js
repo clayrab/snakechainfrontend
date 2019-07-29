@@ -8,16 +8,13 @@ import {
   Image,
   TextInput,
   AsyncStorage,
-  Platform
 } from 'react-native';
-import { AppAuth, Constants, Font} from 'expo';
 
 import ScreenView from '../components/ScreenView.js';
 
 import { context } from "../utils/Context.js";
 import Loading from './Loading.js';
 import { normalize } from '../utils/FontNormalizer.js';
-
 
 let loginPlaceHolder = 'Login/Phone';
 let passwordPlaceHolder = 'Password';
@@ -29,7 +26,6 @@ export default class Login extends React.Component {
       showLoginPlaceHolder: true,
       showPasswordPlaceHolder: true,
       remember: false,
-      buttonDynamicStyle: {},
       username: "",
       pw: "",
       loading: false,
@@ -37,14 +33,6 @@ export default class Login extends React.Component {
   }
 
   async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      buttonDynamicStyle: {
-        fontFamily: 'riffic-free-bold',
-      }
-    });
     let username = await AsyncStorage.getItem("username");
     let password = await AsyncStorage.getItem("password");
     if (username && password) {
@@ -162,7 +150,7 @@ export default class Login extends React.Component {
             <View style={[styles.halfView, styles.topView]}>
               <ImageBackground source={require('../assets/login/textBox.png')} style={styles.loginInput}
                 resizeMode="stretch">
-                <TextInput style={[styles.textInput, this.state.buttonDynamicStyle]} underlineColorAndroid="transparent"
+                <TextInput style={[styles.textInput]} underlineColorAndroid="transparent"
                   onFocus={this.loginFocus}
                   onChangeText={this.loginChange}
                   autoCapitalize={'none'}
@@ -175,7 +163,7 @@ export default class Login extends React.Component {
                 style={[styles.loginInput, styles.passwordInput]} resizeMode="stretch">
                 <Image source={require('../assets/login/passwordIcon.png')} style={styles.lockImage}
                   resizeMode="stretch" />
-                <TextInput style={[styles.textInput, this.state.buttonDynamicStyle]} underlineColorAndroid="transparent"
+                <TextInput style={[styles.textInput]} underlineColorAndroid="transparent"
                   secureTextEntry={true}
                   onFocus={this.passwordFocus}
                   onChangeText={this.passwordChange}
@@ -185,7 +173,7 @@ export default class Login extends React.Component {
                 onPress={this.sendLoginCreds}>
                 <ImageBackground source={require('../assets/login/button.png')}
                   style={[styles.loginButton, styles.passwordInput]} resizeMode="stretch">
-                  <Text style={[styles.loginText, this.state.buttonDynamicStyle]}>LOGIN</Text>
+                  <Text style={[styles.loginText]}>LOGIN</Text>
                 </ImageBackground>
               </TouchableOpacity>
 
@@ -195,7 +183,7 @@ export default class Login extends React.Component {
                     source={!this.state.remember ? require('../assets/login/checkBox.png') : require('../assets/login/checkBox-1.png')}
                     style={styles.checkBoxImage} resizeMode="stretch" />
                 </TouchableOpacity>
-                <Text style={[styles.checkboxText, this.state.buttonDynamicStyle]}>Remember me</Text>
+                <Text style={[styles.checkboxText]}>Remember me</Text>
               </View>
             </View>
           </ImageBackground>
@@ -230,7 +218,8 @@ let styles = StyleSheet.create({
     height: 40,
     marginLeft: 20,
     fontSize: normalize(22),
-    color: '#fab523'
+    color: '#fab523',
+    fontFamily: 'riffic-free-bold',
   },
   loginInput: {
     backgroundColor: 'transparent',
@@ -256,7 +245,8 @@ let styles = StyleSheet.create({
   },
   loginText: {
     fontSize: normalize(18),
-    color: '#352927'
+    color: '#352927',
+    fontFamily: 'riffic-free-bold',
   },
   rememberView: {
     flexDirection: 'row',
@@ -269,6 +259,7 @@ let styles = StyleSheet.create({
   },
   checkboxText: {
     fontSize: normalize(14),
-    color: '#352927'
+    color: '#352927',
+    fontFamily: 'riffic-free-bold',
   },
 });

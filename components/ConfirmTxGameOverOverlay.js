@@ -7,24 +7,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Font} from 'expo';
-import CONSTANTS from '../Constants.js';
 import {normalize} from '../utils/FontNormalizer.js';
 
 export default class ConfirmTxGameOverOverlay extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    styles.buttonText = {
-      fontFamily: 'riffic-free-bold'
-    }
-  }
-
   render() {
     if (!this.props.show) {
       return null;
@@ -145,7 +130,8 @@ var styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontFamily: 'riffic-free-bold',
   },
   largeButtonText: {
     color: "#fab523",
@@ -192,5 +178,5 @@ var styles = StyleSheet.create({
   },
   smallTouchableButton: {
     marginBottom: 50
-  }
+  },
 });

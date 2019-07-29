@@ -9,7 +9,6 @@ import {
   ScrollView,
 } from 'react-native';
 import ScreenView from '../components/ScreenView.js';
-import {Font} from 'expo';
 import {asyncStore, getFromAsyncStore, removeItem} from "../utils/AsyncStore.js";
 import {context} from "../utils/Context.js";
 import {createTransaction} from '../utils/Transactions.js';
@@ -29,21 +28,12 @@ export default class AccountHistory extends React.Component {
     super(props);
     this.state = {
       overlay: -1,
-      riffic: {},
       overlayMode: null,
       loading: true,
     };
   }
 
   async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      riffic: {
-        fontFamily: 'riffic-free-bold',
-      }
-    });
     // let prom = async () => {
     //   return await new Promise((resolve, reject) => {
     //     getFromAsyncStore("jwt").then((jwt) => {
@@ -167,13 +157,13 @@ export default class AccountHistory extends React.Component {
               </ImageBackground>
             </View>
             <View style={styles.profileDetailView}>
-              <Text style={[this.state.riffic, styles.buttonColorText]}>
+              <Text style={[styles.buttonColorText]}>
                 {this.props.user.name}
               </Text>
-              <Text style={[this.state.riffic, styles.publicAddText]}>
+              <Text style={[styles.publicAddText]}>
                 {this.props.user.pubkey.substring(0, 7)}...{this.props.user.pubkey.substring(37, 42)}
               </Text>
-              <Text style={[this.state.riffic, styles.profileInfoText]}>
+              <Text style={[styles.profileInfoText]}>
 
               </Text>
             </View>
@@ -182,26 +172,26 @@ export default class AccountHistory extends React.Component {
                            resizeMode="stretch">
             <View style={[styles.balancesView]}>
               <View style={[styles.balancesNumbersView,]}>
-                <Text style={[this.state.riffic, styles.numberTextTop, {paddingTop: 20, flex: 1}]}>
+                <Text style={[styles.numberTextTop, {paddingTop: 20, flex: 1}]}>
                   SnakeChain
                 </Text>
                 <Image source={require('../assets/wallet/coin.png')} style={[styles.diamondImage, {flex: 1}]}/>
-                <Text style={[this.state.riffic, styles.numberText, {flex: 1}]}>
+                <Text style={[styles.numberText, {flex: 1}]}>
                   {this.props.user.snek}
                 </Text>
-                <Text style={[this.state.riffic, styles.numberTextBottom, {paddingBottom: 20, flex: 1}]}>
+                <Text style={[styles.numberTextBottom, {paddingBottom: 20, flex: 1}]}>
                   SNK
                 </Text>
               </View>
               <View style={[styles.balancesNumbersView]}>
-                <Text style={[this.state.riffic, styles.numberTextTop, {paddingTop: 20, flex: 1}]}>
+                <Text style={[styles.numberTextTop, {paddingTop: 20, flex: 1}]}>
                   Ethereum
                 </Text>
                 <Image source={require('../assets/wallet/diamond.png')} style={[styles.diamondImage, {flex: 1}]}/>
-                <Text style={[this.state.riffic, styles.numberText, {flex: 1}]}>
+                <Text style={[styles.numberText, {flex: 1}]}>
                   {formatToken(this.props.user.eth, "ETH")}
                 </Text>
-                <Text style={[this.state.riffic, styles.numberTextBottom, {paddingBottom: 20, flex: 1}]}>
+                <Text style={[styles.numberTextBottom, {paddingBottom: 20, flex: 1}]}>
                   ETH
                 </Text>
               </View>
@@ -213,7 +203,7 @@ export default class AccountHistory extends React.Component {
                                    style={styles.sendRecvButton} resizeMode="stretch">
                     <Image source={require('../assets/accounthistory/receiveblack.png')}
                            style={styles.buttonIconImage}/>
-                    <Text style={[this.state.riffic, styles.buttonColorText]}>RECEIVE</Text>
+                    <Text style={[styles.buttonColorText]}>RECEIVE</Text>
                   </ImageBackground>
                 </TouchableOpacity>
               </View>
@@ -222,7 +212,7 @@ export default class AccountHistory extends React.Component {
                   <ImageBackground source={require('../assets/accounthistory/yellowbtn.png')}
                                    style={styles.sendRecvButton} resizeMode="stretch">
                     <Image source={require('../assets/accounthistory/sendblack.png')} style={styles.buttonIconImage}/>
-                    <Text style={[this.state.riffic, styles.buttonColorText]}>SEND</Text>
+                    <Text style={[styles.buttonColorText]}>SEND</Text>
                   </ImageBackground>
                 </TouchableOpacity>
               </View>
@@ -252,8 +242,8 @@ export default class AccountHistory extends React.Component {
                         ?
                         <View style={styles.historyLeftView}>
                           <Image source={require('../assets/accounthistory/sendicon.png')} style={styles.buttonIconImage}/>
-                          <Text style={[this.state.riffic, styles.historyLabelText]}>SENT</Text>
-                          <Text style={[this.state.riffic, styles.dateText]}>{prettyDate}</Text>
+                          <Text style={[styles.historyLabelText]}>SENT</Text>
+                          <Text style={[styles.dateText]}>{prettyDate}</Text>
                         </View>
                         :
                         <View style={styles.historyLeftView}>
@@ -266,7 +256,7 @@ export default class AccountHistory extends React.Component {
                              style={styles.historySepImage} resizeMode="contain"/>
                       <View style={styles.historyRightView}>
                         <View style={styles.topRightHistoryView}>
-                          <Text style={[this.state.riffic, styles.headerText]}>
+                          <Text style={[styles.headerText]}>
                             {formatToken(transaction.amount, transaction.type.toUpperCase())}
                           </Text>
                           {isEth
@@ -275,7 +265,7 @@ export default class AccountHistory extends React.Component {
                             :
                             <Image source={require('../assets/wallet/coin.png')} style={[styles.diamondImage]}/>
                           }
-                          <Text style={[this.state.riffic, styles.headerText]}>
+                          <Text style={[styles.headerText]}>
                             {this.state.loading ? null :
                               this.prettyTxTypes[transaction.type]
                             }
@@ -283,7 +273,7 @@ export default class AccountHistory extends React.Component {
                         </View>
                         <View style={styles.topRightHistoryView}>
                           {!transaction.to ? null :
-                            <Text style={[this.state.riffic, styles.historyLabelText]}>
+                            <Text style={[styles.historyLabelText]}>
                               to {transaction.to.substring(0, 7)}...{transaction.to.substring(37, 42)}
                             </Text>
                           }
@@ -404,6 +394,7 @@ let styles = StyleSheet.create({
   buttonColorText: {
     color: "#000",
     fontSize: normalize(14),
+    fontFamily: 'riffic-free-bold',
   },
   buttonIconImage: {
     width: 20,
@@ -456,12 +447,14 @@ let styles = StyleSheet.create({
   },
   publicAddText: {
     color: "#000",
-    fontSize: normalize(12)
+    fontSize: normalize(12),
+    fontFamily: 'riffic-free-bold',
   },
   profileInfoText: {
     color: "red",
     fontSize: normalize(7),
-    opacity: 0.5
+    opacity: 0.5,
+    fontFamily: 'riffic-free-bold',
   },
   snakeText: {
     color: "#fab523",
@@ -471,23 +464,28 @@ let styles = StyleSheet.create({
     color: "#fab523",
     fontSize: normalize(26),
     paddingBottom: 20,
+    fontFamily: 'riffic-free-bold',
   },
   numberTextTop: {
     color: "#6A534F",
     fontSize: normalize(12),
+    fontFamily: 'riffic-free-bold',
   },
   numberTextBottom: {
     color: "#6A534F",
     fontSize: normalize(14),
+    fontFamily: 'riffic-free-bold',
   },
   historyLabelText: {
     color: "#fab523",
-    fontSize: normalize(12)
+    fontSize: normalize(12),
+    fontFamily: 'riffic-free-bold',
   },
   dateText: {
     color: "#fab523",
     fontSize: normalize(7),
-    opacity: 0.5
+    opacity: 0.5,
+    fontFamily: 'riffic-free-bold',
   },
   historyReceiveText: {
     color: '#10BB1A',
@@ -495,7 +493,8 @@ let styles = StyleSheet.create({
   },
   headerText: {
     color: "#fab523",
-    fontSize: normalize(18)
+    fontSize: normalize(18),
+    fontFamily: 'riffic-free-bold',
   },
   buttonText: {},
 });

@@ -9,11 +9,9 @@ import {
   TextInput,
   AsyncStorage
 } from 'react-native';
-import {Font} from 'expo';
 import {normalize} from '../utils/FontNormalizer.js';
 import {context} from "../utils/Context";
 import Loading from "./Loading";
-//import SuccessOverlay from "./SuccessOverlay";
 
 export default class Signup extends React.Component {
   constructor(props) {
@@ -28,19 +26,7 @@ export default class Signup extends React.Component {
       termCBPress: true,
       securePassword: false,
       securerePassword: false,
-      buttonDynamicStyle: {}
     }
-  }
-
-  async componentDidMount() {
-    await Font.loadAsync({
-      'riffic-free-bold': require('../assets/fonts/RifficFree-Bold.ttf'),
-    });
-    this.setState({
-      buttonDynamicStyle: {
-        fontFamily: 'riffic-free-bold',
-      }
-    });
   }
 
   confirmPress = async () => {
@@ -165,7 +151,7 @@ export default class Signup extends React.Component {
               </TouchableOpacity>
             </View>
             <View style={{flex: 1}}>
-              <Text style={[styles.titleText, this.state.buttonDynamicStyle]}>
+              <Text style={[styles.titleText]}>
                 SIGN-UP
               </Text>
             </View>
@@ -176,7 +162,7 @@ export default class Signup extends React.Component {
             <Image source={require('../assets/signup/phoneIcon.png')} style={styles.lockImage} resizeMode="stretch"/>
             <TextInput style={styles.textInput} underlineColorAndroid="transparent" onFocus={this.loginFocus}
                        onChangeText={this.loginChangeText} onBlur={this.loginBlur}>
-              <Text style={[styles.placeHolder, this.state.buttonDynamicStyle]}>{this.state.loginPlaceHolder}</Text>
+              <Text style={[styles.placeHolder]}>{this.state.loginPlaceHolder}</Text>
             </TextInput>
           </ImageBackground>
           <ImageBackground source={require('../assets/signup/textBox.png')} style={styles.loginInput}
@@ -185,7 +171,7 @@ export default class Signup extends React.Component {
             <TextInput style={styles.textInput} underlineColorAndroid="transparent"
                        secureTextEntry={this.state.securePassword} onFocus={this.passwordFocus}
                        onChangeText={this.passwordChangeText} onBlur={this.passwordBlur}>
-              <Text style={[styles.placeHolder, this.state.buttonDynamicStyle]}>{this.state.passwordPlaceHolder}</Text>
+              <Text style={[styles.placeHolder]}>{this.state.passwordPlaceHolder}</Text>
             </TextInput>
           </ImageBackground>
           <ImageBackground source={require('../assets/signup/textBox.png')} style={styles.loginInput}
@@ -195,7 +181,7 @@ export default class Signup extends React.Component {
                        secureTextEntry={this.state.securerePassword} onFocus={this.repasswordFocus}
                        onChangeText={this.repasswordChangeText} onBlur={this.repasswordBlur}>
               <Text
-                style={[styles.placeHolder, this.state.buttonDynamicStyle]}>{this.state.repasswordPlaceHolder}</Text>
+                style={[styles.placeHolder]}>{this.state.repasswordPlaceHolder}</Text>
             </TextInput>
           </ImageBackground>
           <ImageBackground source={require('../assets/signup/checkBoxBG.png')} style={styles.checkboxBG}
@@ -206,7 +192,7 @@ export default class Signup extends React.Component {
                   source={this.state.robotCBPress ? require('../assets/login/checkBox.png') : require('../assets/login/checkBox-1.png')}
                   style={styles.checkBoxImage} resizeMode="stretch"/>
               </TouchableOpacity>
-              <Text style={[styles.checkboxText, this.state.buttonDynamicStyle, {flex: 3}]}>IM NOT A ROBOT</Text>
+              <Text style={[styles.checkboxText, {flex: 3}]}>IM NOT A ROBOT</Text>
             </View>
             <View style={styles.checkboxView}>
               <TouchableOpacity onPress={this.termPress} style={{flex: 1, marginLeft: 20}}>
@@ -214,13 +200,13 @@ export default class Signup extends React.Component {
                   source={this.state.termCBPress ? require('../assets/login/checkBox.png') : require('../assets/login/checkBox-1.png')}
                   style={styles.checkBoxImage} resizeMode="stretch"/>
               </TouchableOpacity>
-              <Text style={[styles.checkboxText, this.state.buttonDynamicStyle, {flex: 3}]}>TERMS & CONDITION</Text>
+              <Text style={[styles.checkboxText, {flex: 3}]}>TERMS & CONDITION</Text>
             </View>
           </ImageBackground>
           <TouchableOpacity onPress={this.confirmPress}>
             <ImageBackground source={require('../assets/login/button.png')}
                              style={[styles.confirmButton, styles.passwordInput]} resizeMode="stretch">
-              <Text style={[styles.confirmText, this.state.buttonDynamicStyle]}>CONFIRM</Text>
+              <Text style={[styles.confirmText]}>CONFIRM</Text>
             </ImageBackground>
           </TouchableOpacity>
         </ImageBackground>
@@ -267,13 +253,15 @@ let styles = StyleSheet.create({
   },
   placeHolder: {
     fontSize: normalize(22),
-    color: '#fab523'
+    color: '#fab523',
+    fontFamily: 'riffic-free-bold'
   },
   titleText: {
     marginTop: 20,
     fontSize: normalize(22),
     color: '#fab523',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontFamily: 'riffic-free-bold'
   },
   checkboxBG: {
     backgroundColor: 'transparent',
@@ -298,7 +286,8 @@ let styles = StyleSheet.create({
   },
   checkboxText: {
     fontSize: normalize(14),
-    color: '#fab523'
+    color: '#fab523',
+    fontFamily: 'riffic-free-bold'
   },
   confirmButton: {
     width: screenWidth / 1.5,
@@ -310,7 +299,8 @@ let styles = StyleSheet.create({
   confirmText: {
     fontSize: normalize(18),
     color: '#352927',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontFamily: 'riffic-free-bold'
   },
   lockImage: {
     width: 15,
