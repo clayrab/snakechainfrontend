@@ -26,6 +26,39 @@ export let doGetFetch = async function(url, jwt) {
   }
 }
 
+export let doPostFetch = async function(url, jwt, data) {
+  //try {
+    let headers = {
+      "Content-Type": "application/json; charset=utf-8",
+      //"Content-Type": "application/x-www-form-urlencoded",
+    };
+    if (jwt) {
+      headers.Authorization = "JWT " + jwt;
+    }
+    let response = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify(data), // body data type must match "Content-Type" header
+      headers: headers,
+    });
+    var resp = await response.json();
+    if (resp.error) {
+      throw resp.error;
+    } else {
+      if(response.status === 401) {
+        throw "Unauthorized";
+      } else if(resp.status != "OK") {
+        console.log("******* error here?????")
+        throw "Error. Response status: " + resp.status;
+      } else {
+
+        return resp;
+      }
+    }
+  // } catch(err) {
+  //   console.log("******* or error here?????")
+  //   throw err
+  // }
+}
 
 export let makeRetry = function (_name) {
   let name = _name;

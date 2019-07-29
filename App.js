@@ -24,7 +24,6 @@ import LoginChoose from './components/LoginChoose.js';
 import Loading from './components/Loading.js';
 import LoadingOverlay from './components/LoadingOverlay.js';
 import PauseOverlay from './components/PauseOverlay.js';
-import PowerupOverlay from './components/PowerupOverlay.js';
 import ScreenView from './components/ScreenView.js';
 import Signup from './components/Signup.js';
 import SignupChoose from './components/SignupChoose.js';
@@ -174,8 +173,8 @@ export default class App extends React.Component {
         totalhaul: 0,
         powerups: {
           bluepowerup: -1,
-          goldpowerup: -1,
-          purplepowerup: -1,
+          yellowpowerup: -1,
+          orangepowerup: -1,
           redpowerup: -1
         }
       },
@@ -214,8 +213,6 @@ export default class App extends React.Component {
       //newGameCounter: 0, // Toggling to true will cause Snek.js to reset if it's still alive.
       //powerups: null
     };
-    console.log("asdf")
-    console.log(this.state.games)
     //this.loggedIn = this.loggedIn.bind(this);
     this.closeOverlay = this.closeOverlay.bind(this);
     this.restart = this.restart.bind(this);
@@ -230,8 +227,6 @@ export default class App extends React.Component {
   async componentDidMount() {
     try {
       let resp = await doGetFetch(`${context.host}:${context.port}/getPrices`, null);
-      console.log("prices: ")
-      console.log(resp)
       this.setState({prices: resp.prices});
     } catch(err) {
       //alert("Unknown error while fetching prices: " + err);
@@ -262,6 +257,11 @@ export default class App extends React.Component {
       overlay: overlays.ERROR,
     })
   }
+
+  authorizationError = async () => {
+    await this.setState({screen: screens.LOGINCHOOSE, loadingUser: false});
+  }
+
   fetchUser = async (jwt) => {
     try {
       let resp = await doGetFetch(`${context.host}:${context.port}/getUser`, jwt);
@@ -274,11 +274,7 @@ export default class App extends React.Component {
       } else {
         await alert("Unknown error while fetching user: " + err);
       }
-      console.log("made it here...???")
-      console.log(this.state)
-      await this.setState({screen: screens.LOGINCHOOSE, loadingUser: false});
-      console.log(this.state.screen)
-      //return false;
+      this.authorizationError();
     }
   }
   fetchGameHistory = async(jwt) => {
@@ -504,13 +500,18 @@ export default class App extends React.Component {
     this.setState({screen: screens.LOGIN, overlay: -1});
   }
 
+  consumePowerup = (powerupName) => {
+    let currentPowerups = this.state.user.powerups;
+    currentPowerups[powerupName] = currentPowerups[powerupName] - 1;
+    this.updatePowerups(currentPowerups);
+  }
   updatePowerups = powerups => {
     this.setState({
       user: {
         ...this.state.user,
         powerups
       }
-    })
+    });
   }
   //
   // onPlayPress = () => {
@@ -559,8 +560,6 @@ export default class App extends React.Component {
   }
 
   render() {
-    console.log("render app")
-    console.log(this.state.screen)
     if (this.state.screen === screens.HOME) {
       return (
         <Homepage
@@ -641,10 +640,12 @@ export default class App extends React.Component {
               doResetDpad={this.doResetDpad}
               running={this.state.running}
               toggleReset={this.state.toggleReset}
+              authorizationError={this.authorizationError}
               onDied={this.onDied}
               start={this.start}
               pause={this.pause}
               powerUps={this.powerUps}
+              consumePowerup={this.consumePowerup}
               showCowOverlay={this.showCowOverlay}
               hideCowOverlay={this.hideCowOverlay}
               loading={this.state.loadingUser}
@@ -688,11 +689,6 @@ export default class App extends React.Component {
               gameOverInfo={this.state.gameOverInfo}
               restart={this.restart}
               exit={this.exit} />*/}
-          <PowerupOverlay
-            closeOverlay={this.closeOverlay}
-            prices={this.state.prices}
-            user={this.props.user}
-            show={this.state.overlay == overlays.POWERUPS}/>
           <StartGameOverlay
             show={this.state.overlay == overlays.STARTGAME}
             onStart={this.start}/>

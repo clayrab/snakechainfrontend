@@ -11,6 +11,9 @@ import ScoreBoard from './ScoreBoard.js'
 import Buttons from './Buttons.js';
 import Dpad from './Dpad.js';
 import { normalize } from '../utils/FontNormalizer.js';
+import { doPostFetch } from '../utils/Network.js';
+import { getFromAsyncStore } from "../utils/AsyncStore.js";
+import { context } from "../utils/Context.js";
 
 let easterEggCount = 0;
 let dpadSize = CONSTANTS.DPADBUTTONSIZE * CONSTANTS.DPADMULT;
@@ -38,7 +41,7 @@ export default class Snek extends Sprite {
       // multiplier: 1,
       score: 0,
       pelletCount: 0,
-      pelletLocation: null,
+      //pelletLocation: null,
       //redPelletLocation: null, //RED PELLET IS NOW PURPLE MUSHROOM!!
       pelletRot: new Animated.Value(0),
       boardShake: new Animated.Value(0),
@@ -46,7 +49,8 @@ export default class Snek extends Sprite {
       snakeHead: { transform: [{ rotate: '0deg' }] },
       walls: [],
       mushrooms: {},
-      speedEffector: 1,
+      speedEffector: 1.0,
+      godMode: false,
       //renderTrigger: true, // Flip this to force a render. The cost of React Native for animation. This isn't great, but it helps.
       framerate: 0,
       fontStyle: {},
@@ -162,46 +166,53 @@ export default class Snek extends Sprite {
       // was red pellet
       await this.eatRedPellet();
     },
-    "REDMUSH": async () => {
+    "REDPOWERUP": async () => {
+      this.setState({ speedEffector: 0.5 });
+      setTimeout(() => this.setState({ speedEffector: 1 }), 10000);
     },
-    "GOLDMUSH": async () => {
+    "YELLOWPOWERUP": async () => {
+      let howLong = this.getRandomInt(5, 10);
+      this.reduceTail(howLong);
     },
-    "BLUEMUSH": async () => {
+    "ORANGEPOWERUP": async () => {
+      this.setState({ godMode: true });
+      setTimeout(() => this.setState({ godMode: false }), 10000);
     },
-    "SKYBLUEMUSH": async () => {
-    },
-    "PLATINUMMUSH": async () => {
+    "BLUEPOWERUP": async () => {
+      let howMany = this.getRandomInt(1, 3);
+      while (howMany > 0) {
+        this.placeEdible("PELLET", this.randomLocation());
+        howMany--;
+      }
     },
     "PELLET": async () => {
+      await this.eatPellet();
     },
   }
 
   // This.state.edibles is an array with nulls on the end. We want maximum speed rendering so it will render until it hit's null.
   // This.state.edibles never shrinks. Nulls from the end are swapped when removing and adding.
   edibleTypes = {
-    "GREENMUSH": {
-      png: require('../assets/powerupsoverlay/mushroom_yellow.png'),
-    },
+    // "GREENMUSH": {
+    //   png: require('../assets/powerupsoverlay/mushroom_yellow.png'),
+    // },
     "PURPLEMUSH": {
-      png: require('../assets/powerupsoverlay/mushroom_voilet.png'),
+      png: require('../assets/powerupsoverlay/powerup.png'),
     },
-    "REDMUSH": {
+    "REDPOWERUP":  {
       png: require('../assets/powerupsoverlay/mushroom_red.png'),
     },
-    "GOLDMUSH": {
+    "YELLOWPOWERUP": {
       png: require('../assets/powerupsoverlay/mushroom_yellow.png'),
     },
-    "BLUEMUSH": {
-      png: require('../assets/powerupsoverlay/mushroom_blue.png'),
+    "ORANGEPOWERUP": {
+      png: require('../assets/powerupsoverlay/mushroom_voilet.png'),
     },
-    "SKYBLUEMUSH": {
-      png: require('../assets/powerupsoverlay/mushroom_blue.png'),
-    },
-    "PLATINUMMUSH": {
+    "BLUEPOWERUP": {
       png: require('../assets/powerupsoverlay/mushroom_blue.png'),
     },
     "PELLET": {
-      png: "#0d0",
+      png: "pellet",
     },
   };
   makeEdibleStruct = (type, x, y) => {
@@ -218,13 +229,15 @@ export default class Snek extends Sprite {
       this.edibles.push(this.makeEdibleStruct(type, x, y));
     }
     this.numberOfEdibles++;
+    this.boardState[y][x] = "EDIBLE";
   }
   removeEdible = async (index) => {
     if (this.numberOfEdibles > 0 &&
-      this.edibles[index] !== null &&
-      index <= this.numberOfEdibles &&
-      this.numberOfEdibles <= this.edibles.length &&
-      index <= this.edibles.length) {
+        this.edibles[index] !== null &&
+        index <= this.numberOfEdibles &&
+        this.numberOfEdibles <= this.edibles.length &&
+        index <= this.edibles.length) {
+      this.boardState[this.edibles[index].y][this.edibles[index].x] = null;
       this.edibles[index] = this.edibles[this.numberOfEdibles - 1];
       this.edibles[this.numberOfEdibles - 1] = null;
       this.numberOfEdibles--;
@@ -288,7 +301,8 @@ export default class Snek extends Sprite {
         posY={this.boardYtoPosY(startBoardY + 1 + index)}
         boardX={startBoardX}
         boardY={startBoardY + 1 + index}
-        toggleUpdate={true}>
+        toggleUpdate={true}
+        godMode={this.state.godMode}>
         direction={CONSTANTS.DPADSTATES.UP}></SnekPart>);
     }
     return newTail;
@@ -301,7 +315,7 @@ export default class Snek extends Sprite {
     startState.boardX = this.defaultState.boardX;
     startState.boardY = this.defaultState.boardY;
     startState.direction = this.defaultState.direction;
-    startState.pelletLocation = this.defaultState.pelletLocation;
+    //startState.pelletLocation = this.defaultState.pelletLocation;
     //startState.redPelletLocation = this.defaultState.redPelletLocation;
     startState.pelletRot = this.defaultState.pelletRot;
     startState.boardShake = this.defaultState.boardShake;
@@ -315,6 +329,7 @@ export default class Snek extends Sprite {
     startState.snakeHead = { transform: [{ rotate: '0deg' }] };
     startState.walls = this.getRandomWalls();
     startState.speedEffector = this.defaultState.speedEffector;
+    startState.godMode = this.defaultState.godMode;
     startState.toggleReset = this.props.toggleReset;
     return startState;
   }
@@ -497,11 +512,7 @@ export default class Snek extends Sprite {
   }
 
   hardReset = async () => {
-    console.log("hardReset")
     var startState = this.copyDefaultState();
-    // console.log("hardReset this.state.toggleReset")
-    // console.log(this.props.toggleReset)
-    // //startState.toggleReset = this.props.toggleReset;
     this.setState(startState);
     this.resetBoard();
     await this.placePellet();
@@ -516,14 +527,13 @@ export default class Snek extends Sprite {
   }
 
   placePellet = async() => {
-
-    console.log("placePellet")
-    await this.setState({pelletLocation: this.randomLocation(),});
+    //await this.setState({pelletLocation: this.randomLocation(),});
     //await this.setState({ redPelletLocation: this.randomLocation(), });
+    this.placeEdible("PELLET", this.randomLocation());
     this.placeEdible("PURPLEMUSH", this.randomLocation());
-    if (this.props.mode === "SUPER SNAKE") {
-      this.placeEdible("GREENMUSH", this.randomLocation());
-    }
+    // if (this.props.mode === "SUPER SNAKE") {
+    //   this.placeEdible("GREENMUSH", this.randomLocation());
+    // }
     // let isTail = true;
     // let isHead = undefined;
     // let x, y;
@@ -620,9 +630,6 @@ export default class Snek extends Sprite {
       nextAction++;
     }
     switch (actions[nextAction - 1].name) {
-      case "die":
-        this.die();
-        break;
       case "speedup":
         this.setState({ speedEffector: 2 });
         setTimeout(() => this.setState({ speedEffector: 1 }), 5000);
@@ -725,7 +732,8 @@ export default class Snek extends Sprite {
           boardX={lastTailPart.props.boardX}
           boardY={lastTailPart.props.boardY}
           toggleUpdate={true}
-          direction={lastTailPart.props.direction}>
+          direction={lastTailPart.props.direction}
+          godMode={this.state.godMode}>
         </SnekPart>
       );
       newTailStart = newTailStart.concat(newTailEnd);
@@ -742,7 +750,8 @@ export default class Snek extends Sprite {
           boardX={this.state.boardX}
           boardY={this.state.boardY}
           toggleUpdate={true}
-          direction={this.state.direction}>
+          direction={this.state.direction}
+          godMode={this.state.godMode}>
         </SnekPart>
       );
       let newTailIndex = this.state.tailIndex + 1;
@@ -781,11 +790,7 @@ export default class Snek extends Sprite {
   }
 
   onBoardTile(boardX, boardY) {
-    if (this.state.pelletLocation) {
-      if (this.state.pelletLocation.x == boardX && this.state.pelletLocation.y == boardY) {
-        this.eatPellet();
-      }
-    }
+    //TODO: THE STATE "EDIBLE" IS NOW STORED IN BOARD, NO NEED TO ITERATE EDIBLES
     for (let i = 0; i < this.edibles.length; i++) {
       if (this.edibles[i]) {
         if (this.edibles[i].x === boardX && this.edibles[i].y === boardY) {
@@ -798,11 +803,6 @@ export default class Snek extends Sprite {
       }
     }
 
-    // if (this.state.redPelletLocation &&
-    //   this.state.redPelletLocation.x === boardX &&
-    //   this.state.redPelletLocation.y === boardY) {
-    //   this.eatRedPellet();
-    // }
     this.boardState[boardY][boardX] = "WALL";
   }
 
@@ -810,7 +810,7 @@ export default class Snek extends Sprite {
     this.moveTail(CONSTANTS.DPADSTATES.UP);
     if (this.state.boardY - 1 < 0) {
       this.die();
-    } else if (this.boardState[this.state.boardY - 1][this.state.boardX] === "WALL") {
+    } else if (this.boardState[this.state.boardY - 1][this.state.boardX] === "WALL" && !this.state.godMode) {
       this.die();
     } else {
       this.onBoardTile(this.state.boardX, this.state.boardY - 1);
@@ -826,7 +826,7 @@ export default class Snek extends Sprite {
     this.moveTail(CONSTANTS.DPADSTATES.DOWN);
     if (this.state.boardY + 1 > CONSTANTS.BOARDHEIGHT - 1) {
       this.die();
-    } else if (this.boardState[this.state.boardY + 1][this.state.boardX] === "WALL") {
+    } else if (this.boardState[this.state.boardY + 1][this.state.boardX] === "WALL" && !this.state.godMode) {
       this.die();
     } else {
       this.onBoardTile(this.state.boardX, this.state.boardY + 1);
@@ -842,7 +842,7 @@ export default class Snek extends Sprite {
     this.moveTail(CONSTANTS.DPADSTATES.LEFT);
     if (this.state.boardX - 1 < 0) {
       this.die();
-    } else if (this.boardState[this.state.boardY][this.state.boardX - 1] === "WALL") {
+    } else if (this.boardState[this.state.boardY][this.state.boardX - 1] === "WALL" && !this.state.godMode) {
       this.die();
     } else {
       this.onBoardTile(this.state.boardX - 1, this.state.boardY);
@@ -858,7 +858,7 @@ export default class Snek extends Sprite {
     this.moveTail(CONSTANTS.DPADSTATES.RIGHT);
     if (this.state.boardX + 1 > CONSTANTS.BOARDWIDTH - 1) {
       this.die();
-    } else if (this.boardState[this.state.boardY][this.state.boardX + 1] === "WALL") {
+    } else if (this.boardState[this.state.boardY][this.state.boardX + 1] === "WALL" && !this.state.godMode) {
       this.die();
     } else {
       this.onBoardTile(this.state.boardX + 1, this.state.boardY);
@@ -978,6 +978,39 @@ export default class Snek extends Sprite {
     this.setState({ headerOpen: !this.state.headerOpen })
   }
 
+  serverError = async() => {
+    await alert("Disconnected");
+    await this.hardReset();
+    this.props.authorizationError();
+  }
+  usePowerup = async(powerupName, location) => {
+    let powerupNameLower = powerupName.toLowerCase();
+    if (this.props.user.powerups[powerupNameLower] > 0) {
+      this.placeEdible(powerupName, location);
+      this.props.consumePowerup(powerupNameLower);
+      try {
+        let jwt = await getFromAsyncStore("jwt");
+        if(!jwt) {
+          this.serverError();
+        }
+        await doPostFetch(`${context.host}:${context.port}/usePowerup`, jwt, {powerup: powerupNameLower})
+      } catch (err) {
+        this.serverError();
+      }
+    }
+  }
+  yellowPowerup = () => {
+    this.usePowerup("YELLOWPOWERUP", this.randomLocation());
+  }
+  redPowerup = () => {
+    this.usePowerup("REDPOWERUP", this.randomLocation());
+  }
+  orangePowerup = () => {
+    this.usePowerup("ORANGEPOWERUP", this.randomLocation());
+  }
+  bluePowerup = () => {
+    this.usePowerup("BLUEPOWERUP", this.randomLocation());
+  }
   render() {
     let redPellet = null;
     let pellet = null;
@@ -1008,15 +1041,15 @@ export default class Snek extends Sprite {
       }]}></View>);
     }
 
-    if (this.state.pelletLocation != null) {
-      pellet = (<Animated.View style={[styles.pellet, {
-        left: this.boardXtoPosX(this.state.pelletLocation.x),
-        top: this.boardYtoPosY(this.state.pelletLocation.y),
-        transform: [{ rotate: this.spin() }],
-      }]}>
-        <Image source={require('../assets/gameplay/Diamond.png')} style={styles.pellet} resizeMode="stretch" />
-      </Animated.View>);
-    }
+    // if (this.state.pelletLocation != null) {
+    //   pellet = (<Animated.View style={[styles.pellet, {
+    //     left: this.boardXtoPosX(this.state.pelletLocation.x),
+    //     top: this.boardYtoPosY(this.state.pelletLocation.y),
+    //     transform: [{ rotate: this.spin() }],
+    //   }]}>
+    //     <Image source={require('../assets/gameplay/Diamond.png')} style={styles.pellet} resizeMode="stretch" />
+    //   </Animated.View>);
+    // }
     if (!this.state.alive) {
       snek = (<View style={[styles.snek, {
         left: this.state.posX,
@@ -1056,7 +1089,12 @@ export default class Snek extends Sprite {
                   left: this.boardXtoPosX(this.edibles[idx].x),
                   top: this.boardYtoPosY(this.edibles[idx].y),
                 }]}>
-                  <Image source={this.edibleTypes[edible.type].png} style={styles.redPellet} resizeMode="stretch"/>
+                  {
+                    this.edibleTypes[edible.type].png === "pellet" ?
+                    <Image source={require('../assets/gameplay/Diamond.png')} style={styles.pellet} resizeMode="stretch" />
+                    :
+                    <Image source={this.edibleTypes[edible.type].png} style={styles.redPellet} resizeMode="stretch"/>
+                  }
                 </Animated.View>
               );
             }
@@ -1072,28 +1110,29 @@ export default class Snek extends Sprite {
         <View style={styles.controllerOuterContainer}>
           <View style={styles.controllerContainer}>
             <View style={styles.mushroomRow}>
-              <TouchableOpacity>
+
+              <TouchableOpacity onPress={this.yellowPowerup}>
                 <Image source={require("../assets/gameplay/MGold.png")} style={styles.mushroomImage} />
                 <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
-                  <Text style={[this.state.fontStyle, styles.mushroomText]}>1</Text>
+                  <Text style={[this.state.fontStyle, styles.mushroomText]}>{this.props.user.powerups.yellowpowerup}</Text>
                 </ImageBackground>
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={this.bluePowerup}>
                 <Image source={require("../assets/gameplay/MBlue.png")} style={styles.mushroomImage} />
                 <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
-                  <Text style={[this.state.fontStyle, styles.mushroomText]}>2</Text>
+                  <Text style={[this.state.fontStyle, styles.mushroomText]}>{this.props.user.powerups.bluepowerup}</Text>
                 </ImageBackground>
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={this.orangePowerup}>
                 <Image source={require("../assets/gameplay/MPink.png")} style={styles.mushroomImage} />
                 <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
-                  <Text style={[this.state.fontStyle, styles.mushroomText]}>3</Text>
+                  <Text style={[this.state.fontStyle, styles.mushroomText]}>{this.props.user.powerups.orangepowerup}</Text>
                 </ImageBackground>
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={this.redPowerup}>
                 <Image source={require("../assets/gameplay/MRed.png")} style={styles.mushroomImage} />
                 <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
-                  <Text style={[this.state.fontStyle, styles.mushroomText]}>4</Text>
+                  <Text style={[this.state.fontStyle, styles.mushroomText]}>{this.props.user.powerups.redpowerup}</Text>
                 </ImageBackground>
               </TouchableOpacity>
             </View>

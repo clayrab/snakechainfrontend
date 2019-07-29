@@ -101,8 +101,7 @@ export default class GameOverOverlay extends React.Component {
 
                 </View>
 
-
-                <View style={styles.scrollView}>
+                {/*<View style={styles.scrollView}>
                   <ImageBackground source={require('../assets/gameover/scrollback.png')}
                     style={styles.ScrollBackground} resizeMode="contain">
                     <View style={styles.bonusView}>
@@ -180,7 +179,7 @@ export default class GameOverOverlay extends React.Component {
                       </ScrollView>
                     </View>
                   </ImageBackground>
-                </View>
+                </View>*/}
               </View>
             }
             <TouchableOpacity style={styles.touchableButton} onPress={this.props.restart}>

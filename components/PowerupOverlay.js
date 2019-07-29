@@ -40,7 +40,9 @@ const CircleComp = (props) => (
   </View>
 );
 
-const Box = ((props) =>
+const PowerupBox = (props) => {
+  return (
+
     <View style={styles.boxContainer}>
       <TouchableOpacity onPress={() => props.onItemPress(props)} style={styles.boxViewContainer}>
         <ImageBackground source={require('../assets/Paused/partionBackground.png')} resizeMode={"stretch"}
@@ -77,8 +79,8 @@ const Box = ((props) =>
         </TouchableOpacity>
       }
     </View>
-);
-
+  );
+};
 export default class PowerupOverlay extends React.Component {
   constructor(props) {
     super(props);
@@ -130,17 +132,17 @@ export default class PowerupOverlay extends React.Component {
   }
 
   getTotalCount = () => {
-    return (this.state.goldPowerUpCount * this.props.prices.goldpowerup) +
+    return (this.state.goldPowerUpCount * this.props.prices.yellowpowerup) +
       (this.state.bluePowerUpCount * this.props.prices.bluepowerup) +
-      (this.state.purplePowerUpCount * this.props.prices.purplepowerup) +
+      (this.state.purplePowerUpCount * this.props.prices.orangepowerup) +
       (this.state.redPowerUpCount * this.props.prices.redpowerup)
   }
 
   proceedToAcquire = async () => {
     const powerups = {
-      goldpowerup: this.state.goldPowerUpCount,
+      yellowpowerup: this.state.goldPowerUpCount,
       bluepowerup: this.state.bluePowerUpCount,
-      purplepowerup: this.state.purplePowerUpCount,
+      orangepowerup: this.state.purplePowerUpCount,
       redpowerup: this.state.redPowerUpCount,
     };
     this.props.proceedToAcquire(powerups, this.getTotalCount())
@@ -162,6 +164,8 @@ export default class PowerupOverlay extends React.Component {
     if (!this.props.show) {
       return null;
     } else {
+      console.log("this.props.prices")
+      console.log(this.props.prices)
       return (
         <View style={styles.container}>
           <ImageBackground style={styles.content} source={require('../assets/pauseoverlay/BackgroundBrown.png')}
@@ -193,40 +197,40 @@ export default class PowerupOverlay extends React.Component {
                     paddingHorizontal: 15
                   }}>
 
-                    <Box buttonStyle={[this.state.buttonText]}
+                    <PowerupBox buttonStyle={[this.state.buttonText]}
                          fontStyle={this.state.buttonText}
                          boxImage={require('../assets/powerupsoverlay/mushroom_yellow.png')}
                          boughtCount={this.state.goldPowerUpCount}
-                         price={this.props.prices.goldpowerup}
-                         circleText={this.props.user.powerups.goldpowerup}
+                         price={this.props.prices.yellowpowerup}
+                         circleText={this.props.user.powerups.yellowpowerup}
                          heading={'Multiplayer (10x)'}
                          changeCount={this.onGoldCountChange}
                          onItemPress={this.onItemPress}
                     />
-                    <Box buttonStyle={[this.state.buttonText]}
+                    <PowerupBox buttonStyle={[this.state.buttonText]}
                          fontStyle={this.state.buttonText}
                          boughtCount={this.state.bluePowerUpCount}
-                         price={this.props.prices.goldpowerup}
+                         price={this.props.prices.bluepowerup}
                          boxImage={require('../assets/powerupsoverlay/mushroom_blue.png')}
                          circleText={this.props.user.powerups.bluepowerup}
                          heading={'Shed Tail'}
                          changeCount={this.onBlueCountChange}
                          onItemPress={this.onItemPress}
                     />
-                    <Box buttonStyle={[this.state.buttonText]}
+                    <PowerupBox buttonStyle={[this.state.buttonText]}
                          fontStyle={this.state.buttonText}
                          boughtCount={this.state.purplePowerUpCount}
-                         price={this.props.prices.goldpowerup}
+                         price={this.props.prices.orangepowerup}
                          boxImage={require('../assets/powerupsoverlay/mushroom_voilet.png')}
-                         circleText={this.props.user.powerups.purplepowerup}
+                         circleText={this.props.user.powerups.orangepowerup}
                          heading={'Wildcard'}
                          changeCount={this.onPurpleCountChange}
                          onItemPress={this.onItemPress}
                     />
-                    <Box buttonStyle={[this.state.buttonText]}
+                    <PowerupBox buttonStyle={[this.state.buttonText]}
                          fontStyle={this.state.buttonText}
                          boughtCount={this.state.redPowerUpCount}
-                         price={this.props.prices.goldpowerup}
+                         price={this.props.prices.redpowerup}
                          boxImage={require('../assets/powerupsoverlay/mushroom_red.png')}
                          circleText={this.props.user.powerups.redpowerup}
                          heading={'Nitro Tail'}
@@ -236,7 +240,7 @@ export default class PowerupOverlay extends React.Component {
 
                   </View>
 
-                  <MushroomTotal count={this.state.goldPowerUpCount} price={this.props.prices.goldpowerup}
+                  <MushroomTotal count={this.state.goldPowerUpCount} price={this.props.prices.yellowpowerup}
                                  image={require("../assets/powerupsoverlay/mushroom_yellow.png")}
                                  fontStyle={this.state.buttonText}/>
 
@@ -244,7 +248,7 @@ export default class PowerupOverlay extends React.Component {
                                  image={require("../assets/powerupsoverlay/mushroom_blue.png")}
                                  fontStyle={this.state.buttonText}/>
 
-                  <MushroomTotal count={this.state.purplePowerUpCount} price={this.props.prices.purplepowerup}
+                  <MushroomTotal count={this.state.purplePowerUpCount} price={this.props.prices.orangepowerup}
                                  image={require("../assets/powerupsoverlay/mushroom_voilet.png")}
                                  fontStyle={this.state.buttonText}/>
 
