@@ -15,7 +15,7 @@ import Loading from './Loading.js';
 import ScreenView from '../components/ScreenView.js';
 
 import { getFromAsyncStore } from "../utils/AsyncStore.js";
-import { context } from "../utils/Context.js";
+import { context, switchHost, QA, QA2, QA2v6 } from "../utils/Context.js";
 import { normalize } from '../utils/FontNormalizer.js';
 import { doGoogleOauth, sendGoogleToken } from '../utils/Oauth.js';
 
@@ -65,7 +65,16 @@ export default class LoginChoose extends React.Component {
     console.log("easteregg")
     easterEggCount = easterEggCount + 1;
     if (easterEggCount >= 5) {
-      sendGoogleToken("eyJhbGciOiJSUzI1NiIsImtpZCI6IjJjM2ZhYzE2YjczZmM4NDhkNDI2ZDVhMjI1YWM4MmJjMWMwMmFlZmQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI2MjA1MDM0MDM1MDEtdjQ2djVrazJnZzBwNzJpNm9pMGQyZThvbm0wMXA2YTkuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI2MjA1MDM0MDM1MDEtdjQ2djVrazJnZzBwNzJpNm9pMGQyZThvbm0wMXA2YTkuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTgzNzU1NDY0MTk1NzcyNDg1MTgiLCJlbWFpbCI6ImNsYXl0b25yYWJlbmRhQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhdF9oYXNoIjoiVmtyX1REaUlCX2VlZERCc1lDcXYxQSIsIm5vbmNlIjoiN21TczlrXzNldlNFVl9EeFExT21GUmprZEpKdjNmNEwzT3ZGSFpBNWI1QSIsIm5hbWUiOiJDbGF5dG9uIFJhYmVuZGEiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tLy1SVGVuWl9GbHJNWS9BQUFBQUFBQUFBSS9BQUFBQUFBQUJ4VS81WkpidXNCM0pPYy9zOTYtYy9waG90by5qcGciLCJnaXZlbl9uYW1lIjoiQ2xheXRvbiIsImZhbWlseV9uYW1lIjoiUmFiZW5kYSIsImxvY2FsZSI6ImVuIiwiaWF0IjoxNTU4NTEwNTA2LCJleHAiOjE1NTg1MTQxMDZ9.aJhCDRIvpBkUFfu4MDPDg9m4QP3RYiuSoOIJq1dKzfX3AlrdnM9ws2Z5hlfl-R2DdNefXU83YEmrLIOWMp99jvtsU110Sp9qtaUQNl6e5y4GlHSPQs-LFRvx3Z82i6MsBnmERo3DkbQkBE5icgr5WMFZkD4-Qm25GPddseelf2z-ABTtBgiY1x1ZCtkF1jOq7aXRtKBzZory9qeRQlPm8n8qB8SEvXoFiAwGhbO7Bi3kgMiNnJPHP47TZnrX-Dp1gh5Ae-_A8XUSi42cxPp1NG45Y7A2BHZOyi3PAdtju2U3pRKEiTx6PuPHwBOVLkJ7aBYoJFoEC9EdGYZ4GMasCg")
+      if(easterEggCount%3 == 0) {
+        alert("QA")
+        switchHost(QA)
+      } else if(easterEggCount%3 == 1) {
+        alert("QA2")
+        switchHost(QA2)
+      } else if(easterEggCount%3 == 2) {
+        alert("QA2v6")
+        switchHost(QA2v6)
+      }
     }
   }
 
@@ -81,9 +90,7 @@ export default class LoginChoose extends React.Component {
                            resizeMode="stretch">
                            <TouchableOpacity
                              onPress={this.easterEgg}
-                             style={{height: 100, width: 100, position: "absolute", left: 0}}
-                           >
-                           </TouchableOpacity>
+                             style={{height: 100, width: 100, position: "absolute", left: 0}}/>
             <TouchableOpacity onPress={this.props.goToLogin}>
               <ImageBackground source={require('../assets/login/button.png')} style={[styles.button]} resizeMode="stretch">
                 <Text style={[styles.loginText]}>LOGIN</Text>
