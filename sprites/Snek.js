@@ -429,7 +429,6 @@ export default class Snek extends Sprite {
       for (let i = 0; i < 4; i++) {
         newWalls = this.makeTetrisBlock(5, newWalls);
       }
-
     } else if (this.props.level === CONSTANTS.LEVELS.BLOCK3) {
       for (let i = 0; i < 8; i++) {
         newWalls = this.makeTetrisBlock(4, newWalls);

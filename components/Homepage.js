@@ -88,6 +88,10 @@ export default class Homepage extends React.Component {
   onPlayPress = () => {
     this.setState({overlay: overlays.SELECTLEVEL});
   }
+  calculatePrice = () => {
+    console.log(parseInt)
+    return (parseInt(this.props.user.eggs, 10) * parseInt(this.props.prices.minePerEggPrice, 10)) + parseInt(this.props.prices.mineHaulPrice, 10);
+  }
   onPurchaseTicketSelect = async (ticketType) => {
     console.log('onPurchaseTicketSelect')
     console.log(this.props.prices)
@@ -95,7 +99,7 @@ export default class Homepage extends React.Component {
       if (ticketType == "ETH") {
         await this.setState({overlay: overlays.LOADING});
         let jwt = await getFromAsyncStore("jwt");
-        let price = this.props.user.eggs*this.props.prices.mineHaulPrice;
+        let price = this.calculatePrice();
         let txKey = await createTransaction(ticketType, price, jwt);
         this.setState({
           overlay: overlays.CONFIRMTICKET,
@@ -116,7 +120,7 @@ export default class Homepage extends React.Component {
     console.log(this.props.user)
     await this.setState({overlay: overlays.LOADING});
     let jwt = await getFromAsyncStore("jwt");
-    let price = this.props.user.eggs*this.props.prices.mineHaulPrice;
+    let price = this.calculatePrice();
     var data = {
       txkey: this.state.txKey,
       type: this.state.confirmTokenType,
@@ -292,7 +296,7 @@ export default class Homepage extends React.Component {
   }
 
   render() {
-    let mineGraphicIndex = 10 - Math.floor(10 * this.props.user.haul / this.props.prices.mineMax);
+    let mineGraphicIndex = 10 - Math.floor(10 * this.props.user.haul / this.props.prices.coinsPerEgg);
     mineGraphicIndex = mineGraphicIndex < 0 ? 0 : mineGraphicIndex; // if user hauls more than the mine max
     let mineTextColorStyle = {};
     if (mineGraphicIndex <= 6) {
@@ -301,12 +305,7 @@ export default class Homepage extends React.Component {
       mineTextColorStyle = {color: "#352927",}
     }
     let mineImg = mineImages[mineGraphicIndex];
-    let minePercent = (100 - Math.floor((100 * this.props.user.haul / this.props.prices.mineMax)));
-    // console.log("homepage render")
-    // console.log(minePercent)
-    // console.log(this.props.user)
-    // console.log(this.props.user.haul)
-    // console.log(this.props.prices.mineMax)
+    let minePercent = (100 - Math.floor((100 * this.props.user.haul / this.props.prices.coinsPerEgg)));
     minePercent = minePercent < 0.0 ? 0.0 : minePercent; // if user hauls more than the mine max
     if (minePercent >= 100.0) {
       minePercent = minePercent.toPrecision(3);
@@ -390,6 +389,7 @@ export default class Homepage extends React.Component {
                                  user={this.props.user}
                                  prices={this.props.prices}
                                  onSelectTicket={this.onPurchaseTicketSelect}
+                                 calculatePrice={this.calculatePrice}
           />
           <AreYouSureOverlay
             show={this.state.overlay == overlays.CONFIRMTICKET}

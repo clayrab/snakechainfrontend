@@ -47,7 +47,7 @@ export default class GameHistoryOverlay extends React.Component {
       return null;
     } else {
       let haul = this.props.user.haul
-      let mineGraphicIndex = 10 - Math.floor(10 * haul / this.props.prices.mineMax);
+      let mineGraphicIndex = 10 - Math.floor(10 * haul / this.props.prices.coinsPerEgg);
       let mineTextColorStyle = {};
       if (mineGraphicIndex <= 6) {
         mineTextColorStyle = {color: "#fab523",}
@@ -55,7 +55,7 @@ export default class GameHistoryOverlay extends React.Component {
         mineTextColorStyle = {color: "#352927",}
       }
       let mineImg = mineImages[mineGraphicIndex];
-      let minePercent = (100 - Math.floor((100 * haul / this.props.prices.mineMax)))
+      let minePercent = (100 - Math.floor((100 * haul / this.props.prices.coinsPerEgg)))
       if (minePercent >= 100.0) {
         minePercent = minePercent.toPrecision(3);
       } else if (minePercent < 10.0) {
@@ -91,7 +91,7 @@ export default class GameHistoryOverlay extends React.Component {
                     REMAINING GOLD
                   </Text>
                   <Text style={[styles.headerText]}>
-                    {this.props.prices.mineMax - this.props.user.haul}
+                    {this.props.prices.coinsPerEgg - this.props.user.haul}
                   </Text>
                 </ImageBackground>
                 <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage}

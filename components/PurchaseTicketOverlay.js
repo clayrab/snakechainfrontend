@@ -40,10 +40,16 @@ export default class PurchaseTicketOverlay extends React.Component {
                 {this.props.user.eggs} eggs
               </Text>
               <Text style={[styles.headerText2small]}>
-                {this.props.prices.mineHaulPrice/CONSTANTS.WEIPERETH} ETH per egg
+                {this.props.prices.minePerEggPrice/CONSTANTS.WEIPERETH} ETH per egg
+              </Text>
+              <Text style={[styles.headerText2small]}>
+                {this.props.prices.mineHaulPrice/CONSTANTS.WEIPERETH} base fee
+              </Text>
+              <Text style={[styles.headerText2small]}>
+                + gas
               </Text>
               <Text style={[styles.headerText2]}>
-                Total: {this.props.user.eggs*this.props.prices.mineHaulPrice/CONSTANTS.WEIPERETH} ETH
+                Total: {this.props.calculatePrice()} + gas ETH
               </Text>
             </View>
             {this.props.user.eggs > 0
@@ -72,7 +78,7 @@ export default class PurchaseTicketOverlay extends React.Component {
                 </ImageBackground>
               </TouchableOpacity>
             }
-            {/*this.props.user.haul >= this.props.prices.mineMax
+            {/*this.props.user.haul >= this.props.prices.coinsPerEgg
               ?
               <TouchableOpacity onPress={this.purchaseWithSNK}>
                 <ImageBackground source={require("../assets/ticket/button.png")} resizeMode='stretch' style={styles.inputBackground}>
