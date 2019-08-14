@@ -89,7 +89,6 @@ export default class Homepage extends React.Component {
     this.setState({overlay: overlays.SELECTLEVEL});
   }
   calculatePrice = () => {
-    console.log(parseInt)
     return (parseInt(this.props.user.eggs, 10) * parseInt(this.props.prices.minePerEggPrice, 10)) + parseInt(this.props.prices.mineHaulPrice, 10);
   }
   onPurchaseTicketSelect = async (ticketType) => {
@@ -115,9 +114,6 @@ export default class Homepage extends React.Component {
     }
   }
   onConfirmTicket = async () => {
-    console.log('onConfirmTicket')
-    console.log(this.props.prices)
-    console.log(this.props.user)
     await this.setState({overlay: overlays.LOADING});
     let jwt = await getFromAsyncStore("jwt");
     let price = this.calculatePrice();
