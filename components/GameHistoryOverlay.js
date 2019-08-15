@@ -9,6 +9,9 @@ import {
   Image
 } from 'react-native';
 import {normalize} from '../utils/FontNormalizer.js';
+import {getFromAsyncStore} from "../utils/AsyncStore.js";
+import {doGetFetch} from '../utils/Network.js';
+import {context} from "../utils/Context.js";
 
 let mineImages = [
   require('../assets/homepage/mine/mine0.png'),
@@ -29,20 +32,51 @@ export default class GameHistoryOverlay extends React.Component {
     super(props);
     this.state = {
       loading: true,
-      //games: [],
+      page: 1,
+      games: [],
     }
   }
 
-  static getDerivedStateFromProps(props, state) {
-    if (props.user.name != "") {
-      return {
-        loading: false,
-      };
+  // static getDerivedStateFromProps(props, state) {
+  //   if (props.user.name != "") {
+  //     return {
+  //       loading: false,
+  //     };
+  //   }
+  //   return null;
+  // }
+  async componentDidMount() {
+    this.fetchGameHistory();
+  }
+  fetchGameHistory = async(page) => {
+    try {
+      console.log("fetchGameHistory")
+      console.log(this.state.page)
+      let jwt = await getFromAsyncStore("jwt");
+      let resp = await doGetFetch(`${context.host}:${context.port}/getGames?number=${this.state.page}`, jwt);
+      this.setState({games: resp.games});
+    } catch(err) {
+      if(("" + err) === "Unauthorized") {
+        await removeItem("jwt");
+        alert("Authorization failed. Please login again.");
+      } else {
+        alert("Unknown error while fetching games: " + err);
+      }
+      //await this.setState({screen: screens.LOGINCHOOSE, loadingGames: false});
     }
-    return null;
+  }
+  onNextPress = async() => {
+    console.log("onNextPress")
+    await this.setState({page: this.state.page + 1})
+    this.fetchGameHistory();
+  }
+  onPrevPress = async() => {
+    await this.setState({page: this.state.page - 1})
+    this.fetchGameHistory();
   }
 
   render() {
+    console.log("gamehistory render")
     if (!this.props.show) {
       return null;
     } else {
@@ -129,7 +163,7 @@ export default class GameHistoryOverlay extends React.Component {
                              style={[styles.contentImageBG, {flexDirection: 'column'}]} resizeMode="stretch">
               <ScrollView style={styles.contentView}>
                 {
-                  this.props.games.map((game, idx) => {
+                  this.state.games.map((game, idx) => {
                     return (
                       <ImageBackground key={idx} source={require('../assets/gamehistory/ghButtonBG.png')}
                                        style={[styles.historyBG]} resizeMode="stretch">
@@ -151,6 +185,16 @@ export default class GameHistoryOverlay extends React.Component {
                     );
                   })
                 }
+                <View style={{flexDirection: "row", padding: 5,}}>
+                  {this.state.page <= 1 && false ? null:
+                    <TouchableOpacity style={[{flex:1}]} onPress={this.onPrevPress}>
+                      <Text style={[styles.nextPrevButtonText]}>&lt; PREV</Text>
+                    </TouchableOpacity>
+                  }
+                  <TouchableOpacity style={[{flex:1, alignItems: 'flex-end', textAlign: "right",}]} onPress={this.onNextPress}>
+                    <Text style={[styles.nextPrevButtonText, {} ]}>NEXT &gt;</Text>
+                  </TouchableOpacity>
+                </View>
               </ScrollView>
             </ImageBackground>
           </ImageBackground>
@@ -386,6 +430,12 @@ let styles = StyleSheet.create({
     fontSize: normalize(8),
     fontFamily: 'riffic-free-bold',
   },
+  nextPrevButtonText: {
+    color: "#fab523",
+    fontSize: normalize(14),
+    fontFamily: 'riffic-free-bold',
+    flex: 1,
+  }
   // liquidText: {
   //   marginTop: screenHeight * 0.10,
   //   fontSize: 24,

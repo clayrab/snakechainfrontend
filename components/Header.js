@@ -14,13 +14,11 @@ export default class Header extends React.Component {
 
   render() {
     let pending = false;
-    if (this.props.user) {
-      if (this.props.user.transactions) {
-        for (let tx of this.props.user.transactions) {
-          if (tx.pending) {
-            pending = true;
-            break;
-          }
+    if (this.props.transactions) {
+      for (let tx of this.props.transactions) {
+        if (tx.pending) {
+          pending = true;
+          //break;
         }
       }
     }

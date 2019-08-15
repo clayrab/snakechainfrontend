@@ -205,7 +205,6 @@ export default class App extends React.Component {
       txKey: "",
       offerContract: true,
       loadingUser: true,
-      loadingGames: true,
       loadingTx: true,
       errorTitle: "",
       errorParagraph: "",
@@ -288,24 +287,9 @@ export default class App extends React.Component {
       this.authorizationError();
     }
   }
-  fetchGameHistory = async(jwt) => {
-    try {
-      let resp = await doGetFetch(`${context.host}:${context.port}/getGames`, jwt);
-      await this.setState({games: resp.games, loadingGames: false});
-      return true;
-    } catch(err) {
-      if(("" + err) === "Unauthorized") {
-        await removeItem("jwt");
-        alert("Authorization failed. Please login again.");
-      } else {
-        alert("Unknown error while fetching games: " + err);
-      }
-      await this.setState({screen: screens.LOGINCHOOSE, loadingGames: false});
-      return false;
-    }
-  }
   fetchTxHistory = async(jwt) => {
     try {
+      console.log("fetchTxHistory")
       let resp = await doGetFetch(`${context.host}:${context.port}/getTransactions`, jwt);
       await this.setState({transactions: resp.transactions, loadingTx: false});
       return true;
@@ -323,9 +307,9 @@ export default class App extends React.Component {
   loadUser = async (jwt) => {
     console.log("loadUser")
     let result = await this.fetchUser(jwt);
-    if(result) {
-      result = result && this.fetchGameHistory(jwt);
-    }
+    // if(result) {
+    //   result = result && this.fetchGameHistory(jwt, 1);
+    // }
     if(result) {
       result = result && this.fetchTxHistory(jwt);
     }
@@ -341,24 +325,27 @@ export default class App extends React.Component {
       await this.setState({screen});
     }
     try {
-      this.socket = SocketIOClient(`${context.host}:${context.socketPort}`, {
-        //path: '/mypath',
-        query: `pubkey=${this.state.user.pubkey}`,
-      });
-      this.socket.on('connect', () => {
-        console.log('connected to server');
-      });
-      this.socket.on("MINED", async (txid) => {
-        let latestJwt = await getFromAsyncStore("jwt");
-        this.loadUser(latestJwt);
-      });
+      console.log("Opening socket for pubkey: " + this.state.user.pubkey)
+      if(this.state.user.pubkey) {
+        this.socket = SocketIOClient(`${context.host}:${context.socketPort}`, {
+          query: `pubkey=${this.state.user.pubkey}`,
+        });
+        this.socket.on('connect', () => {
+          console.log('connected to server');
+        });
+        this.socket.on("MINED", async (txid) => {
+          console.log("ONMINED")
+          let latestJwt = await getFromAsyncStore("jwt");
+          this.loadUser(latestJwt);
+        });
+      }
     } catch (err) {
       this.genericNetworkError();
     }
   }
 
-  doUpdateUser = async (user) => {
-    this.setState({user: user})
+  doUpdateUser = async (user, txs) => {
+    this.setState({user: user, transactions: txs});
   }
   onDpadChange = async (direction) => {
     if (direction != CONSTANTS.DPADSTATES.NONE && direction != this.state.pressedButton) {
@@ -571,9 +558,6 @@ export default class App extends React.Component {
 }
 
   render() {
-    console.log("render app")
-    console.log(this.state.screen)
-
     if (!this.state.isReady) {
       return (
         <AppLoading
@@ -588,8 +572,9 @@ export default class App extends React.Component {
       return (
         <Homepage
           user={this.state.user}
+          transactions={this.state.transactions}
           prices={this.state.prices}
-          games={[this.state.games]}
+          games={this.state.games}
           onGoToTown={this.onGoToTown}
           onWallet={this.onWallet}
           onProfile={this.onProfile}
@@ -625,6 +610,7 @@ export default class App extends React.Component {
     } else if (this.state.screen == screens.SNAKEUPGRADE) {
       return (
         <SnakeUpgrade user={this.state.user}
+                      transactions={this.state.transactions}
                       snake={snakeUpgrades[this.state.activeSnakeUpgrade]}
                       onLeftPress={this.snakeUpgradeLeft}
                       onRightPress={this.snakeUpgradeRight}/>
@@ -646,6 +632,7 @@ export default class App extends React.Component {
         <Profile
           loading={this.state.loadingUser}
           user={this.state.user}
+          transactions={this.state.transactions}
           exit={this.exit}
           logOut={this.logOut}/>
       );

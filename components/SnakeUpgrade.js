@@ -34,7 +34,7 @@ export default class SnakeUpgrade extends React.Component {
       <ScreenView>
         <ImageBackground source={require('../assets/snakeupgrade/Background.png')}
           style={styles.backgroundImage} resizeMode="cover">
-          <Header loading={this.props.loading} user={this.props.user} onProfile={this.props.onProfile}
+          <Header loading={this.props.loading} user={this.props.user} transactions={this.props.transactions} onProfile={this.props.onProfile}
             onWallet={this.props.onWallet} style={styles.head} />
 
           <ScrollView>

@@ -136,7 +136,7 @@ export default class Homepage extends React.Component {
       alert(resp.error);
       await this.setState({overlay: -1});
     } else if (resp.txhash) {
-      await this.props.doUpdateUser(resp.user);
+      await this.props.doUpdateUser(resp.user, resp.transactions);
       await this.setState({overlay: overlays.RECEIPTOVERLAY, lastTxHash: resp.txhash});
     } else {
       alert("Error sending transaction");
@@ -149,23 +149,23 @@ export default class Homepage extends React.Component {
   goToTown = () => {
     this.props.onGoToTown();
   }
-  buySnkDynamite = async () => {
-    try {
-      let ticketType = "SNK"
-      await this.setState({overlay: overlays.LOADING});
-      let jwt = await getFromAsyncStore("jwt");
-      let price = this.props.prices.tnt;
-      let txKey = await createTransaction(ticketType, price, jwt);
-      this.setState({
-        overlay: overlays.CONFIRMSNKDYNAMITE,
-        confirmAmount: price,
-        confirmTokenType: ticketType,
-        txKey: txKey
-      });
-    } catch(err) {
-      alert("There was an Error.\n" + err.toString());
-    }
-  }
+  // buySnkDynamite = async () => {
+  //   try {
+  //     let ticketType = "SNK"
+  //     await this.setState({overlay: overlays.LOADING});
+  //     let jwt = await getFromAsyncStore("jwt");
+  //     let price = this.props.prices.tnt;
+  //     let txKey = await createTransaction(ticketType, price, jwt);
+  //     this.setState({
+  //       overlay: overlays.CONFIRMSNKDYNAMITE,
+  //       confirmAmount: price,
+  //       confirmTokenType: ticketType,
+  //       txKey: txKey
+  //     });
+  //   } catch(err) {
+  //     alert("There was an Error.\n" + err.toString());
+  //   }
+  // }
   // onConfirmDynamite = async () => {
   //   await this.setState({overlay: overlays.LOADING});
   //   let jwt = await getFromAsyncStore("jwt");
@@ -313,7 +313,7 @@ export default class Homepage extends React.Component {
     return (
       <ScreenView>
         <ImageBackground source={require('../assets/homepage/back.png')} style={styles.backgroundImage}>
-          <Header loading={this.props.loading} user={this.props.user} onProfile={this.props.onProfile}
+          <Header loading={this.props.loading} transactions={this.props.transactions} user={this.props.user} onProfile={this.props.onProfile}
                   onWallet={this.props.onWallet}/>
           <View style={styles.contentHolder}>
             <View style={styles.contentTopMargin}></View>

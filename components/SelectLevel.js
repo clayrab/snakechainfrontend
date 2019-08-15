@@ -108,9 +108,10 @@ export default class SelectLevel extends React.Component {
       <ScreenView style={styles.container}>
 
         <Header loading={this.props.loading}
+                user={this.props.user}
+                transactions={this.state.transactions}
                 hasBackButton={true}
                 exit={this.props.exit}
-                user={this.props.user}
                 style={styles.header}
                 onWallet={this.props.onWallet}/>
 
