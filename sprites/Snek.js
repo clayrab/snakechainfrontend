@@ -30,8 +30,8 @@ export default class Snek extends Sprite {
   constructor(props) {
     super(props);
     this.defaultState = {
-      posX: this.boardXtoPosX(CONSTANTS.BOARDSIZEX - 1),
-      posY: this.boardYtoPosY(CONSTANTS.BOARDHEIGHT - 6),
+      snakePosX: this.boardXtoPosX(CONSTANTS.BOARDSIZEX - 1),
+      snakePosY: this.boardYtoPosY(CONSTANTS.BOARDHEIGHT - 6),
       boardX: CONSTANTS.BOARDSIZEX - 1,
       boardY: CONSTANTS.BOARDHEIGHT - 6,
       direction: CONSTANTS.DPADSTATES.UP,
@@ -301,8 +301,8 @@ export default class Snek extends Sprite {
 
   copyDefaultState() {
     let startState = {};
-    startState.posX = this.defaultState.posX;
-    startState.posY = this.defaultState.posY;
+    startState.snakePosX = this.defaultState.snakePosX;
+    startState.snakePosY = this.defaultState.snakePosY;
     startState.boardX = this.defaultState.boardX;
     startState.boardY = this.defaultState.boardY;
     startState.direction = this.defaultState.direction;
@@ -774,7 +774,7 @@ export default class Snek extends Sprite {
     var newPosX = this.boardXtoPosX(this.state.boardX);
     var newPosY = this.boardYtoPosY(this.state.boardY);
     //await this call so that onBoardTile is in the right state
-    await this.setState({ tailIndex: newTailIndex, posX: newPosX, posY: newPosY });
+    await this.setState({ tailIndex: newTailIndex, snakePosX: newPosX, snakePosY: newPosY });
   }
 
   onBoardTile(boardX, boardY) {
@@ -894,7 +894,7 @@ export default class Snek extends Sprite {
       // if (this.state.pelletLocation == null) {
       //   this.placePellet();
       // }
-      if (this.state.direction == CONSTANTS.DPADSTATES.UP && (this.state.posY < this.boardYtoPosY(this.state.boardY))) {
+      if (this.state.direction == CONSTANTS.DPADSTATES.UP && (this.state.snakePosY < this.boardYtoPosY(this.state.boardY))) {
         if (this.props.pressedButton == CONSTANTS.DPADSTATES.UP) {
           this.goUp();
         } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.RIGHT) {
@@ -904,7 +904,7 @@ export default class Snek extends Sprite {
         } else {
           this.goUp();
         }
-      } else if (this.state.direction == CONSTANTS.DPADSTATES.DOWN && (this.state.posY > this.boardYtoPosY(this.state.boardY))) {
+      } else if (this.state.direction == CONSTANTS.DPADSTATES.DOWN && (this.state.snakePosY > this.boardYtoPosY(this.state.boardY))) {
         if (this.props.pressedButton == CONSTANTS.DPADSTATES.DOWN) {
           this.goDown();
         } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.RIGHT) {
@@ -914,7 +914,7 @@ export default class Snek extends Sprite {
         } else {
           this.goDown();
         }
-      } else if (this.state.direction == CONSTANTS.DPADSTATES.RIGHT && (this.state.posX > this.boardXtoPosX(this.state.boardX))) {
+      } else if (this.state.direction == CONSTANTS.DPADSTATES.RIGHT && (this.state.snakePosX > this.boardXtoPosX(this.state.boardX))) {
         if (this.props.pressedButton == CONSTANTS.DPADSTATES.RIGHT) {
           this.goRight();
         } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.UP) {
@@ -924,7 +924,7 @@ export default class Snek extends Sprite {
         } else {
           this.goRight();
         }
-      } else if (this.state.direction == CONSTANTS.DPADSTATES.LEFT && (this.state.posX < this.boardXtoPosX(this.state.boardX))) {
+      } else if (this.state.direction == CONSTANTS.DPADSTATES.LEFT && (this.state.snakePosX < this.boardXtoPosX(this.state.boardX))) {
         if (this.props.pressedButton == CONSTANTS.DPADSTATES.LEFT) {
           this.goLeft();
         } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.UP) {
@@ -949,13 +949,13 @@ export default class Snek extends Sprite {
         }
         this.lastFrameTime = now;
         if (this.state.direction == CONSTANTS.DPADSTATES.UP) {
-          this.setState({ posY: this.state.posY - speed });
+          this.setState({ snakePosY: this.state.snakePosY - speed });
         } else if (this.state.direction == CONSTANTS.DPADSTATES.DOWN) {
-          this.setState({ posY: this.state.posY + speed });
+          this.setState({ snakePosY: this.state.snakePosY + speed });
         } else if (this.state.direction == CONSTANTS.DPADSTATES.RIGHT) {
-          this.setState({ posX: this.state.posX + speed });
+          this.setState({ snakePosX: this.state.snakePosX + speed });
         } else if (this.state.direction == CONSTANTS.DPADSTATES.LEFT) {
-          this.setState({ posX: this.state.posX - speed });
+          this.setState({ snakePosX: this.state.snakePosX - speed });
         }
       }
     }
@@ -1002,7 +1002,7 @@ export default class Snek extends Sprite {
   render() {
     let redPellet = null;
     let pellet = null;
-    let snek = (<View style={[styles.snek, { left: this.state.posX, top: this.state.posY, }]}>
+    let snek = (<View style={[styles.snek, { left: this.state.snakePosX, top: this.state.snakePosY, }]}>
       <Image source={require('../assets/gameplay/headUp.png')} style={[styles.snek, this.state.snakeHead]} resizeMode="stretch" />
     </View>);
     //TODO: Move this to an event that triggers when this.state.direction or boardX or boardY changes.
@@ -1040,8 +1040,8 @@ export default class Snek extends Sprite {
     // }
     if (!this.state.alive) {
       snek = (<View style={[styles.snek, {
-        left: this.state.posX,
-        top: this.state.posY,
+        left: this.state.snakePosX,
+        top: this.state.snakePosY,
         backgroundColor: "#000",
       }]}></View>);
     }
