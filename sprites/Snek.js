@@ -5,6 +5,7 @@ import { Sprite } from 'react-game-kit/native';
 import PropTypes from 'prop-types';
 import CONSTANTS from '../Constants.js';
 
+import SnekHead from './SnekHead.js'
 import SnekPart from './SnekPart.js'
 import WallPart from './WallPart.js'
 import ScoreBoard from './ScoreBoard.js'
@@ -29,14 +30,14 @@ export default class Snek extends Sprite {
 
   constructor(props) {
     super(props);
-    this.defaultState = {
-      snakePosX: this.boardXtoPosX(CONSTANTS.BOARDSIZEX - 1),
-      snakePosY: this.boardYtoPosY(CONSTANTS.BOARDHEIGHT - 6),
+    this.state = {
+      // snakePosX: this.boardXtoPosX(CONSTANTS.BOARDSIZEX - 1),
+      // snakePosY: this.boardYtoPosY(CONSTANTS.BOARDHEIGHT - 6),
       boardX: CONSTANTS.BOARDSIZEX - 1,
       boardY: CONSTANTS.BOARDHEIGHT - 6,
       direction: CONSTANTS.DPADSTATES.UP,
       tailIndex: -1, //TAILINDEX ALWAYS POINTS TO THE END OF THE TAIL. THE ARRAY IS NOT IN THE SAME ORDER AS THE TAIL.
-      tail: [], //DO NOT SET THE TAIL OR TAILINDEX WITHOUT FIXING THE BOARD. USE EXISTING FUNCTIONS.
+      //tail: [], //DO NOT SET THE TAIL OR TAILINDEX WITHOUT FIXING THE BOARD. USE EXISTING FUNCTIONS.
       // baseScore: 0,
       // multiplier: 1,
       score: 0,
@@ -46,25 +47,27 @@ export default class Snek extends Sprite {
       pelletRot: new Animated.Value(0),
       boardShake: new Animated.Value(0),
       alive: true,
-      snakeHead: { transform: [{ rotate: '0deg' }] },
-      walls: [],
+      snakeHeadStyle: { transform: [{ rotate: '0deg' }] },
+      //walls: [],
       mushrooms: {},
       speedEffector: 1.0,
       godMode: false,
       //renderTrigger: true, // Flip this to force a render. The cost of React Native for animation. This isn't great, but it helps.
       framerate: 0,
       fpsShow: false,
-      headerOpen: true
+      headerOpen: true,
     };
+    this.nextID = 0;
+    this.state.tail = this.makeTail(5, this.state.boardX, this.state.boardY);
+    this.state.tailIndex = 4;
+    this.state.walls = this.getRandomWalls(props);
     this.boardState = [];
     this.wallComponents = [];
     this.edibles = []; //Managed through helper functions addEdible and removeEdible
     this.numberOfEdibles = 0;
-    this.nextID = 0;
-    this.state = this.copyDefaultState();
-    this.state.toggleReset = props.toggleReset;
+    //this.state = this.copyDefaultState();
+    //this.state.toggleReset = props.toggleReset;
     this.resetBoard();
-    this.lastFrameTime = null;
     this.pelletAnim = Animated.timing(this.state.pelletRot, {
       toValue: 1,
       duration: 2000,
@@ -80,16 +83,16 @@ export default class Snek extends Sprite {
 
   async componentDidMount() {
     await this.setupAudio();
-    this.context.loop.subscribe(this.update);
-    this.framerateInterval = setInterval(() => {
-      this.setState({framerate: this.frame});
-      this.frame = 0;
-    }, 1000);
+    //this.context.loop.subscribe(this.update);
+    // this.framerateInterval = setInterval(() => {
+    //   this.setState({framerate: this.frame});
+    //   this.frame = 0;
+    // }, 1000);
   }
 
   componentWillUnmount() {
-    this.context.loop.unsubscribe(this.update);
-    clearInterval(this.framerateInterval)
+    //this.context.loop.unsubscribe(this.update);
+    //clearInterval(this.framerateInterval)
   }
 
   // triggerRender = async() => {
@@ -301,11 +304,11 @@ export default class Snek extends Sprite {
 
   copyDefaultState() {
     let startState = {};
-    startState.snakePosX = this.defaultState.snakePosX;
-    startState.snakePosY = this.defaultState.snakePosY;
+    // startState.snakePosX = this.defaultState.snakePosX;
+    // startState.snakePosY = this.defaultState.snakePosY;
+    startState.direction = this.defaultState.direction;
     startState.boardX = this.defaultState.boardX;
     startState.boardY = this.defaultState.boardY;
-    startState.direction = this.defaultState.direction;
     //startState.pelletLocation = this.defaultState.pelletLocation;
     //startState.redPelletLocation = this.defaultState.redPelletLocation;
     startState.pelletRot = this.defaultState.pelletRot;
@@ -317,11 +320,11 @@ export default class Snek extends Sprite {
     startState.alive = this.defaultState.alive;
     startState.tail = this.makeTail(5, this.defaultState.boardX, this.defaultState.boardY);
     startState.tailIndex = 4;
-    startState.snakeHead = { transform: [{ rotate: '0deg' }] };
+    startState.snakeHeadStyle = { transform: [{ rotate: '0deg' }] };
     startState.walls = this.getRandomWalls();
     startState.speedEffector = this.defaultState.speedEffector;
     startState.godMode = this.defaultState.godMode;
-    startState.toggleReset = this.props.toggleReset;
+    //startState.toggleReset = this.props.toggleReset;
     return startState;
   }
 
@@ -416,20 +419,20 @@ export default class Snek extends Sprite {
     walls[randY * 100 + randX] = true;
     return walls;
   }
-  getRandomWalls = () => {
+  getRandomWalls = (props) => {
     let newWalls = [];
-    if (this.props.level === CONSTANTS.LEVELS.BLOCK1) {
+    if (props.level === CONSTANTS.LEVELS.BLOCK1) {
       for (let i = 0; i < 12; i++) {
         newWalls = this.makeTetrisBlock(4, newWalls);
       }
-    } else if (this.props.level === CONSTANTS.LEVELS.BLOCK2) {
+    } else if (props.level === CONSTANTS.LEVELS.BLOCK2) {
       for (let i = 0; i < 12; i++) {
         newWalls = this.makeTetrisBlock(4, newWalls);
       }
       for (let i = 0; i < 4; i++) {
         newWalls = this.makeTetrisBlock(5, newWalls);
       }
-    } else if (this.props.level === CONSTANTS.LEVELS.BLOCK3) {
+    } else if (props.level === CONSTANTS.LEVELS.BLOCK3) {
       for (let i = 0; i < 8; i++) {
         newWalls = this.makeTetrisBlock(4, newWalls);
       }
@@ -439,15 +442,15 @@ export default class Snek extends Sprite {
       for (let i = 0; i < 4; i++) {
         newWalls = this.makeTetrisBlock(6, newWalls);
       }
-    } else if (this.props.level === CONSTANTS.LEVELS.SCATTER1) {
+    } else if (props.level === CONSTANTS.LEVELS.SCATTER1) {
       for (let i = 0; i < 12; i++) {
         newWalls = this.makeScatterShot(newWalls);
       }
-    } else if (this.props.level === CONSTANTS.LEVELS.SCATTER2) {
+    } else if (props.level === CONSTANTS.LEVELS.SCATTER2) {
       for (let i = 0; i < 24; i++) {
         newWalls = this.makeScatterShot(newWalls);
       }
-    } else if (this.props.level === CONSTANTS.LEVELS.SCATTER3) {
+    } else if (props.level === CONSTANTS.LEVELS.SCATTER3) {
       for (let i = 0; i < 30; i++) {
         newWalls = this.makeScatterShot(newWalls);
       }
@@ -501,12 +504,12 @@ export default class Snek extends Sprite {
     await this.props.onDied(this.state.score);
   }
 
-  hardReset = async () => {
-    var startState = this.copyDefaultState();
-    this.setState(startState);
-    this.resetBoard();
-    await this.placePellet();
-  }
+  // hardReset = async () => {
+  //   var startState = this.copyDefaultState();
+  //   this.setState(startState);
+  //   this.resetBoard();
+  //   await this.placePellet();
+  // }
 
   onLeaveBoardTile(boardX, boardY) {
     this.boardState[boardY][boardX] = null;
@@ -747,7 +750,7 @@ export default class Snek extends Sprite {
     }
   }
 
-  moveTail = async (direction) => {
+  moveTail = (direction) => {
     if (this.state.tailIndex >= 0) {
       this.onLeaveBoardTile(this.state.tail[this.state.tailIndex].props.boardX, this.state.tail[this.state.tailIndex].props.boardY);
       //cheating here and not using setState. it will be fired below.
@@ -774,7 +777,8 @@ export default class Snek extends Sprite {
     var newPosX = this.boardXtoPosX(this.state.boardX);
     var newPosY = this.boardYtoPosY(this.state.boardY);
     //await this call so that onBoardTile is in the right state
-    await this.setState({ tailIndex: newTailIndex, snakePosX: newPosX, snakePosY: newPosY });
+    return newTailIndex;
+    //await this.setState({ tailIndex: newTailIndex, });
   }
 
   onBoardTile(boardX, boardY) {
@@ -790,70 +794,73 @@ export default class Snek extends Sprite {
         break;
       }
     }
-
     this.boardState[boardY][boardX] = "WALL";
   }
 
-  goUp() {
-    this.moveTail(CONSTANTS.DPADSTATES.UP);
+  goUp = async() => {
+    let newTailIndex = this.moveTail(CONSTANTS.DPADSTATES.UP);
     if (this.state.boardY - 1 < 0) {
       this.die();
     } else if (this.boardState[this.state.boardY - 1][this.state.boardX] === "WALL" && !this.state.godMode) {
       this.die();
     } else {
       this.onBoardTile(this.state.boardX, this.state.boardY - 1);
-      this.setState({
+      await this.setState({
         direction: CONSTANTS.DPADSTATES.UP,
         boardY: this.state.boardY - 1,
-        snakeHead: { transform: [{ rotate: '0deg' }] }
+        snakeHeadStyle: { transform: [{ rotate: '0deg' }] },
+        tailIndex: newTailIndex,
       });
     }
   }
 
-  goDown() {
-    this.moveTail(CONSTANTS.DPADSTATES.DOWN);
+  goDown = async() => {
+    let newTailIndex = this.moveTail(CONSTANTS.DPADSTATES.DOWN);
     if (this.state.boardY + 1 > CONSTANTS.BOARDHEIGHT - 1) {
       this.die();
     } else if (this.boardState[this.state.boardY + 1][this.state.boardX] === "WALL" && !this.state.godMode) {
       this.die();
     } else {
       this.onBoardTile(this.state.boardX, this.state.boardY + 1);
-      this.setState({
+      await this.setState({
         direction: CONSTANTS.DPADSTATES.DOWN,
         boardY: this.state.boardY + 1,
-        snakeHead: { transform: [{ rotate: '180deg' }] }
+        snakeHeadStyle: { transform: [{ rotate: '180deg' }] },
+        tailIndex: newTailIndex,
       });
     }
   }
 
-  goLeft() {
-    this.moveTail(CONSTANTS.DPADSTATES.LEFT);
+  goLeft = async() => {
+    let newTailIndex = this.moveTail(CONSTANTS.DPADSTATES.LEFT);
     if (this.state.boardX - 1 < 0) {
       this.die();
     } else if (this.boardState[this.state.boardY][this.state.boardX - 1] === "WALL" && !this.state.godMode) {
       this.die();
     } else {
       this.onBoardTile(this.state.boardX - 1, this.state.boardY);
-      this.setState({
+      await this.setState({
         direction: CONSTANTS.DPADSTATES.LEFT,
         boardX: this.state.boardX - 1,
-        snakeHead: { transform: [{ rotate: '270deg' }] }
+        snakeHeadStyle: { transform: [{ rotate: '270deg' }] },
+        tailIndex: newTailIndex,
       });
     }
   }
 
-  goRight() {
-    this.moveTail(CONSTANTS.DPADSTATES.RIGHT);
+  goRight = async() =>  {
+    let newTailIndex = this.moveTail(CONSTANTS.DPADSTATES.RIGHT);
     if (this.state.boardX + 1 > CONSTANTS.BOARDWIDTH - 1) {
       this.die();
     } else if (this.boardState[this.state.boardY][this.state.boardX + 1] === "WALL" && !this.state.godMode) {
       this.die();
     } else {
       this.onBoardTile(this.state.boardX + 1, this.state.boardY);
-      this.setState({
+      await this.setState({
         direction: CONSTANTS.DPADSTATES.RIGHT,
         boardX: this.state.boardX + 1,
-        snakeHead: { transform: [{ rotate: '90deg' }] }
+        snakeHeadStyle: { transform: [{ rotate: '90deg' }] },
+        tailIndex: newTailIndex,
       });
     }
   }
@@ -881,94 +888,13 @@ export default class Snek extends Sprite {
       this.setState({ fpsShow: true, });
     }
   }
-
-  update = async () => {
-    this.frame++;
-    if (this.state.toggleReset !== this.props.toggleReset) { // player reset game
-      await this.hardReset();
-    }
-    if (this.props.running) {
-      if (!this.state.alive) { //player tried to start the game without reset
-        this.die();
-      }
-      // if (this.state.pelletLocation == null) {
-      //   this.placePellet();
-      // }
-      if (this.state.direction == CONSTANTS.DPADSTATES.UP && (this.state.snakePosY < this.boardYtoPosY(this.state.boardY))) {
-        if (this.props.pressedButton == CONSTANTS.DPADSTATES.UP) {
-          this.goUp();
-        } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.RIGHT) {
-          this.goRight();
-        } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.LEFT) {
-          this.goLeft();
-        } else {
-          this.goUp();
-        }
-      } else if (this.state.direction == CONSTANTS.DPADSTATES.DOWN && (this.state.snakePosY > this.boardYtoPosY(this.state.boardY))) {
-        if (this.props.pressedButton == CONSTANTS.DPADSTATES.DOWN) {
-          this.goDown();
-        } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.RIGHT) {
-          this.goRight();
-        } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.LEFT) {
-          this.goLeft();
-        } else {
-          this.goDown();
-        }
-      } else if (this.state.direction == CONSTANTS.DPADSTATES.RIGHT && (this.state.snakePosX > this.boardXtoPosX(this.state.boardX))) {
-        if (this.props.pressedButton == CONSTANTS.DPADSTATES.RIGHT) {
-          this.goRight();
-        } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.UP) {
-          this.goUp();
-        } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.DOWN) {
-          this.goDown();
-        } else {
-          this.goRight();
-        }
-      } else if (this.state.direction == CONSTANTS.DPADSTATES.LEFT && (this.state.snakePosX < this.boardXtoPosX(this.state.boardX))) {
-        if (this.props.pressedButton == CONSTANTS.DPADSTATES.LEFT) {
-          this.goLeft();
-        } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.UP) {
-          this.goUp();
-        } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.DOWN) {
-          this.goDown();
-        } else {
-          this.goLeft();
-        }
-      }
-      // animate
-      if (this.state.alive) {
-        var now = new Date().getTime();
-        if (this.lastFrameTime == null) { //first frame
-          var speed = 0;
-        } else {
-          // let rushEffect = 1.0;
-          // if(this.props.mode === "SNAKE RUSH"){
-          //   rushEffect += this.state.pelletCount/10.0;
-          // }
-          var speed = CONSTANTS.SNEKSPEED * (now - this.lastFrameTime) * this.state.speedEffector;
-        }
-        this.lastFrameTime = now;
-        if (this.state.direction == CONSTANTS.DPADSTATES.UP) {
-          this.setState({ snakePosY: this.state.snakePosY - speed });
-        } else if (this.state.direction == CONSTANTS.DPADSTATES.DOWN) {
-          this.setState({ snakePosY: this.state.snakePosY + speed });
-        } else if (this.state.direction == CONSTANTS.DPADSTATES.RIGHT) {
-          this.setState({ snakePosX: this.state.snakePosX + speed });
-        } else if (this.state.direction == CONSTANTS.DPADSTATES.LEFT) {
-          this.setState({ snakePosX: this.state.snakePosX - speed });
-        }
-      }
-    }
-  }
-    // TODO: Maintain the framerate
-
   toggleHeader = () => {
     this.setState({ headerOpen: !this.state.headerOpen })
   }
-
   serverError = async() => {
     await alert("Disconnected");
-    await this.hardReset();
+    //await this.hardReset();
+    // TODO: send a reset back from app.js!!!!
     this.props.authorizationError();
   }
   usePowerup = async(powerupName, location) => {
@@ -1000,13 +926,22 @@ export default class Snek extends Sprite {
     this.usePowerup("BLUEPOWERUP", this.randomLocation());
   }
   render() {
+    // var now = new Date().getTime();
+    // console.log("render " +now)
+    // console.log(this.state.tailIndex)
+
+    // if (this.state.toggleReset !== this.props.toggleReset) { // player reset game
+    //   this.hardReset();
+    // }
     let redPellet = null;
     let pellet = null;
-    let snek = (<View style={[styles.snek, { left: this.state.snakePosX, top: this.state.snakePosY, }]}>
-      <Image source={require('../assets/gameplay/headUp.png')} style={[styles.snek, this.state.snakeHead]} resizeMode="stretch" />
-    </View>);
     //TODO: Move this to an event that triggers when this.state.direction or boardX or boardY changes.
-    let snekHeadBack = null;
+
+    let snekHeadBack = (
+    <View style={[styles.snekHeadBack, {
+      left: this.boardXtoPosX(this.state.boardX),
+      top: this.boardYtoPosY(this.state.boardY),
+    }]}></View>);
     if (this.state.direction == CONSTANTS.DPADSTATES.UP) {
       snekHeadBack = (<View style={[styles.snekHeadBack, {
         left: this.boardXtoPosX(this.state.boardX),
@@ -1028,24 +963,6 @@ export default class Snek extends Sprite {
         top: this.boardYtoPosY(this.state.boardY),
       }]}></View>);
     }
-
-    // if (this.state.pelletLocation != null) {
-    //   pellet = (<Animated.View style={[styles.pellet, {
-    //     left: this.boardXtoPosX(this.state.pelletLocation.x),
-    //     top: this.boardYtoPosY(this.state.pelletLocation.y),
-    //     transform: [{ rotate: this.spin() }],
-    //   }]}>
-    //     <Image source={require('../assets/gameplay/Diamond.png')} style={styles.pellet} resizeMode="stretch" />
-    //   </Animated.View>);
-    // }
-    if (!this.state.alive) {
-      snek = (<View style={[styles.snek, {
-        left: this.state.snakePosX,
-        top: this.state.snakePosY,
-        backgroundColor: "#000",
-      }]}></View>);
-    }
-    //let scoreBoardHeight = screenWidth*.757/3.6;
     return (
       <View
         //renderToHardwareTextureAndroid={true}
@@ -1065,8 +982,6 @@ export default class Snek extends Sprite {
             return (elem);
           })
         }
-        {snekHeadBack}
-        {snek}
         {!this.edibles ? null :
           this.edibles.map((edible, idx) => {
             if (!edible) {
@@ -1088,12 +1003,31 @@ export default class Snek extends Sprite {
             }
           })
         }
+        {snekHeadBack}
+        <SnekHead
+          alive={this.state.alive}
+          running={this.props.running}
+          direction={this.state.direction}
+          boardX={this.state.boardX}
+          boardY={this.state.boardY}
+          speedEffector={this.state.speedEffector}
+          snakeHeadStyle={this.state.snakeHeadStyle}
+          pressedButton={this.props.pressedButton}
+          die={this.die}
+          goUp={this.goUp}
+          goDown={this.goDown}
+          goRight={this.goRight}
+          goLeft={this.goLeft}
+          boardYtoPosY={this.boardYtoPosY}
+          boardXtoPosX={this.boardXtoPosX}
+          key={this.props.resetKeyIncrementer}
+        />
         {pellet}
-        { (!this.state.fpsShow) ? null :
+        {/* (!this.state.fpsShow) ? null :
           <View style={styles.framerateContainer}>
             <Text style={styles.framerateText}>{this.state.framerate} FPS</Text>
           </View>
-        }
+        */}
         {this.wallComponents}
         <View style={styles.controllerOuterContainer}>
           <View style={styles.controllerContainer}>
@@ -1168,19 +1102,6 @@ let styles = StyleSheet.create({
     top: CONSTANTS.BOARDCENTERY - (0.5 * CONSTANTS.GAMEHEIGHT),
     left: (0.5 * CONSTANTS.DEVICEWIDTH) - (0.5 * CONSTANTS.GAMEWIDTH),
     zIndex: 2,
-  },
-  snek: {
-    position: "absolute",
-    width: CONSTANTS.SNEKSIZE,
-    height: CONSTANTS.SNEKSIZE,
-    zIndex: 3,
-  },
-  snekHeadBack: {
-    position: "absolute",
-    width: CONSTANTS.SNEKSIZE,
-    height: CONSTANTS.SNEKSIZE,
-    zIndex: 3,
-    backgroundColor: CONSTANTS.SNEKPARTCOLOR,
   },
   pellet: {
     position: "absolute",
@@ -1310,5 +1231,12 @@ let styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
+  snekHeadBack: {
+    position: "absolute",
+    width: CONSTANTS.SNEKSIZE,
+    height: CONSTANTS.SNEKSIZE,
+    zIndex: 3,
+    backgroundColor: CONSTANTS.SNEKPARTCOLOR,
+  },
 
 });

@@ -188,6 +188,7 @@ export default class App extends React.Component {
       level: 0,
       pressedButton: CONSTANTS.DPADSTATES.UP,
       toggleReset: false,
+      resetKeyIncrementer: 0,
       lastScore: -1,
       unredeemedSnekBalance: -1,
       snekBalance: -1,
@@ -213,17 +214,14 @@ export default class App extends React.Component {
       activeSnakeUpgrade: 0,
       //newGameCounter: 0, // Toggling to true will cause Snek.js to reset if it's still alive.
       //powerups: null
-
       // Loading fonts and assets
       isReady: false,
     };
-    //this.loggedIn = this.loggedIn.bind(this);
     this.closeOverlay = this.closeOverlay.bind(this);
     this.restart = this.restart.bind(this);
     this.start = this.start.bind(this);
     this.pause = this.pause.bind(this);
     this.onSelectLevelPlayPress = this.onSelectLevelPlayPress.bind(this);
-    //this.onDoContract = this.onDoContract.bind(this);
     this.gameOverDoContract = this.gameOverDoContract.bind(this);
     this.onConfirmTxOk = this.onConfirmTxOk.bind(this);
   }
@@ -275,7 +273,9 @@ export default class App extends React.Component {
   fetchUser = async (jwt) => {
     try {
       let resp = await doGetFetch(`${context.host}:${context.port}/getUser`, jwt);
+      console.log("got user data...")
       await this.setState({loadingUser: false, user: resp});
+      console.log("set state...")
       return true;
     } catch(err) {
       if(("" + err) === "Unauthorized") {
@@ -307,18 +307,22 @@ export default class App extends React.Component {
   loadUser = async (jwt) => {
     console.log("loadUser")
     let result = await this.fetchUser(jwt);
+    console.log('fetched user...')
     // if(result) {
     //   result = result && this.fetchGameHistory(jwt, 1);
     // }
     if(result) {
       result = result && this.fetchTxHistory(jwt);
     }
+    console.log('fetchTxHistory user...')
     return result;
   }
   loggedIn = async (jwt) => {
     console.log("loggedIn")
+    console.log(jwt)
     await asyncStore("jwt", jwt);
     let result = await this.loadUser(jwt);
+    console.log("result:" + result)
     if (result && (this.state.screen == screens.LOGINCHOOSE || this.state.screen == screens.SIGNUPCHOOSE || this.state.screen == screens.SIGNUP || this.state.screen == screens.LOGIN)) {
       let firstLogin = await AsyncStorage.getItem("LAST_REGISTERED");
       let screen = firstLogin && firstLogin == this.state.user.name ? screens.TUTORIALS : screens.HOME;
@@ -356,7 +360,7 @@ export default class App extends React.Component {
     await this.setState({pressedButton: CONSTANTS.DPADSTATES.NONE});
   }
   onDied = async (score) => {
-    await this.setState({running: false, overlay: overlays.LOADING});
+    await this.setState({running: false, overlay: overlays.LOADING, });
     let jwt = await getFromAsyncStore("jwt");
     let data = {
       howmany: score,
@@ -409,7 +413,7 @@ export default class App extends React.Component {
 
   restart() {
     //console.log("restart")
-    this.setState({toggleReset: !this.state.toggleReset, overlay: overlays.STARTGAME});
+    this.setState({toggleReset: !this.state.toggleReset, overlay: overlays.STARTGAME, resetKeyIncrementer: this.state.resetKeyIncrementer + 1});
   }
 
   pause() {
@@ -645,6 +649,8 @@ export default class App extends React.Component {
         <ScreenView>
           <Loop>
             <Snek
+              key={this.state.resetKeyIncrementer}
+              resetKeyIncrementer={this.state.resetKeyIncrementer}
               newGameCounter={this.state.newGameCounter}
               pressedButton={this.state.pressedButton}
               onDpadChange={this.onDpadChange}
