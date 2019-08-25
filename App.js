@@ -56,13 +56,13 @@ import Tutorials from "./components/Tutorials";
 let screenWidth = require('Dimensions').get('window').width;
 let screenHeight = require('Dimensions').get('window').height;
 let didTryJwt = false;
-const connectionConfig = {
-  jsonp: false,
-  reconnection: true,
-  reconnectionDelay: 100,
-  reconnectionAttempts: 100000,
-  transports: ['websocket'],
-};
+// const connectionConfig = {
+//   jsonp: false,
+//   reconnection: true,
+//   reconnectionDelay: 100,
+//   reconnectionAttempts: 100000,
+//   transports: ['websocket'],
+// };
 
 const screens = {
   "GAME": 0, "HOME": 1, "LOADING": 2, "PREFERENCES": 3, "PROFILE": 4,
@@ -224,6 +224,8 @@ export default class App extends React.Component {
     this.onSelectLevelPlayPress = this.onSelectLevelPlayPress.bind(this);
     this.gameOverDoContract = this.gameOverDoContract.bind(this);
     this.onConfirmTxOk = this.onConfirmTxOk.bind(this);
+    this.websocketTimeout = null;
+    this.websocketRetryTime = CONSTANTS.SOCKETINITRETRYTIME;
   }
 
   async loadResourcesAsync() {
@@ -258,6 +260,12 @@ export default class App extends React.Component {
     didTryJwt = true;
   }
 
+  componentWillUnmount() {
+    //this.context.loop.unsubscribe(this.update);
+    if(this.websocketTimeout) {
+      clearTimeout(this.websocketTimeout);
+    }
+  }
   genericNetworkError = () => {
     this.setState({
       errorTitle: "Network error",
@@ -308,16 +316,49 @@ export default class App extends React.Component {
   loadUser = async (jwt) => {
     console.log("loadUser")
     let result = await this.fetchUser(jwt);
-    console.log('fetched user...')
-    // if(result) {
-    //   result = result && this.fetchGameHistory(jwt, 1);
-    // }
+    console.log('fetched user...');
     if(result) {
       result = result && this.fetchTxHistory(jwt);
     }
     console.log('fetchTxHistory user...')
     return result;
   }
+
+  trySocket = () => {
+    try {
+      console.log("Opening socket for pubkey: " + this.state.user.pubkey)
+      //this.websocketRetryTime = CONSTANTS.SOCKETINITRETRYTIME;SOCKETRETRYMULT
+      if(this.state.user.pubkey) {
+        this.socket = SocketIOClient(`${context.host}:${context.socketPort}`, {
+          query: `pubkey=${this.state.user.pubkey}`,
+        });
+        this.socket.on('connect', () => {
+          console.log('connected to web socket');
+        });
+        this.socket.on('disconnect', () => {
+          console.log('disconnected from web socket');
+          this.retrySocket();
+        });
+        this.socket.on("MINED", async (txid) => {
+          console.log("ONMINED");
+          let latestJwt = await getFromAsyncStore("jwt");
+          this.loadUser(latestJwt);
+        });
+      } else {
+        this.retrySocket();
+      }
+    } catch (err) {
+      this.retrySocket();
+    }
+  }
+  retrySocket = () => {
+    this.websocketTimeout = setTimeout(() => {
+      this.trySocket();
+    }, this.websocketRetryTime);
+    this.websocketRetryTime = this.websocketRetryTime * CONSTANTS.SOCKETRETRYMULT;
+    this.websocketRetryTime = this.websocketRetryTime > CONSTANTS.SOCKETRETRYMAX ? CONSTANTS.SOCKETRETRYMAX : this.websocketRetryTime;
+  }
+
   loggedIn = async (jwt) => {
     console.log("loggedIn")
     console.log(jwt)
@@ -329,24 +370,8 @@ export default class App extends React.Component {
       let screen = firstLogin && firstLogin == this.state.user.name ? screens.TUTORIALS : screens.HOME;
       await this.setState({screen});
     }
-    try {
-      console.log("Opening socket for pubkey: " + this.state.user.pubkey)
-      if(this.state.user.pubkey) {
-        this.socket = SocketIOClient(`${context.host}:${context.socketPort}`, {
-          query: `pubkey=${this.state.user.pubkey}`,
-        });
-        this.socket.on('connect', () => {
-          console.log('connected to server');
-        });
-        this.socket.on("MINED", async (txid) => {
-          console.log("ONMINED")
-          let latestJwt = await getFromAsyncStore("jwt");
-          this.loadUser(latestJwt);
-        });
-      }
-    } catch (err) {
-      this.genericNetworkError();
-    }
+    this.trySocket();
+
   }
 
   doUpdateUser = async (user, txs) => {
