@@ -45,12 +45,12 @@ export default class SelectLevelOverlay extends React.Component {
     if (!this.props.show || !this.props.user) {
       return null;
     } else {
-      let lockedStyle1 = {opacity: 0.4,};
-      let tntButtonStyle1 = {};
-      if (this.props.user.mineUpgrades & 1 || true) {
-        lockedStyle1 = {};
-        tntButtonStyle1 = {display: "none", };
-      }
+      // let lockedStyle1 = {opacity: 0.4,};
+      // let tntButtonStyle1 = {};
+      // if (this.props.user.mineUpgrades & 1 || true) {
+      //   lockedStyle1 = {};
+      //   tntButtonStyle1 = {display: "none", };
+      // }
       // if (this.props.user.mineUpgrades & 2) {
       //   tntButtonStyle1 = {};
       // }

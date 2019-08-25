@@ -48,3 +48,19 @@ CONSTANTS.DPADHEIGHT = CONSTANTS.DPADSIZE * 1.3; //includes padding
 CONSTANTS.BOARDCENTERY = CONSTANTS.SCOREBOARDHEIGHT + (CONSTANTS.GAMEHEIGHT / 2);
 //CONSTANTS.BOARDCENTERY = CONSTANTS.DEVICEHEIGHT - (CONSTANTS.GAMEHEIGHT / 2) - CONSTANTS.DPADHEIGHT;
 //(CONSTANTS.DEVICEHEIGHT - CONSTANTS.DPADSIZE) - (CONSTANTS.GAMEHEIGHT / 2); // INSANE HEIGHT EQUATION FOR DPAD HEIGHT. SORRY.
+
+
+
+CONSTANTS.mineImages = [
+  require('./assets/homepage/mine/mine0.png'),
+  require('./assets/homepage/mine/mine10.png'),
+  require('./assets/homepage/mine/mine20.png'),
+  require('./assets/homepage/mine/mine30.png'),
+  require('./assets/homepage/mine/mine40.png'),
+  require('./assets/homepage/mine/mine50.png'),
+  require('./assets/homepage/mine/mine60.png'),
+  require('./assets/homepage/mine/mine70.png'),
+  require('./assets/homepage/mine/mine80.png'),
+  require('./assets/homepage/mine/mine90.png'),
+  require('./assets/homepage/mine/mine100.png'),
+]

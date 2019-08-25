@@ -12,20 +12,8 @@ import {normalize} from '../utils/FontNormalizer.js';
 import {getFromAsyncStore} from "../utils/AsyncStore.js";
 import {doGetFetch} from '../utils/Network.js';
 import {context} from "../utils/Context.js";
+import CONSTANTS from '../Constants.js';
 
-let mineImages = [
-  require('../assets/homepage/mine/mine0.png'),
-  require('../assets/homepage/mine/mine10.png'),
-  require('../assets/homepage/mine/mine20.png'),
-  require('../assets/homepage/mine/mine30.png'),
-  require('../assets/homepage/mine/mine40.png'),
-  require('../assets/homepage/mine/mine50.png'),
-  require('../assets/homepage/mine/mine60.png'),
-  require('../assets/homepage/mine/mine70.png'),
-  require('../assets/homepage/mine/mine80.png'),
-  require('../assets/homepage/mine/mine90.png'),
-  require('../assets/homepage/mine/mine100.png'),
-]
 let levelNames = {1: "Simple Snake",}
 export default class GameHistoryOverlay extends React.Component {
   constructor(props) {
@@ -88,7 +76,7 @@ export default class GameHistoryOverlay extends React.Component {
       } else {
         mineTextColorStyle = {color: "#352927",}
       }
-      let mineImg = mineImages[mineGraphicIndex];
+      let mineImg = CONSTANTS.mineImages[mineGraphicIndex];
       let minePercent = (100 - Math.floor((100 * haul / this.props.prices.coinsPerEgg)))
       if (minePercent >= 100.0) {
         minePercent = minePercent.toPrecision(3);

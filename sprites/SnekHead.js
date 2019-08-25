@@ -27,16 +27,6 @@ export default class SnekHead extends Sprite {
   }
 
   update = async () => {
-    // console.log("update")
-    // console.log(this.props.alive)
-    // console.log(this.state.snakePosX)
-    // console.log(this.state.snakePosY)
-    // console.log(this.props.direction)
-    // console.log(this.props.pressedButton)
-    // console.log(this.props.boardX)
-    // console.log(this.props.boardY)
-    // console.log(this.props.speedEffector)
-    
     this.props.countFrame();
     if (this.props.running) {
       if (!this.props.alive) { //player tried to start the game without reset

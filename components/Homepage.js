@@ -28,20 +28,6 @@ import SnakeTown from '../components/SnakeTown.js';
 import CowOverlay from '../components/CowOverlay.js';
 import ReceiptOverlay from "./ReceiptOverlay";
 
-let mineImages = [
-  require('../assets/homepage/mine/mine0.png'),
-  require('../assets/homepage/mine/mine10.png'),
-  require('../assets/homepage/mine/mine20.png'),
-  require('../assets/homepage/mine/mine30.png'),
-  require('../assets/homepage/mine/mine40.png'),
-  require('../assets/homepage/mine/mine50.png'),
-  require('../assets/homepage/mine/mine60.png'),
-  require('../assets/homepage/mine/mine70.png'),
-  require('../assets/homepage/mine/mine80.png'),
-  require('../assets/homepage/mine/mine90.png'),
-  require('../assets/homepage/mine/mine100.png'),
-]
-
 var overlays = {
   "MINE": 0,
   "SELECTLEVEL": 1,
@@ -300,7 +286,7 @@ export default class Homepage extends React.Component {
     } else {
       mineTextColorStyle = {color: "#352927",}
     }
-    let mineImg = mineImages[mineGraphicIndex];
+    let mineImg = CONSTANTS.mineImages[mineGraphicIndex];
     let minePercent = (100 - Math.floor((100 * this.props.user.haul / this.props.prices.coinsPerEgg)));
     minePercent = minePercent < 0.0 ? 0.0 : minePercent; // if user hauls more than the mine max
     if (minePercent >= 100.0) {

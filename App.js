@@ -74,7 +74,7 @@ const overlays = {
   "CONFIRMTX": 5, "TRANSACTION": 6, "CONFIRMCONTRACT": 7, "POWERUPS": 8, "STARTGAME": 9,
   "ERROR": 10, "CONFIRMEXIT": 11, "COWOVERLAY": 12,
 };
-const gameModes = ["TRADITIONAL", "SUPER_SNAKE", "SNAKE_RUSH"];
+//const gameModes = ["TRADITIONAL", "SUPER_SNAKE", "SNAKE_RUSH"];
 const modesData = {
   "TRADITIONAL": {
     name: "TRADITIONAL",
@@ -209,8 +209,8 @@ export default class App extends React.Component {
       loadingTx: true,
       errorTitle: "",
       errorParagraph: "",
-      currentModeIndex: 0,
-      currentMode: modesData[gameModes[0]],
+      //currentModeIndex: 0,
+      //currentMode: modesData[gameModes[0]],
       activeSnakeUpgrade: 0,
       //newGameCounter: 0, // Toggling to true will cause Snek.js to reset if it's still alive.
       //powerups: null
@@ -525,23 +525,23 @@ export default class App extends React.Component {
     this.setState({screen: screens.HOME})
   };
 
-  onPreviousMode = () => {
-    let {currentModeIndex} = this.state;
-    currentModeIndex--;
-    this.setState({
-      currentModeIndex,
-      currentMode: modesData[gameModes[currentModeIndex]]
-    })
-  };
-
-  onNextMode = () => {
-    let {currentModeIndex} = this.state;
-    currentModeIndex++;
-    this.setState({
-      currentModeIndex,
-      currentMode: modesData[gameModes[currentModeIndex]]
-    })
-  };
+  // onPreviousMode = () => {
+  //   let {currentModeIndex} = this.state;
+  //   currentModeIndex--;
+  //   this.setState({
+  //     currentModeIndex,
+  //     currentMode: modesData[gameModes[currentModeIndex]]
+  //   })
+  // };
+  //
+  // onNextMode = () => {
+  //   let {currentModeIndex} = this.state;
+  //   currentModeIndex++;
+  //   this.setState({
+  //     currentModeIndex,
+  //     currentMode: modesData[gameModes[currentModeIndex]]
+  //   })
+  // };
 
   logOut = async () => {
     await removeItem("jwt");
