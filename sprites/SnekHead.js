@@ -36,7 +36,8 @@ export default class SnekHead extends Sprite {
     // console.log(this.props.boardX)
     // console.log(this.props.boardY)
     // console.log(this.props.speedEffector)
-    //this.frame++;
+    
+    this.props.countFrame();
     if (this.props.running) {
       if (!this.props.alive) { //player tried to start the game without reset
         this.props.die();
@@ -88,7 +89,7 @@ export default class SnekHead extends Sprite {
       }
       // animate
       if (this.props.alive) {
-        var now = new Date().getTime();
+        var now = Date.now();
         if (this.lastFrameTime == null) { //first frame
           var speed = 0;
         } else {
@@ -97,7 +98,6 @@ export default class SnekHead extends Sprite {
           //   rushEffect += this.state.pelletCount/10.0;
           // }
           var speed = CONSTANTS.SNEKSPEED * (now - this.lastFrameTime) * this.props.speedEffector;
-          //var speed = CONSTANTS.SNEKSPEED * (now - this.lastFrameTime) ;
         }
         this.lastFrameTime = now;
         if (this.props.direction == CONSTANTS.DPADSTATES.UP) {

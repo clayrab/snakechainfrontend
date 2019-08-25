@@ -271,6 +271,7 @@ export default class App extends React.Component {
   }
 
   fetchUser = async (jwt) => {
+    console.log("fetchUser")
     try {
       let resp = await doGetFetch(`${context.host}:${context.port}/getUser`, jwt);
       console.log("got user data...")

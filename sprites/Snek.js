@@ -68,6 +68,7 @@ export default class Snek extends Sprite {
     //this.state = this.copyDefaultState();
     //this.state.toggleReset = props.toggleReset;
     this.resetBoard();
+    this.placePellet();
     this.pelletAnim = Animated.timing(this.state.pelletRot, {
       toValue: 1,
       duration: 2000,
@@ -84,17 +85,19 @@ export default class Snek extends Sprite {
   async componentDidMount() {
     await this.setupAudio();
     //this.context.loop.subscribe(this.update);
-    // this.framerateInterval = setInterval(() => {
-    //   this.setState({framerate: this.frame});
-    //   this.frame = 0;
-    // }, 1000);
+    this.framerateInterval = setInterval(() => {
+      this.setState({framerate: this.frame});
+      this.frame = 0;
+    }, 1000);
   }
 
   componentWillUnmount() {
     //this.context.loop.unsubscribe(this.update);
-    //clearInterval(this.framerateInterval)
+    clearInterval(this.framerateInterval)
   }
-
+  countFrame = () => {
+    this.frame++;
+  }
   // triggerRender = async() => {
   //   await this.setState({renderTrigger: !this.state.renderTrigger});
   // }
@@ -783,15 +786,19 @@ export default class Snek extends Sprite {
 
   onBoardTile(boardX, boardY) {
     //TODO: THE STATE "EDIBLE" IS NOW STORED IN BOARD, NO NEED TO ITERATE EDIBLES
-    for (let i = 0; i < this.edibles.length; i++) {
-      if (this.edibles[i]) {
-        if (this.edibles[i].x === boardX && this.edibles[i].y === boardY) {
-          this.eatEdibleEvents[this.edibles[i].type]();
-          this.removeEdible(i);
+    //console.log(this.boardState)
+    //if()
+    if(this.boardState[boardY][boardX] === "EDIBLE") {
+      for (let i = 0; i < this.edibles.length; i++) {
+        if (this.edibles[i]) {
+          if (this.edibles[i].x === boardX && this.edibles[i].y === boardY) {
+            this.eatEdibleEvents[this.edibles[i].type]();
+            this.removeEdible(i);
+            break;
+          }
+        } else {
           break;
         }
-      } else {
-        break;
       }
     }
     this.boardState[boardY][boardX] = "WALL";
@@ -1013,6 +1020,7 @@ export default class Snek extends Sprite {
           speedEffector={this.state.speedEffector}
           snakeHeadStyle={this.state.snakeHeadStyle}
           pressedButton={this.props.pressedButton}
+          countFrame={this.countFrame}
           die={this.die}
           goUp={this.goUp}
           goDown={this.goDown}
@@ -1023,11 +1031,11 @@ export default class Snek extends Sprite {
           key={this.props.resetKeyIncrementer}
         />
         {pellet}
-        {/* (!this.state.fpsShow) ? null :
+        {(!this.state.fpsShow) ? null :
           <View style={styles.framerateContainer}>
             <Text style={styles.framerateText}>{this.state.framerate} FPS</Text>
           </View>
-        */}
+        }
         {this.wallComponents}
         <View style={styles.controllerOuterContainer}>
           <View style={styles.controllerContainer}>
