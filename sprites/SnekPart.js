@@ -42,6 +42,10 @@ export default class SnekPart extends Sprite {
   }
 
   render() {
+    if(CONSTANTS.LOGRENDERMETHODS) {
+      var now = Date.now();
+      console.log("SnekPart render " + now)
+    }
     //let opacity = this.props.godMode ? 0.4 : 1.0;
     let opacity = 1.0;
     return (<View style={[styles.snekPart, {left: this.props.posX, top: this.props.posY,}, opacity: opacity]}></View>);

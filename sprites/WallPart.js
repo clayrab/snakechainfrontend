@@ -26,6 +26,10 @@ export default class WallPart extends Sprite {
   }
 
   render() {
+    if(CONSTANTS.LOGRENDERMETHODS) {
+      var now = Date.now();
+      console.log("WallPart render " + now)
+    }
     return (<View style={[styles.snekPart, {left: this.props.posX, top: this.props.posY,}]}></View>);
   }
 }

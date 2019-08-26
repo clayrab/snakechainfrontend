@@ -36,45 +36,48 @@ export default class SnekHead extends Sprite {
       //   this.placePellet();
       // }
       if (this.props.direction == CONSTANTS.DPADSTATES.UP && (this.state.snakePosY < this.props.boardYtoPosY(this.props.boardY))) {
+        await this.setState({ snakePosX: this.props.boardXtoPosX(this.props.boardX), snakePosY: this.props.boardYtoPosY(this.props.boardY), });
         if (this.props.pressedButton == CONSTANTS.DPADSTATES.UP) {
-          this.props.goUp();
+          await this.props.goUp();
         } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.RIGHT) {
-          this.props.goRight();
+          await this.props.goRight();
         } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.LEFT) {
-          this.props.goLeft();
+          await this.props.goLeft();
         } else {
-          this.props.goUp();
+          await this.props.goUp();
         }
-        //await this.setState({ snakePosX: this.props.boardX, snakePosY: this.props.boardY });
       } else if (this.props.direction == CONSTANTS.DPADSTATES.DOWN && (this.state.snakePosY > this.props.boardYtoPosY(this.props.boardY))) {
+        await this.setState({ snakePosX: this.props.boardXtoPosX(this.props.boardX), snakePosY: this.props.boardYtoPosY(this.props.boardY), });
         if (this.props.pressedButton == CONSTANTS.DPADSTATES.DOWN) {
-          this.props.goDown();
+          await this.props.goDown();
         } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.RIGHT) {
-          this.props.goRight();
+          await this.props.goRight();
         } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.LEFT) {
-          this.props.goLeft();
+          await this.props.goLeft();
         } else {
-          this.props.goDown();
+          await this.props.goDown();
         }
       } else if (this.props.direction == CONSTANTS.DPADSTATES.RIGHT && (this.state.snakePosX > this.props.boardXtoPosX(this.props.boardX))) {
+        await this.setState({ snakePosX: this.props.boardXtoPosX(this.props.boardX), snakePosY: this.props.boardYtoPosY(this.props.boardY), });
         if (this.props.pressedButton == CONSTANTS.DPADSTATES.RIGHT) {
-          this.props.goRight();
+          await this.props.goRight();
         } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.UP) {
-          this.props.goUp();
+          await this.props.goUp();
         } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.DOWN) {
-          this.props.goDown();
+          await this.props.goDown();
         } else {
-          this.props.goRight();
+          await this.props.goRight();
         }
       } else if (this.props.direction == CONSTANTS.DPADSTATES.LEFT && (this.state.snakePosX < this.props.boardXtoPosX(this.props.boardX))) {
+        await this.setState({ snakePosX: this.props.boardXtoPosX(this.props.boardX), snakePosY: this.props.boardYtoPosY(this.props.boardY), });
         if (this.props.pressedButton == CONSTANTS.DPADSTATES.LEFT) {
-          this.props.goLeft();
+          await this.props.goLeft();
         } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.UP) {
-          this.props.goUp();
+          await this.props.goUp();
         } else if (this.props.pressedButton == CONSTANTS.DPADSTATES.DOWN) {
-          this.props.goDown();
+          await this.props.goDown();
         } else {
-          this.props.goLeft();
+          await this.props.goLeft();
         }
       }
       // animate
@@ -83,10 +86,6 @@ export default class SnekHead extends Sprite {
         if (this.lastFrameTime == null) { //first frame
           var speed = 0;
         } else {
-          // let rushEffect = 1.0;
-          // if(this.props.mode === "SNAKE RUSH"){
-          //   rushEffect += this.state.pelletCount/10.0;
-          // }
           var speed = CONSTANTS.SNEKSPEED * (now - this.lastFrameTime) * this.props.speedEffector;
         }
         this.lastFrameTime = now;
@@ -103,6 +102,10 @@ export default class SnekHead extends Sprite {
     }
   }
   render() {
+    if(CONSTANTS.LOGRENDERMETHODS) {
+      var now = Date.now();
+      console.log("SnekHead render " + now);
+    }
     let snek = (<View style={[styles.snekHead, { left: this.state.snakePosX, top: this.state.snakePosY, }]}>
       <Image source={require('../assets/gameplay/headUp.png')} style={[styles.snekHead, this.props.snakeHeadStyle]} resizeMode="stretch" />
     </View>);

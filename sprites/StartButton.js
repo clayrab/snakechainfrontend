@@ -43,6 +43,10 @@ export default class ResetButton extends Sprite {
   };
 
   render() {
+    if(CONSTANTS.LOGRENDERMETHODS) {
+      var now = Date.now();
+      console.log("ResetButton render " + now)
+    }
     return (
       <View style={this.styles.buttonHolder}>
         <Button

@@ -66,14 +66,14 @@ export default class LoginChoose extends React.Component {
     easterEggCount = easterEggCount + 1;
     if (easterEggCount >= 5) {
       if(easterEggCount%3 == 0) {
-        alert("QA")
-        switchHost(QA)
+        alert("QA");
+        switchHost(QA);
       } else if(easterEggCount%3 == 1) {
-        alert("QA2")
-        switchHost(QA2)
+        alert("QA2");
+        switchHost(QA2);
       } else if(easterEggCount%3 == 2) {
-        alert("QA2v6")
-        switchHost(QA2v6)
+        alert("QA2v6");
+        switchHost(QA2v6);
       }
     }
   }

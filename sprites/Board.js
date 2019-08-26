@@ -15,7 +15,6 @@ export default class Board extends Sprite {
     var boardWidth = CONSTANTS.BOARDWIDTH;
     var boardHeight = CONSTANTS.BOARDHEIGHT;
 
-    this.shouldUpdate = true;
     this.styles = StyleSheet.create({
       field: {
         width: boardWidth,
@@ -42,15 +41,11 @@ export default class Board extends Sprite {
     });
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (this.shouldUpdate) {
-      this.shouldUpdate = false;
-      return true;
-    }
-    return false;
-  }
-
   render() {
+    if(CONSTANTS.LOGRENDERMETHODS) {
+      var now = Date.now();
+      console.log("Board render " + now)
+    }
     return (
       <View style={this.styles.gameBack}>
         <ImageBackground source={require('../assets/gameplay/Background.png')} style={this.styles.field}

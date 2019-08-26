@@ -933,10 +933,10 @@ export default class Snek extends Sprite {
     this.usePowerup("BLUEPOWERUP", this.randomLocation());
   }
   render() {
-    // var now = new Date().getTime();
-    // console.log("render " +now)
-    // console.log(this.state.tailIndex)
-
+    if(CONSTANTS.LOGRENDERMETHODS) {
+      var now = Date.now();
+      console.log("Snek render " + now);
+    }
     // if (this.state.toggleReset !== this.props.toggleReset) { // player reset game
     //   this.hardReset();
     // }
@@ -974,40 +974,21 @@ export default class Snek extends Sprite {
       <View
         //renderToHardwareTextureAndroid={true}
         style={[styles.gameBack, {/*transferX: this.boardShakeInterpolate()*/ },]}>
-        <ImageBackground source={require('../assets/gameplay/Background.png')} style={styles.fieldBack}
+        <ImageBackground source={require('../assets/gameplay/Background.png')} style={[styles.fieldBack, { backgroundColor: "red", }]}
           resizeMode="stretch">
          <ScoreBoard
           score={this.state.score}
           easterEgg={this.easterEgg}
           loading={this.props.loading}
           user={this.props.user} />
+
+
         </ImageBackground>
         <ImageBackground source={require('../assets/gameplay/gameArea.png')} style={styles.field} resizeMode="stretch"/>
         {/* <ImageBackground source={require('../assets/gameplay/Background.png')} style={styles.field} resizeMode="stretch" /> */}
         {
           this.state.tail.map((elem) => {
             return (elem);
-          })
-        }
-        {!this.edibles ? null :
-          this.edibles.map((edible, idx) => {
-            if (!edible) {
-              return (null);
-            } else {
-              return (
-                <Animated.View key={idx} style={[styles.redPellet, {
-                  left: this.boardXtoPosX(this.edibles[idx].x),
-                  top: this.boardYtoPosY(this.edibles[idx].y),
-                }]}>
-                  {
-                    this.edibleTypes[edible.type].png === "pellet" ?
-                    <Image source={require('../assets/gameplay/Diamond.png')} style={styles.pellet} resizeMode="stretch" />
-                    :
-                    <Image source={this.edibleTypes[edible.type].png} style={styles.redPellet} resizeMode="stretch"/>
-                  }
-                </Animated.View>
-              );
-            }
           })
         }
         {snekHeadBack}
@@ -1030,6 +1011,27 @@ export default class Snek extends Sprite {
           boardXtoPosX={this.boardXtoPosX}
           key={this.props.resetKeyIncrementer}
         />
+        {!this.edibles ? null :
+          this.edibles.map((edible, idx) => {
+            if (!edible) {
+              return (null);
+            } else {
+              return (
+                <Animated.View key={idx} style={[styles.redPellet, {
+                  left: this.boardXtoPosX(this.edibles[idx].x),
+                  top: this.boardYtoPosY(this.edibles[idx].y),
+                }]}>
+                  {
+                    this.edibleTypes[edible.type].png === "pellet" ?
+                    <Image source={require('../assets/gameplay/Diamond.png')} style={styles.pellet} resizeMode="stretch" />
+                    :
+                    <Image source={this.edibleTypes[edible.type].png} style={styles.redPellet} resizeMode="stretch"/>
+                  }
+                </Animated.View>
+              );
+            }
+          })
+        }
         {pellet}
         {(!this.state.fpsShow) ? null :
           <View style={styles.framerateContainer}>

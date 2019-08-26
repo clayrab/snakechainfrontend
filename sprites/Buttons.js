@@ -32,6 +32,10 @@ export default class Buttons extends Sprite {
   };
 
   render() {
+    if(CONSTANTS.LOGRENDERMETHODS) {
+      var now = Date.now();
+      console.log("Buttons render " + now)
+    }
     return (
       <View style={styles.buttonsBackground}>
         <View style={styles.buttonsHolder}>

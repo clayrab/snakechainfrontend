@@ -5,20 +5,24 @@ import PropTypes from 'prop-types';
 import CONSTANTS from '../Constants.js';
 import {formatToken} from '../utils/uiHelperFunctions.js';
 
-export default class ScoreBoard extends Sprite {
+export default class ScoreBoard extends React.Component {
   // https://facebook.github.io/react-native/docs/gesture-responder-system
-  static contextTypes = {
-    loop: PropTypes.object,
-    baseScore: PropTypes.number,
-    multiplier: PropTypes.number,
-    score: PropTypes.number,
-  };
+  // static contextTypes = {
+  //   loop: PropTypes.object,
+  //   baseScore: PropTypes.number,
+  //   multiplier: PropTypes.number,
+  //   score: PropTypes.number,
+  // };
 
   constructor(props) {
     super(props);
   }
 
   render() {
+    if(CONSTANTS.LOGRENDERMETHODS) {
+      var now = Date.now();
+      console.log("ScoreBoard render " + now)
+    }
     return (
       <ImageBackground source={require('../assets/homepage/titleback.png')} style={styles.scoreBoard}>
         <ImageBackground source={require('../assets/gameplay/scoreBackground.png')} style={styles.scoreBox}
@@ -46,7 +50,7 @@ export default class ScoreBoard extends Sprite {
             <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.scoreText]}>
               {this.props.loading ? null :
                 <Text adjustsFontSizeToFit numberOfLines={1}
-                      style={[styles.titleBarText, this.state.titleBarTextStyle]}>
+                      style={[styles.titleBarText]}>
                   {formatToken(this.props.user.eth, "ETH")}
                 </Text>
               }

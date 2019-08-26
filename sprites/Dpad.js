@@ -4,11 +4,13 @@ import { Sprite } from 'react-game-kit/native';
 import PropTypes from 'prop-types';
 import CONSTANTS from '../Constants.js';
 
-export default class Dpad extends Sprite {
+export default class Dpad extends React.Component {
   // https://facebook.github.io/react-native/docs/gesture-responder-system
   constructor(props) {
     super(props);
-    this.state.direction = CONSTANTS.DPADSTATES.NONE;
+    this.state = {
+     direction: CONSTANTS.DPADSTATES.NONE,
+    };
     this.dpadButtonSizeHalf = dpadButtonSize / 2;
     this.dpadSizeHalf = dpadButtonSize * 1.207 * 1.5;
   }
@@ -88,6 +90,10 @@ export default class Dpad extends Sprite {
   }
 
   render() {
+    if(CONSTANTS.LOGRENDERMETHODS) {
+      var now = Date.now();
+      console.log("Dpad render " + now);
+    }
     let uActive = this.props.pressedButton == CONSTANTS.DPADSTATES.UP;
     let dActive = this.props.pressedButton == CONSTANTS.DPADSTATES.DOWN;
     let rActive = this.props.pressedButton == CONSTANTS.DPADSTATES.RIGHT;
@@ -123,8 +129,7 @@ export default class Dpad extends Sprite {
             onResponderMove={this.onResponderMove}
             onResponderRelease={this.onResponderRelease}
             onResponderGrant={this.onResponderGrant}
-            onResponderReject={this.onResponderReject}
-          ></View>
+            onResponderReject={this.onResponderReject} />
         </View>
       </ImageBackground>
     );

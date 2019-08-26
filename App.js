@@ -226,6 +226,8 @@ export default class App extends React.Component {
     this.onConfirmTxOk = this.onConfirmTxOk.bind(this);
     this.websocketTimeout = null;
     this.websocketRetryTime = CONSTANTS.SOCKETINITRETRYTIME;
+    this.loadUserTimeout = null;
+    this.loadUserRetryTime = CONSTANTS.LOADUSERINITRETRYTIME;
   }
 
   async loadResourcesAsync() {
@@ -313,15 +315,25 @@ export default class App extends React.Component {
       return false;
     }
   }
+
+  retryLoadUser = () => {
+    this.loadUserTimeout = setTimeout(() => {
+      this.loadUser();
+    }, this.loadUserRetryTime);
+    this.loadUserRetryTime = this.loadUserRetryTime * CONSTANTS.LOADUSERRETRYMULT;
+    this.loadUserRetryTime = this.loadUserRetryTime > CONSTANTS.LOADUSERRETRYMAX ? CONSTANTS.LOADUSERRETRYMAX : this.loadUserRetryTime;
+  }
+
   loadUser = async (jwt) => {
     console.log("loadUser")
     let result = await this.fetchUser(jwt);
     console.log('fetched user...');
-    if(result) {
-      result = result && this.fetchTxHistory(jwt);
+    let txHistoryResult = await this.fetchTxHistory(jwt);
+    if(result && txHistoryResult) {
+      return true;
+    } else {
+      retryLoadUser();
     }
-    console.log('fetchTxHistory user...')
-    return result;
   }
 
   trySocket = () => {
@@ -588,6 +600,7 @@ export default class App extends React.Component {
 }
 
   render() {
+    console.log("app render")
     if (!this.state.isReady) {
       return (
         <AppLoading
