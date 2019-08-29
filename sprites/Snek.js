@@ -807,9 +807,9 @@ export default class Snek extends Sprite {
   goUp = async() => {
     let newTailIndex = this.moveTail(CONSTANTS.DPADSTATES.UP);
     if (this.state.boardY - 1 < 0) {
-      this.die();
+      await this.die();
     } else if (this.boardState[this.state.boardY - 1][this.state.boardX] === "WALL" && !this.state.godMode) {
-      this.die();
+      await this.die();
     } else {
       this.onBoardTile(this.state.boardX, this.state.boardY - 1);
       await this.setState({
@@ -824,9 +824,9 @@ export default class Snek extends Sprite {
   goDown = async() => {
     let newTailIndex = this.moveTail(CONSTANTS.DPADSTATES.DOWN);
     if (this.state.boardY + 1 > CONSTANTS.BOARDHEIGHT - 1) {
-      this.die();
+      await this.die();
     } else if (this.boardState[this.state.boardY + 1][this.state.boardX] === "WALL" && !this.state.godMode) {
-      this.die();
+      await this.die();
     } else {
       this.onBoardTile(this.state.boardX, this.state.boardY + 1);
       await this.setState({
@@ -841,9 +841,9 @@ export default class Snek extends Sprite {
   goLeft = async() => {
     let newTailIndex = this.moveTail(CONSTANTS.DPADSTATES.LEFT);
     if (this.state.boardX - 1 < 0) {
-      this.die();
+      await this.die();
     } else if (this.boardState[this.state.boardY][this.state.boardX - 1] === "WALL" && !this.state.godMode) {
-      this.die();
+      await this.die();
     } else {
       this.onBoardTile(this.state.boardX - 1, this.state.boardY);
       await this.setState({
@@ -858,9 +858,9 @@ export default class Snek extends Sprite {
   goRight = async() =>  {
     let newTailIndex = this.moveTail(CONSTANTS.DPADSTATES.RIGHT);
     if (this.state.boardX + 1 > CONSTANTS.BOARDWIDTH - 1) {
-      this.die();
+      await this.die();
     } else if (this.boardState[this.state.boardY][this.state.boardX + 1] === "WALL" && !this.state.godMode) {
-      this.die();
+      await this.die();
     } else {
       this.onBoardTile(this.state.boardX + 1, this.state.boardY);
       await this.setState({
@@ -974,7 +974,7 @@ export default class Snek extends Sprite {
       <View
         //renderToHardwareTextureAndroid={true}
         style={[styles.gameBack, {/*transferX: this.boardShakeInterpolate()*/ },]}>
-        <ImageBackground source={require('../assets/gameplay/Background.png')} style={[styles.fieldBack, { backgroundColor: "red", }]}
+        <ImageBackground source={require('../assets/gameplay/Background.png')} style={[styles.fieldBack]}
           resizeMode="stretch">
          <ScoreBoard
           score={this.state.score}

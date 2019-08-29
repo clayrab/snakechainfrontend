@@ -180,6 +180,11 @@ export default class App extends React.Component {
           redpowerup: -1
         }
       },
+      gameId: null,
+      yellowpowerupsused: 0,
+      bluepowerupsused: 0,
+      orangepowerupsused: 0,
+      redpowerupsused: 0,
       games: [],
       transactions: [],
       running: false,
@@ -204,7 +209,6 @@ export default class App extends React.Component {
       confirmAmount: -1,
       confirmTokenType: "ETH",
       txKey: "",
-      offerContract: true,
       loadingUser: true,
       loadingTx: true,
       errorTitle: "",
@@ -219,7 +223,7 @@ export default class App extends React.Component {
     };
     this.closeOverlay = this.closeOverlay.bind(this);
     this.restart = this.restart.bind(this);
-    this.start = this.start.bind(this);
+    //this.startGame = this.startGame.bind(this);
     this.pause = this.pause.bind(this);
     this.onSelectLevelPlayPress = this.onSelectLevelPlayPress.bind(this);
     this.gameOverDoContract = this.gameOverDoContract.bind(this);
@@ -403,6 +407,11 @@ export default class App extends React.Component {
     let data = {
       howmany: score,
       level: 1,
+      id: this.state.gameId,
+      yellowpowerups: this.state.yellowpowerupsused,
+      bluepowerups: this.state.bluepowerupsused,
+      orangepowerups: this.state.orangepowerupsused,
+      redpowerups: this.state.redpowerupsused,
     };
     fetch(`${context.host}:${context.port}/recordScore`, {
       method: "POST",
@@ -422,6 +431,11 @@ export default class App extends React.Component {
               time: 5 * 60,
             }
             this.setState({
+              gameId: null,
+              yellowpowerupsused: 0,
+              bluepowerupsused: 0,
+              orangepowerupsused: 0,
+              redpowerupsused: 0,
               overlay: overlays.GAMEOVER,
               gameOverInfo: gameOverInfo,
               loadingScore: false,
@@ -445,8 +459,35 @@ export default class App extends React.Component {
     });
   }
 
-  start() {
-    this.setState({offerContract: true, running: true, overlay: -1});
+  startGame = async() => {
+    let jwt = await getFromAsyncStore("jwt");
+    fetch(`${context.host}:${context.port}/makeNewGame`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Authorization": "JWT " + jwt,
+      },
+    }).then(async (response) => {
+      var resp = await response.json();
+      if (!resp.error) {
+        if (resp) {
+          if (resp.status == "OK") {
+            console.log("got game id")
+            console.log(resp.id)
+            this.setState({ gameId: resp.id });
+          } else {
+            this.startGame();
+          }
+        } else {
+          this.startGame();
+        }
+      } else {
+        this.startGame();
+      }
+    }).catch(err => {
+      throw err
+    });
+    this.setState({running: true, overlay: -1});
   }
 
   restart() {
@@ -541,6 +582,15 @@ export default class App extends React.Component {
   }
 
   consumePowerup = (powerupName) => {
+    if(powerupName === "bluepowerup") {
+      this.setState({ bluepowerupsused: this.state.bluepowerupsused + 1 });
+    } else if(powerupName === "yellowpowerup") {
+      this.setState({ yellowpowerupsused: this.state.yellowpowerupsused + 1 });
+    } else if(powerupName === "orangepowerup") {
+      this.setState({ orangepowerupsused: this.state.orangepowerupsused + 1 });
+    } else if(powerupName === "redpowerup") {
+      this.setState({ redpowerupsused: this.state.redpowerupsused + 1 });
+    }
     let currentPowerups = this.state.user.powerups;
     currentPowerups[powerupName] = currentPowerups[powerupName] - 1;
     this.updatePowerups(currentPowerups);
@@ -595,9 +645,10 @@ export default class App extends React.Component {
   }
 
   snakeUpgradeRight = () => {
-    if (this.state.activeSnakeUpgrade < snakeUpgrades.length - 1)
+    if (this.state.activeSnakeUpgrade < snakeUpgrades.length - 1) {
       this.setState({activeSnakeUpgrade: this.state.activeSnakeUpgrade + 1})
-}
+    }
+  }
 
   render() {
     console.log("app render")
@@ -698,7 +749,6 @@ export default class App extends React.Component {
               toggleReset={this.state.toggleReset}
               authorizationError={this.authorizationError}
               onDied={this.onDied}
-              start={this.start}
               pause={this.pause}
               powerUps={this.powerUps}
               consumePowerup={this.consumePowerup}
@@ -721,7 +771,6 @@ export default class App extends React.Component {
             gameOverInfo={this.state.gameOverInfo}
             miningPrice={this.state.prices.mineGamePrice}
             //onDoContract={this.onDoContract}
-            offerContract={this.state.offerContract}
             restart={this.restart}
             exit={this.exit}/>
           <AreYouSureOverlay
@@ -747,7 +796,7 @@ export default class App extends React.Component {
               exit={this.exit} />*/}
           <StartGameOverlay
             show={this.state.overlay == overlays.STARTGAME}
-            onStart={this.start}/>
+            onStart={this.startGame}/>
           <ErrorOverlay
             closeOverlay={this.closeOverlay}
             show={this.state.overlay == overlays.ERROR}

@@ -25,142 +25,59 @@ export default class GameOverOverlay extends React.Component {
 
             <ImageBackground source={require('../assets/gameover/topgameover.png')} style={styles.topgameover}
               resizeMode="stretch">
-              <Text style={[styles.buttonText, styles.gameOverText]}>
-                GAME OVER
-            </Text>
+              <Text style={[styles.buttonText, styles.gameOverText]}>GAME OVER</Text>
             </ImageBackground>
-            {this.props.offerContract &&
-              <View style={{ alignItems: "center" }}>
+            <View style={{ alignItems: "center" }}>
 
-                <View style={styles.contractView}>
-                  <Image source={require('../assets/gameover/gameoversnake.png')} style={styles.GameoverSnakeImage}
-                    resizeMode="contain" />
-                  <View >
-                    <ImageBackground source={require('../assets/gameover/collectgoldback.png')} style={styles.collectGoldImg}
-                      resizeMode="contain">
-                      <Text style={[styles.buttonText, styles.scoreText]}>
-                        1,205
-                    </Text>
-                    </ImageBackground>
-                    <ImageBackground source={require('../assets/gameover/scoreboard.png')} style={styles.ScoreboardImg}
-                      resizeMode="contain">
-                      <View style={styles.scoreboardView}>
-                        <View style={styles.dataView}>
-                          <Text style={[styles.buttonText, styles.scoreText1]}>
-                            Time:
-                        </Text>
-                          <Text style={[styles.buttonText, styles.scoreText2]}>
-                            35:00
-                        </Text>
-                        </View>
-                        <View style={styles.dataView}>
-                          <Text style={[styles.buttonText, styles.scoreText1]}>
-                            Level:
-                        </Text>
-                          <Text style={[styles.buttonText, styles.scoreText2]}>
-                            105
-                        </Text>
-                        </View>
-                        <View style={styles.dataView}>
-                          <View style={{ flexDirection: 'row' }}>
-                            <Image source={require('../assets/gameover/mashrom.png')} style={styles.mashroomImage}
-                              resizeMode="contain" />
-                            <Text style={[styles.buttonText, styles.scoreText1]}>
-                              Collected:
-                        </Text>
-                          </View>
-                          <Text style={[styles.buttonText, styles.scoreText2]}>
-                            92
-                        </Text>
-
-                        </View>
+              <View style={styles.contractView}>
+                <Image source={require('../assets/gameover/gameoversnake.png')} style={styles.GameoverSnakeImage}
+                  resizeMode="contain" />
+                <View >
+                  <ImageBackground source={require('../assets/gameover/collectgoldback.png')} style={styles.collectGoldImg}
+                    resizeMode="contain">
+                    <Text style={[styles.buttonText, styles.scoreText]}>
+                      1,205
+                  </Text>
+                  </ImageBackground>
+                  <ImageBackground source={require('../assets/gameover/scoreboard.png')} style={styles.ScoreboardImg}
+                    resizeMode="contain">
+                    <View style={styles.scoreboardView}>
+                      <View style={styles.dataView}>
+                        <Text style={[styles.buttonText, styles.scoreText1]}>
+                          Time:
+                      </Text>
+                        <Text style={[styles.buttonText, styles.scoreText2]}>
+                          35:00
+                      </Text>
                       </View>
-                    </ImageBackground>
-                  </View>
-
-                </View>
-
-                {/*<View style={styles.scrollView}>
-                  <ImageBackground source={require('../assets/gameover/scrollback.png')}
-                    style={styles.ScrollBackground} resizeMode="contain">
-                    <View style={styles.bonusView}>
-                      <ScrollView showsVerticalScrollIndicator={false} scrollEventThrottle={2}>
-                        <View style={styles.scrollitemtop}>
-                          <ImageBackground source={require('../assets/gameover/scrollitem.png')} style={styles.scrollitem}
-                            resizeMode="stretch">
-                            <View style={styles.scrollitemtxt}>
-                              <Text style={[styles.buttonText, styles.scoreText6]}>
-                                Level 35 Bonus:
-                        </Text>
-                              <View style={styles.scrollmash}>
-                                <Text style={[styles.buttonText, styles.scoreText3]}>
-                                  3
-                        </Text>
-                                <Image source={require('../assets/gameover/mashrom.png')} style={styles.mashroomImage1}
-                                  resizeMode="contain" />
-                              </View>
-                            </View>
-                          </ImageBackground>
+                      <View style={styles.dataView}>
+                        <Text style={[styles.buttonText, styles.scoreText1]}>
+                          Level:
+                      </Text>
+                        <Text style={[styles.buttonText, styles.scoreText2]}>
+                          105
+                      </Text>
+                      </View>
+                      <View style={styles.dataView}>
+                        <View style={{ flexDirection: 'row' }}>
+                          <Image source={require('../assets/gameover/mashrom.png')} style={styles.mashroomImage}
+                            resizeMode="contain" />
+                          <Text style={[styles.buttonText, styles.scoreText1]}>
+                            Collected:
+                      </Text>
                         </View>
-                        <View style={styles.scrollitems}>
-                          <ImageBackground source={require('../assets/gameover/scrollitem.png')} style={styles.scrollitem1}
-                            resizeMode="stretch">
-                            <View style={styles.scrollitemtxt}>
-                              <Text style={[styles.buttonText, styles.scoreText6]}>
-                                Gold Mashroom:
-                        </Text>
-                              <View style={styles.scrollmash}>
-                                <Text style={[styles.buttonText, styles.scoreText4]}>
-                                  0.02
-                          </Text>
-                                <Image source={require('../assets/gameover/mashrom.png')} style={styles.mashroomImage1}
-                                  resizeMode="contain" />
-                              </View>
-                            </View>
-                          </ImageBackground>
-                        </View>
-                        <View style={styles.scrollitems}>
-                          <ImageBackground source={require('../assets/gameover/scrollitem.png')} style={styles.scrollitem1}
-                            resizeMode="stretch">
-                            <View style={styles.scrollitemtxt}>
-                              <Text style={[styles.buttonText, styles.scoreText6]}>
-                                Level 30 Bonus:
-                            </Text>
-                              <View style={styles.scrollmash}>
-                                <Text style={[styles.buttonText, styles.scoreText3]}>
-                                  3
-                              </Text>
-                                <Image source={require('../assets/gameover/mashrom.png')} style={styles.mashroomImage1}
-                                  resizeMode="contain" />
-                              </View>
-                            </View>
+                        <Text style={[styles.buttonText, styles.scoreText2]}>
+                          92
+                      </Text>
 
-                          </ImageBackground>
-                        </View>
-                        <View style={styles.scrollitems}>
-                          <ImageBackground source={require('../assets/gameover/scrollitem.png')} style={styles.scrollitem1}
-                            resizeMode="stretch">
-                            <View style={styles.scrollitemtxt}>
-                              <Text style={[styles.buttonText, styles.scoreText6]}>
-                                Level 30 Bonus:
-                                    </Text>
-                              <View style={styles.scrollmash}>
-                                <Text style={[styles.buttonText, styles.scoreText3]}>
-                                  3
-                                </Text>
-                                <Image source={require('../assets/gameover/mashrom.png')} style={styles.mashroomImage1}
-                                  resizeMode="contain" />
-                              </View>
-                            </View>
-
-                          </ImageBackground>
-                        </View>
-                      </ScrollView>
+                      </View>
                     </View>
                   </ImageBackground>
-                </View>*/}
+                </View>
+
               </View>
-            }
+
+            </View>
             <TouchableOpacity style={styles.touchableButton} onPress={this.props.restart}>
               <ImageBackground source={require('../assets/gameover/greenButton.png')} style={styles.largeButton}
                 resizeMode="stretch">
