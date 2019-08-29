@@ -28,10 +28,10 @@ export default class SnekHead extends Sprite {
 
   update = async () => {
     this.props.countFrame();
-    if (this.props.running) {
-      if (!this.props.alive) { //player tried to start the game without reset
-        this.props.die();
-      }
+    if (this.props.running && this.props.alive) {
+      // if (!this.props.alive) { //player tried to start the game without reset
+      //   this.props.die();
+      // }
       // if (this.state.pelletLocation == null) {
       //   this.placePellet();
       // }

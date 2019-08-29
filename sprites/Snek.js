@@ -502,7 +502,8 @@ export default class Snek extends Sprite {
   // }
 
   die = async () => {
-    this.setState({ alive: false });
+    console.log("+++++++++++++++++ die +++++++++++++++++")
+    await this.setState({ alive: false });
     await this.playSound(this.sounds.DIE);
     await this.props.onDied(this.state.score);
   }
@@ -981,8 +982,6 @@ export default class Snek extends Sprite {
           easterEgg={this.easterEgg}
           loading={this.props.loading}
           user={this.props.user} />
-
-
         </ImageBackground>
         <ImageBackground source={require('../assets/gameplay/gameArea.png')} style={styles.field} resizeMode="stretch"/>
         {/* <ImageBackground source={require('../assets/gameplay/Background.png')} style={styles.field} resizeMode="stretch" /> */}
@@ -1042,7 +1041,6 @@ export default class Snek extends Sprite {
         <View style={styles.controllerOuterContainer}>
           <View style={styles.controllerContainer}>
             <View style={styles.mushroomRow}>
-
               <TouchableOpacity onPress={this.yellowPowerup}>
                 <Image source={require("../assets/gameplay/MGold.png")} style={styles.mushroomImage} />
                 <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
