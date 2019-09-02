@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Button,
   TouchableOpacity,
   StyleSheet,
   Text,
@@ -12,6 +13,10 @@ import {
 import {normalize} from '../utils/FontNormalizer.js';
 import {context} from "../utils/Context";
 import Loading from "./Loading";
+
+import ConfirmGoogleCaptcha from 'react-native-google-recaptcha-v2';
+const siteKey = '6LermbUUAAAAAA7uTrIT9AFrW2mtYhQvxKNrThoL';
+const baseUrl = 'http://claytonrabenda.com/';
 
 export default class Signup extends React.Component {
   constructor(props) {
@@ -28,7 +33,23 @@ export default class Signup extends React.Component {
       securerePassword: false,
     }
   }
-
+  onMessage = (event) => {
+    console.log('onMessage')
+    console.log(event)
+    console.log(event.nativeEvent.data)
+    if (event && event.nativeEvent.data) {
+       if (['cancel', 'error', 'expired'].includes(event.nativeEvent.data)) {
+         this.captchaForm.hide();
+         return;
+       } else {
+         console.log('Verified code from Google', event.nativeEvent.data);
+         setTimeout(() => {
+           this.captchaForm.hide();
+           // do what ever you want here
+         }, 1500);
+       }
+     }
+   };
   confirmPress = async () => {
     const {loading, loginPlaceHolder, passwordPlaceHolder, repasswordPlaceHolder, robotCBPress, termCBPress} = this.state;
     if (loading) return;
@@ -139,7 +160,8 @@ export default class Signup extends React.Component {
         <Loading></Loading>
       );
     }
-
+    console.log("signup render")
+    console.log(this.onMessage)
     return (
       <View style={styles.container}>
         <ImageBackground style={styles.content} source={require('../assets/pauseoverlay/BackgroundBrown.png')}
@@ -192,7 +214,15 @@ export default class Signup extends React.Component {
                   source={this.state.robotCBPress ? require('../assets/login/checkBox.png') : require('../assets/login/checkBox-1.png')}
                   style={styles.checkBoxImage} resizeMode="stretch"/>
               </TouchableOpacity>
-              <Text style={[styles.checkboxText, {flex: 3}]}>IM NOT A ROBOT</Text>
+
+              <Button
+                 onPress={() => {
+                     this.captchaForm.show();
+                 }}
+                 title='Click'
+                 style={{ width: 120, backgroundColor: 'darkviolet' }}
+                 textColor='#fff'
+             />
             </View>
             <View style={styles.checkboxView}>
               <TouchableOpacity onPress={this.termPress} style={{flex: 1, marginLeft: 20}}>
@@ -210,6 +240,13 @@ export default class Signup extends React.Component {
             </ImageBackground>
           </TouchableOpacity>
         </ImageBackground>
+        <ConfirmGoogleCaptcha
+            ref={_ref => this.captchaForm = _ref}
+            siteKey={siteKey}
+            baseUrl={baseUrl}
+            languageCode='en'
+            onMessage={this.onMessage}
+        />
       </View>
     )
   }
