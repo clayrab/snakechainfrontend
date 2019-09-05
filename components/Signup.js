@@ -18,85 +18,95 @@ import ConfirmGoogleCaptcha from 'react-native-google-recaptcha-v2';
 const siteKey = '6LermbUUAAAAAA7uTrIT9AFrW2mtYhQvxKNrThoL';
 const baseUrl = 'http://claytonrabenda.com/';
 
+let loginDefault = 'Username';
+let passwordPlaceDefault = 'Password';
+let repasswordPlaceDefault = 'Re-enter password';
+
 export default class Signup extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       loading: false,
       //signedUp: false,
-      loginPlaceHolder: 'Username',
-      passwordPlaceHolder: 'Password',
-      repasswordPlaceHolder: 'Re enter password',
-      robotCBPress: true,
+      loginPlaceHolder: loginDefault,
+      passwordPlaceHolder: passwordPlaceDefault,
+      repasswordPlaceHolder: repasswordPlaceDefault,
       termCBPress: true,
       securePassword: false,
       securerePassword: false,
     }
   }
-  onMessage = (event) => {
-    console.log('onMessage')
-    console.log(event)
-    console.log(event.nativeEvent.data)
+  onMessage = async(event) => {
+    const {loginPlaceHolder, passwordPlaceHolder, termCBPress} = this.state;
     if (event && event.nativeEvent.data) {
        if (['cancel', 'error', 'expired'].includes(event.nativeEvent.data)) {
          this.captchaForm.hide();
+         alert("Problem validating user captcha.")
          return;
        } else {
-         console.log('Verified code from Google', event.nativeEvent.data);
-         setTimeout(() => {
+         if(this.validateForm() === null) {
            this.captchaForm.hide();
-           // do what ever you want here
-         }, 1500);
+           try {
+             this.setState( { loading: true } );
+             const data = { username: loginPlaceHolder, pw: passwordPlaceHolder, "g-recaptcha-response": event.nativeEvent.data };
+             const response = await fetch(`${context.host}:${context.port}/createLocalUser`, {
+               method: "POST", // *GET, POST, PUT, DELETE, etc.
+               body: JSON.stringify(data), // body data type must match "Content-Type" header
+               headers: {
+                 "Content-Type": "application/json; charset=utf-8",
+                 //application/x-www-form-urlencoded on Postman...
+               },
+             });
+             const resp = await response.json();
+             if(resp.error) {
+               if(resp.error === "Object already exists!") {
+                alert("Username already taken");
+               } else {
+                alert(resp.error);
+               }
+             } else if(!resp.token) {
+               alert("Unknown error occured");
+             } else {
+               await AsyncStorage.setItem("LAST_REGISTERED", loginPlaceHolder);
+               this.props.loggedIn(resp.token);
+             }
+             //this.setState({signedUp: true});
+           } catch (error) {
+             console.log(error);
+             alert(error);
+           } finally {
+             this.setState({loading: false});
+           }
+         }
        }
      }
-   };
-  confirmPress = async () => {
-    const {loading, loginPlaceHolder, passwordPlaceHolder, repasswordPlaceHolder, robotCBPress, termCBPress} = this.state;
-    if (loading) return;
-
-    if (loginPlaceHolder == 0) {
-      alert("Please enter a user name")
-    } else if (passwordPlaceHolder == 0 || repasswordPlaceHolder == "") {
-      alert("Please enter password and confirmation password");
+  };
+  validateForm = () => {
+    const {loginPlaceHolder, passwordPlaceHolder, repasswordPlaceHolder, termCBPress} = this.state;
+    if (loginPlaceHolder == loginDefault || loginPlaceHolder == "") {
+      return "Please enter a user name";
+    } else if (passwordPlaceHolder == passwordPlaceDefault || passwordPlaceHolder == "" || repasswordPlaceHolder == repasswordPlaceDefault || repasswordPlaceHolder == "") {
+      return "Please enter password and confirmation password";
     } else if (passwordPlaceHolder != repasswordPlaceHolder) {
-      alert("Passwords don't match");
-    } else if (robotCBPress) {
-      alert("I'm not a robot not selected");
+      return "Passwords don't match";
     } else if (termCBPress) {
-      alert("Please accept terms and conditions");
+      return "Please accept terms and conditions";
     } else {
-      try {
-        this.setState({loading: true});
-        const data = {username: loginPlaceHolder, pw: passwordPlaceHolder};
-        const response = await fetch(`${context.host}:${context.port}/createLocalUser`, {
-          method: "POST", // *GET, POST, PUT, DELETE, etc.
-          body: JSON.stringify(data), // body data type must match "Content-Type" header
-          headers: {
-            "Content-Type": "application/json; charset=utf-8",
-            //application/x-www-form-urlencoded on Postman...
-          },
-        });
-        const resp = await response.json();
-        if(!resp.token) {
-          alert("Unknown error occured");
-        } else {
-          console.log("signedup")
-          console.log(resp)
-          await AsyncStorage.setItem("LAST_REGISTERED", loginPlaceHolder);
-          this.props.loggedIn(resp.token);
-        }
-        //this.setState({signedUp: true});
-      } catch (error) {
-        console.log(error);
-        alert(error);
-      } finally {
-        this.setState({loading: false});
-      }
+      return null;
+    }
+    return "Unknown form validation error";
+  }
+  confirmPress = async () => {
+    let error = this.validateForm();
+    if (error === null){
+      this.captchaForm.show();
+    } else {
+      alert(error);
     }
   }
 
   loginFocus = () => {
-    if (this.state.loginPlaceHolder) {
+    if (this.state.loginPlaceHolder === loginDefault) {
       this.setState({loginPlaceHolder: ''});
     }
   }
@@ -106,8 +116,8 @@ export default class Signup extends React.Component {
   }
 
   loginBlur = () => {
-    if (!this.state.loginPlaceHolder) {
-      this.setState({loginPlaceHolder: 'Phone Number'});
+    if (this.state.loginPlaceHolder === "") {
+      this.setState({loginPlaceHolder: loginDefault});
     }
   }
 
@@ -122,27 +132,24 @@ export default class Signup extends React.Component {
     });
   }
   passwordFocus = () => {
-    if (this.state.passwordPlaceHolder) {
+    if (this.state.passwordPlaceHolder === passwordPlaceDefault) {
       this.setState({passwordPlaceHolder: '', securePassword: true});
     }
   }
   repasswordFocus = () => {
-    if (this.state.repasswordPlaceHolder) {
+    if (this.state.repasswordPlaceHolder === repasswordPlaceDefault) {
       this.setState({repasswordPlaceHolder: '', securerePassword: true});
     }
   }
   passwordBlur = () => {
-    if (!this.state.passwordPlaceHolder) {
-      this.setState({passwordPlaceHolder: 'Password', securePassword: false});
+    if (this.state.passwordPlaceHolder === "") {
+      this.setState({passwordPlaceHolder: passwordPlaceDefault, securePassword: false});
     }
   }
   repasswordBlur = () => {
-    if (!this.state.repasswordPlaceHolder) {
-      this.setState({repasswordPlaceHolder: 'Re enter password', securerePassword: false});
+    if (this.state.repasswordPlaceHolder === "") {
+      this.setState({repasswordPlaceHolder: repasswordPlaceDefault, securerePassword: false});
     }
-  }
-  robotPress = () => {
-    this.setState({robotCBPress: !this.state.robotCBPress});
   }
 
   termPress = () => {
@@ -160,8 +167,6 @@ export default class Signup extends React.Component {
         <Loading></Loading>
       );
     }
-    console.log("signup render")
-    console.log(this.onMessage)
     return (
       <View style={styles.container}>
         <ImageBackground style={styles.content} source={require('../assets/pauseoverlay/BackgroundBrown.png')}
@@ -208,7 +213,8 @@ export default class Signup extends React.Component {
           </ImageBackground>
           <ImageBackground source={require('../assets/signup/checkBoxBG.png')} style={styles.checkboxBG}
                            resizeMode="stretch">
-            <View style={styles.checkboxView}>
+
+            {/*<View style={styles.checkboxView}>
               <TouchableOpacity onPress={this.robotPress} style={{flex: 1, marginLeft: 20}}>
                 <Image
                   source={this.state.robotCBPress ? require('../assets/login/checkBox.png') : require('../assets/login/checkBox-1.png')}
@@ -223,7 +229,7 @@ export default class Signup extends React.Component {
                  style={{ width: 120, backgroundColor: 'darkviolet' }}
                  textColor='#fff'
              />
-            </View>
+            </View>*/}
             <View style={styles.checkboxView}>
               <TouchableOpacity onPress={this.termPress} style={{flex: 1, marginLeft: 20}}>
                 <Image
@@ -303,7 +309,7 @@ let styles = StyleSheet.create({
   checkboxBG: {
     backgroundColor: 'transparent',
     width: screenWidth - 100,
-    height: 100,
+    height: 60,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
@@ -311,7 +317,6 @@ let styles = StyleSheet.create({
   },
   checkboxView: {
     flexDirection: 'row',
-    marginTop: 10,
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center'
