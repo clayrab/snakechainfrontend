@@ -336,15 +336,15 @@ export default class App extends React.Component {
     if(result && txHistoryResult) {
       return true;
     } else {
-      retryLoadUser();
+      this.retryLoadUser();
     }
   }
 
   trySocket = () => {
     try {
-      console.log("Opening socket for pubkey: " + this.state.user.pubkey)
       //this.websocketRetryTime = CONSTANTS.SOCKETINITRETRYTIME;SOCKETRETRYMULT
       if(this.state.user.pubkey) {
+        console.log("Opening socket for pubkey: " + this.state.user.pubkey)
         this.socket = SocketIOClient(`${context.host}:${context.socketPort}`, {
           query: `pubkey=${this.state.user.pubkey}`,
         });
@@ -589,7 +589,7 @@ export default class App extends React.Component {
     } else if(powerupName === "orangepowerup") {
       this.setState({ orangepowerupsused: this.state.orangepowerupsused + 1 });
     } else if(powerupName === "redpowerup") {
-      this.setState({ redpowerupsused: this.state.redpowerupsused + 1 });
+      this.setStawte({ redpowerupsused: this.state.redpowerupsused + 1 });
     }
     let currentPowerups = this.state.user.powerups;
     currentPowerups[powerupName] = currentPowerups[powerupName] - 1;

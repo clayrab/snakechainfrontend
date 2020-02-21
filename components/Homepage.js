@@ -242,7 +242,7 @@ export default class Homepage extends React.Component {
           this.setState({overlay: -1});
         }
       } else {
-        alert(resp.error);
+        alert("buy powerups error\n" + resp.error);
         this.setState({overlay: -1});
       }
     }).catch(err => {
@@ -304,52 +304,64 @@ export default class Homepage extends React.Component {
           <View style={styles.contentHolder}>
             <View style={styles.contentTopMargin}></View>
             <View style={styles.contentTop}>
-              <ImageBackground source={require('../assets/homepage/snakechain.png')}
-                               style={styles.snakechain}></ImageBackground>
-              <View style={styles.iconsHolder}>
-                <TouchableOpacity onPress={this.props.onGoToTown}>
-                  <ImageBackground source={require('../assets/homepage/town.png')}
-                                   style={styles.town}></ImageBackground>
+              <TouchableOpacity onPress={this.onPowerups} style={styles.powerupsHolder}>
+                <ImageBackground source={require('../assets/homepage/powerups.png')} style={styles.powerups}></ImageBackground>
+                <ImageBackground source={require('../assets/profile/imageHolder.png')} resizeMode={"stretch"} style={styles.powerupHolderBG}>
+                  <View style={styles.powerupIconHolder}>
+                    <ImageBackground source={require('../assets/graphics/gameplay/lemon.png')} style={[styles.powerupIconLemon, styles.powerupIcon]}></ImageBackground>
+                    <Text style={[styles.gototownText, {fontSize: normalize(14)}]}>{this.props.user.powerups.yellowpowerup}</Text>
+                  </View>
+                  <View style={styles.powerupIconHolder}>
+                    <ImageBackground source={require('../assets/graphics/gameplay/orange.png')} style={[styles.powerupIconOrange, styles.powerupIcon]}></ImageBackground>
+                    <Text style={[styles.gototownText, {fontSize: normalize(14)}]}>{this.props.user.powerups.orangepowerup}</Text>
+                  </View>
+                  <View style={styles.powerupIconHolder}>
+                    <ImageBackground source={require('../assets/graphics/gameplay/strawberry.png')} style={[styles.powerupIconStrawberry, styles.powerupIcon]}></ImageBackground>
+                    <Text style={[styles.gototownText, {fontSize: normalize(14)}]}>{this.props.user.powerups.redpowerup}</Text>
+                  </View>
+                  <View style={styles.powerupIconHolder}>
+                    <ImageBackground source={require('../assets/graphics/gameplay/blueberry.png')} style={[styles.powerupIconBlueberry, styles.powerupIcon]}></ImageBackground>
+                    <Text style={[styles.gototownText, {fontSize: normalize(14)}]}>{this.props.user.powerups.bluepowerup}</Text>
+                  </View>
+                </ImageBackground>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.contentMid}>
+              {/*<Text style={[styles.gototownText, styles.mine]}>
+                <Text
+                  style={[styles.gototownText, {fontSize: normalize(20)}]}>{this.props.user.eggs}</Text> Ore
+              </Text>
+                <TouchableOpacity style={styles.mine}
+                                  onPress={this.onMinePress}>
+                  {this.state.loading ? null :
+                    <ImageBackground style={styles.mineImage} source={mineImg}>
+                      <Text style={[mineTextColorStyle, styles.mineText, mineTextColorStyle]}>
+                        {minePercent}%
+                      </Text>
+                    </ImageBackground>
+                  }
                 </TouchableOpacity>
-                <TouchableOpacity onPress={this.onPowerups}>
-                  <ImageBackground source={require('../assets/homepage/powerups.png')}
-                                   style={styles.powerups}></ImageBackground>
-                </TouchableOpacity>
-              </View>
+                <ImageBackground source={require('../assets/gameover/collectgoldback.png')} style={styles.oreBG}>
+                </ImageBackground>
+                */}
+              <Text style={[styles.gototownText, styles.oreText]}>{this.props.user.eggs} Ore</Text>
+              <TouchableOpacity onPress={this.onMineHaul} style={styles.gototownButtonHolder}>
+                <ImageBackground source={require('../assets/homepage/gototownButton.png')} style={styles.gototownButton}>
+                  <Text style={[styles.gototownText]}>
+                    <Text style={[styles.gototownText, {fontSize: normalize(20)}]}>Refine</Text>
+                  </Text>
+                  {/*<Text style={[styles.gototownText, {fontSize: normalize(11),}]}>Ship to Snakebank</Text>*/}
+                </ImageBackground>
+              </TouchableOpacity>
             </View>
             <View style={styles.contentBottom}>
-              <TouchableOpacity style={styles.mine}
-                                onPress={this.onMinePress}>
-                {this.state.loading ? null :
-                  <ImageBackground style={styles.mineImage} source={mineImg}>
-                    <Text style={[mineTextColorStyle, styles.mineText, mineTextColorStyle]}>
-                      {minePercent}%
-                    </Text>
-                  </ImageBackground>
-                }
+              <ImageBackground source={require('../assets/graphics/character/2.png')} style={styles.snakeCart}></ImageBackground>
+              <TouchableOpacity style={[styles.playnow, {}]}
+                                onPress={this.onPlayPress}>
+                <ImageBackground style={styles.playnowImage} source={require('../assets/homepage/playNowButton.png')}>
+                  <Text style={[styles.playnowText]}>Play Now</Text>
+                </ImageBackground>
               </TouchableOpacity>
-              <View style={styles.bottomIconsHolder}>
-                <TouchableOpacity style={styles.playnow}
-                                  onPress={this.onPlayPress}>
-                  <ImageBackground style={styles.playnowImage} source={require('../assets/homepage/playNowButton.png')}>
-                    <Text style={[styles.playnowText]}>Play Now</Text>
-                  </ImageBackground>
-                </TouchableOpacity>
-                <ImageBackground source={require('../assets/homepage/snakeCart.png')}
-                                 style={styles.snakeCart}></ImageBackground>
-                <TouchableOpacity
-                  onPress={this.onMineHaul}>
-                  <ImageBackground source={require('../assets/homepage/gototownButton.png')}
-                                   style={styles.gototownButton}>
-                    <Text style={[styles.gototownText]}>
-                      <Text
-                        style={[styles.gototownText, {fontSize: normalize(20)}]}>{this.props.user.eggs}</Text> Eggs <Image
-                      source={require('../assets/wallet/coin.png')} style={[styles.coin]}/>
-                    </Text>
-                    {/*<Text style={[styles.gototownText, {fontSize: normalize(11),}]}>Ship to Snakebank</Text>*/}
-                  </ImageBackground>
-                </TouchableOpacity>
-              </View>
             </View>
           </View>
           <ReceiptOverlay
@@ -446,95 +458,93 @@ let styles = StyleSheet.create({
     flex: 0.263,
   },
   contentTop: {
-    flex: 1.610,
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1.200,
     flexDirection: "row",
     width: "100%",
   },
-  contentBottom: {
-    flex: 3.783,
-    flexDirection: "row",
+  powerupsHolder: {
     width: "100%",
-  },
-  snakechain: {
-    width: screenWidth * 1.65 / 3.6,
-    aspectRatio: 1.65 / .917,
-    marginLeft: screenWidth * .303 / 3.6,
-  },
-  iconsHolder: {
-    marginLeft: screenWidth * .577 / 3.6,
-    flexDirection: "column",
-  },
-  town: {
-    // width: screenWidth*.860/3.6,
-    // aspectRatio: .860/.750,
-    width: screenWidth * .767 / 3.6,
-    aspectRatio: .767 / .753,
+    flexDirection: "row",
+    paddingTop: screenWidth * .117 / 3.6,
+    justifyContent: "space-around",
+    alignItems: "center",
   },
   powerups: {
-    width: screenWidth * .767 / 3.6,
+    height: screenWidth * .767 / 3.6,
     aspectRatio: .767 / .753,
-    marginTop: screenWidth * .117 / 3.6,
   },
-  mine: {
-    width: screenWidth * 1.317 / 3.6,
-    aspectRatio: 1.317 / 3.047,
-    marginLeft: screenWidth * .150 / 3.6,
+  powerupHolderBG: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
+    height: screenWidth * .767/3.6,
+    flexDirection: "row",
+    aspectRatio: .2/.07,
+    paddingLeft: screenWidth * .2/3.6,
+    paddingRight: screenWidth * .2/3.6,
   },
-  mineImage: {
-    flex: 1,
-    width: screenWidth * 1.317 / 3.6,
-    aspectRatio: 1.317 / 3.047,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  mineText: {
-    fontSize: normalize(16),
-    paddingBottom: 90,
-    paddingLeft: 20,
-    textShadowColor: 'rgba(0, 0, 0, 1.00)',
-    textShadowOffset: {width: -1, height: 1},
-    textShadowRadius: 1,
-    fontFamily: 'riffic-free-bold',
-  },
-  bottomIconsHolder: {
+  powerupIconHolder: {
     flexDirection: "column",
+    alignItems: "center",
   },
-  playnow: {
-    width: screenWidth * 1.787 / 3.6,
-    aspectRatio: 1.787 / .612,
-    marginLeft: screenWidth * .147 / 3.6,
-    marginTop: screenWidth * .250 / 3.6,
+  powerupIcon: {
+    width: screenWidth * .2 / 3.6,
+    marginTop: 0.0 - (screenWidth * .04 / 3.6),
+    aspectRatio: .83/.99,
   },
-  playnowImage: {
-    flex: 1,
-    width: screenWidth * 1.787 / 3.6,
-    aspectRatio: 1.787 / .612,
-    justifyContent: 'center',
-    alignItems: 'center'
+  powerupIconOrange: {
+    aspectRatio: .83/.99,
+  },
+  powerupIconLemon: {
+    aspectRatio: .83/.99,
+  },
+  powerupIconStrawberry: {
+    aspectRatio: .83/.99,
+  },
+  powerupIconBlueberry: {
+    width: "100%",
+    marginTop: 0.0 - (screenWidth * .04 / 3.6),
+    aspectRatio: .83/.99,
+  },
+  contentMid: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1.800,
+    flexDirection: "column",
+    width: "100%",
+  },
+  oreText: {
+    fontSize: normalize(30),
+  },
+  oreCount: {
+    height: screenWidth * .050 / 3.6,
+  },
+  contentBottom: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 3.600,
+    flexDirection: "column",
+    width: "100%",
+    paddingBottom: screenWidth * 0.25 / 3.6,
   },
   snakeCart: {
-    marginTop: screenWidth * .200 / 3.6,
+    //backgroundColor: "#ff00ff",
+    //marginTop: screenWidth * .200 / 3.6,
     width: screenWidth * 1.950 / 3.6,
-    aspectRatio: 606 / 702,
+    aspectRatio: 2138 / 2128,
   },
-  gototownButton: {
-    marginTop: -screenWidth * .350 / 3.6,
-    width: screenWidth * 1.950 / 3.6,
-    aspectRatio: 502 / 168,
+  playnow: {
+    marginTop: screenWidth * 0.05 / 3.6,
+    width: screenWidth * 1.787 / 3.6,
+    aspectRatio: 1.787 / .612,
+  },
+  playnowImage: {
+    width: screenWidth * 1.787 / 3.6,
+    aspectRatio: 1.787 / .612,
     justifyContent: 'center',
     alignItems: 'center'
-  },
-  gototown: {
-    width: screenWidth * .950 / 3.6,
-    aspectRatio: 316 / 62,
-  },
-  gototownText: {
-    color: "#fab523",
-    fontSize: normalize(14),
-    textShadowColor: 'rgba(0, 0, 0, 1.00)',
-    textShadowOffset: {width: -1, height: 1},
-    textShadowRadius: 1,
-    fontFamily: 'riffic-free-bold',
   },
   playnowText: {
     //color: "#fab523",
@@ -545,5 +555,73 @@ let styles = StyleSheet.create({
     textShadowRadius: 1,
     fontFamily: 'riffic-free-bold',
   },
-  coin: {height: 15, width: 15 * 168 / 128, resizeMode: 'stretch',}
+  coin: {
+    height: 15, width: 15 * 168 / 128, resizeMode: 'stretch',
+  },
+  gototownButtonHolder: {
+
+  },
+  gototownButton: {
+    //marginTop: screenWidth * .050 / 3.6,
+    width: screenWidth * 1.2 / 3.6,
+    aspectRatio: 502 / 168,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  // gototown: {
+  //   width: screenWidth * .950 / 3.6,
+  //   aspectRatio: 316 / 62,
+  // },
+  gototownText: {
+    color: "#fab523",
+    fontSize: normalize(14),
+    textShadowColor: 'rgba(0, 0, 0, 1.00)',
+    textShadowOffset: {width: -1, height: 1},
+    textShadowRadius: 1,
+    fontFamily: 'riffic-free-bold',
+  },
+
+  // powerupIconBG2: {
+  //   width: screenWidth * .4 / 3.6,
+  //   aspectRatio: .384/.353,
+  //   flexDirection: "row",
+  //   justifyContent: "center",
+  //   alignItems: "center",
+  // },
+  // powerupIconBG: {
+  //   width: screenWidth * .4 / 3.6,
+  //   //aspectRatio: .149/.163,
+  //   aspectRatio: .612/.602,
+  //   flexDirection: "row",
+  //   justifyContent: "center",
+  //   alignItems: "center",
+  // },
+  // mine: {
+  //   width: screenWidth * 1.317 / 3.6,
+  //   aspectRatio: 1.317 / 3.047,
+  //   marginLeft: screenWidth * .150 / 3.6,
+  // },
+  // mineImage: {
+  //   flex: 1,
+  //   width: screenWidth * 1.317 / 3.6,
+  //   aspectRatio: 1.317 / 3.047,
+  //   justifyContent: 'center',
+  //   alignItems: 'center'
+  // },
+  // mineText: {
+  //   fontSize: normalize(16),
+  //   paddingBottom: 90,
+  //   paddingLeft: 20,
+  //   textShadowColor: 'rgba(0, 0, 0, 1.00)',
+  //   textShadowOffset: {width: -1, height: 1},
+  //   textShadowRadius: 1,
+  //   fontFamily: 'riffic-free-bold',
+  // },
+  // bottomIconsHolder: {
+  //   flexDirection: "column",
+  //   justifyContent: 'flex-start',
+  //   backgroundColor: "#00ffff",
+  //   //alignItems: 'flex-start'
+  // },
+
 });

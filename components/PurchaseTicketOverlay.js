@@ -32,15 +32,15 @@ export default class PurchaseTicketOverlay extends React.Component {
                      resizeMode="stretch"/>
             </TouchableOpacity>
             <View style={styles.headerView}>
-              <Text style={[styles.headerText]}>Ship to SnakeBank</Text>
+              <Text style={[styles.headerText]}>Ship to Refinery</Text>
             </View>
             <Image source={require("../assets/ticket/train.png")} style={styles.ticketImage}/>
             <View style={styles.headerText2Holder}>
               <Text style={[styles.headerText2small]}>
-                {this.props.user.eggs} eggs
+                {this.props.user.eggs} Ore
               </Text>
               <Text style={[styles.headerText2small]}>
-                {this.props.prices.minePerEggPrice/CONSTANTS.WEIPERETH} ETH per egg
+                {this.props.prices.minePerEggPrice/CONSTANTS.WEIPERETH} ETH per Ore
               </Text>
               <Text style={[styles.headerText2small]}>
                 {this.props.prices.mineHaulPrice/CONSTANTS.WEIPERETH} base fee
@@ -58,7 +58,7 @@ export default class PurchaseTicketOverlay extends React.Component {
                 <ImageBackground source={require("../assets/ticket/button.png")} resizeMode='stretch'
                                  style={styles.inputBackground}>
                   <View style={styles.textInputStyle}>
-                    <Text style={[styles.ticketDescription]}>Daily Tram </Text>
+                    <Text style={[styles.ticketDescription]}>Daily Train </Text>
                   </View>
                   <View style={styles.ticketPrice}>
                     <Text style={[styles.ticketText]}>{this.props.user.eggs*this.props.prices.mineHaulPrice/CONSTANTS.WEIPERETH} ETH</Text>
@@ -70,7 +70,7 @@ export default class PurchaseTicketOverlay extends React.Component {
                 <ImageBackground source={require("../assets/ticket/button.png")} resizeMode='stretch'
                                  style={styles.inputBackground}>
                   <View style={styles.textInputStyle}>
-                    <Text style={[styles.ticketDescription]}>Daily Tram</Text>
+                    <Text style={[styles.ticketDescription]}>Daily Train</Text>
                   </View>
                   <View style={styles.unvalid}>
                     <Text style={[styles.unvalidText]}>Unavailable</Text>

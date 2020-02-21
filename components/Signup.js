@@ -99,7 +99,11 @@ export default class Signup extends React.Component {
   confirmPress = async () => {
     let error = this.validateForm();
     if (error === null){
-      this.captchaForm.show();
+      try {
+        this.captchaForm.show();
+      } catch (err) {
+        alert("Error rendering captcha.\n" + error);
+      }
     } else {
       alert(error);
     }

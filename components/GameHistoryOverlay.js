@@ -9,7 +9,7 @@ import {
   Image
 } from 'react-native';
 import {normalize} from '../utils/FontNormalizer.js';
-import {getFromAsyncStore} from "../utils/AsyncStore.js";
+import {getFromAsyncStore, removeItem} from "../utils/AsyncStore.js";
 import {doGetFetch} from '../utils/Network.js';
 import {context} from "../utils/Context.js";
 import CONSTANTS from '../Constants.js';

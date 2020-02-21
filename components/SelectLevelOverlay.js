@@ -294,6 +294,11 @@ var styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 8,
   },
+  gameTypeValueText: {
+    color: "#FFF646",
+    fontSize: normalize(16),
+    fontFamily: 'riffic-free-bold'
+  },
   rifficFont: {
     fontFamily: 'riffic-free-bold',
   }

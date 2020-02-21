@@ -87,24 +87,24 @@ export default class PowerupOverlay extends React.Component {
     this.state = {
       selectedPowerUp: {},
       detailVisible: false,
-      goldPowerUpCount: 0,
+      yellowPowerUpCount: 0,
       bluePowerUpCount: 0,
-      purplePowerUpCount: 0,
+      orangePowerUpCount: 0,
       redPowerUpCount: 0,
     }
   }
 
   initializePowerUpsCount = () => {
     this.setState({
-      goldPowerUpCount: 0,
+      yellowPowerUpCount: 0,
       bluePowerUpCount: 0,
-      purplePowerUpCount: 0,
+      orangePowerUpCount: 0,
       redPowerUpCount: 0,
     })
   }
 
   onGoldCountChange = count => {
-    this.setState({goldPowerUpCount: count})
+    this.setState({yellowPowerUpCount: count})
   }
 
   onBlueCountChange = count => {
@@ -112,7 +112,7 @@ export default class PowerupOverlay extends React.Component {
   }
 
   onPurpleCountChange = count => {
-    this.setState({purplePowerUpCount: count})
+    this.setState({orangePowerUpCount: count})
   }
 
   onRedCountChange = count => {
@@ -120,17 +120,17 @@ export default class PowerupOverlay extends React.Component {
   }
 
   getTotalCount = () => {
-    return (this.state.goldPowerUpCount * this.props.prices.yellowpowerup) +
+    return (this.state.yellowPowerUpCount * this.props.prices.yellowpowerup) +
       (this.state.bluePowerUpCount * this.props.prices.bluepowerup) +
-      (this.state.purplePowerUpCount * this.props.prices.orangepowerup) +
+      (this.state.orangePowerUpCount * this.props.prices.orangepowerup) +
       (this.state.redPowerUpCount * this.props.prices.redpowerup)
   }
 
   proceedToAcquire = async () => {
     const powerups = {
-      yellowpowerup: this.state.goldPowerUpCount,
+      yellowpowerup: this.state.yellowPowerUpCount,
       bluepowerup: this.state.bluePowerUpCount,
-      orangepowerup: this.state.purplePowerUpCount,
+      orangepowerup: this.state.orangePowerUpCount,
       redpowerup: this.state.redPowerUpCount,
     };
     this.props.proceedToAcquire(powerups, this.getTotalCount())
@@ -187,8 +187,8 @@ export default class PowerupOverlay extends React.Component {
 
                     <PowerupBox buttonStyle={[styles.buttonText]}
                          fontStyle={styles.buttonText}
-                         boxImage={require('../assets/powerupsoverlay/mushroom_yellow.png')}
-                         boughtCount={this.state.goldPowerUpCount}
+                         boxImage={require('../assets/graphics/gameplay/lemon.png')}
+                         boughtCount={this.state.yellowPowerUpCount}
                          price={this.props.prices.yellowpowerup}
                          circleText={this.props.user.powerups.yellowpowerup}
                          heading={'Multiplayer (10x)'}
@@ -199,7 +199,7 @@ export default class PowerupOverlay extends React.Component {
                          fontStyle={styles.buttonText}
                          boughtCount={this.state.bluePowerUpCount}
                          price={this.props.prices.bluepowerup}
-                         boxImage={require('../assets/powerupsoverlay/mushroom_blue.png')}
+                         boxImage={require('../assets/graphics/gameplay/blueberry.png')}
                          circleText={this.props.user.powerups.bluepowerup}
                          heading={'Shed Tail'}
                          changeCount={this.onBlueCountChange}
@@ -207,9 +207,9 @@ export default class PowerupOverlay extends React.Component {
                     />
                     <PowerupBox buttonStyle={[styles.buttonText]}
                          fontStyle={styles.buttonText}
-                         boughtCount={this.state.purplePowerUpCount}
+                         boughtCount={this.state.orangePowerUpCount}
                          price={this.props.prices.orangepowerup}
-                         boxImage={require('../assets/powerupsoverlay/mushroom_voilet.png')}
+                         boxImage={require('../assets/graphics/gameplay/orange.png')}
                          circleText={this.props.user.powerups.orangepowerup}
                          heading={'Wildcard'}
                          changeCount={this.onPurpleCountChange}
@@ -219,7 +219,7 @@ export default class PowerupOverlay extends React.Component {
                          fontStyle={styles.buttonText}
                          boughtCount={this.state.redPowerUpCount}
                          price={this.props.prices.redpowerup}
-                         boxImage={require('../assets/powerupsoverlay/mushroom_red.png')}
+                         boxImage={require('../assets/graphics/gameplay/strawberry.png')}
                          circleText={this.props.user.powerups.redpowerup}
                          heading={'Nitro Tail'}
                          changeCount={this.onRedCountChange}
@@ -228,20 +228,20 @@ export default class PowerupOverlay extends React.Component {
 
                   </View>
 
-                  <MushroomTotal count={this.state.goldPowerUpCount} price={this.props.prices.yellowpowerup}
-                                 image={require("../assets/powerupsoverlay/mushroom_yellow.png")}
+                  <MushroomTotal count={this.state.yellowPowerUpCount} price={this.props.prices.yellowpowerup}
+                                 image={require("../assets/graphics/gameplay/lemon.png")}
                                  fontStyle={styles.buttonText}/>
 
                   <MushroomTotal count={this.state.bluePowerUpCount} price={this.props.prices.bluepowerup}
-                                 image={require("../assets/powerupsoverlay/mushroom_blue.png")}
+                                 image={require("../assets/graphics/gameplay/blueberry.png")}
                                  fontStyle={styles.buttonText}/>
 
-                  <MushroomTotal count={this.state.purplePowerUpCount} price={this.props.prices.orangepowerup}
-                                 image={require("../assets/powerupsoverlay/mushroom_voilet.png")}
+                  <MushroomTotal count={this.state.orangePowerUpCount} price={this.props.prices.orangepowerup}
+                                 image={require("../assets/graphics/gameplay/orange.png")}
                                  fontStyle={styles.buttonText}/>
 
                   <MushroomTotal count={this.state.redPowerUpCount} price={this.props.prices.redpowerup}
-                                 image={require("../assets/powerupsoverlay/mushroom_red.png")}
+                                 image={require("../assets/graphics/gameplay/strawberry.png")}
                                  fontStyle={styles.buttonText}/>
                   <TotalComp total={this.getTotalCount()} fontStyle={styles.buttonText}/>
                 </View>
@@ -252,7 +252,7 @@ export default class PowerupOverlay extends React.Component {
                 <ImageBackground source={require("../assets/powerupsoverlay/yellowBG.png")}
                                  resizeMode={"contain"}
                                  style={styles.proceedToAcquireBtn}>
-                  <Text style={[styles.proceedToAcquireText, styles.buttonText]}>Proceed to Acquire</Text>
+                  <Text style={[styles.proceedToAcquireText, styles.buttonText]}>Confirm</Text>
                 </ImageBackground>
               </TouchableOpacity>
             </ScrollView>

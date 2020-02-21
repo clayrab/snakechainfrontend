@@ -15,13 +15,10 @@ export default class ReceiptOverlay extends React.Component {
                      resizeMode="stretch"/>
             </TouchableOpacity>
             <Text style={[styles.heading2Style]}>
-              New Mine Discovered!
+              Shipment Sent!
             </Text>
             <Text style={[styles.goldenTextStyle, {paddingLeft: 40, paddingRight: 40, }]}>
-              You have found a new mine with {this.props.prices.coinsPerEgg} Snakechain Potential!
-            </Text>
-            <Text style={[styles.goldenTextStyle, {paddingTop: 20, paddingLeft: 40, paddingRight: 40, }]}>
-              Begin a new mining expedition!
+              Your ore is being refined into SnakeCoins and will be available in your wallet soon!
             </Text>
             {/*<Text style={[styles.textStyle, styles.mb10, {paddingLeft: 40, paddingRight: 40, }]}>
               When you broke ground on your new mine, you discovered a treasure trove of:
