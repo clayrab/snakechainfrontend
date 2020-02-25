@@ -589,7 +589,7 @@ export default class App extends React.Component {
     } else if(powerupName === "orangepowerup") {
       this.setState({ orangepowerupsused: this.state.orangepowerupsused + 1 });
     } else if(powerupName === "redpowerup") {
-      this.setStawte({ redpowerupsused: this.state.redpowerupsused + 1 });
+      this.setState({ redpowerupsused: this.state.redpowerupsused + 1 });
     }
     let currentPowerups = this.state.user.powerups;
     currentPowerups[powerupName] = currentPowerups[powerupName] - 1;
@@ -651,7 +651,7 @@ export default class App extends React.Component {
   }
 
   render() {
-    console.log("app render")
+    console.log("app render. ready: " + this.state.isReady)
     if (!this.state.isReady) {
       return (
         <AppLoading

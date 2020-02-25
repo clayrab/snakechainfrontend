@@ -149,22 +149,19 @@ export default class AccountHistory extends React.Component {
             <TouchableOpacity onPress={this.props.exit} style={styles.backButtonTouchable}>
               <ImageBackground source={require('../assets/backbutton.png')} style={styles.backButtonIcon}/>
             </TouchableOpacity>
-            <View style={styles.profilePicView}>
+            {/*<View style={styles.profilePicView}>
               <ImageBackground source={require('../assets/accounthistory/medalBG.png')} style={styles.medalImage}
                                resizeMode="stretch">
                 <Image source={require('../assets/accounthistory/profilepic.png')} style={styles.profileImage}
                        resizeMode="stretch"/>
               </ImageBackground>
-            </View>
+            </View>*/}
             <View style={styles.profileDetailView}>
               <Text style={[styles.buttonColorText]}>
                 {this.props.user.name}
               </Text>
               <Text style={[styles.publicAddText]}>
                 {this.props.user.pubkey.substring(0, 7)}...{this.props.user.pubkey.substring(37, 42)}
-              </Text>
-              <Text style={[styles.profileInfoText]}>
-
               </Text>
             </View>
           </View>
@@ -198,7 +195,7 @@ export default class AccountHistory extends React.Component {
             </View>
             <View style={styles.sendRecvView}>
               <View style={styles.sendRecvButtonHolder}>
-                <TouchableOpacity onPress={this.onDoReceive}>
+                <TouchableOpacity onPressIn={this.onDoReceive}>
                   <ImageBackground source={require('../assets/accounthistory/greenbtn.png')}
                                    style={styles.sendRecvButton} resizeMode="stretch">
                     <Image source={require('../assets/accounthistory/receiveblack.png')}
@@ -218,73 +215,74 @@ export default class AccountHistory extends React.Component {
               </View>
             </View>
           </ImageBackground>
-
-          <ImageBackground source={require('../assets/accounthistory/accounthistoryBG.png')} style={styles.txHistory}
-                           resizeMode="stretch">
-            <ScrollView styles={styles.txHistoryScroll}>
-              {this.props.transactions.length === 0 ? null :
-                this.props.transactions.map((transaction, i) => {
-                  // "pubkey": "0x0b48797c3d9C0CF15B14f003d6A60B2F94F1F517",
-                  // "txhash": "0x66c78149c875543b666a49e93574f95eea20488157781357b0d6b22cead2499d",
-                  // "time": "2019-02-22T07:00:19.666Z",
-                  // "type": "snk",
-                  // "from": "0x0b48797c3d9C0CF15B14f003d6A60B2F94F1F517",
-                  // "to": "0x627306090abaB3A6e1400e9345bC60c78a8BEf57",
-                  // "amount": "70000",
-                  // "fee": null
-                  let sent = transaction.from === this.props.user.pubkey;
-                  let isEth = transaction.tpe === "eth";
-                  let prettyDate = transaction.time.slice(10)
-                  return (
-                    <ImageBackground key={i} source={require('../assets/accounthistory/historyBG.png')}
-                                     style={styles.historyBG} resizeMode="contain">
-                      {sent
-                        ?
-                        <View style={styles.historyLeftView}>
-                          <Image source={require('../assets/accounthistory/sendicon.png')} style={styles.buttonIconImage}/>
-                          <Text style={[styles.historyLabelText]}>SENT</Text>
-                          <Text style={[styles.dateText]}>{prettyDate}</Text>
-                        </View>
-                        :
-                        <View style={styles.historyLeftView}>
-                          <Image source={require('../assets/accounthistory/receiveicon.png')} style={styles.buttonIconImage}/>
-                          <Text style={[styles.buttonText, styles.historyReceiveText]}>RECEIVE</Text>
-                          <Text style={[styles.buttonText, styles.dateText]}>{prettyDate}</Text>
-                        </View>
-                      }
-                      <Image source={require('../assets/accounthistory/historyseprate.png')}
-                             style={styles.historySepImage} resizeMode="contain"/>
-                      <View style={styles.historyRightView}>
-                        <View style={styles.topRightHistoryView}>
-                          <Text style={[styles.headerText]}>
-                            {formatToken(transaction.amount, transaction.type.toUpperCase())}
-                          </Text>
-                          {isEth
-                            ?
-                            <Image source={require('../assets/wallet/diamond.png')} style={styles.diamondImage}/>
-                            :
-                            <Image source={require('../assets/wallet/coin.png')} style={[styles.diamondImage]}/>
-                          }
-                          <Text style={[styles.headerText]}>
-                            {this.state.loading ? null :
-                              this.prettyTxTypes[transaction.type]
-                            }
-                          </Text>
-                        </View>
-                        <View style={styles.topRightHistoryView}>
-                          {!transaction.to ? null :
-                            <Text style={[styles.historyLabelText]}>
-                              to {transaction.to.substring(0, 7)}...{transaction.to.substring(37, 42)}
+          <View style={styles.txHistoryHolder} >
+            <ImageBackground source={require('../assets/accounthistory/accounthistoryBG.png')} style={styles.txHistory}
+                             resizeMode="contain">
+              <ScrollView styles={styles.txHistoryScroll}>
+                {this.props.transactions.length === 0 ? null :
+                  this.props.transactions.map((transaction, i) => {
+                    // "pubkey": "0x0b48797c3d9C0CF15B14f003d6A60B2F94F1F517",
+                    // "txhash": "0x66c78149c875543b666a49e93574f95eea20488157781357b0d6b22cead2499d",
+                    // "time": "2019-02-22T07:00:19.666Z",
+                    // "type": "snk",
+                    // "from": "0x0b48797c3d9C0CF15B14f003d6A60B2F94F1F517",
+                    // "to": "0x627306090abaB3A6e1400e9345bC60c78a8BEf57",
+                    // "amount": "70000",
+                    // "fee": null
+                    let sent = transaction.from === this.props.user.pubkey;
+                    let isEth = transaction.tpe === "eth";
+                    let prettyDate = transaction.time.slice(10)
+                    return (
+                      <ImageBackground key={i} source={require('../assets/accounthistory/historyBG.png')}
+                                       style={styles.historyBG} resizeMode="contain">
+                        {sent
+                          ?
+                          <View style={styles.historyLeftView}>
+                            <Image source={require('../assets/accounthistory/sendicon.png')} style={styles.buttonIconImage}/>
+                            <Text style={[styles.historyLabelText]}>SENT</Text>
+                            <Text style={[styles.dateText]}>{prettyDate}</Text>
+                          </View>
+                          :
+                          <View style={styles.historyLeftView}>
+                            <Image source={require('../assets/accounthistory/receiveicon.png')} style={styles.buttonIconImage}/>
+                            <Text style={[styles.buttonText, styles.historyReceiveText]}>RECEIVE</Text>
+                            <Text style={[styles.buttonText, styles.dateText]}>{prettyDate}</Text>
+                          </View>
+                        }
+                        <Image source={require('../assets/accounthistory/historyseprate.png')}
+                               style={styles.historySepImage} resizeMode="contain"/>
+                        <View style={styles.historyRightView}>
+                          <View style={styles.topRightHistoryView}>
+                            <Text style={[styles.headerText]}>
+                              {formatToken(transaction.amount, transaction.type.toUpperCase())}
                             </Text>
-                          }
+                            {isEth
+                              ?
+                              <Image source={require('../assets/wallet/diamond.png')} style={styles.diamondImage}/>
+                              :
+                              <Image source={require('../assets/wallet/coin.png')} style={[styles.diamondImage]}/>
+                            }
+                            <Text style={[styles.headerText]}>
+                              {this.state.loading ? null :
+                                this.prettyTxTypes[transaction.type]
+                              }
+                            </Text>
+                          </View>
+                          <View style={styles.topRightHistoryView}>
+                            {!transaction.to ? null :
+                              <Text style={[styles.historyLabelText]}>
+                                to {transaction.to.substring(0, 7)}...{transaction.to.substring(37, 42)}
+                              </Text>
+                            }
+                          </View>
                         </View>
-                      </View>
-                    </ImageBackground>
-                  );
-                })
-              }
-            </ScrollView>
-          </ImageBackground>
+                      </ImageBackground>
+                    );
+                  })
+                }
+              </ScrollView>
+            </ImageBackground>
+          </View>
           <WalletOverlay
             show={this.state.overlay == overlays.WALLETOVERLAY}
             onSend={this.onSend}
@@ -322,6 +320,26 @@ let styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
   },
+  headerHolder: {
+    marginTop: titleBarHeight * .12 / .757,
+    marginBottom: titleBarHeight * .18 / .757,
+    flexDirection: 'row',
+    flex: 1.5,
+  },
+  txHistoryHolder: {
+    zIndex: 1,
+    width: screenWidth * 1005 / 1080,
+    flex: 6.0,
+    marginTop: 60,
+    backgroundColor: "rgb(81,64,61)",
+  },
+  txHistory: {
+    width: screenWidth * 1005 / 1080,
+    paddingTop: 180, //weird margins allow dynamic size of background without stretching
+    marginTop: -180,
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
   backButtonTouchable: {
     flex: 1.76,
     marginTop: titleBarHeight * .06 / .757,
@@ -331,11 +349,6 @@ let styles = StyleSheet.create({
   backButtonIcon: {
     aspectRatio: 512 / 392,
     width: "100%",
-  },
-  headerHolder: {
-    marginTop: titleBarHeight * .12 / .757,
-    marginBottom: titleBarHeight * .18 / .757,
-    flexDirection: 'row',
   },
   medalImage: {
     width: screenWidth * 199 / 1080,
@@ -354,17 +367,22 @@ let styles = StyleSheet.create({
   },
   profileDetailView: {
     flex: 7,
-    marginTop: 10
+    marginTop: 10,
+    marginLeft: 20,
   },
   balancesHolder: {
+    zIndex: 2,
     width: screenWidth * 1005 / 1080,
-    height: screenHeight * 0.45,
     flexDirection: 'column',
+    flex: 5.0,
   },
   balancesView: {
-    height: screenHeight * 0.267,
+    flex: 5.5,
     flexDirection: 'row',
-    width: "100%",
+  },
+  sendRecvView: {
+    flex: 4.5,
+    flexDirection: 'row',
   },
   balancesNumbersView: {
     flex: 1,
@@ -372,15 +390,11 @@ let styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  sendRecvView: {
-    flexDirection: 'row',
-  },
   sendRecvButtonHolder: {
     paddingTop: screenWidth * 60 / 1080,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-
   },
   sendRecvButton: {
     width: screenWidth * 451 / 1080,
@@ -405,17 +419,6 @@ let styles = StyleSheet.create({
     width: 25,
     height: 30,
     resizeMode: 'contain'
-  },
-  txHistory: {
-    width: screenWidth * 1005 / 1080,
-    //height: (1500/2022)*screenWidth*1005/1080,
-    flex: 1,
-    paddingTop: 60,
-    marginTop: 10,
-    paddingBottom: 10,
-    marginBottom: 22,
-    flexDirection: 'column',
-    alignItems: 'center',
   },
   txHistoryScroll: {
     paddingBottom: 100,

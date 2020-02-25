@@ -328,6 +328,7 @@ let styles = StyleSheet.create({
     height: screenHeight,
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 100,
   },
   content: {
     width: screenWidth * 685 / 724,

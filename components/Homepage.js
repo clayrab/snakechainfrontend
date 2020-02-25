@@ -278,15 +278,15 @@ export default class Homepage extends React.Component {
   }
 
   render() {
-    let mineGraphicIndex = 10 - Math.floor(10 * this.props.user.haul / this.props.prices.coinsPerEgg);
-    mineGraphicIndex = mineGraphicIndex < 0 ? 0 : mineGraphicIndex; // if user hauls more than the mine max
-    let mineTextColorStyle = {};
-    if (mineGraphicIndex <= 6) {
-      mineTextColorStyle = {color: "#fab523",}
-    } else {
-      mineTextColorStyle = {color: "#352927",}
-    }
-    let mineImg = CONSTANTS.mineImages[mineGraphicIndex];
+    // let mineGraphicIndex = 10 - Math.floor(10 * this.props.user.haul / this.props.prices.coinsPerEgg);
+    // mineGraphicIndex = mineGraphicIndex < 0 ? 0 : mineGraphicIndex; // if user hauls more than the mine max
+    // let mineTextColorStyle = {};
+    // if (mineGraphicIndex <= 6) {
+    //   mineTextColorStyle = {color: "#fab523",}
+    // } else {
+    //   mineTextColorStyle = {color: "#352927",}
+    // }
+    // let mineImg = CONSTANTS.mineImages[mineGraphicIndex];
     let minePercent = (100 - Math.floor((100 * this.props.user.haul / this.props.prices.coinsPerEgg)));
     minePercent = minePercent < 0.0 ? 0.0 : minePercent; // if user hauls more than the mine max
     if (minePercent >= 100.0) {
@@ -343,8 +343,13 @@ export default class Homepage extends React.Component {
                 </TouchableOpacity>
                 <ImageBackground source={require('../assets/gameover/collectgoldback.png')} style={styles.oreBG}>
                 </ImageBackground>
-                */}
-              <Text style={[styles.gototownText, styles.oreText]}>{this.props.user.eggs} Ore</Text>
+
+              <ImageBackground source={require('../assets/gamehistory/trackBgNoSnake.png')} style={styles.snakeCart}>
+                <TouchableOpacity style={styles.mine} onPress={this.onMinePress}>
+                  <ImageBackground source={require('../assets/homepage/snakeCart.png')} style={styles.snakeCart}></ImageBackground>
+                </TouchableOpacity>
+              </ImageBackground>  */}
+              <Text style={[styles.gototownText, styles.oreText]}>{this.props.user.eggs} Carts of Ore</Text>
               <TouchableOpacity onPress={this.onMineHaul} style={styles.gototownButtonHolder}>
                 <ImageBackground source={require('../assets/homepage/gototownButton.png')} style={styles.gototownButton}>
                   <Text style={[styles.gototownText]}>
@@ -353,9 +358,12 @@ export default class Homepage extends React.Component {
                   {/*<Text style={[styles.gototownText, {fontSize: normalize(11),}]}>Ship to Snakebank</Text>*/}
                 </ImageBackground>
               </TouchableOpacity>
+              <TouchableOpacity style={styles.mineButtonStyle} onPress={this.onMinePress}>
+                <Text style={[styles.gototownText, styles.oreText2]}>Next Cart: {minePercent}%</Text>
+              </TouchableOpacity>
             </View>
             <View style={styles.contentBottom}>
-              <ImageBackground source={require('../assets/graphics/character/2.png')} style={styles.snakeCart}></ImageBackground>
+              <ImageBackground source={require('../assets/graphics/character/2.png')} style={styles.characterStyle}></ImageBackground>
               <TouchableOpacity style={[styles.playnow, {}]}
                                 onPress={this.onPlayPress}>
                 <ImageBackground style={styles.playnowImage} source={require('../assets/homepage/playNowButton.png')}>
@@ -518,8 +526,15 @@ let styles = StyleSheet.create({
   oreText: {
     fontSize: normalize(30),
   },
+  oreText2: {
+    fontSize: normalize(24),
+  },
   oreCount: {
     height: screenWidth * .050 / 3.6,
+  },
+  mineButtonStyle: {
+    marginTop: screenWidth * .020 / 3.6,
+
   },
   contentBottom: {
     alignItems: "center",
@@ -530,6 +545,10 @@ let styles = StyleSheet.create({
     paddingBottom: screenWidth * 0.25 / 3.6,
   },
   snakeCart: {
+    width: screenWidth * 1.250 / 3.6,
+    aspectRatio: 2138 / 2128,
+  },
+  characterStyle: {
     //backgroundColor: "#ff00ff",
     //marginTop: screenWidth * .200 / 3.6,
     width: screenWidth * 1.950 / 3.6,
@@ -596,7 +615,7 @@ let styles = StyleSheet.create({
   //   justifyContent: "center",
   //   alignItems: "center",
   // },
-  // mine: {
+  // mineStyle: {
   //   width: screenWidth * 1.317 / 3.6,
   //   aspectRatio: 1.317 / 3.047,
   //   marginLeft: screenWidth * .150 / 3.6,
