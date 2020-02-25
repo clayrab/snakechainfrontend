@@ -308,20 +308,20 @@ export default class Homepage extends React.Component {
                 <ImageBackground source={require('../assets/homepage/powerups.png')} style={styles.powerups}></ImageBackground>
                 <ImageBackground source={require('../assets/profile/imageHolder.png')} resizeMode={"stretch"} style={styles.powerupHolderBG}>
                   <View style={styles.powerupIconHolder}>
-                    <ImageBackground source={require('../assets/graphics/gameplay/lemon.png')} style={[styles.powerupIconLemon, styles.powerupIcon]}></ImageBackground>
-                    <Text style={[styles.gototownText, {fontSize: normalize(14)}]}>{this.props.user.powerups.yellowpowerup}</Text>
+                    <Image source={require('../assets/graphics/gameplay/lemon.png')} style={[styles.powerupIconLemon, styles.powerupIcon]}/>
+                    <Text style={[styles.gototownText, styles.powerupText]}>{this.props.user.powerups.yellowpowerup}</Text>
                   </View>
                   <View style={styles.powerupIconHolder}>
-                    <ImageBackground source={require('../assets/graphics/gameplay/orange.png')} style={[styles.powerupIconOrange, styles.powerupIcon]}></ImageBackground>
-                    <Text style={[styles.gototownText, {fontSize: normalize(14)}]}>{this.props.user.powerups.orangepowerup}</Text>
+                    <Image source={require('../assets/graphics/gameplay/orange.png')} style={[styles.powerupIconOrange, styles.powerupIcon]}/>
+                    <Text style={[styles.gototownText, styles.powerupText]}>{this.props.user.powerups.orangepowerup}</Text>
                   </View>
                   <View style={styles.powerupIconHolder}>
-                    <ImageBackground source={require('../assets/graphics/gameplay/strawberry.png')} style={[styles.powerupIconStrawberry, styles.powerupIcon]}></ImageBackground>
-                    <Text style={[styles.gototownText, {fontSize: normalize(14)}]}>{this.props.user.powerups.redpowerup}</Text>
+                    <Image source={require('../assets/graphics/gameplay/strawberry.png')} style={[styles.powerupIconStrawberry, styles.powerupIcon]}/>
+                    <Text style={[styles.gototownText, styles.powerupText]}>{this.props.user.powerups.redpowerup}</Text>
                   </View>
                   <View style={styles.powerupIconHolder}>
-                    <ImageBackground source={require('../assets/graphics/gameplay/blueberry.png')} style={[styles.powerupIconBlueberry, styles.powerupIcon]}></ImageBackground>
-                    <Text style={[styles.gototownText, {fontSize: normalize(14)}]}>{this.props.user.powerups.bluepowerup}</Text>
+                    <Image source={require('../assets/graphics/gameplay/blueberry.png')} style={[styles.powerupIconBlueberry, styles.powerupIcon]}/>
+                    <Text style={[styles.gototownText, styles.powerupText]}>{this.props.user.powerups.bluepowerup}</Text>
                   </View>
                 </ImageBackground>
               </TouchableOpacity>
@@ -476,7 +476,7 @@ let styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     paddingTop: screenWidth * .117 / 3.6,
-    justifyContent: "space-around",
+    justifyContent: "center",
     alignItems: "center",
   },
   powerups: {
@@ -488,33 +488,29 @@ let styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-around",
     height: screenWidth * .767/3.6,
-    flexDirection: "row",
     aspectRatio: .2/.07,
     paddingLeft: screenWidth * .2/3.6,
     paddingRight: screenWidth * .2/3.6,
+    marginLeft: "2%",
   },
   powerupIconHolder: {
+    paddingTop: "23%",
+    paddingBottom: "23%",
     flexDirection: "column",
     alignItems: "center",
+    flex: 1.0,
   },
   powerupIcon: {
-    width: screenWidth * .2 / 3.6,
-    marginTop: 0.0 - (screenWidth * .04 / 3.6),
-    aspectRatio: .83/.99,
+    resizeMode: "contain",
+    //height: "80%",
+    flex: 1.0,
+    //backgroundColor: "#ff0000",
   },
-  powerupIconOrange: {
-    aspectRatio: .83/.99,
-  },
-  powerupIconLemon: {
-    aspectRatio: .83/.99,
-  },
-  powerupIconStrawberry: {
-    aspectRatio: .83/.99,
-  },
-  powerupIconBlueberry: {
-    width: "100%",
-    marginTop: 0.0 - (screenWidth * .04 / 3.6),
-    aspectRatio: .83/.99,
+  powerupText: {
+    paddingTop: 2,
+    fontSize: normalize(14),
+    flex: 0.6,
+    //backgroundColor: "#00ff00",
   },
   contentMid: {
     alignItems: "center",
