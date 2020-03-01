@@ -231,7 +231,7 @@ export default class AccountHistory extends React.Component {
                     // "fee": null
                     let sent = transaction.from === this.props.user.pubkey;
                     let isEth = transaction.tpe === "eth";
-                    let prettyDate = transaction.time.slice(10)
+                    let prettyDate = transaction.time.slice(10);
                     return (
                       <ImageBackground key={i} source={require('../assets/accounthistory/historyBG.png')}
                                        style={styles.historyBG} resizeMode="contain">

@@ -25,14 +25,16 @@ export default class ScoreBoard extends React.Component {
     }
     return (
       <ImageBackground source={require('../assets/homepage/titleback.png')} style={styles.scoreBoard}>
-        <ImageBackground source={require('../assets/gameplay/scoreBackground.png')} style={styles.scoreBox}
-                         resizeMode={'stretch'}>
-          <View style={styles.scoreBoardScoreTextHolder}>
-            <Text numberOfLines={1} style={styles.scoreText}>
-              <Text style={{color: '#fff'}}>{this.props.score}</Text>
-            </Text>
-          </View>
-        </ImageBackground>
+        <TouchableOpacity onPress={this.props.easterEgg}>
+          <ImageBackground source={require('../assets/gameplay/scoreBackground.png')} style={styles.scoreBox}
+                           resizeMode={'stretch'}>
+            <View style={styles.scoreBoardScoreTextHolder}>
+              <Text numberOfLines={1} style={styles.scoreText}>
+                <Text style={{color: '#fff'}}>{this.props.score}</Text>
+              </Text>
+            </View>
+          </ImageBackground>
+        </TouchableOpacity>
         {/*<TouchableOpacity onPress={this.props.easterEgg}>
           <ImageBackground source={require('../assets/homepage/coinbox.png')} style={styles.coinBox}
                            resizeMode={'stretch'}>

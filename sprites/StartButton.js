@@ -50,7 +50,7 @@ export default class ResetButton extends Sprite {
     return (
       <View style={this.styles.buttonHolder}>
         <Button
-          title="Go"
+          title="asdf"
           onPress={() => this.props.start()}
         />
       </View>

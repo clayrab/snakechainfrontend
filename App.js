@@ -195,15 +195,13 @@ export default class App extends React.Component {
       toggleReset: false,
       resetKeyIncrementer: 0,
       lastScore: -1,
+      startTime: -1,
       unredeemedSnekBalance: -1,
       snekBalance: -1,
       ethBalance: -1,
       //miningPrice: -1,
       prices: {},
       gameOverInfo: {
-        score: 0,
-        level: 0,
-        time: 0,
       },
       lastTxHash: "",
       confirmAmount: -1,
@@ -401,12 +399,14 @@ export default class App extends React.Component {
   doResetDpad = async () => {
     await this.setState({pressedButton: CONSTANTS.DPADSTATES.NONE});
   }
-  onDied = async (score) => {
+  onDied = async (gameOverInfo) => {
+    let timePassed = Date.now() - this.state.startTime;
+    gameOverInfo.time = timePassed;
     await this.setState({running: false, overlay: overlays.LOADING, });
     let jwt = await getFromAsyncStore("jwt");
     let data = {
-      howmany: score,
-      level: 1,
+      howmany: gameOverInfo.score,
+      level: -1,
       id: this.state.gameId,
       yellowpowerups: this.state.yellowpowerupsused,
       bluepowerups: this.state.bluepowerupsused,
@@ -425,11 +425,10 @@ export default class App extends React.Component {
       if (!resp.error) {
         if (resp) {
           if (resp.status == "OK") {
-            let gameOverInfo = {
-              score: score,
-              level: 1,
-              time: 5 * 60,
-            }
+            // let gameOverInfo = {
+            //   score: score,
+            //   time: 5 * 60,
+            // }
             this.setState({
               gameId: null,
               yellowpowerupsused: 0,
@@ -460,6 +459,7 @@ export default class App extends React.Component {
   }
 
   startGame = async() => {
+    let startTime = Date.now();
     let jwt = await getFromAsyncStore("jwt");
     fetch(`${context.host}:${context.port}/makeNewGame`, {
       method: "POST",
@@ -487,7 +487,7 @@ export default class App extends React.Component {
     }).catch(err => {
       throw err
     });
-    this.setState({running: true, overlay: -1});
+    this.setState({startTime: startTime, running: true, overlay: -1});
   }
 
   restart() {
@@ -651,7 +651,7 @@ export default class App extends React.Component {
   }
 
   render() {
-    console.log("app render. ready: " + this.state.isReady)
+    console.log("app render. screen: " + this.state.screen + ". ready: " + this.state.isReady)
     if (!this.state.isReady) {
       return (
         <AppLoading

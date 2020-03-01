@@ -7,10 +7,6 @@ import CONSTANTS from '../Constants.js';
 export default class SnekHead extends Sprite {
   constructor(props) {
     super(props);
-    this.defaultState = {
-      snakePosX: 1.0*props.boardXtoPosX(CONSTANTS.BOARDSIZEX - 1),
-      snakePosY: 1.0*props.boardYtoPosY(CONSTANTS.BOARDHEIGHT - 6),
-    };
     this.state = {
       snakePosX: props.boardXtoPosX(CONSTANTS.BOARDSIZEX - 1),
       snakePosY: props.boardYtoPosY(CONSTANTS.BOARDHEIGHT - 6),

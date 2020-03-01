@@ -43,6 +43,15 @@ export default class Snek extends Sprite {
       // multiplier: 1,
       score: 0,
       pelletCount: 0,
+      yellowPowerupCount: 0,
+      orangePowerupCount: 0,
+      redPowerupCount: 0,
+      bluePowerupCount: 0,
+      lightningPowerupCount: 0,
+      lightningFreeMushCount: 0,
+      lightningSpeedUpCount: 0,
+      lightningSleepyCount: 0,
+      lightningMoreTailCount: 0,
       //pelletLocation: null,
       //redPelletLocation: null, //RED PELLET IS NOW PURPLE MUSHROOM!!
       pelletRot: new Animated.Value(0),
@@ -50,7 +59,6 @@ export default class Snek extends Sprite {
       alive: true,
       snakeHeadStyle: { transform: [{ rotate: '0deg' }] },
       //walls: [],
-      mushrooms: {},
       speedEffector: 1.0,
       godMode: false,
       //renderTrigger: true, // Flip this to force a render. The cost of React Native for animation. This isn't great, but it helps.
@@ -102,80 +110,30 @@ export default class Snek extends Sprite {
   // triggerRender = async() => {
   //   await this.setState({renderTrigger: !this.state.renderTrigger});
   // }
-  //edibleTypesGraphics = { "GREENMUSH": require('../assets/powerupsoverlay/mushroom_voilet.png'), "PURPLEMUSH": 1, "REDMUSH": 2, "GOLDMUSH": 3, "BLUEMUSH": 4, "SKYBLUEMUSH": 5, "PLATINUMMUSH": 6, "PELLET": 7, };
+  //edibleTypesGraphics = { "GREENMUSH": require('../assets/powerupsoverlay/mushroom_voilet.png'), "LIGHTNINGBOLT": 1, "REDMUSH": 2, "GOLDMUSH": 3, "BLUEMUSH": 4, "SKYBLUEMUSH": 5, "PLATINUMMUSH": 6, "PELLET": 7, };
   eatEdibleEvents = {
-    // "GREENMUSH": async () => {
-    //   // bonus pellet chances:
-    //   // 3 pellets : 50%
-    //   // 5 pellets: 15%
-    //   // 10 pellets: 5%
-    //   // 10000 onchain: 1%
-    //   // 1 ticket: 0.5%
-    //   // 1 pellet: leftover %
-    //   //
-    //   // Additionally 20% chance to plant a random powerup mushroom.
-    //
-    //   const chances = {
-    //     "ticket": 0.0,
-    //     "eth": 0.0,
-    //     "snk": 1.005,
-    //     "10": 0.05,
-    //     "5": 0.15,
-    //     "3": 0.50,
-    //     "randmush": 0.20,
-    //     //"1"       : 1.0, // Leftover chance. W guarantee to trigger the roll to this state by subtracting full 100%.
-    //   };
-    //   let rewards = Object.keys(chances);
-    //   let roll = Math.random(); // pseudo-random number in the range [0, 1) (inclusive of 0, but not 1)
-    //   let reward = null;
-    //   let rewardsIndex = 0;
-    //   let rollCountDown = roll;
-    //   while (true) {
-    //     if (!rewards[rewardsIndex]) {
-    //       reward = "1";
-    //       break;
-    //     } else {
-    //       rollCountDown = rollCountDown - chances[rewards[rewardsIndex]];
-    //       if (rollCountDown < 0.0) {
-    //         reward = rewards[rewardsIndex];
-    //         break;
-    //       }
-    //       rewardsIndex++;
-    //     }
-    //
-    //   }
-    //   if (reward === "ticket") {
-    //     console.log("reward ticket")
-    //     // todo: ticket reward
-    //   } else if (reward === "eth") {
-    //     console.log("reward eth")
-    //     // todo: onchain rewards.
-    //   } else if (reward === "snk") {
-    //     // TODO: THIS SHOULD BE ONCHAIN LIKE ETH REWARD
-    //     // FOR NOW WE ARE JUST REWARDING "SNAKE GOLD"
-    //     await this.setState({score: this.state.score + 10000,});
-    //     // todo: onchain rewards.
-    //   } else {
-    //     await this.setState({score: this.state.score + parseInt(reward),});
-    //   }
-    // },
-    "PURPLEMUSH": async () => {
+
+    "LIGHTNINGBOLT": async () => {
       // was red pellet
-      await this.eatRedPellet();
+      await this.setState( { lightningPowerupCount: this.state.lightningPowerupCount + 1 } );
+      await this.eatLightning();
     },
     "REDPOWERUP": async () => {
-      this.setState({ speedEffector: 0.5 });
+      await this.setState({ speedEffector: 0.5, redPowerupCount: this.state.redPowerupCount + 1 });
       setTimeout(() => this.setState({ speedEffector: 1 }), 10000);
     },
     "YELLOWPOWERUP": async () => {
+      await this.setState( { yellowPowerupCount: this.state.yellowPowerupCount + 1 } );
       let howLong = this.getRandomInt(5, 10);
       this.reduceTail(howLong);
+      console.log("wtf " + this.state.tailIndex)
     },
     "ORANGEPOWERUP": async () => {
-      this.setState({ godMode: true });
+      await this.setState({ godMode: true, orangePowerupCount: this.state.orangePowerupCount + 1  });
       setTimeout(() => this.setState({ godMode: false }), 10000);
     },
     "BLUEPOWERUP": async () => {
+      await this.setState( { bluePowerupCount: this.state.bluePowerupCount + 1 } );
       let howMany = this.getRandomInt(1, 3);
       while (howMany > 0) {
         this.placeEdible("PELLET", this.randomLocation());
@@ -193,7 +151,7 @@ export default class Snek extends Sprite {
     // "GREENMUSH": {
     //   png: require('../assets/powerupsoverlay/mushroom_yellow.png'),
     // },
-    "PURPLEMUSH": {
+    "LIGHTNINGBOLT": {
       png: require('../assets/powerupsoverlay/powerup.png'),
     },
     "REDPOWERUP":  {
@@ -305,31 +263,53 @@ export default class Snek extends Sprite {
     return newTail;
   }
 
-  copyDefaultState() {
-    let startState = {};
-    // startState.snakePosX = this.defaultState.snakePosX;
-    // startState.snakePosY = this.defaultState.snakePosY;
-    startState.direction = this.defaultState.direction;
-    startState.boardX = this.defaultState.boardX;
-    startState.boardY = this.defaultState.boardY;
-    //startState.pelletLocation = this.defaultState.pelletLocation;
-    //startState.redPelletLocation = this.defaultState.redPelletLocation;
-    startState.pelletRot = this.defaultState.pelletRot;
-    startState.boardShake = this.defaultState.boardShake;
-    //startState.baseScore = this.defaultState.baseScore;
-    //startState.multiplier = this.defaultState.multiplier;
-    startState.score = this.defaultState.score;
-    startState.pelletCount = this.defaultState.pelletCount;
-    startState.alive = this.defaultState.alive;
-    startState.tail = this.makeTail(5, this.defaultState.boardX, this.defaultState.boardY);
-    startState.tailIndex = 4;
-    startState.snakeHeadStyle = { transform: [{ rotate: '0deg' }] };
-    startState.walls = this.getRandomWalls();
-    startState.speedEffector = this.defaultState.speedEffector;
-    startState.godMode = this.defaultState.godMode;
-    //startState.toggleReset = this.props.toggleReset;
-    return startState;
-  }
+  // copyDefaultState() {
+  //   console.log("copyDefaultState")
+  //   let startState = {};
+  //   // startState.snakePosX = this.defaultState.snakePosX;
+  //   // startState.snakePosY = this.defaultState.snakePosY;
+  //   startState.direction = this.defaultState.direction;
+  //   startState.boardX = this.defaultState.boardX;
+  //   startState.boardY = this.defaultState.boardY;
+  //   //startState.pelletLocation = this.defaultState.pelletLocation;
+  //   //startState.redPelletLocation = this.defaultState.redPelletLocation;
+  //   startState.pelletRot = this.defaultState.pelletRot;
+  //   startState.boardShake = this.defaultState.boardShake;
+  //   //startState.baseScore = this.defaultState.baseScore;
+  //   //startState.multiplier = this.defaultState.multiplier;
+  //   startState.score = this.defaultState.score;
+  //   startState.pelletCount = this.defaultState.pelletCount;
+  //   startState.pelletCount = this.defaultState.score;
+  //
+  //   pelletCount: 0,
+  //   powerupCounts: {
+  //     yellow: 0,
+  //     orange: 0,
+  //     red: 0,
+  //     blue: 0,
+  //     lightning: 0,
+  //   },
+  //
+  //   powerupCounts: {
+  //     yellow: 0,
+  //     orange: 0,
+  //     red: 0,
+  //     blue: 0,
+  //     lightning: 0,
+  //   },
+  //
+  //
+  //   startState.pelletCount = this.defaultState.pelletCount;
+  //   startState.alive = this.defaultState.alive;
+  //   startState.tail = this.makeTail(5, this.defaultState.boardX, this.defaultState.boardY);
+  //   startState.tailIndex = 4;
+  //   startState.snakeHeadStyle = { transform: [{ rotate: '0deg' }] };
+  //   startState.walls = this.getRandomWalls();
+  //   startState.speedEffector = this.defaultState.speedEffector;
+  //   startState.godMode = this.defaultState.godMode;
+  //   //startState.toggleReset = this.props.toggleReset;
+  //   return startState;
+  // }
 
   placeSnake = (board) => {
     for (var index3 = 0; index3 < this.state.tail.length - 1; index3++) {
@@ -505,7 +485,15 @@ export default class Snek extends Sprite {
     console.log("+++++++++++++++++ die +++++++++++++++++")
     await this.setState({ alive: false });
     await this.playSound(this.sounds.DIE);
-    await this.props.onDied(this.state.score);
+    await this.props.onDied({
+      score: this.state.score,
+      pelletCount: this.state.pelletCount,
+      yellowPowerupCount: this.state.yellowPowerupCount,
+      orangePowerupCount: this.state.orangePowerupCount,
+      redPowerupCount: this.state.redPowerupCount,
+      bluePowerupCount: this.state.bluePowerupCount,
+      lightningPowerupCount: this.state.lightningPowerupCount,
+    });
   }
 
   // hardReset = async () => {
@@ -527,30 +515,8 @@ export default class Snek extends Sprite {
     //await this.setState({pelletLocation: this.randomLocation(),});
     //await this.setState({ redPelletLocation: this.randomLocation(), });
     this.placeEdible("PELLET", this.randomLocation());
-    this.placeEdible("PURPLEMUSH", this.randomLocation());
-    // if (this.props.mode === "SUPER SNAKE") {
-    //   this.placeEdible("GREENMUSH", this.randomLocation());
-    // }
-    // let isTail = true;
-    // let isHead = undefined;
-    // let x, y;
-    // while (isTail || isHead) {
-    //   x = this.getRandomInt(0, CONSTANTS.BOARDWIDTH - 1);
-    //   y = this.getRandomInt(0, CONSTANTS.BOARDHEIGHT - 1);
-    //   isTail = this.board[y][x];
-    //   isHead = this.state.boardX === x && this.state.boardY === y;
-
-    //
-    // this.setState({
-    //   pelletLocation: {x: x, y: y},
-    //   redPelletLocation: null,
-    // });
-
-    // this.setState({
-    //   pelletLocation: { x: x, y: y },
-    //   redPelletLocation: this.randomRedPelletGenerate()
-    // });
-
+    this.placeEdible("LIGHTNINGBOLT", this.randomLocation());
+    //this.placeEdible("YELLOWPOWERUP", this.randomLocation());
     if ((this.state.baseScore + 2) % 5 === 0) {
       //this.state.pelletRot.setValue(0);
       this.state.shakeBoard.setValue(0);
@@ -584,17 +550,14 @@ export default class Snek extends Sprite {
       .map((obj) => { return obj.weight; })
       .reduce((total, weight) => { return total + weight; }); // sum of all weights
     let randomWeight = this.getRandomInt(1, maxWeight);
-    //randomWeight = 150;
     let nextAction = 0;
     while (randomWeight > 0.0) {
-      console.log("randomWeight: " + randomWeight)
-      console.log("nextAction: " + nextAction)
       randomWeight -= actions[nextAction].weight;
       nextAction++;
     }
     return nextAction - 1;
   }
-  eatRedPellet = async () => {
+  eatLightning = async () => {
     //this.setState({redPelletLocation: null});
     let addPointsPelletSound = async (howMany) => {
       setTimeout(async () => {
@@ -608,49 +571,33 @@ export default class Snek extends Sprite {
       }, 500);
     }
     await this.playSound(this.sounds.RED_PELLET_1);
-
-    var actions = [
-      {
-        name: "speedup",
-        weight: 20.0
-      },{
-        name: "sleepy",
-        weight: 50.0
-      }, {
-        name: "addtail",
-        weight: 30.0
-      }, {
-        name: "freemush",
-        weight: 50.0
-      },
+    let actions = [
+      { name: "speedup", weight: 20.0 },
+      { name: "sleepy", weight: 50.0 },
+      { name: "addtail", weight: 30.0 },
+      { name: "freemush", weight: 90.0 },
     ];
     let randomActionIndex = this.pickRandomAction(actions);
-    // const maxWeight = actions
-    //   .map((obj) => { return obj.weight; })
-    //   .reduce((total, weight) => { return total + weight; }); // sum of all weights
-    // let action = this.getRandomInt(1, maxWeight);
-    // let nextAction = 0;
-    // while (action >= 0) {
-    //   action -= actions[nextAction].weight;
-    //   nextAction++;
-    // }
-    console.log("got " + actions[randomActionIndex].name)
     switch (actions[randomActionIndex].name) {
       case "speedup":
+        this.setState({lightningSpeedUpCount: this.state.lightningSpeedUpCount + 1 });
         this.setState({ speedEffector: 2 });
         setTimeout(() => this.setState({ speedEffector: 1 }), 5000);
         break;
       case "addtail":
+        this.setState({lightningMoreTailCount: this.state.lightningMoreTailCount + 1 });
         let howLong2 = this.getRandomInt(3, 10);
         for (var i = 0; i < howLong2; i++) {
           this.growTail();
         }
         break;
       case "sleepy":
+        this.setState({lightningSleepyCount: this.state.lightningSleepyCount + 1 });
         this.props.showCowOverlay();
         setTimeout(this.props.hideCowOverlay, 8000);
         break;
       case "freemush":
+        this.setState({lightningFreeMushCount: this.state.lightningFreeMushCount + 1 });
         let powerupActions = [
           { name: "YELLOWPOWERUP", weight: 1.0 },
           { name: "REDPOWERUP", weight: 1.0 },
@@ -691,7 +638,7 @@ export default class Snek extends Sprite {
   }
 
   reduceTail = async (howMuch) => {
-    if (this.state.tail.length > 0) {
+    if (this.state.tail.length > 1) {
       howMuch = howMuch > this.state.tail.length - 1 ? this.state.tail.length - 1 : howMuch;
       let newTailStart = this.state.tail.slice(0, this.state.tailIndex + 1);
       let newTailEnd = this.state.tail.slice(this.state.tailIndex + 1, this.state.tail.length);
@@ -720,9 +667,9 @@ export default class Snek extends Sprite {
   }
 
   growTail() {
-    // TailIndex is the last part of the tail. We snip the tail TailIndex,
+    // TailIndex is the last part of the tail. We snip the tail at TailIndex,
     // push a new part into the middle of the array(the end of the tail),
-    // and then concan the arrays back together.
+    // and then concat the arrays back together.
     if (this.state.tail.length > 0) {
       let newTailStart = this.state.tail.slice(0, this.state.tailIndex + 1);
       let newTailEnd = this.state.tail.slice(this.state.tailIndex + 1, this.state.tail.length);
@@ -761,7 +708,7 @@ export default class Snek extends Sprite {
     }
   }
 
-  moveTail = (direction) => {
+  moveTail = async(direction) => {
     if (this.state.tailIndex >= 0) {
       this.onLeaveBoardTile(this.state.tail[this.state.tailIndex].props.boardX, this.state.tail[this.state.tailIndex].props.boardY);
       //cheating here and not using setState. it will be fired below.
@@ -776,7 +723,6 @@ export default class Snek extends Sprite {
           toggleUpdate: !this.state.tail[this.state.tailIndex].props.toggleUpdate,
         });
     } else {
-      console.log("empty tail problem")
       this.onLeaveBoardTile(this.state.boardX, this.state.boardY);
     }
     var newTailIndex = this.state.tailIndex - 1;
@@ -794,8 +740,6 @@ export default class Snek extends Sprite {
 
   onBoardTile(boardX, boardY) {
     //TODO: THE STATE "EDIBLE" IS NOW STORED IN BOARD, NO NEED TO ITERATE EDIBLES
-    //console.log(this.boardState)
-    //if()
     if(this.boardState[boardY][boardX] === "EDIBLE") {
       for (let i = 0; i < this.edibles.length; i++) {
         if (this.edibles[i]) {
@@ -813,7 +757,8 @@ export default class Snek extends Sprite {
   }
 
   goUp = async() => {
-    let newTailIndex = this.moveTail(CONSTANTS.DPADSTATES.UP);
+    let newTailIndex = await this.moveTail(CONSTANTS.DPADSTATES.UP);
+    await this.setState({tailIndex: newTailIndex, });
     if (this.state.boardY - 1 < 0) {
       await this.die();
     } else if (this.boardState[this.state.boardY - 1][this.state.boardX] === "WALL" && !this.state.godMode) {
@@ -824,13 +769,13 @@ export default class Snek extends Sprite {
         direction: CONSTANTS.DPADSTATES.UP,
         boardY: this.state.boardY - 1,
         snakeHeadStyle: { transform: [{ rotate: '0deg' }] },
-        tailIndex: newTailIndex,
       });
     }
   }
 
   goDown = async() => {
-    let newTailIndex = this.moveTail(CONSTANTS.DPADSTATES.DOWN);
+    let newTailIndex = await this.moveTail(CONSTANTS.DPADSTATES.DOWN);
+    await this.setState({tailIndex: newTailIndex, });
     if (this.state.boardY + 1 > CONSTANTS.BOARDHEIGHT - 1) {
       await this.die();
     } else if (this.boardState[this.state.boardY + 1][this.state.boardX] === "WALL" && !this.state.godMode) {
@@ -841,13 +786,13 @@ export default class Snek extends Sprite {
         direction: CONSTANTS.DPADSTATES.DOWN,
         boardY: this.state.boardY + 1,
         snakeHeadStyle: { transform: [{ rotate: '180deg' }] },
-        tailIndex: newTailIndex,
       });
     }
   }
 
   goLeft = async() => {
-    let newTailIndex = this.moveTail(CONSTANTS.DPADSTATES.LEFT);
+    let newTailIndex = await this.moveTail(CONSTANTS.DPADSTATES.LEFT);
+    await this.setState({tailIndex: newTailIndex, });
     if (this.state.boardX - 1 < 0) {
       await this.die();
     } else if (this.boardState[this.state.boardY][this.state.boardX - 1] === "WALL" && !this.state.godMode) {
@@ -858,13 +803,13 @@ export default class Snek extends Sprite {
         direction: CONSTANTS.DPADSTATES.LEFT,
         boardX: this.state.boardX - 1,
         snakeHeadStyle: { transform: [{ rotate: '270deg' }] },
-        tailIndex: newTailIndex,
       });
     }
   }
 
   goRight = async() =>  {
-    let newTailIndex = this.moveTail(CONSTANTS.DPADSTATES.RIGHT);
+    let newTailIndex = await this.moveTail(CONSTANTS.DPADSTATES.RIGHT);
+    await this.setState({tailIndex: newTailIndex, });
     if (this.state.boardX + 1 > CONSTANTS.BOARDWIDTH - 1) {
       await this.die();
     } else if (this.boardState[this.state.boardY][this.state.boardX + 1] === "WALL" && !this.state.godMode) {
@@ -875,7 +820,6 @@ export default class Snek extends Sprite {
         direction: CONSTANTS.DPADSTATES.RIGHT,
         boardX: this.state.boardX + 1,
         snakeHeadStyle: { transform: [{ rotate: '90deg' }] },
-        tailIndex: newTailIndex,
       });
     }
   }

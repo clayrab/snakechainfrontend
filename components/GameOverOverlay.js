@@ -10,10 +10,38 @@ import {
 import { normalize } from '../utils/FontNormalizer.js';
 
 export default class GameOverOverlay extends React.Component {
+  msToTimeasdf(s) {
+    //var ms = s % 1000;
+    s = s / 1000;
+    var secs = s % 60;
+    s = (s - secs) / 60;
+    var mins = s % 60;
+    var hrs = (s - mins) / 60;
+    return hrs + ':' + mins + ':' + secs;
+  }
+  msToTime(s) {
+      // Pad to 2 or 3 digits, default is 2
+    // var pad = (n, z = 2) => ('00' + n).slice(-z);
+    // return pad(s/3.6e6|0) + ':' + pad((s%3.6e6)/6e4 | 0) + ':' + pad((s%6e4)/1000|0) + '.' + pad(s%1000, 3);
+    function pad(n, z) {
+      z = z || 2;
+      return ('00' + n).slice(-z);
+    }
+
+    var ms = s % 1000;
+    s = (s - ms) / 1000;
+    var secs = s % 60;
+    s = (s - secs) / 60;
+    var mins = s % 60;
+    var hrs = (s - mins) / 60;
+
+    return pad(hrs) + ':' + pad(mins) + ':' + pad(secs);
+  }
   render() {
     if (!this.props.show) {
       return null;
     } else {
+      console.log(this.props.gameOverInfo)
       // Level and Time
       {/*<ImageBackground source={require('../assets/gameover/darkLevelBG.png')} style={styles.darkLevelBG} resizeMode="contain">*/ }
       {/*  <Text style={[styles.buttonText, styles.levelText]}>Level: 13</Text>*/ }
@@ -22,60 +50,87 @@ export default class GameOverOverlay extends React.Component {
       return (
         <View style={styles.container}>
           <ImageBackground source={require('../assets/gameover/gameoveroverlayback.png')} style={styles.backgroundImage} resizeMode="stretch">
-
-            <ImageBackground source={require('../assets/gameover/topgameover.png')} style={styles.topgameover}
-              resizeMode="stretch">
+            <ImageBackground source={require('../assets/gameover/topgameover.png')} style={styles.topgameover} resizeMode="stretch">
               <Text style={[styles.buttonText, styles.gameOverText]}>GAME OVER</Text>
             </ImageBackground>
             <View style={{ alignItems: "center" }}>
-
               <View style={styles.contractView}>
-                
-                <View >
-                  <ImageBackground source={require('../assets/gameover/collectgoldback.png')} style={styles.collectGoldImg}
-                    resizeMode="contain">
+                <View>
+                  <ImageBackground source={require('../assets/gameover/collectgoldback.png')} style={styles.collectGoldImg} resizeMode="contain">
                     <Text style={[styles.buttonText, styles.scoreText]}>
-                      1,205
-                  </Text>
+                      {this.props.gameOverInfo.score}
+                    </Text>
                   </ImageBackground>
-                  <ImageBackground source={require('../assets/gameover/scoreboard.png')} style={styles.ScoreboardImg}
-                    resizeMode="contain">
-                    <View style={styles.scoreboardView}>
-                      <View style={styles.dataView}>
-                        <Text style={[styles.buttonText, styles.scoreText1]}>
-                          Time:
+                  {/*<ImageBackground source={require('../assets/gameover/scoreboard.png')} style={styles.ScoreboardImg}
+                    resizeMode="contain">*/}
+                  <View style={styles.scoreboardView}>
+                    <View style={styles.dataView}>
+                      <Text style={[styles.buttonText, styles.scoreText1]}>
+                        Time:
                       </Text>
-                        <Text style={[styles.buttonText, styles.scoreText2]}>
-                          35:00
+                      <Text style={[styles.buttonText, styles.scoreText2]}>
+                        {this.msToTime(this.props.gameOverInfo.time)}
                       </Text>
-                      </View>
-                      <View style={styles.dataView}>
-                        <Text style={[styles.buttonText, styles.scoreText1]}>
-                          Level:
-                      </Text>
-                        <Text style={[styles.buttonText, styles.scoreText2]}>
-                          105
-                      </Text>
-                      </View>
-                      <View style={styles.dataView}>
-                        <View style={{ flexDirection: 'row' }}>
-                          <Image source={require('../assets/gameover/mashrom.png')} style={styles.mashroomImage}
-                            resizeMode="contain" />
-                          <Text style={[styles.buttonText, styles.scoreText1]}>
-                            Collected:
-                      </Text>
-                        </View>
-                        <Text style={[styles.buttonText, styles.scoreText2]}>
-                          92
-                      </Text>
-
-                      </View>
                     </View>
-                  </ImageBackground>
+                    <View style={styles.dataView}>
+                      <Text style={[styles.buttonText, styles.scoreText1]}>
+                        Pellets:
+                      </Text>
+                      <Text style={[styles.buttonText, styles.scoreText2]}>
+                        {this.props.gameOverInfo.pelletCount}
+                      </Text>
+                    </View>
+                    <View style={styles.dataView}>
+                      <Text style={[styles.buttonText, styles.scoreText1]}>
+                        Yellow Mushrooms:
+                      </Text>
+                      <Text style={[styles.buttonText, styles.scoreText2]}>
+                        {this.props.gameOverInfo.yellowPowerupCount}
+                      </Text>
+                    </View>
+                    <View style={styles.dataView}>
+                      <Text style={[styles.buttonText, styles.scoreText1]}>
+                        Orange Mushrooms:
+                      </Text>
+                      <Text style={[styles.buttonText, styles.scoreText2]}>
+                        {this.props.gameOverInfo.orangePowerupCount}
+                      </Text>
+                    </View>
+                    <View style={styles.dataView}>
+                      <Text style={[styles.buttonText, styles.scoreText1]}>
+                        Red Mushrooms:
+                      </Text>
+                      <Text style={[styles.buttonText, styles.scoreText2]}>
+                        {this.props.gameOverInfo.redPowerupCount}
+                      </Text>
+                    </View>
+                    <View style={styles.dataView}>
+                      <Text style={[styles.buttonText, styles.scoreText1]}>
+                        Blue Mushrooms:
+                      </Text>
+                      <Text style={[styles.buttonText, styles.scoreText2]}>
+                        {this.props.gameOverInfo.bluePowerupCount}
+                      </Text>
+                    </View>
+                    <View style={styles.dataView}>
+                      <Text style={[styles.buttonText, styles.scoreText1]}>
+                        Lightnings:
+                      </Text>
+                      <Text style={[styles.buttonText, styles.scoreText2]}>
+                        {this.props.gameOverInfo.lightningPowerupCount}
+                      </Text>
+                    </View>
+                    <View style={styles.dataView}>
+                      <Text style={[styles.buttonText, styles.scoreText1]}>
+                        Lightning Luck:
+                      </Text>
+                      <Text style={[styles.buttonText, styles.scoreText2]}>
+                        { Math.floor(100*this.props.gameOverInfo.lightningFreeMushCount/this.props.gameOverInfo.lightningPowerupCount) }%
+                      </Text>
+                    </View>
+                  </View>
                 </View>
-
               </View>
-
             </View>
             <TouchableOpacity style={styles.touchableButton} onPress={this.props.restart}>
               <ImageBackground source={require('../assets/gameover/greenButton.png')} style={styles.largeButton}
@@ -158,24 +213,6 @@ var styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     padding: 5
-  },
-  GameoverSnakeImage: {
-    width: screenWidth * 507 / 1080,
-    height: (1050 / 943) * screenWidth * 507 / 1080,
-    marginRight: -screenWidth * 40 / 1080,
-    marginLeft: -screenWidth * 30 / 1080,
-    marginTop: (450 / 943) * screenWidth * 90 / 1080,
-    zIndex: 100,
-  },
-  mashroomImage: {
-    width: 15,
-    height: 15,
-    marginTop: 2
-  },
-  mashroomImage1: {
-    width: 16,
-    height: 16,
-    marginTop: 4
   },
   collectGoldImg: {
     height: 508 / 862 * screenWidth * 479 / 1080,

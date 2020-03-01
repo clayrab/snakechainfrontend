@@ -21,8 +21,7 @@ export default class StartGameOverlay extends React.Component {
               READY?
             </Text>
             <TouchableOpacity style={styles.touchableButton} onPress={this.props.onStart}>
-              <ImageBackground source={require('../assets/gameover/greenButton.png')} style={styles.largeButton}
-                               resizeMode="stretch">
+              <ImageBackground source={require('../assets/gameover/greenButton.png')} style={styles.largeButton} resizeMode="stretch">
                 <Text style={[styles.largeButtonText]}>
                   START!
                 </Text>
