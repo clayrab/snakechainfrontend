@@ -287,7 +287,7 @@ export default class Homepage extends React.Component {
     //   mineTextColorStyle = {color: "#352927",}
     // }
     // let mineImg = CONSTANTS.mineImages[mineGraphicIndex];
-    let minePercent = (100 - Math.floor((100 * this.props.user.haul / this.props.prices.coinsPerEgg)));
+    let minePercent = (Math.floor((100 * this.props.user.haul / this.props.prices.coinsPerEgg)));
     minePercent = minePercent < 0.0 ? 0.0 : minePercent; // if user hauls more than the mine max
     if (minePercent >= 100.0) {
       minePercent = minePercent.toPrecision(3);

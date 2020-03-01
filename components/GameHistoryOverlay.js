@@ -69,7 +69,7 @@ export default class GameHistoryOverlay extends React.Component {
       return null;
     } else {
       let haul = this.props.user.haul
-      let mineGraphicIndex = 10 - Math.floor(10 * haul / this.props.prices.coinsPerEgg);
+      let mineGraphicIndex = Math.floor(10 * haul / this.props.prices.coinsPerEgg);
       let mineTextColorStyle = {};
       if (mineGraphicIndex <= 6) {
         mineTextColorStyle = {color: "#fab523",}
@@ -77,7 +77,7 @@ export default class GameHistoryOverlay extends React.Component {
         mineTextColorStyle = {color: "#352927",}
       }
       let mineImg = CONSTANTS.mineImages[mineGraphicIndex];
-      let minePercent = (100 - Math.floor((100 * haul / this.props.prices.coinsPerEgg)))
+      let minePercent = (Math.floor((100 * haul / this.props.prices.coinsPerEgg)))
       if (minePercent >= 100.0) {
         minePercent = minePercent.toPrecision(3);
       } else if (minePercent < 10.0) {
@@ -96,12 +96,19 @@ export default class GameHistoryOverlay extends React.Component {
             <View style={styles.topView}>
               <View style={styles.topHalfView1}>
                 <Text style={[styles.superHeaderText,]}>
-                  YOUR SNAKE MINE
+                  YOUR CURRENT HAUL
                 </Text>
-                <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage}
-                                 resizeMode="stretch">
+                <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage}>
                   <Text style={[styles.headerLabelText, styles.opacityFont]}>
-                    CURRENT HAUL
+                    TOTAL CARTS
+                  </Text>
+                  <Text style={[styles.headerText]}>
+                    {this.props.user.eggs}
+                  </Text>
+                </ImageBackground>
+                <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage}>
+                  <Text style={[styles.headerLabelText, styles.opacityFont]}>
+                    ORE IN NEXT CART
                   </Text>
                   <Text style={[styles.headerText]}>
                     {this.props.user.haul}
@@ -110,19 +117,10 @@ export default class GameHistoryOverlay extends React.Component {
                 <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage}
                                  resizeMode="stretch">
                   <Text style={[styles.headerLabelText, styles.opacityFont]}>
-                    REMAINING GOLD
+                    REMAINING IN CART
                   </Text>
                   <Text style={[styles.headerText]}>
                     {this.props.prices.coinsPerEgg - this.props.user.haul}
-                  </Text>
-                </ImageBackground>
-                <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage}
-                                 resizeMode="stretch">
-                  <Text style={[styles.headerLabelText, styles.opacityFont]}>
-                    GAMES PLAYED
-                  </Text>
-                  <Text style={[styles.headerText]}>
-                    {this.props.user.gamecount}
                   </Text>
                 </ImageBackground>
               </View>
@@ -134,21 +132,13 @@ export default class GameHistoryOverlay extends React.Component {
                 </ImageBackground>
               </View>
             </View>
-            <ImageBackground source={require('../assets/gamehistory/trackBG.png')} style={styles.trackBGImage}
-                             resizeMode="stretch">
-              <View style={styles.leftTrackNo}>
-                {/* this once had text in it, but now it's just for layout. fix me.
-                <Text style={[styles.snakeNoText]}></Text>*/}
+            <ImageBackground source={require('../assets/gamehistory/GHBG.png')} style={[styles.bottomView]} resizeMode="stretch">
+              <View style={styles.bottomTitle}>
+                <Text style={styles.bottomTitleText}>
+                  Game History
+                </Text>
               </View>
-              <TouchableOpacity style={styles.rightTrackContent} onPress={this.props.gototown}>
-                <ImageBackground source={require('../assets/gamehistory/mintbutton.png')} style={styles.buttonImage}
-                                 resizeMode="stretch">
-                  <Text style={[styles.mintHaulText]}>MINT HAUL</Text>
-                </ImageBackground>
-              </TouchableOpacity>
-            </ImageBackground>
-            <ImageBackground source={require('../assets/gamehistory/GHBG.png')}
-                             style={[styles.contentImageBG, {flexDirection: 'column'}]} resizeMode="stretch">
+
               <ScrollView style={styles.contentView}>
                 {
                   this.state.games.map((game, idx) => {
@@ -173,17 +163,17 @@ export default class GameHistoryOverlay extends React.Component {
                     );
                   })
                 }
-                <View style={{flexDirection: "row", padding: 5,}}>
-                  {this.state.page <= 1 && false ? null:
-                    <TouchableOpacity style={[{flex:1}]} onPress={this.onPrevPress}>
-                      <Text style={[styles.nextPrevButtonText]}>&lt; PREV</Text>
-                    </TouchableOpacity>
-                  }
-                  <TouchableOpacity style={[{flex:1, alignItems: 'flex-end', textAlign: "right",}]} onPress={this.onNextPress}>
-                    <Text style={[styles.nextPrevButtonText, {} ]}>NEXT &gt;</Text>
-                  </TouchableOpacity>
-                </View>
               </ScrollView>
+              <View style={[styles.nextPrevHolder]}>
+                {this.state.page <= 1 && false ? null:
+                  <TouchableOpacity style={[{flex:1}]} onPress={this.onPrevPress}>
+                    <Text style={[styles.nextPrevButtonText]}>&lt; PREV</Text>
+                  </TouchableOpacity>
+                }
+                <TouchableOpacity style={[{flex:1, alignItems: 'flex-end', textAlign: "right",}]} onPress={this.onNextPress}>
+                  <Text style={[styles.nextPrevButtonText, {} ]}>NEXT &gt;</Text>
+                </TouchableOpacity>
+              </View>
             </ImageBackground>
           </ImageBackground>
         </View>
@@ -226,6 +216,7 @@ let styles = StyleSheet.create({
     alignItems: 'center',
   },
   topView: {
+    flex: 0.5,
     flexDirection: 'row',
     width: "100%",
     paddingTop: 20,
@@ -253,7 +244,6 @@ let styles = StyleSheet.create({
     height: (945 / 411) * screenWidth * 280 / 1080,
     justifyContent: 'center',
     alignItems: 'center',
-    //411 × 945
   },
   mineText: {
     fontSize: normalize(14),
@@ -279,21 +269,39 @@ let styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'column',
   },
-  contentView: {
-    height: screenHeight * 0.45,
-    marginLeft: 10,
-    marginRight: 10,
-  },
-  contentImageBG: {
-    //backgroundColor: 'transparent',
+  bottomView: {
+    flexDirection: 'column',
+    flex: 1.0,
     marginTop: 20,
-    paddingTop: 55,
-    paddingBottom: 8,
+    marginBottom: 30,
+
+    paddingLeft: 10,
+    paddingRight: 10,
     width: screenWidth - 40,
-    height: screenHeight * 0.45,
     justifyContent: 'center',
     alignItems: 'center',
-    flexDirection: 'row',
+  },
+
+  bottomTitle: {
+    flex: 0.20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  contentView: {
+    flex: 0.80,
+  },
+  nextPrevHolder: {
+    flex: 0.10,
+    flexDirection: "row",
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingTop: 5,
+    alignItems: 'center',
+  },
+  bottomTitleText: {
+    fontSize: normalize(16),
+    fontWeight: 'bold',
+    color: "#fab523",
   },
   topContentView: {
     flex: 1,

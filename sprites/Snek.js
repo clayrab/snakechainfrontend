@@ -32,8 +32,6 @@ export default class Snek extends Sprite {
     console.log("snek constructor")
     super(props);
     this.state = {
-      // snakePosX: this.boardXtoPosX(CONSTANTS.BOARDSIZEX - 1),
-      // snakePosY: this.boardYtoPosY(CONSTANTS.BOARDHEIGHT - 6),
       boardX: CONSTANTS.BOARDSIZEX - 1,
       boardY: CONSTANTS.BOARDHEIGHT - 6,
       direction: CONSTANTS.DPADSTATES.UP,
