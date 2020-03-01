@@ -577,7 +577,23 @@ export default class Snek extends Sprite {
     }
     return { x, y };
   }
-
+  pickRandomAction = (actions) => {
+    // Returns index of randomly chosen action based on weights
+    // actions = [ {  name: <string>, weight: <Number>}, {...}, ...]
+    let maxWeight = actions
+      .map((obj) => { return obj.weight; })
+      .reduce((total, weight) => { return total + weight; }); // sum of all weights
+    let randomWeight = this.getRandomInt(1, maxWeight);
+    //randomWeight = 150;
+    let nextAction = 0;
+    while (randomWeight > 0.0) {
+      console.log("randomWeight: " + randomWeight)
+      console.log("nextAction: " + nextAction)
+      randomWeight -= actions[nextAction].weight;
+      nextAction++;
+    }
+    return nextAction - 1;
+  }
   eatRedPellet = async () => {
     //this.setState({redPelletLocation: null});
     let addPointsPelletSound = async (howMany) => {
@@ -595,49 +611,34 @@ export default class Snek extends Sprite {
 
     var actions = [
       {
-        name: "die",
-        weight: 2.0
-      }, {
         name: "speedup",
         weight: 20.0
-      }, {
-        name: "slowdown",
-        weight: 30.0
-      }, {
-        name: "removetail",
-        weight: 30.0
-      }, {
+      },{
         name: "sleepy",
         weight: 50.0
       }, {
         name: "addtail",
         weight: 30.0
       }, {
-        name: "addpoints",
-        weight: 30.0
+        name: "freemush",
+        weight: 50.0
       },
     ];
-    const maxWeight = actions
-      .map((obj) => { return obj.weight; })
-      .reduce((total, weight) => { return total + weight; }); // sum of all weights
-    let action = this.getRandomInt(1, maxWeight);
-    let nextAction = 0;
-    while (action >= 0) {
-      action -= actions[nextAction].weight;
-      nextAction++;
-    }
-    switch (actions[nextAction - 1].name) {
+    let randomActionIndex = this.pickRandomAction(actions);
+    // const maxWeight = actions
+    //   .map((obj) => { return obj.weight; })
+    //   .reduce((total, weight) => { return total + weight; }); // sum of all weights
+    // let action = this.getRandomInt(1, maxWeight);
+    // let nextAction = 0;
+    // while (action >= 0) {
+    //   action -= actions[nextAction].weight;
+    //   nextAction++;
+    // }
+    console.log("got " + actions[randomActionIndex].name)
+    switch (actions[randomActionIndex].name) {
       case "speedup":
         this.setState({ speedEffector: 2 });
         setTimeout(() => this.setState({ speedEffector: 1 }), 5000);
-        break;
-      case "slowdown":
-        this.setState({ speedEffector: 0.5 });
-        setTimeout(() => this.setState({ speedEffector: 1 }), 8666);
-        break;
-      case "removetail":
-        let howLong = this.getRandomInt(3, 10);
-        this.reduceTail(howLong);
         break;
       case "addtail":
         let howLong2 = this.getRandomInt(3, 10);
@@ -645,13 +646,19 @@ export default class Snek extends Sprite {
           this.growTail();
         }
         break;
-      case "addpoints":
-        addPointsPelletSound(3);
-        this.setState({ score: this.state.score + CONSTANTS.REDPELLETSCOREBONUS * CONSTANTS.PELLETMULT });
-        break;
       case "sleepy":
         this.props.showCowOverlay();
         setTimeout(this.props.hideCowOverlay, 8000);
+        break;
+      case "freemush":
+        let powerupActions = [
+          { name: "YELLOWPOWERUP", weight: 1.0 },
+          { name: "REDPOWERUP", weight: 1.0 },
+          { name: "ORANGEPOWERUP", weight: 1.0 },
+          { name: "BLUEPOWERUP", weight: 1.0 },
+        ];
+        let randomPowerupIndex = this.pickRandomAction(powerupActions);
+        this.usePowerup(powerupActions[randomPowerupIndex].name, this.randomLocation());
         break;
     }
   }
@@ -1041,26 +1048,26 @@ export default class Snek extends Sprite {
         <View style={styles.controllerOuterContainer}>
           <View style={styles.controllerContainer}>
             <View style={styles.mushroomRow}>
-              <TouchableOpacity onPress={this.yellowPowerup}>
-                <Image source={require("../assets/gameplay/MGold.png")} style={styles.mushroomImage} />
+              <TouchableOpacity onPress={this.yellowPowerup} style={styles.powerupButton}>
+                <Image source={require("../assets/graphics/gameplay/lemon.png")} style={styles.powerupImage} />
                 <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
                   <Text style={[styles.mushroomText]}>{this.props.user.powerups.yellowpowerup}</Text>
                 </ImageBackground>
               </TouchableOpacity>
-              <TouchableOpacity onPress={this.bluePowerup}>
-                <Image source={require("../assets/gameplay/MBlue.png")} style={styles.mushroomImage} />
+              <TouchableOpacity onPress={this.bluePowerup} style={styles.powerupButton}>
+                <Image source={require("../assets/graphics/gameplay/blueberry.png")} style={styles.powerupImage} />
                 <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
                   <Text style={[styles.mushroomText]}>{this.props.user.powerups.bluepowerup}</Text>
                 </ImageBackground>
               </TouchableOpacity>
-              <TouchableOpacity onPress={this.orangePowerup}>
-                <Image source={require("../assets/gameplay/MPink.png")} style={styles.mushroomImage} />
+              <TouchableOpacity onPress={this.orangePowerup} style={styles.powerupButton}>
+                <Image source={require("../assets/graphics/gameplay/orange.png")} style={styles.powerupImage} />
                 <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
                   <Text style={[styles.mushroomText]}>{this.props.user.powerups.orangepowerup}</Text>
                 </ImageBackground>
               </TouchableOpacity>
-              <TouchableOpacity onPress={this.redPowerup}>
-                <Image source={require("../assets/gameplay/MRed.png")} style={styles.mushroomImage} />
+              <TouchableOpacity onPress={this.redPowerup} style={styles.powerupButton}>
+                <Image source={require("../assets/graphics/gameplay/strawberry.png")} style={styles.powerupImage} />
                 <ImageBackground source={require("../assets/gameplay/MushroomCountHolder.png")} style={styles.mushroomCountHolder}>
                   <Text style={[styles.mushroomText]}>{this.props.user.powerups.redpowerup}</Text>
                 </ImageBackground>
@@ -1222,9 +1229,20 @@ let styles = StyleSheet.create({
     alignItems: 'center',
     width: screenWidth * 0.82,
     position: 'absolute',
-    opacity: 0.4,
+    //opacity: 0.4,
+    backgroundColor: 'rgba(52, 52, 52, 0.4)',
+    borderRadius: 5,
+    paddingTop: 5,
+    paddingBottom: 5,
   },
-  mushroomImage: { width: screenWidth * 0.2, height: screenWidth * 0.2, resizeMode: 'contain' },
+  powerupButton: {
+  },
+  powerupImage: {
+    width: screenWidth * 0.1,
+    height: screenWidth * 0.1,
+    resizeMode: 'contain',
+
+  },
 
   mushroomCountHolder: { position: 'absolute', top: 0, left: (screenWidth * 0.1) - 10, width: 20, height: 20, justifyContent: 'center', alignItems: 'center' },
   mushroomHolder: { width: screenWidth, height: screenWidth * 0.117, resizeMode: 'contain' },

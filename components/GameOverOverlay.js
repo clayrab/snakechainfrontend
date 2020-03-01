@@ -30,8 +30,7 @@ export default class GameOverOverlay extends React.Component {
             <View style={{ alignItems: "center" }}>
 
               <View style={styles.contractView}>
-                <Image source={require('../assets/gameover/gameoversnake.png')} style={styles.GameoverSnakeImage}
-                  resizeMode="contain" />
+                
                 <View >
                   <ImageBackground source={require('../assets/gameover/collectgoldback.png')} style={styles.collectGoldImg}
                     resizeMode="contain">

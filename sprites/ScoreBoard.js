@@ -33,7 +33,7 @@ export default class ScoreBoard extends React.Component {
             </Text>
           </View>
         </ImageBackground>
-        <TouchableOpacity onPress={this.props.easterEgg}>
+        {/*<TouchableOpacity onPress={this.props.easterEgg}>
           <ImageBackground source={require('../assets/homepage/coinbox.png')} style={styles.coinBox}
                            resizeMode={'stretch'}>
             <View style={styles.scoreBoardCoinTextHolder}>
@@ -57,6 +57,7 @@ export default class ScoreBoard extends React.Component {
             </Text>
           </View>
         </ImageBackground>
+        */}
       </ImageBackground>
     );
   }
