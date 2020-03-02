@@ -14,7 +14,7 @@ export default class SnekPart extends Sprite {
     boardX: PropTypes.number,
     boardY: PropTypes.number,
     toggleUpdate: PropTypes.bool,
-    //godMode: PropTypes.bool,
+    //orangeMode: PropTypes.bool,
   };
 
   constructor(props) {
@@ -46,7 +46,7 @@ export default class SnekPart extends Sprite {
       var now = Date.now();
       console.log("SnekPart render " + now)
     }
-    //let opacity = this.props.godMode ? 0.4 : 1.0;
+    //let opacity = this.props.orangeMode ? 0.4 : 1.0;
     let opacity = 1.0;
     return (<View style={[styles.snekPart, {left: this.props.posX, top: this.props.posY,}, opacity: opacity]}></View>);
   }

@@ -114,8 +114,7 @@ export default class GameHistoryOverlay extends React.Component {
                     {this.props.user.haul}
                   </Text>
                 </ImageBackground>
-                <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage}
-                                 resizeMode="stretch">
+                <ImageBackground source={require('../assets/gamehistory/numberBG.png')} style={styles.numberBGImage}>
                   <Text style={[styles.headerLabelText, styles.opacityFont]}>
                     REMAINING IN CART
                   </Text>
@@ -138,7 +137,6 @@ export default class GameHistoryOverlay extends React.Component {
                   Game History
                 </Text>
               </View>
-
               <ScrollView style={styles.contentView}>
                 {
                   this.state.games.map((game, idx) => {

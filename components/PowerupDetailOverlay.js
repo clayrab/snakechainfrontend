@@ -17,25 +17,19 @@ export default class PowerupDetailOverlay extends React.Component {
     } else {
       return (
         <View style={[styles.container, this.props.style]}>
-          <ImageBackground style={styles.content} source={require('../assets/powerupsoverlay/detailBG.png')}
-                           resizeMode={'stretch'}>
+          <ImageBackground style={styles.content} source={require('../assets/powerupsoverlay/detailBG.png')} resizeMode={'stretch'}>
             <TouchableOpacity style={styles.closeButton} onPress={this.props.closeOverlay}>
-              <Image source={require('../assets/wallet/closeBG.png')} style={styles.closeButtonImage}
-                     resizeMode="stretch"/>
+              <Image source={require('../assets/wallet/closeBG.png')} style={styles.closeButtonImage} resizeMode="stretch"/>
             </TouchableOpacity>
             <Text style={[styles.buttonText, styles.titleText]}>
-              {this.props.powerup.name}
+              {this.props.detailData.name}
             </Text>
-            <Image source={this.props.powerup.image} style={styles.image}/>
-            <ImageBackground source={require("../assets/powerupsoverlay/textBG.png")}
-                             resizeMode={"contain"}
-                             style={styles.descriptionContainer}>
-              <Text style={[styles.descriptionText, styles.buttonText]}>{this.props.powerup.description}</Text>
+            <Image source={this.props.detailData.image} style={styles.image}/>
+            <ImageBackground source={require("../assets/powerupsoverlay/textBG.png")} resizeMode={"contain"} style={styles.descriptionContainer}>
+              <Text style={[styles.descriptionText, styles.buttonText]}>{this.props.detailData.description}</Text>
             </ImageBackground>
             <TouchableOpacity onPress={this.props.closeOverlay}>
-              <ImageBackground source={require("../assets/powerupsoverlay/redBG.png")}
-                               resizeMode={"contain"}
-                               style={styles.goBackBtn}>
+              <ImageBackground source={require("../assets/powerupsoverlay/redBG.png")} resizeMode={"contain"} style={styles.goBackBtn}>
                 <Text style={[styles.goBackText, styles.buttonText]}>Go Back</Text>
               </ImageBackground>
             </TouchableOpacity>

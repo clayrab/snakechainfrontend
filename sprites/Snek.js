@@ -58,7 +58,7 @@ export default class Snek extends Sprite {
       snakeHeadStyle: { transform: [{ rotate: '0deg' }] },
       //walls: [],
       speedEffector: 1.0,
-      godMode: false,
+      orangeMode: false,
       //renderTrigger: true, // Flip this to force a render. The cost of React Native for animation. This isn't great, but it helps.
       framerate: 0,
       fpsShow: false,
@@ -118,7 +118,7 @@ export default class Snek extends Sprite {
     },
     "REDPOWERUP": async () => {
       await this.setState({ speedEffector: 0.5, redPowerupCount: this.state.redPowerupCount + 1 });
-      setTimeout(() => this.setState({ speedEffector: 1 }), 10000);
+      setTimeout(() => this.setState({ speedEffector: 1 }), 15000);
     },
     "YELLOWPOWERUP": async () => {
       await this.setState( { yellowPowerupCount: this.state.yellowPowerupCount + 1 } );
@@ -127,12 +127,12 @@ export default class Snek extends Sprite {
       console.log("wtf " + this.state.tailIndex)
     },
     "ORANGEPOWERUP": async () => {
-      await this.setState({ godMode: true, orangePowerupCount: this.state.orangePowerupCount + 1  });
-      setTimeout(() => this.setState({ godMode: false }), 10000);
+      await this.setState({ orangeMode: true, orangePowerupCount: this.state.orangePowerupCount + 1  });
+      setTimeout(() => this.setState({ orangeMode: false }), 15000);
     },
     "BLUEPOWERUP": async () => {
       await this.setState( { bluePowerupCount: this.state.bluePowerupCount + 1 } );
-      let howMany = this.getRandomInt(1, 3);
+      let howMany = this.getRandomInt(3, 5);
       while (howMany > 0) {
         this.placeEdible("PELLET", this.randomLocation());
         howMany--;
@@ -255,7 +255,7 @@ export default class Snek extends Sprite {
         boardX={startBoardX}
         boardY={startBoardY + 1 + index}
         toggleUpdate={true}
-        godMode={this.state.godMode}>
+        orangeMode={this.state.orangeMode}>
         direction={CONSTANTS.DPADSTATES.UP}></SnekPart>);
     }
     return newTail;
@@ -304,7 +304,7 @@ export default class Snek extends Sprite {
   //   startState.snakeHeadStyle = { transform: [{ rotate: '0deg' }] };
   //   startState.walls = this.getRandomWalls();
   //   startState.speedEffector = this.defaultState.speedEffector;
-  //   startState.godMode = this.defaultState.godMode;
+  //   startState.orangeMode = this.defaultState.orangeMode;
   //   //startState.toggleReset = this.props.toggleReset;
   //   return startState;
   // }
@@ -610,17 +610,21 @@ export default class Snek extends Sprite {
 
   eatPellet = async () => {
     await this.playSound(this.sounds.EAT_PELLET_1);
-    let growLength = 0;
-    let scoreCountdown = this.state.score;
-    while (scoreCountdown >= 0 && growLength < 5) {
-      growLength++;
-      scoreCountdown = scoreCountdown - (10 * CONSTANTS.PELLETMULT);
-    }
-    for (let i = 0; i < growLength; i++) {
-      this.growTail();
-    }
+    // let growLength = 0;
+    // let scoreCountdown = this.state.score;
+    // while (scoreCountdown >= 0 && growLength < 5) {
+    //   growLength++;
+    //   let mult = this.state.orangeMode ? 2.0 : 1.0;
+    //   scoreCountdown = scoreCountdown - (10 * CONSTANTS.PELLETMULT * mult);
+    // }
+    // for (let i = 0; i < growLength; i++) {
+    //   this.growTail();
+    // }
+    let mult = this.state.orangeMode ? CONSTANTS.ORANGEPELLETBONUS : 1.0;
+    let score = (CONSTANTS.PELLETMULT * mult);
     this.placePellet();
-    this.setState({ score: this.state.score + (CONSTANTS.PELLETMULT * growLength), pelletCount: this.state.pelletCount + 1 });
+    this.growTail();
+    this.setState({ score: this.state.score + score, pelletCount: this.state.pelletCount + 1 });
   }
 
   makeEmptyBoard = () => {
@@ -759,7 +763,7 @@ export default class Snek extends Sprite {
     await this.setState({tailIndex: newTailIndex, });
     if (this.state.boardY - 1 < 0) {
       await this.die();
-    } else if (this.boardState[this.state.boardY - 1][this.state.boardX] === "WALL" && !this.state.godMode) {
+    } else if (this.boardState[this.state.boardY - 1][this.state.boardX] === "WALL" && !this.state.orangeMode) {
       await this.die();
     } else {
       this.onBoardTile(this.state.boardX, this.state.boardY - 1);
@@ -776,7 +780,7 @@ export default class Snek extends Sprite {
     await this.setState({tailIndex: newTailIndex, });
     if (this.state.boardY + 1 > CONSTANTS.BOARDHEIGHT - 1) {
       await this.die();
-    } else if (this.boardState[this.state.boardY + 1][this.state.boardX] === "WALL" && !this.state.godMode) {
+    } else if (this.boardState[this.state.boardY + 1][this.state.boardX] === "WALL" && !this.state.orangeMode) {
       await this.die();
     } else {
       this.onBoardTile(this.state.boardX, this.state.boardY + 1);
@@ -793,7 +797,7 @@ export default class Snek extends Sprite {
     await this.setState({tailIndex: newTailIndex, });
     if (this.state.boardX - 1 < 0) {
       await this.die();
-    } else if (this.boardState[this.state.boardY][this.state.boardX - 1] === "WALL" && !this.state.godMode) {
+    } else if (this.boardState[this.state.boardY][this.state.boardX - 1] === "WALL" && !this.state.orangeMode) {
       await this.die();
     } else {
       this.onBoardTile(this.state.boardX - 1, this.state.boardY);
@@ -810,7 +814,7 @@ export default class Snek extends Sprite {
     await this.setState({tailIndex: newTailIndex, });
     if (this.state.boardX + 1 > CONSTANTS.BOARDWIDTH - 1) {
       await this.die();
-    } else if (this.boardState[this.state.boardY][this.state.boardX + 1] === "WALL" && !this.state.godMode) {
+    } else if (this.boardState[this.state.boardY][this.state.boardX + 1] === "WALL" && !this.state.orangeMode) {
       await this.die();
     } else {
       this.onBoardTile(this.state.boardX + 1, this.state.boardY);

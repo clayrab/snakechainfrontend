@@ -42,19 +42,12 @@ const CircleComp = (props) => (
 
 const PowerupBox = (props) => {
   return (
-
     <View style={styles.boxContainer}>
       <TouchableOpacity onPress={() => props.onItemPress(props)} style={styles.boxViewContainer}>
-        <ImageBackground source={require('../assets/Paused/partionBackground.png')} resizeMode={"stretch"}
-                         style={[styles.boxView]}>
+        <ImageBackground source={require('../assets/Paused/partionBackground.png')} resizeMode={"stretch"} style={[styles.boxView]}>
           <Text style={[styles.boxText, props.fontStyle]}>{props.heading}</Text>
-          <Image source={props.boxImage}
-                 style={[styles.boxImageView, props.customImage !== undefined ? props.customImage : null]}/>
-          {
-            props.circleText > -1 &&
-            <CircleComp value={props.circleText} style={props.fontStyle}/>
-          }
-
+          <Image source={props.boxImage} style={[styles.boxImageView, props.customImage !== undefined ? props.customImage : null]}/>
+          { props.circleText > -1 && <CircleComp value={props.circleText} style={props.fontStyle}/> }
         </ImageBackground>
       </TouchableOpacity>
       {
@@ -85,8 +78,8 @@ export default class PowerupOverlay extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedPowerUp: {},
       detailVisible: false,
+      detailData: { name: "", image: null, description: ""},
       yellowPowerUpCount: 0,
       bluePowerUpCount: 0,
       orangePowerUpCount: 0,
@@ -136,43 +129,41 @@ export default class PowerupOverlay extends React.Component {
     this.props.proceedToAcquire(powerups, this.getTotalCount())
   }
 
+
+
   onItemPress = (props) => {
-    const {name, image, description} = props;
+    console.log(props);
+    const name = props.heading;
+    const image = props.boxImage;
+    const description = props.description;
     this.setState({
       detailVisible: true,
-      selectedPowerUp: {name, image, description}
+      detailData: {name, image, description}
     });
   }
 
   closeDetailOverlay = () => {
-    this.setState({detailVisible: false, selectedPowerUp: {}})
+    this.setState({detailVisible: false, detailData: {}})
   }
 
   render() {
     if (!this.props.show) {
       return null;
     } else {
-      console.log("this.props.prices")
-      console.log(this.props.prices)
       return (
         <View style={styles.container}>
-          <ImageBackground style={styles.content} source={require('../assets/pauseoverlay/BackgroundBrown.png')}
-                           resizeMode={'stretch'}>
+          <ImageBackground style={styles.content} source={require('../assets/pauseoverlay/BackgroundBrown.png')} resizeMode={'stretch'}>
             <TouchableOpacity style={styles.closeButton} onPress={this.props.closeOverlay}>
-              <Image source={require('../assets/wallet/closeBG.png')} style={styles.closeButtonImage}
-                     resizeMode="stretch"/>
+              <Image source={require('../assets/wallet/closeBG.png')} style={styles.closeButtonImage} resizeMode="stretch"/>
             </TouchableOpacity>
             <View style={styles.buttonView}>
-              <ImageBackground style={styles.brownButton} source={require('../assets/snakemine/title.png')}
-                               resizeMode={'stretch'}>
-                <Image source={require("../assets/powerupsoverlay/powerup.png")}
-                       style={{width: 14, height: 22, resizeMode: 'contain'}}/>
+              <ImageBackground style={styles.brownButton} source={require('../assets/snakemine/title.png')} resizeMode={'stretch'}>
+                <Image source={require("../assets/powerupsoverlay/powerup.png")} style={{width: 14, height: 22, resizeMode: 'contain'}}/>
                 <Text style={[styles.buttonText, styles.titleText]}>
                   POWER-UPS
                 </Text>
               </ImageBackground>
             </View>
-
             <ScrollView>
               {this.props.prices == null? null :
                 <View>
@@ -184,74 +175,60 @@ export default class PowerupOverlay extends React.Component {
                     paddingBottom: 10,
                     paddingHorizontal: 15
                   }}>
-
-                    <PowerupBox buttonStyle={[styles.buttonText]}
-                         fontStyle={styles.buttonText}
-                         boxImage={require('../assets/graphics/gameplay/lemon.png')}
-                         boughtCount={this.state.yellowPowerUpCount}
-                         price={this.props.prices.yellowpowerup}
-                         circleText={this.props.user.powerups.yellowpowerup}
-                         heading={'Multiplayer (10x)'}
-                         changeCount={this.onGoldCountChange}
-                         onItemPress={this.onItemPress}
-                    />
-                    <PowerupBox buttonStyle={[styles.buttonText]}
-                         fontStyle={styles.buttonText}
-                         boughtCount={this.state.bluePowerUpCount}
-                         price={this.props.prices.bluepowerup}
-                         boxImage={require('../assets/graphics/gameplay/blueberry.png')}
-                         circleText={this.props.user.powerups.bluepowerup}
-                         heading={'Shed Tail'}
-                         changeCount={this.onBlueCountChange}
-                         onItemPress={this.onItemPress}
-                    />
-                    <PowerupBox buttonStyle={[styles.buttonText]}
-                         fontStyle={styles.buttonText}
-                         boughtCount={this.state.orangePowerUpCount}
-                         price={this.props.prices.orangepowerup}
-                         boxImage={require('../assets/graphics/gameplay/orange.png')}
-                         circleText={this.props.user.powerups.orangepowerup}
-                         heading={'Wildcard'}
-                         changeCount={this.onPurpleCountChange}
-                         onItemPress={this.onItemPress}
-                    />
-                    <PowerupBox buttonStyle={[styles.buttonText]}
-                         fontStyle={styles.buttonText}
-                         boughtCount={this.state.redPowerUpCount}
-                         price={this.props.prices.redpowerup}
-                         boxImage={require('../assets/graphics/gameplay/strawberry.png')}
-                         circleText={this.props.user.powerups.redpowerup}
-                         heading={'Nitro Tail'}
-                         changeCount={this.onRedCountChange}
-                         onItemPress={this.onItemPress}
-                    />
-
+                  <PowerupBox buttonStyle={[styles.buttonText]}
+                       fontStyle={styles.buttonText}
+                       boxImage={require('../assets/graphics/gameplay/lemon.png')}
+                       boughtCount={this.state.yellowPowerUpCount}
+                       price={this.props.prices.yellowpowerup}
+                       circleText={this.props.user.powerups.yellowpowerup}
+                       heading={'Tail Shrink'}
+                       changeCount={this.onGoldCountChange}
+                       description={"The yellow mushroom reduces the player's tail length"}
+                       onItemPress={this.onItemPress}
+                  />
+                  <PowerupBox buttonStyle={[styles.buttonText]}
+                       fontStyle={styles.buttonText}
+                       boughtCount={this.state.bluePowerUpCount}
+                       price={this.props.prices.bluepowerup}
+                       boxImage={require('../assets/graphics/gameplay/blueberry.png')}
+                       circleText={this.props.user.powerups.bluepowerup}
+                       heading={'Extra Ore'}
+                       changeCount={this.onBlueCountChange}
+                       description={"The blue mushroom places extra ore on the board"}
+                       onItemPress={this.onItemPress}
+                  />
+                  <PowerupBox buttonStyle={[styles.buttonText]}
+                       fontStyle={styles.buttonText}
+                       boughtCount={this.state.orangePowerUpCount}
+                       price={this.props.prices.orangepowerup}
+                       boxImage={require('../assets/graphics/gameplay/orange.png')}
+                       circleText={this.props.user.powerups.orangepowerup}
+                       heading={'Super Mode'}
+                       changeCount={this.onPurpleCountChange}
+                       description={"The orange mushroom gives invulnerablility and ore collection bonus for 15 seconds"}
+                       onItemPress={this.onItemPress}
+                  />
+                  <PowerupBox buttonStyle={[styles.buttonText]}
+                       fontStyle={styles.buttonText}
+                       boughtCount={this.state.redPowerUpCount}
+                       price={this.props.prices.redpowerup}
+                       boxImage={require('../assets/graphics/gameplay/strawberry.png')}
+                       circleText={this.props.user.powerups.redpowerup}
+                       heading={'Slow Motion'}
+                       changeCount={this.onRedCountChange}
+                       description={"The red mushroom will slow down the player for 15 seconds"}
+                       onItemPress={this.onItemPress}
+                  />
                   </View>
-
-                  <MushroomTotal count={this.state.yellowPowerUpCount} price={this.props.prices.yellowpowerup}
-                                 image={require("../assets/graphics/gameplay/lemon.png")}
-                                 fontStyle={styles.buttonText}/>
-
-                  <MushroomTotal count={this.state.bluePowerUpCount} price={this.props.prices.bluepowerup}
-                                 image={require("../assets/graphics/gameplay/blueberry.png")}
-                                 fontStyle={styles.buttonText}/>
-
-                  <MushroomTotal count={this.state.orangePowerUpCount} price={this.props.prices.orangepowerup}
-                                 image={require("../assets/graphics/gameplay/orange.png")}
-                                 fontStyle={styles.buttonText}/>
-
-                  <MushroomTotal count={this.state.redPowerUpCount} price={this.props.prices.redpowerup}
-                                 image={require("../assets/graphics/gameplay/strawberry.png")}
-                                 fontStyle={styles.buttonText}/>
+                  <MushroomTotal count={this.state.yellowPowerUpCount} price={this.props.prices.yellowpowerup} image={require("../assets/graphics/gameplay/lemon.png")} fontStyle={styles.buttonText}/>
+                  <MushroomTotal count={this.state.bluePowerUpCount} price={this.props.prices.bluepowerup} image={require("../assets/graphics/gameplay/blueberry.png")} fontStyle={styles.buttonText}/>
+                  <MushroomTotal count={this.state.orangePowerUpCount} price={this.props.prices.orangepowerup} image={require("../assets/graphics/gameplay/orange.png")} fontStyle={styles.buttonText}/>
+                  <MushroomTotal count={this.state.redPowerUpCount} price={this.props.prices.redpowerup} image={require("../assets/graphics/gameplay/strawberry.png")} fontStyle={styles.buttonText}/>
                   <TotalComp total={this.getTotalCount()} fontStyle={styles.buttonText}/>
                 </View>
               }
-
-
               <TouchableOpacity style={styles.proceedToAcquireContainer} onPress={this.proceedToAcquire}>
-                <ImageBackground source={require("../assets/powerupsoverlay/yellowBG.png")}
-                                 resizeMode={"contain"}
-                                 style={styles.proceedToAcquireBtn}>
+                <ImageBackground source={require("../assets/powerupsoverlay/yellowBG.png")} resizeMode={"contain"} style={styles.proceedToAcquireBtn}>
                   <Text style={[styles.proceedToAcquireText, styles.buttonText]}>Confirm</Text>
                 </ImageBackground>
               </TouchableOpacity>
@@ -262,11 +239,7 @@ export default class PowerupOverlay extends React.Component {
             style={{zIndex: 101}}
             closeOverlay={this.closeDetailOverlay}
             show={this.state.detailVisible}
-            powerup={{
-              name: "Multiplayer (10x)",
-              image: require("../assets/powerupsoverlay/yellow_big.png"),
-              description: "This mushroom is the Aurea ovaUs. When eatea 30sec 10x pellet multiplayer"
-            }}
+            detailData={this.state.detailData}
           />
         </View>
       );
