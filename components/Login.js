@@ -117,7 +117,11 @@ export default class Login extends React.Component {
         this.props.loggedIn(resp.token);
       }
     } catch (error) {
-      alert(error);
+      if(error.name === "SyntaxError"){
+        alert("Bad response from server. Check internet connection.");
+      } else {
+        alert("Unknown error\n" + error);
+      }
       this.setState({ loading: false });
     }
   }

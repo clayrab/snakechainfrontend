@@ -105,12 +105,8 @@ export default class Snek extends Sprite {
   countFrame = () => {
     this.frame++;
   }
-  // triggerRender = async() => {
-  //   await this.setState({renderTrigger: !this.state.renderTrigger});
-  // }
-  //edibleTypesGraphics = { "GREENMUSH": require('../assets/powerupsoverlay/mushroom_voilet.png'), "LIGHTNINGBOLT": 1, "REDMUSH": 2, "GOLDMUSH": 3, "BLUEMUSH": 4, "SKYBLUEMUSH": 5, "PLATINUMMUSH": 6, "PELLET": 7, };
-  eatEdibleEvents = {
 
+  eatEdibleEvents = {
     "LIGHTNINGBOLT": async () => {
       // was red pellet
       await this.setState( { lightningPowerupCount: this.state.lightningPowerupCount + 1 } );
@@ -128,7 +124,11 @@ export default class Snek extends Sprite {
     },
     "ORANGEPOWERUP": async () => {
       await this.setState({ orangeMode: true, orangePowerupCount: this.state.orangePowerupCount + 1  });
-      setTimeout(() => this.setState({ orangeMode: false }), 15000);
+      await this.updateTail();
+      setTimeout(async() => {
+        await this.setState({ orangeMode: false });
+        await this.updateTail();
+      }, 15000);
     },
     "BLUEPOWERUP": async () => {
       await this.setState( { bluePowerupCount: this.state.bluePowerupCount + 1 } );
@@ -255,59 +255,11 @@ export default class Snek extends Sprite {
         boardX={startBoardX}
         boardY={startBoardY + 1 + index}
         toggleUpdate={true}
-        orangeMode={this.state.orangeMode}>
+        orangeMode={this.state.orangeMode}
         direction={CONSTANTS.DPADSTATES.UP}></SnekPart>);
     }
     return newTail;
   }
-
-  // copyDefaultState() {
-  //   console.log("copyDefaultState")
-  //   let startState = {};
-  //   // startState.snakePosX = this.defaultState.snakePosX;
-  //   // startState.snakePosY = this.defaultState.snakePosY;
-  //   startState.direction = this.defaultState.direction;
-  //   startState.boardX = this.defaultState.boardX;
-  //   startState.boardY = this.defaultState.boardY;
-  //   //startState.pelletLocation = this.defaultState.pelletLocation;
-  //   //startState.redPelletLocation = this.defaultState.redPelletLocation;
-  //   startState.pelletRot = this.defaultState.pelletRot;
-  //   startState.boardShake = this.defaultState.boardShake;
-  //   //startState.baseScore = this.defaultState.baseScore;
-  //   //startState.multiplier = this.defaultState.multiplier;
-  //   startState.score = this.defaultState.score;
-  //   startState.pelletCount = this.defaultState.pelletCount;
-  //   startState.pelletCount = this.defaultState.score;
-  //
-  //   pelletCount: 0,
-  //   powerupCounts: {
-  //     yellow: 0,
-  //     orange: 0,
-  //     red: 0,
-  //     blue: 0,
-  //     lightning: 0,
-  //   },
-  //
-  //   powerupCounts: {
-  //     yellow: 0,
-  //     orange: 0,
-  //     red: 0,
-  //     blue: 0,
-  //     lightning: 0,
-  //   },
-  //
-  //
-  //   startState.pelletCount = this.defaultState.pelletCount;
-  //   startState.alive = this.defaultState.alive;
-  //   startState.tail = this.makeTail(5, this.defaultState.boardX, this.defaultState.boardY);
-  //   startState.tailIndex = 4;
-  //   startState.snakeHeadStyle = { transform: [{ rotate: '0deg' }] };
-  //   startState.walls = this.getRandomWalls();
-  //   startState.speedEffector = this.defaultState.speedEffector;
-  //   startState.orangeMode = this.defaultState.orangeMode;
-  //   //startState.toggleReset = this.props.toggleReset;
-  //   return startState;
-  // }
 
   placeSnake = (board) => {
     for (var index3 = 0; index3 < this.state.tail.length - 1; index3++) {
@@ -639,6 +591,14 @@ export default class Snek extends Sprite {
     return board;
   }
 
+  updateTail = async() => {
+    let newTail = [];
+    for(let i = 0; i < this.state.tail.length; i++) {
+      newTail.push(React.cloneElement(this.state.tail[i], {orangeMode : this.state.orangeMode}));
+    }
+    await this.setState({tail: newTail});
+  }
+
   reduceTail = async (howMuch) => {
     if (this.state.tail.length > 1) {
       howMuch = howMuch > this.state.tail.length - 1 ? this.state.tail.length - 1 : howMuch;
@@ -685,6 +645,7 @@ export default class Snek extends Sprite {
           boardX={lastTailPart.props.boardX}
           boardY={lastTailPart.props.boardY}
           toggleUpdate={true}
+          orangeMode={this.state.orangeMode}
           direction={lastTailPart.props.direction}>
         </SnekPart>
       );
@@ -702,6 +663,7 @@ export default class Snek extends Sprite {
           boardX={this.state.boardX}
           boardY={this.state.boardY}
           toggleUpdate={true}
+          orangeMode={this.state.orangeMode}
           direction={this.state.direction}>
         </SnekPart>
       );
@@ -898,32 +860,56 @@ export default class Snek extends Sprite {
     let pellet = null;
     //TODO: Move this to an event that triggers when this.state.direction or boardX or boardY changes.
 
-    let snekHeadBack = (
-    <View style={[styles.snekHeadBack, {
-      left: this.boardXtoPosX(this.state.boardX),
-      top: this.boardYtoPosY(this.state.boardY),
-    }]}></View>);
+    let snekHeadBackPosX = this.state.boardX;
+    let snekHeadBackPosY = this.state.boardY;
     if (this.state.direction == CONSTANTS.DPADSTATES.UP) {
-      snekHeadBack = (<View style={[styles.snekHeadBack, {
-        left: this.boardXtoPosX(this.state.boardX),
-        top: this.boardYtoPosY(this.state.boardY + 1),
-      }]}></View>);
+      snekHeadBackPosY++;
     } else if (this.state.direction == CONSTANTS.DPADSTATES.DOWN) {
-      snekHeadBack = (<View style={[styles.snekHeadBack, {
-        left: this.boardXtoPosX(this.state.boardX),
-        top: this.boardYtoPosY(this.state.boardY - 1),
-      }]}></View>);
+      snekHeadBackPosY--;
     } else if (this.state.direction == CONSTANTS.DPADSTATES.RIGHT) {
-      snekHeadBack = (<View style={[styles.snekHeadBack, {
-        left: this.boardXtoPosX(this.state.boardX - 1),
-        top: this.boardYtoPosY(this.state.boardY),
-      }]}></View>);
+      snekHeadBackPosX--;
     } else if (this.state.direction == CONSTANTS.DPADSTATES.LEFT) {
-      snekHeadBack = (<View style={[styles.snekHeadBack, {
-        left: this.boardXtoPosX(this.state.boardX + 1),
-        top: this.boardYtoPosY(this.state.boardY),
-      }]}></View>);
+      snekHeadBackPosX++;
     }
+
+    let snekHeadBack = (<SnekPart
+      key={this.getNextID()}
+      running={this.props.running}
+      posX={this.boardXtoPosX(snekHeadBackPosX)}
+      posY={this.boardYtoPosY(snekHeadBackPosY)}
+      boardX={snekHeadBackPosX}
+      boardY={snekHeadBackPosY}
+      toggleUpdate={true}
+      orangeMode={this.state.orangeMode}
+      direction={this.state.direction}>
+    </SnekPart>);
+    // let snekHeadBack = (
+    // <View style={[styles.snekHeadBack, {
+    //   left: this.boardXtoPosX(this.state.boardX),
+    //   top: this.boardYtoPosY(this.state.boardY),
+    // }]}></View>);
+
+    // if (this.state.direction == CONSTANTS.DPADSTATES.UP) {
+    //   snekHeadBack = (<View style={[styles.snekHeadBack, {
+    //     left: this.boardXtoPosX(this.state.boardX),
+    //     top: this.boardYtoPosY(this.state.boardY + 1),
+    //   }]}></View>);
+    // } else if (this.state.direction == CONSTANTS.DPADSTATES.DOWN) {
+    //   snekHeadBack = (<View style={[styles.snekHeadBack, {
+    //     left: this.boardXtoPosX(this.state.boardX),
+    //     top: this.boardYtoPosY(this.state.boardY - 1),
+    //   }]}></View>);
+    // } else if (this.state.direction == CONSTANTS.DPADSTATES.RIGHT) {
+    //   snekHeadBack = (<View style={[styles.snekHeadBack, {
+    //     left: this.boardXtoPosX(this.state.boardX - 1),
+    //     top: this.boardYtoPosY(this.state.boardY),
+    //   }]}></View>);
+    // } else if (this.state.direction == CONSTANTS.DPADSTATES.LEFT) {
+    //   snekHeadBack = (<View style={[styles.snekHeadBack, {
+    //     left: this.boardXtoPosX(this.state.boardX + 1),
+    //     top: this.boardYtoPosY(this.state.boardY),
+    //   }]}></View>);
+    // }
     return (
       <View
         //renderToHardwareTextureAndroid={true}
@@ -937,7 +923,6 @@ export default class Snek extends Sprite {
           user={this.props.user} />
         </ImageBackground>
         <ImageBackground source={require('../assets/gameplay/gameArea.png')} style={styles.field} resizeMode="stretch"/>
-        {/* <ImageBackground source={require('../assets/gameplay/Background.png')} style={styles.field} resizeMode="stretch" /> */}
         {
           this.state.tail.map((elem) => {
             return (elem);

@@ -3,8 +3,10 @@ import { Animated, View, StyleSheet, TouchableOpacity, Image, ImageBackground, D
 import {Sprite} from 'react-game-kit/native';
 import PropTypes from 'prop-types';
 import CONSTANTS from '../Constants.js';
+import {EasingFunctions} from '../utils/Easing.js'
 
 export default class SnekHead extends Sprite {
+  
   constructor(props) {
     super(props);
     this.state = {
@@ -14,6 +16,7 @@ export default class SnekHead extends Sprite {
 
     this.lastFrameTime = null;
   }
+
   async componentDidMount() {
     this.context.loop.subscribe(this.update);
   }
@@ -23,6 +26,7 @@ export default class SnekHead extends Sprite {
   }
 
   update = async () => {
+    //staticData[i] = EasingFunctions[easingFuncsWave[c % easingFuncsWave.length]]((i / gradientHeight));
     this.props.countFrame();
     if (this.props.running && this.props.alive) {
       // if (!this.props.alive) { //player tried to start the game without reset
@@ -86,13 +90,13 @@ export default class SnekHead extends Sprite {
         }
         this.lastFrameTime = now;
         if (this.props.direction == CONSTANTS.DPADSTATES.UP) {
-          this.setState({ snakePosY: this.state.snakePosY - speed });
+          this.setState({ snakePosY: this.state.snakePosY - speed, });
         } else if (this.props.direction == CONSTANTS.DPADSTATES.DOWN) {
-          this.setState({ snakePosY: this.state.snakePosY + speed });
+          this.setState({ snakePosY: this.state.snakePosY + speed, });
         } else if (this.props.direction == CONSTANTS.DPADSTATES.RIGHT) {
-          this.setState({ snakePosX: this.state.snakePosX + speed });
+          this.setState({ snakePosX: this.state.snakePosX + speed, });
         } else if (this.props.direction == CONSTANTS.DPADSTATES.LEFT) {
-          this.setState({ snakePosX: this.state.snakePosX - speed });
+          this.setState({ snakePosX: this.state.snakePosX - speed, });
         }
       }
     }
@@ -121,12 +125,5 @@ let styles = StyleSheet.create({
     width: CONSTANTS.SNEKSIZE,
     height: CONSTANTS.SNEKSIZE,
     zIndex: 3,
-  },
-  snekHeadBack: {
-    position: "absolute",
-    width: CONSTANTS.SNEKSIZE,
-    height: CONSTANTS.SNEKSIZE,
-    zIndex: 3,
-    backgroundColor: CONSTANTS.SNEKPARTCOLOR,
   },
 });

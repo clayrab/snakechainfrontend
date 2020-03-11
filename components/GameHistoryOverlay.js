@@ -38,23 +38,21 @@ export default class GameHistoryOverlay extends React.Component {
   }
   fetchGameHistory = async(page) => {
     try {
-      console.log("fetchGameHistory")
-      console.log(this.state.page)
       let jwt = await getFromAsyncStore("jwt");
       let resp = await doGetFetch(`${context.host}:${context.port}/getGames?number=${this.state.page}`, jwt);
       this.setState({games: resp.games});
     } catch(err) {
-      if(("" + err) === "Unauthorized") {
-        await removeItem("jwt");
-        alert("Authorization failed. Please login again.");
-      } else {
-        alert("Unknown error while fetching games: " + err);
-      }
+      //
+      // if(("" + err) === "Unauthorized") {
+      //   await removeItem("jwt");
+      //   //alert("Authorization failed. Please login again.");
+      // } else {
+      //   //alert("Unknown error while fetching games: " + err);
+      // }
       //await this.setState({screen: screens.LOGINCHOOSE, loadingGames: false});
     }
   }
   onNextPress = async() => {
-    console.log("onNextPress")
     await this.setState({page: this.state.page + 1})
     this.fetchGameHistory();
   }

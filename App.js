@@ -279,6 +279,7 @@ export default class App extends React.Component {
   }
 
   authorizationError = async () => {
+    alert("Authorization Error")
     await this.setState({screen: screens.LOGINCHOOSE, loadingUser: false});
   }
 
@@ -286,13 +287,11 @@ export default class App extends React.Component {
     console.log("fetchUser")
     try {
       let resp = await doGetFetch(`${context.host}:${context.port}/getUser`, jwt);
-      console.log("got user data...")
       await this.setState({loadingUser: false, user: resp});
-      console.log("set state...")
       return true;
     } catch(err) {
+      await removeItem("jwt");
       if(("" + err) === "Unauthorized") {
-        await removeItem("jwt");
         await alert("Authorization failed. Please login again.");
       } else {
         await alert("Unknown error while fetching user: " + err);
@@ -301,8 +300,8 @@ export default class App extends React.Component {
     }
   }
   fetchTxHistory = async(jwt) => {
+    console.log("fetchTxHistory")
     try {
-      console.log("fetchTxHistory")
       let resp = await doGetFetch(`${context.host}:${context.port}/getTransactions`, jwt);
       await this.setState({transactions: resp.transactions, loadingTx: false});
       return true;
@@ -327,9 +326,7 @@ export default class App extends React.Component {
   }
 
   loadUser = async (jwt) => {
-    console.log("loadUser")
     let result = await this.fetchUser(jwt);
-    console.log('fetched user...');
     let txHistoryResult = await this.fetchTxHistory(jwt);
     if(result && txHistoryResult) {
       return true;
@@ -375,10 +372,8 @@ export default class App extends React.Component {
 
   loggedIn = async (jwt) => {
     console.log("loggedIn")
-    console.log(jwt)
     await asyncStore("jwt", jwt);
     let result = await this.loadUser(jwt);
-    console.log("result:" + result)
     if (result && (this.state.screen == screens.LOGINCHOOSE || this.state.screen == screens.SIGNUPCHOOSE || this.state.screen == screens.SIGNUP || this.state.screen == screens.LOGIN)) {
       let firstLogin = await AsyncStorage.getItem("LAST_REGISTERED");
       let screen = firstLogin && firstLogin == this.state.user.name ? screens.TUTORIALS : screens.HOME;
@@ -443,15 +438,15 @@ export default class App extends React.Component {
             });
           } else {
             alert("There was an error, malformed response.");
-            this.setState({overlay: -1});
+            //this.setState({overlay: -1});
           }
         } else {
           alert("There was an error, no response.");
-          this.setState({overlay: -1});
+          //this.setState({overlay: -1});
         }
       } else {
         alert("Unknown error: " + resp.error);
-        this.setState({overlay: -1});
+        //this.setState({overlay: -1});
       }
     }).catch(err => {
       throw err

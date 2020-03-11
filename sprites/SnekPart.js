@@ -14,7 +14,7 @@ export default class SnekPart extends Sprite {
     boardX: PropTypes.number,
     boardY: PropTypes.number,
     toggleUpdate: PropTypes.bool,
-    //orangeMode: PropTypes.bool,
+    orangeMode: PropTypes.bool,
   };
 
   constructor(props) {
@@ -25,14 +25,6 @@ export default class SnekPart extends Sprite {
     this.toggleUpdateInternal = false;
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.toggleUpdate == this.toggleUpdateInternal) {
-      this.toggleUpdateInternal = !this.toggleUpdateInternal;
-      return true;
-    }
-    return false;
-  }
-
   boardXtoPosX(boardX) {
     return CONSTANTS.BOARDCENTERX + (CONSTANTS.SNEKSIZE * (boardX - CONSTANTS.BOARDSIZEX - 0.5));
   }
@@ -40,15 +32,20 @@ export default class SnekPart extends Sprite {
   boardYtoPosY(boardY) {
     return CONSTANTS.BOARDCENTERY + (CONSTANTS.SNEKSIZE * (boardY - CONSTANTS.BOARDSIZEY - 0.5));
   }
-
+  updateOrangeMode(orangeMode) {
+    console.log("updateOrangeMode: " + orangeMode)
+  }
   render() {
     if(CONSTANTS.LOGRENDERMETHODS) {
       var now = Date.now();
       console.log("SnekPart render " + now)
     }
-    //let opacity = this.props.orangeMode ? 0.4 : 1.0;
-    let opacity = 1.0;
-    return (<View style={[styles.snekPart, {left: this.props.posX, top: this.props.posY,}, opacity: opacity]}></View>);
+    let color = CONSTANTS.SNEKPARTCOLOR;
+    if(this.props.orangeMode) {
+      color = CONSTANTS.SNEKPARTCOLORORANGE;
+    }
+    //let color = this.props.orangeMode ? CONSTANTS.SNEKPARTCOLORORANGE : CONSTANTS.SNEKPARTCOLOR;
+    return (<View style={[styles.snekPart, {left: this.props.posX, top: this.props.posY, backgroundColor: color, }]}></View>);
   }
 }
 let styles = StyleSheet.create({
@@ -56,7 +53,7 @@ let styles = StyleSheet.create({
     position: "absolute",
     width: CONSTANTS.SNEKSIZE,
     height: CONSTANTS.SNEKSIZE,
-    backgroundColor: CONSTANTS.SNEKPARTCOLOR,
+    //backgroundColor: CONSTANTS.SNEKPARTCOLOR,
     zIndex: 3,
   },
 });

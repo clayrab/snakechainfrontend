@@ -271,7 +271,7 @@ export default class Homepage extends React.Component {
   }
 
   onBuyPowerupsSuccess = (resp) => {
-    alert("Success. ");
+    //alert("Success. ");
     this.props.updatePowerups(resp.powerups.powerups)
     this.powerupsOverlay.initializePowerUpsCount();
     this.setState({overlay: -1});

@@ -10,19 +10,8 @@ import {
 import { normalize } from '../utils/FontNormalizer.js';
 
 export default class GameOverOverlay extends React.Component {
-  msToTimeasdf(s) {
-    //var ms = s % 1000;
-    s = s / 1000;
-    var secs = s % 60;
-    s = (s - secs) / 60;
-    var mins = s % 60;
-    var hrs = (s - mins) / 60;
-    return hrs + ':' + mins + ':' + secs;
-  }
   msToTime(s) {
-      // Pad to 2 or 3 digits, default is 2
-    // var pad = (n, z = 2) => ('00' + n).slice(-z);
-    // return pad(s/3.6e6|0) + ':' + pad((s%3.6e6)/6e4 | 0) + ':' + pad((s%6e4)/1000|0) + '.' + pad(s%1000, 3);
+    // Pad to 2 or 3 digits, default is 2
     function pad(n, z) {
       z = z || 2;
       return ('00' + n).slice(-z);
@@ -41,7 +30,6 @@ export default class GameOverOverlay extends React.Component {
     if (!this.props.show) {
       return null;
     } else {
-      console.log(this.props.gameOverInfo)
       // Level and Time
       {/*<ImageBackground source={require('../assets/gameover/darkLevelBG.png')} style={styles.darkLevelBG} resizeMode="contain">*/ }
       {/*  <Text style={[styles.buttonText, styles.levelText]}>Level: 13</Text>*/ }
