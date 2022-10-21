@@ -9,7 +9,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "expo": "^32.0.0",
+    "expo": "^46.0.16",
     "prop-types": "^15.6.2",
     "react": "16.5.0",
     "react-game-kit": "^1.0.6",
